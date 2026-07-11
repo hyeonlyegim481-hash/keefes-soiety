@@ -1,21 +1,23 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=26";
+} from "./glossary-data.js?v=27";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=26";
+} from "./glossary-extra-data.js?v=27";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=26";
+} from "./glossary-more-data.js?v=27";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=26";
-import { scenarioQuestions } from "./quiz-data.js?v=26";
+} from "./glossary-pro-data.js?v=27";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=27";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=27";
 
+const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions];
 const glossaryCategoryOrder = [
   ...coreGlossaryCategories,
   ...glossaryExtraCategories,
@@ -1533,9 +1535,9 @@ function getGlossaryReadingPoint(category) {
 
 function renderQuiz() {
   const modes = [
-    { id: "mixed", label: "혼합", detail: "용어 + 상황" },
-    { id: "term", label: "용어", detail: "뜻 맞히기" },
-    { id: "scenario", label: "상황판단", detail: "어떻게 될까" }
+    { id: "mixed", label: "혼합", detail: "용어 5 + 상황 5", count: glossaryTerms.length + scenarioQuestions.length },
+    { id: "term", label: "용어", detail: "뜻 맞히기", count: glossaryTerms.length },
+    { id: "scenario", label: "상황판단", detail: "경제 흐름 판단", count: scenarioQuestions.length }
   ];
   elements.quizBankSize.textContent = `${glossaryTerms.length + scenarioQuestions.length}개 문제은행`;
   elements.quizModes.replaceChildren(
@@ -1546,7 +1548,7 @@ function renderQuiz() {
       button.className = "quiz-mode-button";
       button.dataset.quizMode = mode.id;
       button.setAttribute("aria-selected", String(state.quizMode === mode.id));
-      button.innerHTML = `<strong>${mode.label}</strong><span>${mode.detail}</span>`;
+      button.innerHTML = `<strong>${mode.label}</strong><b>${mode.count}개</b><span>${mode.detail}</span>`;
       return button;
     })
   );
@@ -1600,6 +1602,7 @@ function renderQuiz() {
       <div class="quiz-question-meta">
         <span>${question.type === "term" ? "용어" : "상황판단"}</span>
         <em>${escapeHtml(question.category)}</em>
+        ${question.type === "scenario" ? `<b>${escapeHtml(question.difficulty || "기본")}</b>` : ""}
       </div>
       <h3>${escapeHtml(question.prompt)}</h3>
       <p>${escapeHtml(question.context)}</p>
@@ -1610,6 +1613,12 @@ function renderQuiz() {
             <div class="quiz-feedback" data-correct="${isCorrect}">
               <strong>${isCorrect ? "정답입니다" : `정답은 ${String.fromCharCode(65 + question.answerIndex)}입니다`}</strong>
               <p>${escapeHtml(question.explanation)}</p>
+              ${question.rule ? `
+                <div class="quiz-judgment-rule">
+                  <span>판단 기준</span>
+                  <p>${escapeHtml(question.rule)}</p>
+                </div>
+              ` : ""}
             </div>
             <button class="quiz-next-button" type="button" data-quiz-next>
               ${state.quizIndex === state.quizQuestions.length - 1 ? "결과 보기" : "다음 문제"}
@@ -1636,10 +1645,24 @@ function resetQuizSession(mode = "mixed") {
 
 function createQuizSession(mode) {
   const termPool = shuffleQuizItems(buildTermQuizPool());
-  const scenarioPool = shuffleQuizItems(scenarioQuestions);
+  const scenarioPool = shuffleQuizItems(scenarioQuestions.map(shuffleScenarioChoices));
   if (mode === "term") return termPool.slice(0, 10);
   if (mode === "scenario") return scenarioPool.slice(0, 10);
   return shuffleQuizItems([...termPool.slice(0, 5), ...scenarioPool.slice(0, 5)]);
+}
+
+function shuffleScenarioChoices(question) {
+  const shuffledChoices = shuffleQuizItems(
+    question.choices.map((choice, index) => ({
+      choice,
+      isCorrect: index === question.answerIndex
+    }))
+  );
+  return {
+    ...question,
+    choices: shuffledChoices.map((item) => item.choice),
+    answerIndex: shuffledChoices.findIndex((item) => item.isCorrect)
+  };
 }
 
 function buildTermQuizPool() {

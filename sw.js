@@ -1,4 +1,4 @@
-const CACHE_NAME = "keefes-soiety-v26";
+const CACHE_NAME = "keefes-soiety-v27";
 const APP_SHELL = [
   "/",
   "/index.html",
@@ -10,6 +10,7 @@ const APP_SHELL = [
   "/glossary-more-data.js",
   "/glossary-pro-data.js",
   "/quiz-data.js",
+  "/quiz-scenario-extra-data.js",
   "/manifest.json",
   "/assets/econest-logo.png"
 ];

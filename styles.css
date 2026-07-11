@@ -3135,9 +3135,10 @@ main {
 .quiz-mode-button {
   display: grid;
   min-width: 0;
-  min-height: 66px;
+  min-height: 72px;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-content: center;
-  gap: 4px;
+  gap: 4px 8px;
   padding: 10px 12px;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -3152,8 +3153,16 @@ main {
 }
 
 .quiz-mode-button span {
+  grid-column: 1 / -1;
   font-size: 0.72rem;
   font-weight: 680;
+}
+
+.quiz-mode-button b {
+  align-self: center;
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 850;
 }
 
 .quiz-mode-button[aria-selected="true"] {
@@ -3162,7 +3171,8 @@ main {
 }
 
 .quiz-mode-button[aria-selected="true"] strong,
-.quiz-mode-button[aria-selected="true"] span {
+.quiz-mode-button[aria-selected="true"] span,
+.quiz-mode-button[aria-selected="true"] b {
   color: var(--teal);
 }
 
@@ -3225,7 +3235,8 @@ main {
 }
 
 .quiz-question-meta span,
-.quiz-question-meta em {
+.quiz-question-meta em,
+.quiz-question-meta b {
   display: inline-flex;
   min-height: 26px;
   align-items: center;
@@ -3244,6 +3255,11 @@ main {
 .quiz-question-meta em {
   background: rgba(15, 118, 110, 0.09);
   color: var(--teal);
+}
+
+.quiz-question-meta b {
+  background: rgba(201, 154, 46, 0.1);
+  color: #8a6415;
 }
 
 .quiz-question-card h3 {
@@ -3367,8 +3383,25 @@ main {
   word-break: keep-all;
 }
 
-.quiz-next-button,
-.quiz-restart-button {
+.quiz-judgment-rule {
+  display: grid;
+  gap: 3px;
+  margin-top: 5px;
+  padding-top: 9px;
+  border-top: 1px solid rgba(53, 65, 74, 0.12);
+}
+
+.quiz-judgment-rule span {
+  color: var(--teal);
+  font-size: 0.7rem;
+  font-weight: 850;
+}
+
+.quiz-judgment-rule p {
+  margin: 0;
+}
+
+.quiz-next-button,.quiz-restart-button {
   min-height: 40px;
   justify-self: end;
   padding: 8px 14px;
@@ -3506,8 +3539,25 @@ main {
     padding: 14px;
   }
 
-  .quiz-next-button,
-  .quiz-restart-button {
+  .quiz-judgment-rule {
+  display: grid;
+  gap: 3px;
+  margin-top: 5px;
+  padding-top: 9px;
+  border-top: 1px solid rgba(53, 65, 74, 0.12);
+}
+
+.quiz-judgment-rule span {
+  color: var(--teal);
+  font-size: 0.7rem;
+  font-weight: 850;
+}
+
+.quiz-judgment-rule p {
+  margin: 0;
+}
+
+.quiz-next-button,  .quiz-restart-button {
     width: 100%;
     justify-self: stretch;
   }
