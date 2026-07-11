@@ -1,4 +1,4 @@
-const CACHE_NAME = "keefes-soiety-v22";
+const CACHE_NAME = "keefes-soiety-v23";
 const APP_SHELL = [
   "/",
   "/index.html",

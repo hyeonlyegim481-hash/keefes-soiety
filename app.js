@@ -1,23 +1,27 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=22";
+} from "./glossary-data.js?v=23";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=22";
+} from "./glossary-extra-data.js?v=23";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=22";
-import { scenarioQuestions } from "./quiz-data.js?v=22";
+} from "./glossary-more-data.js?v=23";
+import { scenarioQuestions } from "./quiz-data.js?v=23";
 
 const glossaryCategoryOrder = [
   ...coreGlossaryCategories,
   ...glossaryExtraCategories,
   ...glossaryMoreCategories
 ];
-const glossaryTerms = [...coreGlossaryTerms, ...glossaryExtraTerms, ...glossaryMoreTerms];
+const glossaryTerms = [
+  ...coreGlossaryTerms.map((item) => ({ ...item, level: "core" })),
+  ...glossaryExtraTerms.map((item) => ({ ...item, level: "advanced" })),
+  ...glossaryMoreTerms.map((item) => ({ ...item, level: "advanced" }))
+];
 
 const GLOSSARY_PAGE_SIZE = 24;
 
@@ -57,6 +61,7 @@ const elements = {
   dailyTerm: document.querySelector("#dailyTerm"),
   studyQuiz: document.querySelector("#studyQuiz"),
   glossaryTotal: document.querySelector("#glossaryTotal"),
+  glossaryLevels: document.querySelector("#glossaryLevels"),
   glossarySearch: document.querySelector("#glossarySearch"),
   glossaryResultCount: document.querySelector("#glossaryResultCount"),
   glossaryCategories: document.querySelector("#glossaryCategories"),
@@ -279,6 +284,7 @@ let state = {
   isRefreshing: false,
   activeChapter: initialChapter,
   glossaryQuery: "",
+  glossaryLevel: "core",
   glossaryCategory: "전체",
   glossaryLimit: GLOSSARY_PAGE_SIZE,
   quizMode: "mixed",
@@ -301,6 +307,14 @@ elements.chapterTabs.forEach((tab) => {
 });
 elements.glossarySearch.addEventListener("input", () => {
   state.glossaryQuery = elements.glossarySearch.value;
+  state.glossaryLimit = GLOSSARY_PAGE_SIZE;
+  renderGlossary();
+});
+elements.glossaryLevels.addEventListener("click", (event) => {
+  const button = event.target.closest?.("[data-glossary-level]");
+  if (!button) return;
+  state.glossaryLevel = button.dataset.glossaryLevel;
+  state.glossaryCategory = "전체";
   state.glossaryLimit = GLOSSARY_PAGE_SIZE;
   renderGlossary();
 });
@@ -1337,8 +1351,10 @@ function renderKoreaImpact(macro, analysis, markets) {
 function renderGlossary() {
   const query = normalizeGlossaryText(state.glossaryQuery);
   const queryTokens = query.split(/\s+/).filter(Boolean);
+  const level = state.glossaryLevel;
   const category = state.glossaryCategory;
-  const filtered = glossaryTerms.filter((item) => {
+  const levelTerms = glossaryTerms.filter((item) => item.level === level);
+  const filtered = levelTerms.filter((item) => {
     if (category !== "전체" && item.category !== category) return false;
     if (!queryTokens.length) return true;
     const searchText = normalizeGlossaryText(
@@ -1347,20 +1363,42 @@ function renderGlossary() {
     return queryTokens.every((token) => matchesGlossaryToken(item, searchText, token));
   });
   const visible = filtered.slice(0, state.glossaryLimit);
-  const allCategories = ["전체", ...glossaryCategoryOrder];
+  const allCategories = [
+    "전체",
+    ...glossaryCategoryOrder.filter((name) =>
+      levelTerms.some((item) => item.category === name)
+    )
+  ];
+  const levels = [
+    { id: "core", label: "핵심", detail: "경제 흐름을 읽는 기본어" },
+    { id: "advanced", label: "심화", detail: "금융·정책·위기 확장어" }
+  ];
 
-  elements.glossaryTotal.textContent = `${glossaryTerms.length}개 용어`;
+  elements.glossaryTotal.textContent = `핵심 ${coreGlossaryTerms.length} · 심화 ${glossaryExtraTerms.length + glossaryMoreTerms.length}`;
+  elements.glossaryLevels.replaceChildren(
+    ...levels.map((item) => {
+      const count = glossaryTerms.filter((term) => term.level === item.id).length;
+      const button = document.createElement("button");
+      button.type = "button";
+      button.role = "tab";
+      button.className = "glossary-level-button";
+      button.dataset.glossaryLevel = item.id;
+      button.setAttribute("aria-selected", String(item.id === level));
+      button.innerHTML = `<span><strong>${item.label}</strong><em>${item.detail}</em></span><b>${count}개</b>`;
+      return button;
+    })
+  );
   elements.glossaryResultCount.innerHTML = `
     <strong>${filtered.length}</strong>
-    <span>${query ? `"${escapeHtml(state.glossaryQuery.trim())}" 검색 결과` : category === "전체" ? "전체 용어" : category}</span>
+    <span>${query ? `"${escapeHtml(state.glossaryQuery.trim())}" 검색 결과` : category === "전체" ? `${level === "core" ? "핵심" : "심화"} 용어` : category}</span>
   `;
 
   elements.glossaryCategories.replaceChildren(
     ...allCategories.map((name) => {
       const count =
         name === "전체"
-          ? glossaryTerms.length
-          : glossaryTerms.filter((item) => item.category === name).length;
+          ? levelTerms.length
+          : levelTerms.filter((item) => item.category === name).length;
       const button = document.createElement("button");
       button.type = "button";
       button.role = "tab";
@@ -1402,6 +1440,7 @@ function createGlossaryCard(item) {
         <span class="glossary-card-topline">
           <strong>${escapeHtml(item.term)}</strong>
           <em>${escapeHtml(item.english)}</em>
+          <b class="glossary-level-badge" data-level="${item.level}">${item.level === "core" ? "핵심" : "심화"}</b>
         </span>
         <span class="glossary-card-definition">${escapeHtml(item.definition)}</span>
       </span>
