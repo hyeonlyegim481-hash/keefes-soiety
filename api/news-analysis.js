@@ -4,6 +4,7 @@ import {
   getSnapshot,
   normalizeHeadlineInput
 } from "../server.mjs";
+import { enrichHeadlineWithArticle } from "../news-content.js";
 
 export default async function handler(request, response) {
   if (request.method !== "POST") {
@@ -12,12 +13,16 @@ export default async function handler(request, response) {
   }
 
   try {
-    const headline = normalizeHeadlineInput(request.body || {});
-    if (!headline.title) {
+    const requestedHeadline = normalizeHeadlineInput(request.body || {});
+    if (!requestedHeadline.title) {
       return response.status(400).json({ error: "Headline title is required" });
     }
 
     const snapshot = await getSnapshot();
+    const trustedHeadline = snapshot.headlines.find((item) =>
+      item.id === requestedHeadline.id || item.title === requestedHeadline.title
+    ) || requestedHeadline;
+    const headline = await enrichHeadlineWithArticle(trustedHeadline);
     const fallback = buildAutomatedNewsAnalysis(headline, snapshot);
     const analysis = await enhanceNewsAnalysisWithAi(headline, snapshot, fallback);
     response.setHeader("Cache-Control", "no-store");

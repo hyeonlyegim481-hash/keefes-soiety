@@ -1,20 +1,20 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=25";
+} from "./glossary-data.js?v=26";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=25";
+} from "./glossary-extra-data.js?v=26";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=25";
+} from "./glossary-more-data.js?v=26";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=25";
-import { scenarioQuestions } from "./quiz-data.js?v=25";
+} from "./glossary-pro-data.js?v=26";
+import { scenarioQuestions } from "./quiz-data.js?v=26";
 
 const glossaryCategoryOrder = [
   ...coreGlossaryCategories,
@@ -290,7 +290,7 @@ let state = {
   isRefreshing: false,
   activeChapter: initialChapter,
   glossaryQuery: "",
-  glossaryLevel: "core",
+  glossaryLevel: "all",
   glossaryCategory: "전체",
   glossaryLimit: GLOSSARY_PAGE_SIZE,
   quizMode: "mixed",
@@ -313,6 +313,8 @@ elements.chapterTabs.forEach((tab) => {
 });
 elements.glossarySearch.addEventListener("input", () => {
   state.glossaryQuery = elements.glossarySearch.value;
+  state.glossaryLevel = "all";
+  state.glossaryCategory = "전체";
   state.glossaryLimit = GLOSSARY_PAGE_SIZE;
   renderGlossary();
 });
@@ -1359,7 +1361,9 @@ function renderGlossary() {
   const queryTokens = query.split(/\s+/).filter(Boolean);
   const level = state.glossaryLevel;
   const category = state.glossaryCategory;
-  const levelTerms = glossaryTerms.filter((item) => item.level === level);
+  const levelTerms = level === "all"
+    ? glossaryTerms
+    : glossaryTerms.filter((item) => item.level === level);
   const filtered = levelTerms.filter((item) => {
     if (category !== "전체" && item.category !== category) return false;
     if (!queryTokens.length) return true;
@@ -1376,14 +1380,17 @@ function renderGlossary() {
     )
   ];
   const levels = [
+    { id: "all", label: "통합", detail: "핵심·심화 전체 용어" },
     { id: "core", label: "핵심", detail: "경제 흐름을 읽는 기본어" },
     { id: "advanced", label: "심화", detail: "금융·정책·위기 확장어" }
   ];
 
-  elements.glossaryTotal.textContent = `핵심 ${coreGlossaryTerms.length} · 심화 ${glossaryExtraTerms.length + glossaryMoreTerms.length + glossaryProTerms.length}`;
+  elements.glossaryTotal.textContent = `전체 ${glossaryTerms.length} · 핵심 ${coreGlossaryTerms.length} · 심화 ${glossaryExtraTerms.length + glossaryMoreTerms.length + glossaryProTerms.length}`;
   elements.glossaryLevels.replaceChildren(
     ...levels.map((item) => {
-      const count = glossaryTerms.filter((term) => term.level === item.id).length;
+      const count = item.id === "all"
+        ? glossaryTerms.length
+        : glossaryTerms.filter((term) => term.level === item.id).length;
       const button = document.createElement("button");
       button.type = "button";
       button.role = "tab";
@@ -1396,7 +1403,7 @@ function renderGlossary() {
   );
   elements.glossaryResultCount.innerHTML = `
     <strong>${filtered.length}</strong>
-    <span>${query ? `"${escapeHtml(state.glossaryQuery.trim())}" 검색 결과` : category === "전체" ? `${level === "core" ? "핵심" : "심화"} 용어` : category}</span>
+    <span>${query ? `"${escapeHtml(state.glossaryQuery.trim())}" 통합 검색 결과` : category === "전체" ? `${level === "all" ? "전체" : level === "core" ? "핵심" : "심화"} 용어` : category}</span>
   `;
 
   elements.glossaryCategories.replaceChildren(
@@ -1919,7 +1926,7 @@ async function loadNewsAnalysis(details, headline, marketAnalysis) {
   output.innerHTML = `
     <div class="analysis-loading">
       <span></span>
-      <p>기사와 현재 시장 신호를 연결해 분석하고 있습니다.</p>
+      <p>기사 원문을 정리하고 현재 시장 신호와 연결하고 있습니다.</p>
     </div>
   `;
   updateChapterHeight();
@@ -1929,6 +1936,7 @@ async function loadNewsAnalysis(details, headline, marketAnalysis) {
       method: "POST",
       headers: { "content-type": "application/json", accept: "application/json" },
       body: JSON.stringify({
+        id: headline.id,
         title: headline.title,
         topic: headline.topic,
         source: headline.source,
@@ -1948,12 +1956,23 @@ async function loadNewsAnalysis(details, headline, marketAnalysis) {
 
 function renderNewsAnalysisResult(output, result) {
   const checkpoints = Array.isArray(result.checkpoints) ? result.checkpoints : [];
+  const keyPoints = Array.isArray(result.keyPoints) ? result.keyPoints : [];
+  const contentBasis = result.contentBasis === "article" ? "원문 내용 기반" : "제목 기반";
   output.innerHTML = `
     <div class="ai-result-head">
       <span data-tone="${escapeHtml(result.tone || "watch")}">${escapeHtml(result.signal || "혼합 신호")}</span>
-      <em>${escapeHtml(result.engineLabel || "데이터 기반 자동 분석")} · 신뢰도 ${escapeHtml(result.confidence || "중간")}</em>
+      <em>${escapeHtml(result.engineLabel || "데이터 기반 자동 분석")} · ${contentBasis} · 신뢰도 ${escapeHtml(result.confidence || "중간")}</em>
     </div>
-    <p class="ai-summary">${escapeHtml(result.summary || "현재 시장과의 연결을 확인하고 있습니다.")}</p>
+    <section class="ai-article-summary">
+      <span>기사 핵심 요약</span>
+      <p>${escapeHtml(result.summary || "현재 시장과의 연결을 확인하고 있습니다.")}</p>
+    </section>
+    ${keyPoints.length ? `
+      <div class="ai-key-points">
+        <strong>핵심 내용</strong>
+        ${keyPoints.map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
+      </div>
+    ` : ""}
     <div class="ai-analysis-grid">
       <article>
         <span>왜 중요한가</span>

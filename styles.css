@@ -2009,6 +2009,56 @@ main {
   font-weight: 720;
 }
 
+.ai-article-summary {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border-left: 3px solid var(--amber);
+  background: #fffaf2;
+}
+
+.ai-article-summary span,
+.ai-key-points strong {
+  color: var(--amber);
+  font-size: 0.71rem;
+  font-weight: 850;
+}
+
+.ai-article-summary p {
+  margin: 0;
+  color: var(--charcoal);
+  font-size: 0.86rem;
+  font-weight: 690;
+  line-height: 1.65;
+  word-break: keep-all;
+}
+
+.ai-key-points {
+  display: grid;
+  gap: 7px;
+}
+
+.ai-key-points span {
+  position: relative;
+  padding-left: 13px;
+  color: #42505a;
+  font-size: 0.76rem;
+  font-weight: 630;
+  line-height: 1.55;
+  word-break: keep-all;
+}
+
+.ai-key-points span::before {
+  position: absolute;
+  top: 0.62em;
+  left: 1px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--teal);
+  content: "";
+}
+
 .ai-summary {
   margin: 0;
   color: var(--charcoal) !important;
@@ -3465,7 +3515,7 @@ main {
 
 .glossary-levels {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
   padding: 18px 22px 0;
 }
