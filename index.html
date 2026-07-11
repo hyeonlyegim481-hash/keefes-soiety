@@ -8,9 +8,9 @@
       content="세계 경제와 한국 경제 흐름을 실시간으로 정리하고 분석하는 대시보드"
     />
     <meta name="theme-color" content="#f6f7f8" />
-    <link rel="manifest" href="/manifest.json?v=23" />
+    <link rel="manifest" href="/manifest.json?v=24" />
     <link rel="icon" href="/assets/econest-logo.png" type="image/png" />
-    <link rel="stylesheet" href="/styles.css?v=23" />
+    <link rel="stylesheet" href="/styles.css?v=24" />
     <title>keefe's soiety</title>
   </head>
   <body>
@@ -40,9 +40,9 @@
         <button class="chapter-tab" type="button" data-chapter="korea" aria-selected="false">한국</button>
         <button class="chapter-tab" type="button" data-chapter="analysis" aria-selected="false">심층</button>
         <button class="chapter-tab" type="button" data-chapter="study" aria-selected="false">공부</button>
+        <button class="chapter-tab" type="button" data-chapter="news" aria-selected="false">뉴스</button>
         <button class="chapter-tab" type="button" data-chapter="glossary" aria-selected="false">용어</button>
         <button class="chapter-tab" type="button" data-chapter="quiz" aria-selected="false">퀴즈</button>
-        <button class="chapter-tab" type="button" data-chapter="news" aria-selected="false">뉴스</button>
       </nav>
 
       <main>
@@ -155,6 +155,21 @@
               </article>
             </section>
 
+            <section class="chapter-pane chapter-single" id="news" data-chapter-panel="news" aria-label="뉴스 전문">
+              <article class="panel news-panel">
+                <div class="panel-heading">
+                  <div>
+                    <p class="section-kicker">뉴스 전문</p>
+                    <h2>시장 헤드라인</h2>
+                  </div>
+                </div>
+                <div class="chapter-brief" id="newsBrief"></div>
+                <div class="chapter-board" id="newsBoard"></div>
+                <div class="chapter-expansion" id="newsIntelligence"></div>
+                <div class="news-list" id="newsList"></div>
+              </article>
+            </section>
+
             <section class="chapter-pane chapter-single" id="glossary" data-chapter-panel="glossary" aria-label="경제용어 사전">
               <article class="panel glossary-panel">
                 <div class="panel-heading glossary-heading">
@@ -199,21 +214,6 @@
                 <div class="quiz-body" id="quizBody"></div>
               </article>
             </section>
-
-            <section class="chapter-pane chapter-single" id="news" data-chapter-panel="news" aria-label="뉴스 전문">
-              <article class="panel news-panel">
-                <div class="panel-heading">
-                  <div>
-                    <p class="section-kicker">뉴스 전문</p>
-                    <h2>시장 헤드라인</h2>
-                  </div>
-                </div>
-                <div class="chapter-brief" id="newsBrief"></div>
-                <div class="chapter-board" id="newsBoard"></div>
-                <div class="chapter-expansion" id="newsIntelligence"></div>
-                <div class="news-list" id="newsList"></div>
-              </article>
-            </section>
           </div>
         </section>
       </main>
@@ -224,7 +224,7 @@
       </footer>
     </div>
 
-    <script type="module" src="/app.js?v=23"></script>
+    <script type="module" src="/app.js?v=24"></script>
   </body>
 </html>
 

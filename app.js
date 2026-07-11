@@ -1,16 +1,16 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=23";
+} from "./glossary-data.js?v=24";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=23";
+} from "./glossary-extra-data.js?v=24";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=23";
-import { scenarioQuestions } from "./quiz-data.js?v=23";
+} from "./glossary-more-data.js?v=24";
+import { scenarioQuestions } from "./quiz-data.js?v=24";
 
 const glossaryCategoryOrder = [
   ...coreGlossaryCategories,
