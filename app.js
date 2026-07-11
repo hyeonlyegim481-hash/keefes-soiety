@@ -1,26 +1,32 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=24";
+} from "./glossary-data.js?v=25";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=24";
+} from "./glossary-extra-data.js?v=25";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=24";
-import { scenarioQuestions } from "./quiz-data.js?v=24";
+} from "./glossary-more-data.js?v=25";
+import {
+  glossaryProCategories,
+  glossaryProTerms
+} from "./glossary-pro-data.js?v=25";
+import { scenarioQuestions } from "./quiz-data.js?v=25";
 
 const glossaryCategoryOrder = [
   ...coreGlossaryCategories,
   ...glossaryExtraCategories,
-  ...glossaryMoreCategories
+  ...glossaryMoreCategories,
+  ...glossaryProCategories
 ];
 const glossaryTerms = [
   ...coreGlossaryTerms.map((item) => ({ ...item, level: "core" })),
   ...glossaryExtraTerms.map((item) => ({ ...item, level: "advanced" })),
-  ...glossaryMoreTerms.map((item) => ({ ...item, level: "advanced" }))
+  ...glossaryMoreTerms.map((item) => ({ ...item, level: "advanced" })),
+  ...glossaryProTerms.map((item) => ({ ...item, level: "advanced" }))
 ];
 
 const GLOSSARY_PAGE_SIZE = 24;
@@ -1374,7 +1380,7 @@ function renderGlossary() {
     { id: "advanced", label: "심화", detail: "금융·정책·위기 확장어" }
   ];
 
-  elements.glossaryTotal.textContent = `핵심 ${coreGlossaryTerms.length} · 심화 ${glossaryExtraTerms.length + glossaryMoreTerms.length}`;
+  elements.glossaryTotal.textContent = `핵심 ${coreGlossaryTerms.length} · 심화 ${glossaryExtraTerms.length + glossaryMoreTerms.length + glossaryProTerms.length}`;
   elements.glossaryLevels.replaceChildren(
     ...levels.map((item) => {
       const count = glossaryTerms.filter((term) => term.level === item.id).length;
@@ -1506,7 +1512,14 @@ function getGlossaryReadingPoint(category) {
     "행동경제": "내 판단을 설명하는 정보뿐 아니라 반대 증거도 찾아보고 가격 변화 뒤 감정이 개입했는지 확인합니다.",
     "세금·연금": "세율 하나보다 과세표준, 공제, 납부 시점과 노후 현금흐름을 함께 봅니다.",
     "경제위기·역사": "위기의 이름보다 부채, 유동성, 자산가격과 정책 대응이 어떤 순서로 연결됐는지 봅니다.",
-    "디지털경제": "기술의 가능성과 실제 매출·비용·규제·현금흐름을 분리해 평가합니다."
+    "디지털경제": "기술의 가능성과 실제 매출·비용·규제·현금흐름을 분리해 평가합니다.",
+    "데이터·통계": "단위와 표본, 비교 기준을 먼저 확인하고 상관관계를 곧바로 인과관계로 해석하지 않습니다.",
+    "보험·위험관리": "보험료 성장만 보지 말고 손해율, 준비금, 지급여력과 재보험 조건을 함께 확인합니다.",
+    "지급결제·핀테크": "사용 편의성과 별개로 실제 결제·정산 구조, 신용위험과 개인정보 보호 수준을 살펴봅니다.",
+    "ESG·기후경제": "친환경이라는 이름보다 실제 배출량 목표, 전환 비용, 공시 범위와 검증 여부를 확인합니다.",
+    "경제학파·이론": "이론을 만능 답으로 쓰기보다 어떤 가정과 경제 상황에서 설명력이 커지는지 구분합니다.",
+    "기업금융·M&A": "거래 가격과 함께 현금흐름, 조달 비용, 주주가치 희석과 인수 후 통합 가능성을 봅니다.",
+    "국제개발·무역제도": "협정의 이름보다 적용 범위, 시행 일정, 국가별 노출도와 실제 이행 조건을 확인합니다."
   };
   return points[category] || "용어의 정의와 함께 실제 숫자가 어떤 방향으로 움직이는지 확인합니다.";
 }
