@@ -129,9 +129,11 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-server.listen(PORT, "127.0.0.1", () => {
-  console.log(`keefe's soiety is running at http://127.0.0.1:${PORT}`);
-});
+if (process.argv[1] && path.resolve(process.argv[1]) === __filename) {
+  server.listen(PORT, "127.0.0.1", () => {
+    console.log(`keefe's soiety is running at http://127.0.0.1:${PORT}`);
+  });
+}
 
 async function getSnapshot() {
   const now = Date.now();
@@ -780,3 +782,11 @@ function formatNumber(value) {
     maximumFractionDigits: Math.abs(value) > 100 ? 1 : 2
   }).format(value);
 }
+
+export {
+  buildAutomatedNewsAnalysis,
+  enhanceNewsAnalysisWithAi,
+  getSnapshot,
+  normalizeHeadlineInput
+};
+
