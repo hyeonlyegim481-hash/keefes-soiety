@@ -287,63 +287,145 @@ function normalizeHeadlineInput(input) {
 }
 
 function buildAutomatedNewsAnalysis(headline, snapshot) {
-  const text = `${headline.title} ${headline.topic}`;
+  const title = String(headline.title || "").trim();
+  const text = `${title} ${headline.topic || ""}`;
   const byId = Object.fromEntries(snapshot.markets.map((market) => [market.id, market]));
+  const macroById = Object.fromEntries((snapshot.macro || []).map((item) => [item.id, item]));
   const riskScore = snapshot.analysis.riskScore;
-  const hasRates = /금리|연준|Fed|채권|물가|inflation|CPI|yield/i.test(text);
-  const hasFx = /환율|달러|원화|위안|엔화|dollar/i.test(text);
-  const hasChips = /반도체|chip|semiconductor|AI|기술주/i.test(text);
-  const hasEnergy = /유가|원유|OPEC|중동|전쟁|oil|WTI/i.test(text);
-  const hasChina = /중국|China|수출|무역|export/i.test(text);
-  const negativeCount = (text.match(/급락|폭락|경고|둔화|위기|부담|전쟁|하락/gi) || []).length;
-  const positiveCount = (text.match(/호조|회복|돌파|개선|완화|상승|증가/gi) || []).length;
+  const profiles = [
+    {
+      id: "rates",
+      label: "금리·물가",
+      pattern: /금리|연준|Fed|채권|국채|물가|inflation|CPI|yield|긴축|인하|동결/gi,
+      why: "금리 기대가 바뀌면 채권 수익률과 달러, 주식의 할인율이 동시에 움직여 파급 범위가 넓습니다.",
+      korea: "한국은 미국 금리와의 차이, 원화 가치, 가계 대출 부담을 함께 봐야 합니다. 금리 인하 기대가 커져도 원화가 약하면 한국은행의 선택은 제한될 수 있습니다.",
+      checkpoints: ["미국 10년물 국채금리의 같은 방향 움직임", "원/달러와 외국인 수급의 동반 변화", "다음 물가·고용 발표가 기존 기대를 확인하는지"]
+    },
+    {
+      id: "fx",
+      label: "환율·통화",
+      pattern: /환율|달러|원화|위안|엔화|currency|dollar|외환|통화스와프/gi,
+      why: "환율은 수입 비용과 수출기업의 원화 환산 실적, 외국인의 환차손을 한꺼번에 바꿉니다.",
+      korea: "원화 약세는 일부 수출기업에 유리할 수 있지만 외국인 자금 이탈과 수입물가 상승이 겹치면 한국 전체에는 부담이 됩니다.",
+      checkpoints: ["원/달러가 장중 고점과 저점을 어느 방향으로 갱신하는지", "외국인 현물·선물 수급이 같은 방향인지", "달러 인덱스와 아시아 통화가 함께 움직이는지"]
+    },
+    {
+      id: "chips",
+      label: "반도체·기술",
+      pattern: /반도체|chip|semiconductor|AI|기술주|테크|빅테크|HBM|메모리/gi,
+      why: "반도체 뉴스는 한국 수출과 설비투자, KOSPI 대형주의 이익 전망에 직접 연결됩니다.",
+      korea: "업황 호재라도 메모리 가격, 실제 수출 물량과 외국인 매수가 확인되지 않으면 주가 반응은 짧게 끝날 수 있습니다.",
+      checkpoints: ["한국 반도체 수출액과 단가의 동반 개선", "NASDAQ과 국내 반도체 대형주의 상대 수익률", "외국인의 전기전자 업종 순매수 지속 여부"]
+    },
+    {
+      id: "energy",
+      label: "에너지·원자재",
+      pattern: /유가|원유|OPEC|oil|WTI|천연가스|에너지|원자재|구리|금값|gold/gi,
+      why: "에너지 가격은 운송비와 제조원가, 기대물가를 거쳐 중앙은행의 금리 판단에도 영향을 줍니다.",
+      korea: "에너지 수입 의존도가 높은 한국은 유가 상승이 무역수지와 항공·운송·화학 업종의 비용 부담으로 이어지는지 봐야 합니다.",
+      checkpoints: ["WTI의 추가 상승과 변동성 확대 여부", "정유 강세와 항공·운송 약세가 동시에 나타나는지", "원/달러와 수입물가 기대가 함께 오르는지"]
+    },
+    {
+      id: "china",
+      label: "중국·무역",
+      pattern: /중국|China|수출|수입|무역|관세|export|trade|공급망|위안/gi,
+      why: "중국 수요와 무역정책은 한국의 중간재 수출, 제조업 주문과 기업 이익에 시차를 두고 반영됩니다.",
+      korea: "한국은 headline의 수출 증가율보다 반도체를 제외한 품목 확산과 중국향 물량, 무역수지 개선을 함께 확인해야 합니다.",
+      checkpoints: ["중국 제조업·소비 지표의 실제 개선", "한국의 중국향 수출 물량과 품목 확산", "관세 발표 이후 기업 주문과 운임 변화"]
+    },
+    {
+      id: "growth",
+      label: "경기·고용",
+      pattern: /성장|경기|침체|고용|실업|임금|소비|GDP|recession|employment|payroll|내수/gi,
+      why: "경기와 고용은 기업 매출과 소비 여력, 중앙은행의 정책 속도를 결정하는 기본 축입니다.",
+      korea: "수출 회복이 내수와 고용으로 확산되는지 구분해야 합니다. 수출만 좋고 소비가 약하면 체감경기 개선은 제한적일 수 있습니다.",
+      checkpoints: ["고용의 증가 폭보다 임금과 근로시간 변화", "소매판매·서비스업 지표의 방향", "기업 실적 전망이 경기지표와 같이 움직이는지"]
+    },
+    {
+      id: "housing",
+      label: "부동산·가계부채",
+      pattern: /부동산|주택|아파트|전세|가계부채|대출|DSR|mortgage|household|PF/gi,
+      why: "부동산과 가계부채는 금리 변화가 소비와 금융건전성으로 전달되는 핵심 통로입니다.",
+      korea: "가격 상승만 보지 말고 거래량, 연체율, 원리금 부담과 지역별 차이를 함께 봐야 금융 안정성을 판단할 수 있습니다.",
+      checkpoints: ["주택 거래량과 가격이 함께 움직이는지", "가계대출 증가와 연체율 변화", "예금은행 대출금리의 실제 하락 여부"]
+    },
+    {
+      id: "earnings",
+      label: "기업실적·투자",
+      pattern: /실적|매출|영업이익|순이익|투자|CAPEX|earnings|profit|매수|매도|증시|코스피/gi,
+      why: "기업 뉴스는 기대와 실제 숫자의 차이가 가격을 움직입니다. 좋은 실적도 이미 반영됐다면 주가 반응은 약할 수 있습니다.",
+      korea: "지수 전체보다 해당 업종의 이익 전망과 현금흐름, 외국인 수급이 개선되는지 확인해야 합니다.",
+      checkpoints: ["실적 발표 뒤 이익 전망치의 상향 여부", "주가와 거래량이 같은 방향으로 움직이는지", "동종 업종으로 상승·하락이 확산되는지"]
+    },
+    {
+      id: "policy",
+      label: "재정·정책",
+      pattern: /정부|재정|예산|세금|규제|지원|정책|부양책|government|fiscal|보조금/gi,
+      why: "정책은 발표 제목보다 시행 시점과 규모, 재원, 실제 수혜 대상이 중요합니다.",
+      korea: "한국에서는 정책 효과가 소비·투자 증가로 이어지는지와 재정 부담, 민간자금 구축 가능성을 함께 봐야 합니다.",
+      checkpoints: ["정책의 시행일과 실제 집행 규모", "수혜 업종의 매출·투자 변화", "국채 발행과 시장금리의 반응"]
+    },
+    {
+      id: "geopolitics",
+      label: "지정학·공급충격",
+      pattern: /전쟁|분쟁|제재|중동|이란|우크라이나|해협|공격|geopolit|war|sanction/gi,
+      why: "지정학 뉴스는 사실 확인이 어렵고 에너지·물류·안전자산을 통해 시장에 빠르게 반영됩니다.",
+      korea: "한국은 원유 수입과 해상운임, 원화 약세에 동시에 노출될 수 있어 사건 자체보다 공급 경로의 실제 차질을 확인해야 합니다.",
+      checkpoints: ["유가·금·VIX의 동반 반응", "해상운임과 공급 일정의 실제 차질", "공식 발표와 후속 보도의 사실관계 일치"]
+    }
+  ];
+
+  const rankedProfiles = profiles
+    .map((profile) => ({ ...profile, score: (text.match(profile.pattern) || []).length }))
+    .filter((profile) => profile.score > 0)
+    .sort((a, b) => b.score - a.score);
+  const primary = rankedProfiles[0] || {
+    id: "sentiment",
+    label: "시장 심리",
+    why: "헤드라인이 반복되면 투자자의 기대와 포지션이 바뀌지만, 실제 가격과 거래량이 확인돼야 지속성을 판단할 수 있습니다.",
+    korea: "한국에서는 KOSPI와 원/달러, 외국인 수급이 같은 방향으로 반응하는지 확인해야 합니다.",
+    checkpoints: ["KOSPI와 원/달러의 동시 반응", "거래량과 변동성 확대 여부", "같은 내용의 후속 보도와 공식 자료"]
+  };
+  const secondary = rankedProfiles.find((profile) => profile.id !== primary.id);
+  const negativeCount = (text.match(/급락|급등|폭락|경고|둔화|위기|부담|전쟁|하락|충격|악화|불안/gi) || []).length;
+  const positiveCount = (text.match(/호조|회복|돌파|개선|완화|강세|수혜|호재/gi) || []).length;
   const tone = negativeCount > positiveCount ? "negative" : positiveCount > negativeCount ? "positive" : "watch";
-  const signal = tone === "negative" ? "경계 신호" : tone === "positive" ? "개선 가능성" : "혼합 신호";
-  const themes = [
-    hasRates && "금리·물가",
-    hasFx && "환율",
-    hasChips && "반도체",
-    hasEnergy && "에너지·지정학",
-    hasChina && "중국·수출"
-  ].filter(Boolean);
-  const themeText = themes.join(", ") || "시장 심리";
-  const usdkrw = byId.usdkrw;
+  const signal = `${primary.label} ${tone === "negative" ? "부담" : tone === "positive" ? "개선" : "확인"}`;
+  const focusText = secondary ? `${primary.label}을 중심으로 ${secondary.label}까지 연결되는 기사` : `${primary.label}에 초점을 둔 기사`;
   const kospi = byId.kospi;
   const sp500 = byId.sp500;
+  const nasdaq = byId.nasdaq;
+  const usdkrw = byId.usdkrw;
   const vix = byId.vix;
   const wti = byId.wti;
+  const gold = byId.gold;
+  const baseRate = macroById["base-rate"];
+  const householdCredit = macroById["household-credit"];
+  const marketImpactByTheme = {
+    rates: `S&P 500 ${signed(sp500?.changePercent || 0)}%, NASDAQ ${signed(nasdaq?.changePercent || 0)}%와 장기금리를 함께 봐야 합니다. 금리 상승인데 기술주가 버티면 이익 기대가 할인율 부담을 상쇄하는지 확인합니다.`,
+    fx: `원/달러 ${formatNumber(usdkrw?.value || 0)}원과 VIX ${formatNumber(vix?.value || 0)}의 조합이 핵심입니다. 환율 상승과 변동성 확대가 겹치면 한국 위험자산의 부담이 커집니다.`,
+    chips: `NASDAQ ${signed(nasdaq?.changePercent || 0)}%와 KOSPI ${signed(kospi?.changePercent || 0)}%의 차이를 봅니다. 미국 기술주 강세가 한국 반도체 수급으로 전달되지 않으면 국내 고유 부담이 있다는 뜻입니다.`,
+    energy: `WTI ${formatNumber(wti?.value || 0)}달러, ${signed(wti?.changePercent || 0)}% 움직임을 확인합니다. 유가 상승은 에너지 업종에는 호재일 수 있지만 운송·화학·소비에는 비용 부담입니다.`,
+    china: `KOSPI ${signed(kospi?.changePercent || 0)}%와 원/달러 ${formatNumber(usdkrw?.value || 0)}원이 중국 관련 소식에 같은 방향으로 반응하는지 봅니다.`,
+    growth: `S&P 500 ${signed(sp500?.changePercent || 0)}%, KOSPI ${signed(kospi?.changePercent || 0)}%의 반응이 경기 기대를 확인하는지 봅니다. 지표 개선에도 주가가 약하면 이미 반영됐거나 세부 내용이 약할 수 있습니다.`,
+    housing: `한국 기준금리 ${formatNumber(baseRate?.value || 0)}%와 가계신용 ${formatNumber(householdCredit?.value || 0)}조원을 함께 봅니다. 금리보다 대출 증가와 연체 위험의 조합이 중요합니다.`,
+    earnings: `KOSPI ${signed(kospi?.changePercent || 0)}%와 거래 집중 업종을 비교합니다. 실적 숫자보다 시장 예상과의 차이, 다음 분기 전망이 주가 지속성을 좌우합니다.`,
+    policy: `정책 발표 뒤 국채금리, 원/달러와 수혜 업종이 실제로 움직이는지 확인합니다. 발표만 있고 가격 반응이 없으면 규모가 작거나 이미 반영됐을 수 있습니다.`,
+    geopolitics: `VIX ${formatNumber(vix?.value || 0)}, WTI ${signed(wti?.changePercent || 0)}%, 금 ${signed(gold?.changePercent || 0)}%가 동시에 반응하는지 봅니다. 하나만 움직이면 충격의 범위가 제한적일 수 있습니다.`,
+    sentiment: `KOSPI ${signed(kospi?.changePercent || 0)}%, S&P 500 ${signed(sp500?.changePercent || 0)}%, VIX ${formatNumber(vix?.value || 0)}를 함께 봐야 헤드라인과 실제 시장 방향이 일치하는지 알 수 있습니다.`
+  };
 
   return {
     signal,
     tone,
-    confidence: themes.length >= 2 ? "중상" : "중간",
-    engineLabel: "데이터 기반 자동 분석",
-    summary: `이 기사는 ${themeText} 변수가 현재 ${snapshot.analysis.regime} 장세에 미칠 영향을 다룹니다. 헤드라인의 표현보다 KOSPI ${signed(kospi?.changePercent || 0)}%, S&P 500 ${signed(sp500?.changePercent || 0)}%, 위험 온도 ${riskScore}/100의 실제 반응을 함께 봐야 합니다.`,
-    whyItMatters: hasRates
-      ? "금리와 물가는 기업 가치평가, 채권금리, 달러를 동시에 움직여 여러 자산에 파급될 수 있습니다."
-      : hasEnergy
-        ? "에너지와 지정학 변수는 물가 기대와 기업 비용을 동시에 바꿔 중앙은행 기대까지 흔들 수 있습니다."
-        : hasChips
-          ? "반도체는 한국 수출과 KOSPI 대형주의 이익 기대에 직접 연결되는 비중이 큰 변수입니다."
-          : "같은 내용의 후속 보도가 반복되면 투자자의 기대와 포지션이 바뀌어 가격 변동성이 커질 수 있습니다.",
-    marketImpact: hasFx
-      ? `원/달러 ${formatNumber(usdkrw?.value || 0)}원과 VIX ${formatNumber(vix?.value || 0)}가 함께 오르는지 확인해야 합니다. 둘이 동반 상승하면 한국 위험자산 부담이 커집니다.`
-      : hasRates
-        ? "금리 상승은 성장주에 부담이고 금융주에는 혼합 요인입니다. 지수보다 업종별 차이가 커질 수 있습니다."
-        : hasEnergy
-          ? `WTI ${signed(wti?.changePercent || 0)}% 움직임은 에너지 업종에는 호재가 될 수 있지만 운송·화학·소비에는 비용 부담입니다.`
-          : "기사 발표 뒤 주가, 변동성, 거래량이 같은 방향으로 움직이는지 확인해야 신호의 강도를 판단할 수 있습니다.",
-    koreaImpact: hasChips || hasChina
-      ? "한국에서는 반도체 수출, 중국 수요, 원/달러가 함께 움직이는지가 핵심입니다. 수출 호재라도 환율 급등과 외국인 매도가 겹치면 지수 반응은 약할 수 있습니다."
-      : hasRates || hasFx
-        ? "한국은 대외금리와 환율 변화에 민감합니다. 원화 약세가 길어지면 외국인 수급과 수입물가, 금리 인하 여력에 부담이 됩니다."
-        : "한국 시장에서는 대형 수출주와 원/달러, 외국인 순매수 반응을 통해 영향이 실제로 전달되는지 확인합니다.",
-    checkpoints: [
-      hasFx ? "원/달러가 기사 방향과 같은 쪽으로 움직이는지" : "원/달러와 외국인 수급 반응",
-      hasRates ? "미국 장기금리와 성장주 반응" : hasChips ? "NASDAQ과 한국 반도체 대형주 반응" : "KOSPI와 S&P 500의 실제 등락",
-      hasEnergy ? "WTI가 추가 상승하는지" : hasChina ? "중국 수요와 한국 수출 지표" : "후속 기사와 원문 수치"
-    ],
-    limitation: "헤드라인과 현재 시장 가격을 연결한 1차 분석입니다. 기사 원문, 발표 시점, 기저효과와 이미 가격에 반영됐는지를 반드시 함께 확인하세요."
+    confidence: primary.score >= 2 || secondary ? "중상" : "중간",
+    engineLabel: "기사별 데이터 분석",
+    summary: `「${title}」은 ${focusText}입니다. 현재 ${snapshot.analysis.regime} 장세와 위험 온도 ${riskScore}/100에서 기사 표현만 보지 말고 관련 가격이 같은 방향으로 반응하는지 확인해야 합니다.`,
+    whyItMatters: `${primary.why}${secondary ? ` 동시에 ${secondary.label} 경로도 영향을 줄 수 있습니다.` : ""}`,
+    marketImpact: marketImpactByTheme[primary.id] || marketImpactByTheme.sentiment,
+    koreaImpact: primary.korea,
+    checkpoints: primary.checkpoints,
+    limitation: "기사 제목과 현재 시장 가격을 연결한 1차 분석입니다. 원문 수치와 발표 시점, 이미 가격에 반영됐는지까지 확인한 뒤 결론을 조정해야 합니다."
   };
 }
 
@@ -789,4 +871,3 @@ export {
   getSnapshot,
   normalizeHeadlineInput
 };
-
