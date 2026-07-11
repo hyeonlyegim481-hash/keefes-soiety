@@ -1,21 +1,21 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=27";
+} from "./glossary-data.js?v=28";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=27";
+} from "./glossary-extra-data.js?v=28";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=27";
+} from "./glossary-more-data.js?v=28";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=27";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=27";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=27";
+} from "./glossary-pro-data.js?v=28";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=28";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=28";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions];
 const glossaryCategoryOrder = [
@@ -353,6 +353,10 @@ elements.quizBody.addEventListener("click", (event) => {
   }
   if (event.target.closest?.("[data-quiz-next]")) {
     advanceQuiz();
+    return;
+  }
+  if (event.target.closest?.("[data-quiz-retry-mistakes]")) {
+    retryQuizMistakes();
     return;
   }
   if (event.target.closest?.("[data-quiz-restart]")) {
@@ -1699,8 +1703,17 @@ function handleQuizAnswer(answerIndex) {
   if (!question || answerIndex < 0 || answerIndex >= question.choices.length) return;
   state.quizSelected = answerIndex;
   state.quizAnswered = true;
-  if (answerIndex === question.answerIndex) state.quizScore += 1;
-  else state.quizMistakes.push(question.category);
+  if (answerIndex === question.answerIndex) {
+    state.quizScore += 1;
+  } else {
+    state.quizMistakes.push({
+      question: {
+        ...question,
+        choices: [...question.choices]
+      },
+      selectedIndex: answerIndex
+    });
+  }
   renderQuiz();
 }
 
@@ -1727,11 +1740,28 @@ function renderQuizResult() {
         : scoreRate >= 50
           ? "기본기는 있습니다. 해설을 용어 사전과 연결해보세요."
           : "지금부터 익히면 됩니다. 정답보다 이유를 이해하는 것이 중요합니다.";
-  const mistakeCounts = state.quizMistakes.reduce((counts, category) => {
+  const mistakeCounts = state.quizMistakes.reduce((counts, mistake) => {
+    const category = mistake.question.category;
     counts[category] = (counts[category] || 0) + 1;
     return counts;
   }, {});
   const weakAreas = Object.entries(mistakeCounts).sort((a, b) => b[1] - a[1]);
+  const reviewMarkup = state.quizMistakes.length
+    ? `
+      <section class="quiz-review-section">
+        <div class="quiz-review-heading">
+          <div>
+            <span>오답 복습</span>
+            <h3>틀린 문제 ${state.quizMistakes.length}개 다시 보기</h3>
+          </div>
+          <p>내 답과 정답을 비교하고 해설의 판단 기준을 확인하세요.</p>
+        </div>
+        <div class="quiz-review-list">
+          ${state.quizMistakes.map(renderQuizReviewItem).join("")}
+        </div>
+      </section>
+    `
+    : "";
 
   elements.quizBody.innerHTML = `
     <article class="quiz-result-card">
@@ -1750,9 +1780,74 @@ function renderQuizResult() {
             : "<span>훌륭합니다</span>"
         }
       </div>
-      <button class="quiz-restart-button" type="button" data-quiz-restart>새 문제로 다시 풀기</button>
+      <div class="quiz-result-actions">
+        ${state.quizMistakes.length ? `<button class="quiz-review-retry-button" type="button" data-quiz-retry-mistakes>틀린 문제만 다시 풀기</button>` : ""}
+        <button class="quiz-restart-button" type="button" data-quiz-restart>새 문제로 다시 풀기</button>
+      </div>
     </article>
+    ${reviewMarkup}
   `;
+}
+
+function renderQuizReviewItem(mistake, index) {
+  const question = mistake.question;
+  const selectedChoice = question.choices[mistake.selectedIndex] || "선택한 답을 찾을 수 없습니다.";
+  const correctChoice = question.choices[question.answerIndex] || "정답을 찾을 수 없습니다.";
+  const typeLabel = question.type === "scenario" ? "상황판단" : "용어";
+  return `
+    <details class="quiz-review-item" ${index === 0 ? "open" : ""}>
+      <summary>
+        <span>${String(index + 1).padStart(2, "0")}</span>
+        <span class="quiz-review-summary-copy">
+          <strong>${escapeHtml(question.prompt)}</strong>
+          <em>${typeLabel} · ${escapeHtml(question.category)}</em>
+        </span>
+        <i aria-hidden="true">+</i>
+      </summary>
+      <div class="quiz-review-body">
+        <p class="quiz-review-context">${escapeHtml(question.context)}</p>
+        <div class="quiz-review-answers">
+          <article data-answer="wrong">
+            <span>내 답</span>
+            <p>${escapeHtml(selectedChoice)}</p>
+          </article>
+          <article data-answer="correct">
+            <span>정답</span>
+            <p>${escapeHtml(correctChoice)}</p>
+          </article>
+        </div>
+        <article class="quiz-review-explanation">
+          <span>해설</span>
+          <p>${escapeHtml(question.explanation)}</p>
+        </article>
+        ${question.rule ? `
+          <article class="quiz-review-rule">
+            <span>판단 기준</span>
+            <p>${escapeHtml(question.rule)}</p>
+          </article>
+        ` : ""}
+      </div>
+    </details>
+  `;
+}
+
+function retryQuizMistakes() {
+  if (!state.quizMistakes.length) return;
+  const missedQuestions = state.quizMistakes.map((mistake) => {
+    const question = {
+      ...mistake.question,
+      choices: [...mistake.question.choices]
+    };
+    return question.type === "scenario" ? shuffleScenarioChoices(question) : question;
+  });
+  state.quizQuestions = shuffleQuizItems(missedQuestions);
+  state.quizIndex = 0;
+  state.quizScore = 0;
+  state.quizAnswered = false;
+  state.quizSelected = null;
+  state.quizComplete = false;
+  state.quizMistakes = [];
+  renderQuiz();
 }
 
 function shuffleQuizItems(items) {
