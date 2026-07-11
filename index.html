@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="세계 경제와 한국 경제 흐름을 실시간으로 정리하고 분석하는 대시보드"
+    />
+    <meta name="theme-color" content="#f6f7f8" />
+    <link rel="manifest" href="/manifest.json?v=22" />
+    <link rel="icon" href="/assets/econest-logo.png" type="image/png" />
+    <link rel="stylesheet" href="/styles.css?v=22" />
+    <title>keefe's soiety</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand-block">
+          <img class="brand-mark" src="/assets/econest-logo.png" alt="Econest 로고" />
+          <div>
+            <p class="eyebrow">keefe's soiety</p>
+            <h1>세계와 한국의 경제 흐름</h1>
+          </div>
+        </div>
+        <div class="top-actions">
+          <div class="connection-pill" id="connectionStatus">
+            <span class="status-dot"></span>
+            <span>연결 중</span>
+          </div>
+          <button class="icon-button" id="refreshButton" type="button" aria-label="데이터 새로고침">
+            <span aria-hidden="true">↻</span>
+          </button>
+        </div>
+      </header>
+
+      <nav class="chapter-nav" aria-label="전문 섹션">
+        <button class="chapter-tab" type="button" data-chapter="brief" aria-selected="true">핵심</button>
+        <button class="chapter-tab" type="button" data-chapter="markets" aria-selected="false">시장</button>
+        <button class="chapter-tab" type="button" data-chapter="korea" aria-selected="false">한국</button>
+        <button class="chapter-tab" type="button" data-chapter="analysis" aria-selected="false">심층</button>
+        <button class="chapter-tab" type="button" data-chapter="study" aria-selected="false">공부</button>
+        <button class="chapter-tab" type="button" data-chapter="glossary" aria-selected="false">용어</button>
+        <button class="chapter-tab" type="button" data-chapter="quiz" aria-selected="false">퀴즈</button>
+        <button class="chapter-tab" type="button" data-chapter="news" aria-selected="false">뉴스</button>
+      </nav>
+      <div class="chapter-progress" aria-hidden="true">
+        <span id="chapterProgress"></span>
+      </div>
+
+      <main>
+        <section class="market-strip" id="marketStrip" aria-label="시장 티커"></section>
+
+        <section class="chapter-window" id="chapterWindow" aria-live="polite">
+          <div class="chapter-track" id="chapterTrack">
+            <section class="chapter-pane hero-grid" id="brief" data-chapter-panel="brief" aria-label="핵심 경제 상황">
+              <article class="panel signal-panel">
+                <div>
+                  <p class="section-kicker">오늘의 판세</p>
+                  <h2 id="regimeTitle">분석 중</h2>
+                </div>
+                <p class="pulse-text" id="pulseText">실시간 가격과 주요 헤드라인을 불러오고 있습니다.</p>
+                <div class="watch-chips" id="watchChips"></div>
+              </article>
+
+              <article class="panel risk-panel">
+                <p class="section-kicker">위험 온도</p>
+                <div class="risk-meter">
+                  <svg viewBox="0 0 120 120" role="img" aria-label="위험 점수">
+                    <circle class="meter-track" cx="60" cy="60" r="50"></circle>
+                    <circle class="meter-fill" id="riskMeter" cx="60" cy="60" r="50"></circle>
+                  </svg>
+                  <div class="meter-copy">
+                    <strong id="riskScore">--</strong>
+                    <span>100</span>
+                  </div>
+                </div>
+                <div class="risk-driver-list" id="riskDrivers"></div>
+                <div class="risk-legend" id="riskLegend" aria-label="위험 온도 기준"></div>
+              </article>
+
+              <article class="panel time-panel">
+                <p class="section-kicker">업데이트</p>
+                <time id="updatedAt">--:--</time>
+                <span id="sourceLine">시장 · 뉴스 · 거시지표</span>
+              </article>
+
+              <article class="panel brief-board-panel">
+                <div class="panel-heading compact-heading">
+                  <div>
+                    <p class="section-kicker">핵심 정리</p>
+                    <h2>오늘 먼저 볼 것</h2>
+                  </div>
+                </div>
+                <div class="chapter-board" id="briefBoard"></div>
+              </article>
+            </section>
+
+            <section class="chapter-pane chapter-single" id="markets" data-chapter-panel="markets" aria-label="시장 전문">
+              <article class="panel chart-panel">
+                <div class="panel-heading">
+                  <div>
+                    <p class="section-kicker">시장 전문</p>
+                    <h2 id="chartTitle">KOSPI</h2>
+                  </div>
+                  <div class="segmented" id="chartTabs" role="tablist"></div>
+                </div>
+                <div class="chart-frame">
+                  <canvas id="marketChart" width="960" height="420" aria-label="시장 가격 차트"></canvas>
+                </div>
+                <div class="market-brief" id="marketBrief"></div>
+                <div class="market-board" id="marketBoard"></div>
+                <div class="chapter-expansion" id="marketConnections"></div>
+              </article>
+            </section>
+
+            <section class="chapter-pane chapter-single" id="korea" data-chapter-panel="korea" aria-label="한국 전문">
+              <article class="panel macro-panel">
+                <div class="panel-heading">
+                  <div>
+                    <p class="section-kicker">한국 전문</p>
+                    <h2>공표 주기 지표</h2>
+                  </div>
+                </div>
+                <div class="chapter-brief" id="koreaBrief"></div>
+                <div class="chapter-board" id="koreaBoard"></div>
+                <div class="macro-grid" id="macroGrid"></div>
+                <div class="chapter-expansion" id="koreaImpact"></div>
+              </article>
+            </section>
+
+            <section class="chapter-pane chapter-single" id="analysis" data-chapter-panel="analysis" aria-label="심층 전문">
+              <article class="panel analysis-panel">
+                <div class="panel-heading">
+                  <div>
+                    <p class="section-kicker">심층 전문</p>
+                    <h2>한국 관점</h2>
+                  </div>
+                </div>
+                <div class="chapter-board" id="analysisBoard"></div>
+                <div class="chapter-expansion" id="scenarioMatrix"></div>
+                <ul class="analysis-list" id="analysisList"></ul>
+              </article>
+            </section>
+
+            <section class="chapter-pane chapter-single" id="study" data-chapter-panel="study" aria-label="경제 공부">
+              <article class="panel study-panel">
+                <div class="panel-heading">
+                  <div>
+                    <p class="section-kicker">경제 공부</p>
+                    <h2>오늘의 사고 훈련</h2>
+                  </div>
+                </div>
+                <div class="chapter-brief" id="studyBrief"></div>
+                <div class="chapter-expansion" id="thinkingLab"></div>
+                <div class="chapter-expansion" id="dailyTerm"></div>
+                <div class="chapter-expansion" id="studyQuiz"></div>
+              </article>
+            </section>
+
+            <section class="chapter-pane chapter-single" id="glossary" data-chapter-panel="glossary" aria-label="경제용어 사전">
+              <article class="panel glossary-panel">
+                <div class="panel-heading glossary-heading">
+                  <div>
+                    <p class="section-kicker">경제용어 사전</p>
+                    <h2>용어를 찾아 이해하기</h2>
+                  </div>
+                  <span class="glossary-total" id="glossaryTotal"></span>
+                </div>
+                <div class="glossary-toolbar">
+                  <label class="glossary-search-field" for="glossarySearch">
+                    <span>용어 검색</span>
+                    <input
+                      id="glossarySearch"
+                      type="search"
+                      placeholder="용어, 영문 약어, 설명 검색"
+                      autocomplete="off"
+                      spellcheck="false"
+                    />
+                  </label>
+                  <div class="glossary-result-count" id="glossaryResultCount" aria-live="polite"></div>
+                </div>
+                <div class="glossary-categories" id="glossaryCategories" role="tablist" aria-label="경제용어 분야"></div>
+                <div class="glossary-results" id="glossaryResults"></div>
+                <div class="glossary-more-row">
+                  <button class="glossary-more-button" id="glossaryLoadMore" type="button">용어 더 보기</button>
+                </div>
+              </article>
+            </section>
+
+            <section class="chapter-pane chapter-single" id="quiz" data-chapter-panel="quiz" aria-label="경제 퀴즈">
+              <article class="panel quiz-panel">
+                <div class="panel-heading quiz-heading">
+                  <div>
+                    <p class="section-kicker">경제 퀴즈</p>
+                    <h2>알고 있는지 직접 확인하기</h2>
+                  </div>
+                  <span class="quiz-bank-size" id="quizBankSize"></span>
+                </div>
+                <div class="quiz-mode-tabs" id="quizModes" role="tablist" aria-label="퀴즈 유형"></div>
+                <div class="quiz-body" id="quizBody"></div>
+              </article>
+            </section>
+
+            <section class="chapter-pane chapter-single" id="news" data-chapter-panel="news" aria-label="뉴스 전문">
+              <article class="panel news-panel">
+                <div class="panel-heading">
+                  <div>
+                    <p class="section-kicker">뉴스 전문</p>
+                    <h2>시장 헤드라인</h2>
+                  </div>
+                </div>
+                <div class="chapter-brief" id="newsBrief"></div>
+                <div class="chapter-board" id="newsBoard"></div>
+                <div class="chapter-expansion" id="newsIntelligence"></div>
+                <div class="news-list" id="newsList"></div>
+              </article>
+            </section>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <span>투자 자문이 아닌 정보 분석용 화면입니다.</span>
+        <span>Play Store 배포용 PWA 기반</span>
+      </footer>
+    </div>
+
+    <script type="module" src="/app.js?v=22"></script>
+  </body>
+</html>
+
