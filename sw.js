@@ -1,4 +1,4 @@
-const CACHE_NAME = "keefes-soiety-v32";
+const CACHE_NAME = "keefes-soiety-v33";
 const APP_SHELL = [
   "/",
   "/index.html",
@@ -12,7 +12,7 @@ const APP_SHELL = [
   "/quiz-data.js",
   "/quiz-scenario-extra-data.js",
   "/manifest.json",
-  "/assets/econest-logo.png"
+  "/assets/econest-icon.png"
 ];
 
 self.addEventListener("install", (event) => {
