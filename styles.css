@@ -1821,6 +1821,27 @@ main {
   font-weight: 720;
 }
 
+.macro-meta a {
+  color: var(--teal);
+  text-decoration: none;
+}
+
+.macro-meta a:hover {
+  text-decoration: underline;
+}
+
+.macro-basis {
+  margin: -4px 0 0;
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
+.macro-item[data-status="unavailable"] .macro-value,
+.macro-item[data-status="unavailable"] .macro-basis {
+  color: var(--muted);
+}
+
 .macro-detail {
   display: grid;
   gap: 8px;

@@ -1,21 +1,21 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=30";
+} from "./glossary-data.js?v=31";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=30";
+} from "./glossary-extra-data.js?v=31";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=30";
+} from "./glossary-more-data.js?v=31";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=30";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=30";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=30";
+} from "./glossary-pro-data.js?v=31";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=31";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=31";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions];
 const glossaryCategoryOrder = [
@@ -1245,15 +1245,15 @@ function getStudyTermConnection(termId, snapshot) {
   const kospi = byId.kospi;
   const sp500 = byId.sp500;
   const connections = {
-    "base-rate": `한국 기준금리는 ${rate ? `${formatter.format(rate.value)}${rate.unit}` : "--"}입니다. 물가 ${cpi ? `${formatter.format(cpi.value)}${cpi.unit}` : "--"}와 원/달러 ${usdkrw ? formatMarketValue(usdkrw) : "--"}를 함께 봐야 금리 여력을 판단할 수 있습니다.`,
-    inflation: `소비자물가는 ${cpi ? `${formatter.format(cpi.value)}${cpi.unit}` : "--"}이고 WTI는 ${wti ? `${signed(wti.changePercent)}%` : "--"} 움직였습니다. 유가는 시차를 두고 물가와 기업 비용에 영향을 줍니다.`,
-    "real-rate": `기준금리 ${rate ? `${formatter.format(rate.value)}${rate.unit}` : "--"}에서 물가상승률 ${cpi ? `${formatter.format(cpi.value)}${cpi.unit}` : "--"}를 단순 차감하면 현재 실질금리 방향을 대략 가늠할 수 있습니다.`,
+    "base-rate": `한국 기준금리는 ${macroValueText(rate)}입니다. 물가 ${macroValueText(cpi)}와 원/달러 ${usdkrw ? formatMarketValue(usdkrw) : "--"}를 함께 봐야 금리 여력을 판단할 수 있습니다.`,
+    inflation: `소비자물가는 ${macroValueText(cpi)}이고 WTI는 ${wti ? `${signed(wti.changePercent)}%` : "--"} 움직였습니다. 유가는 시차를 두고 물가와 기업 비용에 영향을 줍니다.`,
+    "real-rate": `기준금리 ${macroValueText(rate)}에서 물가상승률 ${macroValueText(cpi)}를 단순 차감하면 현재 실질금리 방향을 대략 가늠할 수 있습니다.`,
     "exchange-rate": `원/달러는 ${usdkrw ? `${formatMarketValue(usdkrw)}이며 ${signed(usdkrw.changePercent)}%` : "확인 중"} 움직였습니다. KOSPI ${signed(kospi?.changePercent || 0)}%와 함께 보면 외국인 수급 압력을 읽기 쉽습니다.`,
     vix: `VIX는 ${vix ? `${formatMarketValue(vix)}이며 ${signed(vix.changePercent)}%` : "확인 중"} 움직였습니다. 지수 수준과 하루 변화율을 함께 봐야 공포의 크기와 방향을 구분할 수 있습니다.`,
     "bond-yield": `현재 화면의 위험 온도는 ${snapshot.analysis.riskScore}/100입니다. 장기금리 상승이 NASDAQ 약세와 달러 강세로 이어지는지 확인하면 채권금리 충격을 판단할 수 있습니다.`,
     liquidity: `KOSPI ${signed(kospi?.changePercent || 0)}%, S&P 500 ${signed(sp500?.changePercent || 0)}%처럼 시장별 반응이 크게 다르면 자금이 모든 자산에 고르게 흐르는지 의심해봐야 합니다.`,
-    "base-effect": `수출 증가율 ${exports ? `${formatter.format(exports.value)}${exports.unit}` : "--"}만 보지 말고 전년의 수출액이 높았는지 낮았는지 함께 확인해야 실제 수출 체력을 알 수 있습니다.`,
-    "current-account": `수출 증가율은 ${exports ? `${formatter.format(exports.value)}${exports.unit}` : "--"}입니다. 하지만 경상수지는 상품 외에도 서비스와 배당·이자를 포함하므로 수출 하나만으로 결론 내리면 안 됩니다.`,
+    "base-effect": `수출 증가율 ${macroValueText(exports)}만 보지 말고 전년의 수출액이 높았는지 낮았는지 함께 확인해야 실제 수출 체력을 알 수 있습니다.`,
+    "current-account": `수출 증가율은 ${macroValueText(exports)}입니다. 하지만 경상수지는 상품 외에도 서비스와 배당·이자를 포함하므로 수출 하나만으로 결론 내리면 안 됩니다.`,
     valuation: `시장금리와 위험 온도 ${snapshot.analysis.riskScore}/100이 높을수록 같은 이익에도 주식이 받을 수 있는 평가 배수가 낮아질 수 있습니다.`,
     "risk-on": `S&P 500 ${signed(sp500?.changePercent || 0)}%, KOSPI ${signed(kospi?.changePercent || 0)}%, 원/달러 ${usdkrw ? signed(usdkrw.changePercent) : "--"}%가 같은 방향인지 보면 위험선호가 글로벌한지 판단할 수 있습니다.`,
     "credit-spread": `현재 위험 온도 ${snapshot.analysis.riskScore}/100이 높아도 국채금리만 오른 것인지, 기업 신용 위험까지 커진 것인지 신용스프레드로 구분해야 합니다.`
@@ -1261,6 +1261,32 @@ function getStudyTermConnection(termId, snapshot) {
   return connections[termId] || "오늘의 시장 가격과 함께 보면 용어가 실제 경제에서 어떻게 작동하는지 이해하기 쉽습니다.";
 }
 
+function hasMacroValue(item) {
+  return item?.value !== null && item?.value !== undefined && Number.isFinite(Number(item.value));
+}
+
+function macroValueText(item, spaced = false) {
+  if (!hasMacroValue(item)) return "확인 불가";
+  const separator = spaced ? " " : "";
+  return `${formatter.format(Number(item.value))}${separator}${item.unit || ""}`;
+}
+
+function macroDeltaText(item) {
+  if (item?.status !== "official") return "확인 실패";
+  if (item.deltaLabel) return item.deltaLabel;
+  return Number.isFinite(Number(item.delta)) ? signed(Number(item.delta)) : "변화 확인 중";
+}
+
+function macroDeltaClass(item) {
+  const delta = Number(item?.delta);
+  if (!Number.isFinite(delta) || delta === 0) return "";
+  return delta > 0 ? "up" : "down";
+}
+
+function macroBasisText(item) {
+  if (item?.status !== "official") return "공식 자료를 불러오지 못했습니다.";
+  return `${item.periodLabel || "최근 공표"} 기준 · 공식 최신 발표`;
+}
 function renderMacro(macro, analysis) {
   const watchItems = analysis?.koreaWatch || [];
   const inflation = macro.find((item) => /소비자|물가/.test(item.label));
@@ -1276,17 +1302,17 @@ function renderMacro(macro, analysis) {
     </article>
     <article class="brief-card">
       <span>금리/물가</span>
-      <strong>${policyRate ? `${formatter.format(policyRate.value)}${policyRate.unit}` : "--"} · ${inflation ? `${formatter.format(inflation.value)}${inflation.unit}` : "--"}</strong>
+      <strong>${macroValueText(policyRate)} · ${macroValueText(inflation)}</strong>
       <p>소비와 성장주 밸류에이션에 직접 연결됩니다.</p>
     </article>
     <article class="brief-card">
       <span>수출</span>
-      <strong>${exports ? `${formatter.format(exports.value)}${exports.unit}` : "--"}</strong>
+      <strong>${macroValueText(exports)}</strong>
       <p>반도체, 환율, 중국 수요를 함께 확인합니다.</p>
     </article>
     <article class="brief-card">
       <span>가계 부담</span>
-      <strong>${credit ? `${formatter.format(credit.value)}${credit.unit}` : "--"}</strong>
+      <strong>${macroValueText(credit)}</strong>
       <p>내수와 금융 안정성을 보는 보조 지표입니다.</p>
     </article>
   `;
@@ -1294,17 +1320,20 @@ function renderMacro(macro, analysis) {
   elements.macroGrid.replaceChildren(
     ...macro.map((item) => {
       const node = document.createElement("article");
+      const sourceUrl = safeNewsUrl(item.sourceUrl);
       node.className = "macro-item";
+      node.dataset.status = item.status || "unavailable";
       node.innerHTML = `
         <header>
-          <span class="macro-label">${item.label}</span>
-          <span class="state-badge" data-mood="${item.mood}">${item.cadence}</span>
+          <span class="macro-label">${escapeHtml(item.label)}</span>
+          <span class="state-badge" data-mood="${escapeHtml(item.mood || "neutral")}">${escapeHtml(item.cadence)}</span>
         </header>
-        <strong class="macro-value">${formatter.format(item.value)} ${item.unit}</strong>
+        <strong class="macro-value">${escapeHtml(macroValueText(item, true))}</strong>
         <div class="macro-meta">
-          <span>${item.source}</span>
-          <span class="${item.delta >= 0 ? "up" : "down"}">${signed(item.delta)}</span>
+          <a href="${escapeHtml(sourceUrl)}" target="${sourceUrl.startsWith("http") ? "_blank" : "_self"}" rel="noreferrer">${escapeHtml(item.source)}</a>
+          <span class="${macroDeltaClass(item)}">${escapeHtml(macroDeltaText(item))}</span>
         </div>
+        <p class="macro-basis">${escapeHtml(macroBasisText(item))}</p>
         <details class="macro-detail">
           <summary>용어 설명</summary>
           <p>${getMacroReason(item)}</p>
@@ -1341,17 +1370,17 @@ function renderKoreaBoard(macro, analysis) {
       </article>
       <article class="board-card">
         <span>금리와 물가</span>
-        <strong>${rate ? `${formatter.format(rate.value)}${rate.unit}` : "--"} · ${cpi ? `${formatter.format(cpi.value)}${cpi.unit}` : "--"}</strong>
+        <strong>${macroValueText(rate)} · ${macroValueText(cpi)}</strong>
         <p>금리와 물가는 소비, 부동산, 성장주 할인율에 바로 연결됩니다.</p>
       </article>
       <article class="board-card">
         <span>수출 체력</span>
-        <strong>${exports ? `${formatter.format(exports.value)}${exports.unit}` : "--"}</strong>
+        <strong>${macroValueText(exports)}</strong>
         <p>반도체와 중국 수요가 같이 좋아야 한국 증시의 상승 신뢰도가 높아집니다.</p>
       </article>
       <article class="board-card">
         <span>내수 부담</span>
-        <strong>${credit ? `${formatter.format(credit.value)}${credit.unit}` : "--"}</strong>
+        <strong>${macroValueText(credit)}</strong>
         <p>가계신용은 소비 여력과 금융 안정성을 동시에 보는 보조 신호입니다.</p>
       </article>
     </div>
@@ -1379,9 +1408,9 @@ function renderKoreaImpact(macro, analysis, markets) {
         <span>${analysis.regime}</span>
       </div>
       <div class="impact-grid">
-        ${renderImpactCard("반도체·수출", exports ? `${formatter.format(exports.value)}${exports.unit}` : "--", usdkrw?.value > 1380 ? "원화 약세는 매출 환산에 도움이 될 수 있지만 외국인 수급 부담도 같이 커집니다." : "환율 부담이 크지 않으면 수출 실적 자체의 힘이 더 중요해집니다.", "positive")}
-        ${renderImpactCard("내수·소비", cpi ? `${formatter.format(cpi.value)}${cpi.unit}` : "--", `물가와 가계신용 ${credit ? `${formatter.format(credit.value)}${credit.unit}` : "--"}이 소비 여력을 결정합니다.`, (cpi?.value || 0) > 3 ? "negative" : "watch")}
-        ${renderImpactCard("부동산·금융", rate ? `${formatter.format(rate.value)}${rate.unit}` : "--", "기준금리가 오래 높게 유지되면 대출 이자와 부동산 거래 회복 속도가 느려질 수 있습니다.", (rate?.value || 0) >= 3.5 ? "watch" : "neutral")}
+        ${renderImpactCard("반도체·수출", macroValueText(exports), usdkrw?.value > 1380 ? "원화 약세는 매출 환산에 도움이 될 수 있지만 외국인 수급 부담도 같이 커집니다." : "환율 부담이 크지 않으면 수출 실적 자체의 힘이 더 중요해집니다.", "positive")}
+        ${renderImpactCard("내수·소비", macroValueText(cpi), `물가와 가계신용 ${macroValueText(credit)}이 소비 여력을 결정합니다.`, (cpi?.value || 0) > 3 ? "negative" : "watch")}
+        ${renderImpactCard("부동산·금융", macroValueText(rate), "기준금리가 오래 높게 유지되면 대출 이자와 부동산 거래 회복 속도가 느려질 수 있습니다.", (rate?.value || 0) >= 3.5 ? "watch" : "neutral")}
         ${renderImpactCard("운송·화학", wti ? `${formatMarketValue(wti)} · ${signed(wti.changePercent)}%` : "--", "유가 급등은 항공·운송·화학의 비용 부담으로 이어지고 소비자물가에도 시차를 두고 반영됩니다.", Math.abs(wti?.changePercent || 0) > 2 ? "negative" : "neutral")}
         ${renderImpactCard("외국인 수급", kospi ? `${signed(kospi.changePercent)}%` : "--", `KOSPI와 원/달러 ${usdkrw ? formatMarketValue(usdkrw) : "--"}가 같은 방향으로 악화되는지 확인합니다.`, usdkrw?.value > 1380 && (kospi?.changePercent || 0) < 0 ? "negative" : "watch")}
         ${renderImpactCard("정책 여력", `${analysis.riskScore}/100`, "물가가 안정돼도 환율이 높으면 한국은행이 빠르게 완화적으로 움직이기 어려울 수 있습니다.", analysis.riskScore >= 66 ? "negative" : "watch")}

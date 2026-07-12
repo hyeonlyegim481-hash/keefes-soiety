@@ -2,6 +2,7 @@ import http from "node:http";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { fetchMacroIndicators } from "./macro-data.js";
 import { enrichHeadlineWithArticle } from "./news-content.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -36,49 +37,6 @@ const marketConfig = [
   { id: "vix", name: "VIX", symbol: "^VIX", group: "global", unit: "idx" },
   { id: "wti", name: "WTI", symbol: "CL=F", group: "global", unit: "USD" },
   { id: "gold", name: "Gold", symbol: "GC=F", group: "global", unit: "USD" }
-];
-
-const macroFallback = [
-  {
-    id: "base-rate",
-    label: "한국 기준금리",
-    value: 3.5,
-    unit: "%",
-    delta: 0,
-    cadence: "금통위",
-    mood: "neutral",
-    source: "한국은행"
-  },
-  {
-    id: "cpi",
-    label: "소비자물가",
-    value: 2.4,
-    unit: "% YoY",
-    delta: -0.2,
-    cadence: "월간",
-    mood: "positive",
-    source: "통계청"
-  },
-  {
-    id: "exports",
-    label: "수출 증가율",
-    value: 5.1,
-    unit: "% YoY",
-    delta: 1.4,
-    cadence: "월간",
-    mood: "positive",
-    source: "산업통상자원부"
-  },
-  {
-    id: "household-credit",
-    label: "가계신용",
-    value: 1882,
-    unit: "조원",
-    delta: 4.1,
-    cadence: "분기",
-    mood: "watch",
-    source: "한국은행"
-  }
 ];
 
 const headlineFeeds = [
@@ -166,7 +124,11 @@ async function getSnapshot() {
     return snapshotCache.payload;
   }
 
-  const marketResults = await Promise.allSettled(marketConfig.map(fetchMarket));
+  const [marketResults, headlineResults, macro] = await Promise.all([
+    Promise.allSettled(marketConfig.map(fetchMarket)),
+    Promise.allSettled(headlineFeeds.map(fetchHeadlines)),
+    fetchMacroIndicators()
+  ]);
   const markets = marketResults.flatMap((result) =>
     result.status === "fulfilled" ? [result.value] : []
   );
@@ -176,8 +138,6 @@ async function getSnapshot() {
   if (missingRequired.length) {
     throw new Error(`Required market data unavailable: ${missingRequired.join(", ")}`);
   }
-
-  const headlineResults = await Promise.allSettled(headlineFeeds.map(fetchHeadlines));
   const rawHeadlines = headlineResults.flatMap((result) =>
     result.status === "fulfilled" ? result.value : []
   );
@@ -189,14 +149,20 @@ async function getSnapshot() {
   const payload = {
     generatedAt: new Date().toISOString(),
     markets,
-    dataQuality: buildDataQuality(markets, rawHeadlines, headlines, availableNewsFeedCount),
-    macro: macroFallback,
+    dataQuality: buildDataQuality(
+      markets,
+      rawHeadlines,
+      headlines,
+      availableNewsFeedCount,
+      macro
+    ),
+    macro,
     headlines,
     analysis: buildAnalysis(markets, headlines),
     sources: {
       markets: "Yahoo Finance chart endpoint",
       news: `Google News RSS (최근 ${NEWS_LOOKBACK_DAYS}일·관련도 선별·중복 제거)`,
-      macro: "public release cadence snapshot"
+      macro: "한국은행·국가데이터처·관세청 공식 최신 발표"
     }
   };
 
@@ -407,6 +373,10 @@ function buildAutomatedNewsAnalysis(headline, snapshot) {
   const text = `${title} ${headline.topic || ""} ${headline.articleContent || ""}`;
   const byId = Object.fromEntries(snapshot.markets.map((market) => [market.id, market]));
   const macroById = Object.fromEntries((snapshot.macro || []).map((item) => [item.id, item]));
+  const macroValue = (item, unit) =>
+    item?.value !== null && item?.value !== undefined && Number.isFinite(Number(item.value))
+      ? `${formatNumber(Number(item.value))}${unit}`
+      : "확인 불가";
   const riskScore = snapshot.analysis.riskScore;
   const profiles = [
     {
@@ -524,7 +494,7 @@ function buildAutomatedNewsAnalysis(headline, snapshot) {
     energy: `WTI ${formatNumber(wti?.value || 0)}달러, ${signed(wti?.changePercent || 0)}% 움직임을 확인합니다. 유가 상승은 에너지 업종에는 호재일 수 있지만 운송·화학·소비에는 비용 부담입니다.`,
     china: `KOSPI ${signed(kospi?.changePercent || 0)}%와 원/달러 ${formatNumber(usdkrw?.value || 0)}원이 중국 관련 소식에 같은 방향으로 반응하는지 봅니다.`,
     growth: `S&P 500 ${signed(sp500?.changePercent || 0)}%, KOSPI ${signed(kospi?.changePercent || 0)}%의 반응이 경기 기대를 확인하는지 봅니다. 지표 개선에도 주가가 약하면 이미 반영됐거나 세부 내용이 약할 수 있습니다.`,
-    housing: `한국 기준금리 ${formatNumber(baseRate?.value || 0)}%와 가계신용 ${formatNumber(householdCredit?.value || 0)}조원을 함께 봅니다. 금리보다 대출 증가와 연체 위험의 조합이 중요합니다.`,
+    housing: `한국 기준금리 ${macroValue(baseRate, "%")}와 가계신용 ${macroValue(householdCredit, "조원")}을 함께 봅니다. 금리보다 대출 증가와 연체 위험의 조합이 중요합니다.`,
     earnings: `KOSPI ${signed(kospi?.changePercent || 0)}%와 거래 집중 업종을 비교합니다. 실적 숫자보다 시장 예상과의 차이, 다음 분기 전망이 주가 지속성을 좌우합니다.`,
     policy: `정책 발표 뒤 국채금리, 원/달러와 수혜 업종이 실제로 움직이는지 확인합니다. 발표만 있고 가격 반응이 없으면 규모가 작거나 이미 반영됐을 수 있습니다.`,
     geopolitics: `VIX ${formatNumber(vix?.value || 0)}, WTI ${signed(wti?.changePercent || 0)}%, 금 ${signed(gold?.changePercent || 0)}%가 동시에 반응하는지 봅니다. 하나만 움직이면 충격의 범위가 제한적일 수 있습니다.`,
@@ -868,7 +838,13 @@ function buildAnalysis(markets, headlines) {
   };
 }
 
-function buildDataQuality(markets, rawHeadlines = [], headlines = [], availableNewsFeedCount = 0) {
+function buildDataQuality(
+  markets,
+  rawHeadlines = [],
+  headlines = [],
+  availableNewsFeedCount = 0,
+  macro = []
+) {
   const requestedIds = marketConfig.map((item) => item.id);
   const availableIds = new Set(markets.map((market) => market.id));
   const timestamps = markets
@@ -877,6 +853,7 @@ function buildDataQuality(markets, rawHeadlines = [], headlines = [], availableN
   const headlineTimestamps = headlines
     .map((headline) => Date.parse(headline.publishedAt))
     .filter(Number.isFinite);
+  const officialMacro = macro.filter((item) => item.status === "official");
   return {
     requestedMarketCount: requestedIds.length,
     availableMarketCount: markets.length,
@@ -895,7 +872,13 @@ function buildDataQuality(markets, rawHeadlines = [], headlines = [], availableN
       : null,
     oldestHeadlineAt: headlineTimestamps.length
       ? new Date(Math.min(...headlineTimestamps)).toISOString()
-      : null
+      : null,
+    requestedMacroCount: macro.length,
+    officialMacroCount: officialMacro.length,
+    unavailableMacroIds: macro
+      .filter((item) => item.status !== "official")
+      .map((item) => item.id),
+    macroFetchedAt: macro[0]?.fetchedAt || null
   };
 }
 function sendJson(res, statusCode, payload) {
