@@ -1,21 +1,21 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=41";
+} from "./glossary-data.js?v=42";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=41";
+} from "./glossary-extra-data.js?v=42";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=41";
+} from "./glossary-more-data.js?v=42";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=41";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=41";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=41";
+} from "./glossary-pro-data.js?v=42";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=42";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=42";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions];
 const glossaryCategoryOrder = [
@@ -451,11 +451,7 @@ async function refreshSnapshot({ force = false } = {}) {
   setConnection("loading", "업데이트");
 
   try {
-    const response = await fetch(`/api/snapshot?ts=${Date.now()}`, {
-      headers: { accept: "application/json" }
-    });
-    if (!response.ok) throw new Error(`Snapshot failed: ${response.status}`);
-    const snapshot = await response.json();
+    const snapshot = await fetchSnapshotWithRetry({ attempts: state.snapshot ? 1 : 2 });
     state.snapshot = snapshot;
     if (!snapshot.markets.some((market) => market.id === state.selectedMarket)) {
       state.selectedMarket = snapshot.markets[0]?.id || "kospi";
@@ -482,6 +478,29 @@ async function refreshSnapshot({ force = false } = {}) {
   } finally {
     state.isRefreshing = false;
   }
+}
+
+async function fetchSnapshotWithRetry({ attempts = 1 } = {}) {
+  let lastError;
+
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      const response = await fetch(`/api/snapshot?ts=${Date.now()}`, {
+        headers: { accept: "application/json" },
+        signal: AbortSignal.timeout(22_000)
+      });
+      if (!response.ok) throw new Error(`Snapshot failed: ${response.status}`);
+      return await response.json();
+    } catch (error) {
+      lastError = error;
+      if (attempt < attempts) {
+        setConnection("loading", "서버 준비 중");
+        await new Promise((resolve) => setTimeout(resolve, 1_500));
+      }
+    }
+  }
+
+  throw lastError;
 }
 
 function render(snapshot) {
