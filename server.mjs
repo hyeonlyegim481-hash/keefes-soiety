@@ -43,19 +43,36 @@ const marketConfig = [
 ];
 
 const headlineFeeds = [
-  { topic: "한국경제", query: "한국 경제 (환율 OR 금리 OR 물가 OR 수출 OR 반도체) when:7d" },
-  { topic: "한국시장", query: "(코스피 OR 코스닥 OR 원달러 OR 한국은행) when:7d" },
-  { topic: "세계경제", query: "(미국 경제 OR 연준 OR 미국 금리 OR 중국 경제) when:7d" },
-  { topic: "금융시장", query: "(나스닥 OR S&P500 OR 미국 국채 OR 국제유가) when:7d" },
-  { topic: "정책·지표", query: "(기획재정부 OR 한국은행 OR 국가데이터처 OR 금융위원회 OR 관세청) (경제 OR 금리 OR 물가 OR 수출) when:7d" },
-  { topic: "산업·기업", query: "(기업 실적 OR 반도체 OR 자동차 OR 조선 OR 배터리 OR 설비투자) 한국 when:7d" },
-  { topic: "부동산·가계", query: "(주택시장 OR 아파트값 OR 전세 OR 가계대출 OR 소비자심리 OR 취업자 OR 실업률 OR 자영업경기) 한국 when:7d" }
+  { topic: "한국경제", section: "korea", query: "한국 경제 (환율 OR 금리 OR 물가 OR 수출 OR 반도체) when:7d" },
+  { topic: "한국시장", section: "korea", query: "(코스피 OR 코스닥 OR 원달러 OR 한국은행) when:7d" },
+  { topic: "정책·지표", section: "korea", query: "(기획재정부 OR 한국은행 OR 국가데이터처 OR 금융위원회 OR 관세청) (경제 OR 금리 OR 물가 OR 수출) when:7d" },
+  { topic: "산업·기업", section: "korea", query: "(기업 실적 OR 반도체 OR 자동차 OR 조선 OR 배터리 OR 설비투자) 한국 when:7d" },
+  { topic: "부동산·가계", section: "korea", query: "(주택시장 OR 아파트값 OR 전세 OR 가계대출 OR 소비자심리 OR 취업자 OR 실업률 OR 자영업경기) 한국 when:7d" },
+  { topic: "미국 핵심", section: "us", query: "(미국 연준 OR 미국 CPI OR 미국 고용 OR 미국 GDP OR 미국 국채금리 OR 미국 관세) when:7d" },
+  { topic: "미국 시장", section: "us", query: "(S&P500 OR 나스닥 OR 미국 증시) (연준 OR 물가 OR 고용 OR 실적 OR 관세) when:7d" },
+  { topic: "중국·아시아", section: "china-asia", query: "(중국 경기 OR 중국 인민은행 OR 위안화 OR 일본은행 OR 엔화 OR 중국 수출) when:7d" },
+  { topic: "유럽·글로벌", section: "europe-global", query: "(ECB OR 유로존 물가 OR 유럽 경제 OR IMF OR 세계은행 OR 글로벌 무역) when:7d" },
+  { topic: "원자재·환율", section: "commodities-fx", query: "(OPEC OR 국제유가 OR WTI OR 브렌트유 OR 금값 OR 달러인덱스 OR 해상운임) (글로벌 OR 미국 OR 중동 OR 국제) when:7d" }
 ];
+
+const newsSectionOrder = ["korea", "us", "china-asia", "europe-global", "commodities-fx"];
+const newsSectionQuotas = {
+  korea: 5,
+  us: 4,
+  "china-asia": 3,
+  "europe-global": 3,
+  "commodities-fx": 3
+};
 
 const topicRelevancePatterns = {
   "정책·지표": /기준금리|금통위|물가|소비자물가|GDP|성장률|수출|수입|무역|환율|재정|세금|취업자|실업률|금융위원회|금융감독원|한국은행|한은/i,
   "산업·기업": /기업|실적|매출|영업이익|순이익|반도체|자동차|조선|배터리|설비투자|상장|수주|공장|CAPEX/i,
-  "부동산·가계": /주택|아파트|전세|월세|부동산|가계대출|주담대|DSR|소비자심리|소매판매|취업자|실업률|자영업\s*(?:경기|매출|대출)/i
+  "부동산·가계": /주택|아파트|전세|월세|부동산|가계대출|주담대|DSR|소비자심리|소매판매|취업자|실업률|자영업\s*(?:경기|매출|대출)/i,
+  "미국 핵심": /미국|연준|Fed|CPI|물가|고용|실업|GDP|국채|관세|달러/i,
+  "미국 시장": /S&P\s*500|나스닥|미국\s*증시|연준|Fed|물가|고용|실적|관세/i,
+  "중국·아시아": /중국|인민은행|PBOC|위안|일본|일본은행|BOJ|엔화|아시아|수출/i,
+  "유럽·글로벌": /ECB|유럽|유로존|IMF|세계은행|글로벌|세계경제|무역/i,
+  "원자재·환율": /OPEC|유가|원유|WTI|브렌트|금값|금\s*가격|달러|환율|해상운임/i
 };
 const newsEntityPatterns = [
   ["kospi", /코스피|KOSPI/i],
@@ -82,8 +99,17 @@ const newsRelevancePatterns = [
 ];
 
 const koreaNewsPattern = /한국|국내|코스피|코스닥|원\/달러|원달러|원화|한국은행|반도체|수출|Korea|KOSPI|KOSDAQ|KRW/i;
-const primaryNewsSourcePattern = /한국은행|국가데이터처|통계청|기획재정부|산업통상자원부|금융위원회|금융감독원|관세청|KDI|대한민국 정책브리핑/i;
-const establishedNewsSourcePattern = /연합뉴스|연합인포맥스|KBS|MBC|SBS|한국경제|매일경제|서울경제|머니투데이|로이터|Reuters|Bloomberg|블룸버그/i;
+const primaryNewsSourcePattern = /한국은행|국가데이터처|통계청|기획재정부|산업통상자원부|금융위원회|금융감독원|관세청|KDI|대한민국 정책브리핑|Federal Reserve|European Central Bank|ECB|IMF|World Bank|Bank of Japan/i;
+const establishedNewsSourcePattern = /연합뉴스|연합인포맥스|KBS|MBC|SBS|한국경제|매일경제|서울경제|머니투데이|로이터|Reuters|Bloomberg|블룸버그|AP|Associated Press|BBC|CNBC|Financial Times|파이낸셜타임스|Wall Street Journal|WSJ|Nikkei|닛케이/i;
+const globalMajorImpactPatterns = [
+  /연준|Fed|FOMC|ECB|유럽중앙은행|일본은행|BOJ|인민은행|PBOC|기준금리|금리\s*(?:인상|인하|동결)/i,
+  /CPI|PCE|소비자물가|인플레이션|고용|비농업|실업률|GDP|성장률|소매판매/i,
+  /관세|무역전쟁|제재|수출통제|공급망|반도체\s*(?:규제|통제)/i,
+  /국채금리|채권금리|달러\s*인덱스|위안화|엔화|환율/i,
+  /OPEC|WTI|브렌트|국제유가|원유|해상운임|홍해|중동|전쟁/i,
+  /S&P\s*500|나스닥|증시\s*(?:급락|폭락|급등)|서킷브레이커|금융위기|은행\s*(?:위기|파산)/i,
+  /실적|매출|영업이익|순이익|전망치|가이던스|반도체|AI\s*투자/i
+];
 const clickbaitHeadlinePattern = /피눈물|대박|충격|발칵|이 사람들|그만할래|무조건|역대급|폭망|몰빵|개미군단|난리 났다/i;
 const scheduleHeadlinePattern = /\[(?:다음주|주간).*일정\]|주요 일정|경제 캘린더/i;
 const headlineStopWords = new Set([
@@ -175,7 +201,7 @@ async function getSnapshot() {
   const rawHeadlines = headlineResults.flatMap((result) =>
     result.status === "fulfilled" ? result.value : []
   );
-  const headlines = selectDiverseHeadlines(rankAndDedupeHeadlines(rawHeadlines, now), 12);
+  const headlines = selectSectionedHeadlines(rankAndDedupeHeadlines(rawHeadlines, now), 18);
   const availableNewsFeedCount = headlineResults.filter(
     (result) => result.status === "fulfilled"
   ).length;
@@ -313,6 +339,7 @@ async function fetchHeadlines(feed) {
     return {
       id: hash(`${feed.topic}-${title}-${rawPublishedAt}`),
       topic: feed.topic,
+      section: feed.section || "korea",
       title,
       source,
       url: decodeXml(readTag(item, "link")),
@@ -353,6 +380,15 @@ function rankAndDedupeHeadlines(items, now = Date.now()) {
   return clustered
     .sort((a, b) => b.relevanceScore - a.relevanceScore || b.timestamp - a.timestamp)
     .map(({ fingerprint, tokens, entities, timestamp, ...item }) => item);
+}
+
+function selectSectionedHeadlines(items, limit = 18) {
+  const selected = [];
+  for (const section of newsSectionOrder) {
+    const candidates = items.filter((item) => item.section === section);
+    selected.push(...selectDiverseHeadlines(candidates, newsSectionQuotas[section] || 3));
+  }
+  return selected.slice(0, limit);
 }
 
 function selectDiverseHeadlines(items, limit = 12) {
@@ -402,30 +438,58 @@ function scoreHeadline(item, now) {
   const topicPattern = topicRelevancePatterns[item.topic];
   if (!title || relevanceMatches === 0 || (topicPattern && !topicPattern.test(title))) return null;
 
+  const section = newsSectionOrder.includes(item.section) ? item.section : "korea";
+  const majorImpactMatches = globalMajorImpactPatterns.filter((pattern) => pattern.test(title)).length;
+  if (section !== "korea" && majorImpactMatches === 0) return null;
+
   const ageHours = Math.max(0, age) / (60 * 60 * 1000);
   const freshnessScore = ageHours <= 24 ? 6 : ageHours <= 72 ? 4 : 2;
   const koreaScore = koreaNewsPattern.test(title) ? 4 : 0;
-  const topicScore = /한국|정책|산업|부동산/.test(item.topic) ? 2 : 1;
+  const topicScore = section === "korea" ? 2 : 1;
   const sourceTier = primaryNewsSourcePattern.test(item.source)
     ? "primary"
     : establishedNewsSourcePattern.test(item.source)
       ? "established"
       : "other";
-  const sourceScore = sourceTier === "primary" ? 6 : sourceTier === "established" ? 2 : 0;
+  const sourceScore = sourceTier === "primary" ? 6 : sourceTier === "established" ? 3 : 0;
   const headlinePenalty = (clickbaitHeadlinePattern.test(title) ? 5 : 0) +
     (scheduleHeadlinePattern.test(title) ? 5 : 0);
+  const importanceScore = freshnessScore + majorImpactMatches * 5 + sourceScore + Math.min(4, relevanceMatches * 2) - headlinePenalty;
+  if (section !== "korea" && sourceTier === "other" && majorImpactMatches < 2 && importanceScore < 16) return null;
   const tokens = headlineTokens(title);
 
   return {
     ...item,
+    section,
     publishedAt: new Date(timestamp).toISOString(),
     sourceTier,
-    relevanceScore: freshnessScore + relevanceMatches * 3 + koreaScore + topicScore + sourceScore - headlinePenalty,
+    importanceScore,
+    importanceLabel: importanceScore >= 17 ? "최우선" : importanceScore >= 12 ? "주요" : "선별",
+    impactArea: getHeadlineImpactArea(title),
+    koreaImpactLabel: getKoreaImpactLabel(title),
+    relevanceScore: freshnessScore + relevanceMatches * 3 + koreaScore + topicScore + sourceScore + majorImpactMatches * 4 - headlinePenalty,
     fingerprint: normalizeHeadline(title),
     tokens,
     entities: headlineEntities(title),
     timestamp
   };
+}
+
+function getHeadlineImpactArea(title) {
+  if (/연준|Fed|FOMC|ECB|일본은행|BOJ|인민은행|PBOC|금리|CPI|PCE|물가|고용|GDP/i.test(title)) return "금리·거시";
+  if (/관세|무역|수출통제|제재|공급망/i.test(title)) return "무역·공급망";
+  if (/OPEC|유가|원유|WTI|브렌트|금값|해상운임|중동|전쟁/i.test(title)) return "원자재·지정학";
+  if (/반도체|AI|실적|매출|이익|가이던스/i.test(title)) return "산업·실적";
+  if (/S&P\s*500|나스닥|증시|국채금리|환율|달러|위안|엔화/i.test(title)) return "금융시장";
+  return "경기·정책";
+}
+
+function getKoreaImpactLabel(title) {
+  if (/환율|달러|국채금리|연준|Fed|금리|위안|엔화/i.test(title)) return "환율·금리";
+  if (/중국|관세|무역|수출|반도체|공급망/i.test(title)) return "수출·반도체";
+  if (/OPEC|유가|원유|WTI|브렌트|해상운임|중동/i.test(title)) return "물가·기업비용";
+  if (/S&P\s*500|나스닥|증시|실적|AI/i.test(title)) return "외국인 수급";
+  return "경기 심리";
 }
 
 function isDuplicateHeadline(left, right) {
@@ -710,7 +774,14 @@ function buildAutomatedNewsAnalysis(headline, snapshot) {
   const positiveCount = (text.match(/호조|회복|돌파|개선|완화|강세|수혜|호재/gi) || []).length;
   const tone = negativeCount > positiveCount ? "negative" : positiveCount > negativeCount ? "positive" : "watch";
   const signal = `${primary.label} ${tone === "negative" ? "부담" : tone === "positive" ? "개선" : "확인"}`;
-  const focusText = secondary ? `${primary.label}을 중심으로 ${secondary.label}까지 연결되는 기사` : `${primary.label}에 초점을 둔 기사`;
+  const lastLabelCharacter = primary.label.at(-1) || "";
+  const lastLabelCode = lastLabelCharacter.charCodeAt(0);
+  const hasFinalConsonant = lastLabelCode >= 0xac00 && lastLabelCode <= 0xd7a3
+    ? (lastLabelCode - 0xac00) % 28 !== 0
+    : false;
+  const focusText = secondary
+    ? `${primary.label}${hasFinalConsonant ? "을" : "를"} 중심으로 ${secondary.label}까지 연결되는 기사`
+    : `${primary.label}에 초점을 둔 기사`;
   const kospi = byId.kospi;
   const sp500 = byId.sp500;
   const nasdaq = byId.nasdaq;
@@ -1123,6 +1194,11 @@ function buildDataQuality(
     establishedSourceHeadlineCount: headlines.filter(
       (headline) => headline.sourceTier === "established"
     ).length,
+    globalHeadlineCount: headlines.filter((headline) => headline.section !== "korea").length,
+    highImportanceHeadlineCount: headlines.filter((headline) => headline.importanceLabel === "최우선").length,
+    newsSectionCounts: Object.fromEntries(
+      newsSectionOrder.map((section) => [section, headlines.filter((headline) => headline.section === section).length])
+    ),
     newsLookbackDays: NEWS_LOOKBACK_DAYS,
     newestHeadlineAt: headlineTimestamps.length
       ? new Date(Math.max(...headlineTimestamps)).toISOString()

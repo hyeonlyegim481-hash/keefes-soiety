@@ -1,21 +1,21 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=40";
+} from "./glossary-data.js?v=41";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=40";
+} from "./glossary-extra-data.js?v=41";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=40";
+} from "./glossary-more-data.js?v=41";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=40";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=40";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=40";
+} from "./glossary-pro-data.js?v=41";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=41";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=41";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions];
 const glossaryCategoryOrder = [
@@ -2045,6 +2045,14 @@ function cacheNewsSummary(summaryKey, result) {
   }
 }
 
+const NEWS_SECTION_DEFINITIONS = [
+  { id: "korea", label: "한국", description: "환율·정책·수출·가계 흐름" },
+  { id: "us", label: "미국", description: "연준·물가·고용·미국 시장" },
+  { id: "china-asia", label: "중국·아시아", description: "중국 수요·위안·일본은행·엔화" },
+  { id: "europe-global", label: "유럽·글로벌", description: "ECB·유로존·세계 성장과 무역" },
+  { id: "commodities-fx", label: "원자재·환율", description: "유가·금·달러·운임과 지정학" }
+];
+
 function renderNews(headlines = [], analysis, dataQuality = {}) {
   const lookbackDays = Number(dataQuality?.newsLookbackDays) || 7;
   const topicCounts = headlines.reduce((acc, headline) => {
@@ -2055,6 +2063,8 @@ function renderNews(headlines = [], analysis, dataQuality = {}) {
     .sort((a, b) => b[1] - a[1])
     .slice(0, 3);
   const firstTopic = topTopics[0]?.[0] || "선별 기사 없음";
+  const koreaHeadlineCount = headlines.filter((headline) => headline.section === "korea").length;
+  const globalHeadlineCount = headlines.filter((headline) => headline.section !== "korea").length;
   const riskText =
     headlines.length === 0
       ? `최근 ${lookbackDays}일 안에 경제 관련성과 최신성 기준을 통과한 새 기사가 없습니다.`
@@ -2067,8 +2077,8 @@ function renderNews(headlines = [], analysis, dataQuality = {}) {
   elements.newsBrief.innerHTML = `
     <article class="brief-card brief-card-main">
       <span>뉴스 초점</span>
-      <strong>${firstTopic}</strong>
-      <p>${riskText}</p>
+      <strong>한국 ${koreaHeadlineCount}건 · 해외 핵심 ${globalHeadlineCount}건</strong>
+      <p>${firstTopic} 중심 · ${riskText}</p>
     </article>
     ${topTopics
       .map(
@@ -2091,75 +2101,111 @@ function renderNews(headlines = [], analysis, dataQuality = {}) {
       </article>
     `;
   } else {
-    elements.newsList.replaceChildren(
-      ...headlines.slice(0, 12).map((headline, index) => {
-        const item = document.createElement("article");
-        const newsUrl = safeNewsUrl(headline.url);
-        const summaryKey = getNewsSummaryKey(headline);
-        item.className = "news-item";
-        item.innerHTML = `
-          <div class="news-item-head">
-            <span class="news-index">${String(index + 1).padStart(2, "0")}</span>
-            <a class="news-link" href="${escapeHtml(newsUrl)}" target="${newsUrl.startsWith("http") ? "_blank" : "_self"}" rel="noreferrer">
-              <span class="news-title">${escapeHtml(headline.title)}</span>
-              <span class="news-meta">
-                <span>${escapeHtml(headline.topic)}</span>
-                <span data-source-tier="${escapeHtml(headline.sourceTier || "other")}">${escapeHtml(headline.source)}</span>
-                ${headline.relatedSourceCount > 1 ? `<span class="news-corroboration">교차 ${headline.relatedSourceCount}곳</span>` : ""}
-                <span>${relativeTime(headline.publishedAt)}</span>
-              </span>
-            </a>
+    let visibleIndex = 0;
+    const sections = NEWS_SECTION_DEFINITIONS.map((section) => {
+      const sectionHeadlines = headlines.filter((headline) => headline.section === section.id);
+      const group = document.createElement("section");
+      group.className = "news-section-group";
+      group.dataset.newsSection = section.id;
+      group.innerHTML = `
+        <header class="news-section-heading">
+          <div>
+            <span>${escapeHtml(section.label)}</span>
+            <strong>${escapeHtml(section.description)}</strong>
           </div>
-          <details class="news-ai-detail">
-            <summary>
-              <span class="ai-label">요약</span>
-              <strong>기사 요약 보기</strong>
-              <em>핵심 의미 · 시장 영향 · 한국 영향 · 다음 확인</em>
-            </summary>
-            <div class="news-ai-output" data-news-analysis>
-              <p>분석을 준비하고 있습니다.</p>
-            </div>
-          </details>
+          <em>${sectionHeadlines.length}건</em>
+        </header>
+        <div class="news-section-items"></div>
+      `;
+      const items = sectionHeadlines.map((headline) => {
+        visibleIndex += 1;
+        return createNewsItem(headline, visibleIndex, analysis);
+      });
+      const sectionItems = group.querySelector(".news-section-items");
+      if (items.length) {
+        sectionItems.replaceChildren(...items);
+      } else {
+        sectionItems.innerHTML = `
+          <div class="news-section-empty">
+            <strong>현재 중요도 기준을 통과한 새 기사가 없습니다.</strong>
+            <span>수를 맞추기 위해 오래되거나 영향이 작은 기사를 대신 넣지 않습니다.</span>
+          </div>
         `;
-        const details = item.querySelector(".news-ai-detail");
-        const cachedSummary = state.newsSummaryResults.get(summaryKey);
-        details.dataset.summaryKey = summaryKey;
-        if (cachedSummary) {
-          renderNewsAnalysisResult(details.querySelector("[data-news-analysis]"), cachedSummary);
-          details.dataset.loaded = "true";
-        }
-        if (state.openNewsSummaryIds.has(summaryKey)) {
-          details.open = true;
-        }
-        details.addEventListener("toggle", () => {
-          if (details.open) {
-            state.openNewsSummaryIds.add(summaryKey);
-            if (details.dataset.loaded !== "true" && details.dataset.loaded !== "loading") {
-              loadNewsAnalysis(details, headline, analysis);
-            }
-          } else {
-            state.openNewsSummaryIds.delete(summaryKey);
-          }
-        });
-        if (details.open && !cachedSummary) {
-          requestAnimationFrame(() => {
-            if (details.isConnected && details.open && details.dataset.loaded !== "loading") {
-              loadNewsAnalysis(details, headline, analysis);
-            }
-          });
-        }
-        return item;
-      })
-    );
+      }
+      return group;
+    });
+    elements.newsList.replaceChildren(...sections);
   }
   renderNewsBoard(headlines, topTopics, analysis);
   renderNewsIntelligence(headlines, topTopics, analysis, dataQuality);
 }
 
+function createNewsItem(headline, index, analysis) {
+  const item = document.createElement("article");
+  const newsUrl = safeNewsUrl(headline.url);
+  const summaryKey = getNewsSummaryKey(headline);
+  const sectionLabel = NEWS_SECTION_DEFINITIONS.find((section) => section.id === headline.section)?.label || headline.topic;
+  const isGlobal = headline.section && headline.section !== "korea";
+  item.className = "news-item";
+  item.innerHTML = `
+    <div class="news-item-head">
+      <span class="news-index">${String(index).padStart(2, "0")}</span>
+      <a class="news-link" href="${escapeHtml(newsUrl)}" target="${newsUrl.startsWith("http") ? "_blank" : "_self"}" rel="noreferrer">
+        <span class="news-title">${escapeHtml(headline.title)}</span>
+        <span class="news-meta">
+          <span>${escapeHtml(sectionLabel)}</span>
+          <span>${escapeHtml(headline.impactArea || headline.topic)}</span>
+          <span class="news-importance" data-importance="${escapeHtml(headline.importanceLabel || "선별")}">${escapeHtml(headline.importanceLabel || "선별")}</span>
+          ${isGlobal ? `<span class="news-korea-impact">한국 영향 · ${escapeHtml(headline.koreaImpactLabel || "경기 심리")}</span>` : ""}
+          <span data-source-tier="${escapeHtml(headline.sourceTier || "other")}">${escapeHtml(headline.source)}</span>
+          ${headline.relatedSourceCount > 1 ? `<span class="news-corroboration">교차 ${headline.relatedSourceCount}곳</span>` : ""}
+          <span>${relativeTime(headline.publishedAt)}</span>
+        </span>
+      </a>
+    </div>
+    <details class="news-ai-detail">
+      <summary>
+        <span class="ai-label">요약</span>
+        <strong>기사 요약 보기</strong>
+        <em>핵심 사실 · 시장 영향 · 한국 영향 · 다음 확인</em>
+      </summary>
+      <div class="news-ai-output" data-news-analysis>
+        <p>분석을 준비하고 있습니다.</p>
+      </div>
+    </details>
+  `;
+  const details = item.querySelector(".news-ai-detail");
+  const cachedSummary = state.newsSummaryResults.get(summaryKey);
+  details.dataset.summaryKey = summaryKey;
+  if (cachedSummary) {
+    renderNewsAnalysisResult(details.querySelector("[data-news-analysis]"), cachedSummary);
+    details.dataset.loaded = "true";
+  }
+  if (state.openNewsSummaryIds.has(summaryKey)) details.open = true;
+  details.addEventListener("toggle", () => {
+    if (details.open) {
+      state.openNewsSummaryIds.add(summaryKey);
+      if (details.dataset.loaded !== "true" && details.dataset.loaded !== "loading") {
+        loadNewsAnalysis(details, headline, analysis);
+      }
+    } else {
+      state.openNewsSummaryIds.delete(summaryKey);
+    }
+  });
+  if (details.open && !cachedSummary) {
+    requestAnimationFrame(() => {
+      if (details.isConnected && details.open && details.dataset.loaded !== "loading") {
+        loadNewsAnalysis(details, headline, analysis);
+      }
+    });
+  }
+  return item;
+}
+
 function renderNewsBoard(headlines, topTopics, analysis) {
-  const newest = headlines[0];
-  const koreaCount = headlines.filter((headline) => /한국|Korea|국내/i.test(headline.topic)).length;
-  const globalCount = headlines.filter((headline) => /세계|글로벌|미국|Fed|금리|물가|경제/i.test(headline.topic)).length;
+  const newest = [...headlines].sort((a, b) => Date.parse(b.publishedAt) - Date.parse(a.publishedAt))[0];
+  const koreaCount = headlines.filter((headline) => headline.section === "korea").length;
+  const globalCount = headlines.filter((headline) => headline.section !== "korea").length;
   const readingMode = headlines.length === 0
     ? "새 기사 대기"
     : analysis?.riskScore >= 66
@@ -2188,9 +2234,9 @@ function renderNewsBoard(headlines, topTopics, analysis) {
         <p>환율, 수출, 외국인 수급으로 이어지는지 먼저 봅니다.</p>
       </article>
       <article class="board-card">
-        <span>글로벌 뉴스</span>
+        <span>해외 중요 뉴스</span>
         <strong>${globalCount}건</strong>
-        <p>달러, 금리, 위험선호에 영향을 주는 흐름인지 확인합니다.</p>
+        <p>미국·중국·유럽·원자재 중 한국 시장으로 번질 기사만 선별합니다.</p>
       </article>
       <article class="board-card">
         <span>주요 토픽</span>
@@ -2254,7 +2300,7 @@ function renderNewsIntelligence(headlines, topTopics, analysis, dataQuality = {}
           <p>유사한 사건은 최신 기사 하나로 묶고 함께 확인된 출처 수를 표시합니다.</p>
         </article>
       </div>
-      <p class="data-caveat">최근 ${lookbackDays}일 기사 중 경제 관련성이 높은 내용을 선별하고 같은 사건은 최신 기사로 묶었습니다. 상세 요약은 기사 시점 가격을 우선 사용하며, 원문·출처 수·신뢰도를 함께 표시합니다.</p>
+      <p class="data-caveat">최근 ${lookbackDays}일 기사 중 경제 관련성이 높은 내용을 선별하고 같은 사건은 최신 기사로 묶었습니다. 해외 뉴스는 중앙은행·물가·고용·GDP·관세·에너지·주요 시장 충격처럼 한국 자산에 전달 경로가 있는 기사만 포함합니다. 상세 요약은 기사 시점 가격을 우선 사용하며, 원문·출처 수·신뢰도를 함께 표시합니다.</p>
     </section>
   `;
 }
@@ -2789,20 +2835,32 @@ function getMacroReason(item) {
 }
 
 function getTopicMeaning(topic) {
+  if (/정책·지표/i.test(topic)) {
+    return "금리·물가·성장률 발표가 기존 시장 기대를 바꾸는지 봅니다.";
+  }
+  if (/산업·기업/i.test(topic)) {
+    return "실적과 투자 계획이 한국 수출 및 대형주 이익으로 이어지는지 봅니다.";
+  }
+  if (/부동산·가계/i.test(topic)) {
+    return "대출 부담과 소비 여력, 금융 안정성의 변화를 확인합니다.";
+  }
   if (/한국|Korea|국내/i.test(topic)) {
     return "환율, 수출, 외국인 수급으로 이어지는지 봅니다.";
   }
-  if (/세계|글로벌|미국|Fed|금리|물가|경제/i.test(topic)) {
-    return "달러, 금리, 위험선호에 영향을 주는 흐름입니다.";
+  if (/미국|Fed/i.test(topic)) {
+    return "연준·물가·고용이 달러와 글로벌 위험선호를 바꾸는지 봅니다.";
+  }
+  if (/중국|아시아|China/i.test(topic)) {
+    return "중국 수요와 위안·엔화가 한국 수출주에 미치는 영향을 봅니다.";
+  }
+  if (/유럽|세계|글로벌|ECB/i.test(topic)) {
+    return "유럽 금리와 세계 성장·무역 흐름의 변화를 확인합니다.";
+  }
+  if (/원자재|환율|에너지|유가|oil|WTI/i.test(topic)) {
+    return "유가·달러·운임이 국내 물가와 기업 비용으로 번지는지 봅니다.";
   }
   if (/반도체|기술|Tech|AI|chip/i.test(topic)) {
     return "한국 대형주와 성장주 심리에 직접 연결됩니다.";
-  }
-  if (/중국|China/i.test(topic)) {
-    return "수출주, 소재, 산업재 민감도를 높이는 변수입니다.";
-  }
-  if (/에너지|유가|oil|WTI/i.test(topic)) {
-    return "물가와 기업 비용 압력으로 이어질 수 있습니다.";
   }
   return "가격 지표와 함께 방향성을 확인하는 보조 재료입니다.";
 }

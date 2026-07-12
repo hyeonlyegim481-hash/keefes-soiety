@@ -1894,8 +1894,73 @@ main {
 
 .news-list {
   display: grid;
-  gap: 0;
+  gap: 18px;
   padding: 12px 22px 22px;
+}
+
+.news-section-group {
+  min-width: 0;
+  border-top: 2px solid var(--charcoal);
+}
+
+.news-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 2px 10px;
+}
+
+.news-section-heading > div {
+  display: flex;
+  min-width: 0;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+}
+
+.news-section-heading span {
+  color: var(--ink);
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.news-section-heading strong {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.news-section-heading em {
+  flex: 0 0 auto;
+  color: var(--teal);
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 850;
+}
+
+.news-section-items {
+  display: grid;
+  min-width: 0;
+}
+
+.news-section-empty {
+  display: grid;
+  gap: 5px;
+  padding: 18px 4px 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.news-section-empty strong {
+  color: var(--ink);
+  font-size: 0.84rem;
+}
+
+.news-section-empty span {
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.55;
+  word-break: keep-all;
 }
 
 .news-empty-state {
@@ -1946,10 +2011,28 @@ main {
 .news-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 7px;
   color: var(--muted);
   font-size: 0.78rem;
   font-weight: 720;
+}
+
+.news-importance,
+.news-korea-impact {
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(15, 118, 110, 0.08);
+  color: var(--teal);
+}
+
+.news-importance[data-importance="최우선"] {
+  background: rgba(180, 83, 9, 0.1);
+  color: var(--amber);
+}
+
+.news-korea-impact {
+  background: rgba(30, 64, 175, 0.07);
+  color: #1e40af;
 }
 
 .news-item-head {
