@@ -1,21 +1,21 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=35";
+} from "./glossary-data.js?v=36";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=35";
+} from "./glossary-extra-data.js?v=36";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=35";
+} from "./glossary-more-data.js?v=36";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=35";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=35";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=35";
+} from "./glossary-pro-data.js?v=36";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=36";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=36";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions];
 const glossaryCategoryOrder = [
@@ -308,7 +308,9 @@ let state = {
   quizAnswered: false,
   quizSelected: null,
   quizComplete: false,
-  quizMistakes: []
+  quizMistakes: [],
+  openNewsSummaryIds: new Set(),
+  newsSummaryResults: new Map()
 };
 
 if (elements.chapterProgress && elements.chapterTabs.length) {
@@ -2015,6 +2017,22 @@ function quizHash(value) {
   return output;
 }
 
+function getNewsSummaryKey(headline) {
+  return String(headline?.id || `${headline?.source || "news"}|${headline?.title || "untitled"}`);
+}
+
+function cacheNewsSummary(summaryKey, result) {
+  state.newsSummaryResults.set(summaryKey, result);
+  if (state.newsSummaryResults.size <= 48) return;
+
+  for (const cachedKey of state.newsSummaryResults.keys()) {
+    if (!state.openNewsSummaryIds.has(cachedKey)) {
+      state.newsSummaryResults.delete(cachedKey);
+    }
+    if (state.newsSummaryResults.size <= 48) break;
+  }
+}
+
 function renderNews(headlines = [], analysis, dataQuality = {}) {
   const lookbackDays = Number(dataQuality?.newsLookbackDays) || 7;
   const topicCounts = headlines.reduce((acc, headline) => {
@@ -2065,6 +2083,7 @@ function renderNews(headlines = [], analysis, dataQuality = {}) {
       ...headlines.slice(0, 12).map((headline, index) => {
         const item = document.createElement("article");
         const newsUrl = safeNewsUrl(headline.url);
+        const summaryKey = getNewsSummaryKey(headline);
         item.className = "news-item";
         item.innerHTML = `
           <div class="news-item-head">
@@ -2091,11 +2110,32 @@ function renderNews(headlines = [], analysis, dataQuality = {}) {
           </details>
         `;
         const details = item.querySelector(".news-ai-detail");
+        const cachedSummary = state.newsSummaryResults.get(summaryKey);
+        details.dataset.summaryKey = summaryKey;
+        if (cachedSummary) {
+          renderNewsAnalysisResult(details.querySelector("[data-news-analysis]"), cachedSummary);
+          details.dataset.loaded = "true";
+        }
+        if (state.openNewsSummaryIds.has(summaryKey)) {
+          details.open = true;
+        }
         details.addEventListener("toggle", () => {
-          if (details.open && details.dataset.loaded !== "true") {
-            loadNewsAnalysis(details, headline, analysis);
+          if (details.open) {
+            state.openNewsSummaryIds.add(summaryKey);
+            if (details.dataset.loaded !== "true" && details.dataset.loaded !== "loading") {
+              loadNewsAnalysis(details, headline, analysis);
+            }
+          } else {
+            state.openNewsSummaryIds.delete(summaryKey);
           }
         });
+        if (details.open && !cachedSummary) {
+          requestAnimationFrame(() => {
+            if (details.isConnected && details.open && details.dataset.loaded !== "loading") {
+              loadNewsAnalysis(details, headline, analysis);
+            }
+          });
+        }
         return item;
       })
     );
@@ -2209,6 +2249,14 @@ function renderNewsIntelligence(headlines, topTopics, analysis, dataQuality = {}
 
 async function loadNewsAnalysis(details, headline, marketAnalysis) {
   const output = details.querySelector("[data-news-analysis]");
+  const summaryKey = getNewsSummaryKey(headline);
+  const cachedSummary = state.newsSummaryResults.get(summaryKey);
+  if (cachedSummary) {
+    renderNewsAnalysisResult(output, cachedSummary);
+    details.dataset.loaded = "true";
+    requestAnimationFrame(updateChapterHeight);
+    return;
+  }
   details.dataset.loaded = "loading";
   output.innerHTML = `
     <div class="analysis-loading">
@@ -2233,9 +2281,12 @@ async function loadNewsAnalysis(details, headline, marketAnalysis) {
     });
     if (!response.ok) throw new Error(`News analysis failed: ${response.status}`);
     const result = await response.json();
+    cacheNewsSummary(summaryKey, result);
     renderNewsAnalysisResult(output, result);
   } catch {
-    renderNewsAnalysisResult(output, buildLocalNewsAnalysis(headline, marketAnalysis));
+    const fallback = buildLocalNewsAnalysis(headline, marketAnalysis);
+    cacheNewsSummary(summaryKey, fallback);
+    renderNewsAnalysisResult(output, fallback);
   } finally {
     details.dataset.loaded = "true";
     requestAnimationFrame(updateChapterHeight);
