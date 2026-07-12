@@ -1,21 +1,21 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=33";
+} from "./glossary-data.js?v=34";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=33";
+} from "./glossary-extra-data.js?v=34";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=33";
+} from "./glossary-more-data.js?v=34";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=33";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=33";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=33";
+} from "./glossary-pro-data.js?v=34";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=34";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=34";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions];
 const glossaryCategoryOrder = [
@@ -514,6 +514,12 @@ function renderSummary(snapshot) {
     : `${snapshot.markets.length}개 시장지표`;
   elements.sourceLine.textContent = `${marketCount} 기준 · 확인 ${timeFormatter.format(new Date(snapshot.generatedAt))}`;
   elements.riskScore.textContent = analysis.riskScore;
+  const summaryTone = analysis.riskScore >= 66 ? "negative" : analysis.riskScore >= 45 ? "watch" : "positive";
+  elements.regimeTitle.closest(".signal-panel").dataset.tone = summaryTone;
+  elements.riskScore.closest(".risk-panel").dataset.tone = summaryTone;
+  elements.riskScore.classList.remove("is-updated");
+  void elements.riskScore.offsetWidth;
+  elements.riskScore.classList.add("is-updated");
 
   const circumference = 314;
   const offset = circumference - (circumference * analysis.riskScore) / 100;
@@ -571,9 +577,7 @@ function renderSummary(snapshot) {
 function renderBriefBoard(snapshot) {
   const { analysis, markets } = snapshot;
   const byId = Object.fromEntries(markets.map((market) => [market.id, market]));
-  const selected =
-    markets.find((market) => market.id === state.selectedMarket) ||
-    markets[0];
+  const selected = markets.find((market) => market.id === state.selectedMarket) || markets[0];
   const globalLeaders = [...markets]
     .filter((market) => market.group !== "korea")
     .sort((a, b) => Math.abs(b.changePercent) - Math.abs(a.changePercent))
@@ -585,35 +589,62 @@ function renderBriefBoard(snapshot) {
   const vix = byId.vix;
   const usdkrw = byId.usdkrw;
   const wti = byId.wti;
+  const tone = analysis.riskScore >= 66 ? "negative" : analysis.riskScore >= 45 ? "watch" : "positive";
+  const decisionMode = analysis.riskScore >= 66 ? "방어 먼저" : analysis.riskScore >= 45 ? "확인 먼저" : "회복 확인";
+  const selectedTone = selected?.changePercent >= 0 ? "positive" : "negative";
+  const globalCopy = globalLeaders.map((market) => `${market.name} ${signed(market.changePercent)}%`).join(" · ");
+  const koreaCopy = koreaWatch.map((item) => `${item.label} ${item.state}`).slice(0, 3).join(" · ");
 
   elements.briefBoard.innerHTML = `
-    <div class="chapter-board-grid">
-      <article class="board-card board-card-main">
-        <span>오늘 한 줄</span>
-        <strong>${analysis.regime}</strong>
-        <p>${analysis.pulse}</p>
+    <div class="brief-command-grid">
+      <article class="brief-thesis" data-tone="${tone}">
+        <header>
+          <span>오늘의 경제 판단</span>
+          <em>위험 온도 <strong>${analysis.riskScore}</strong>/100</em>
+        </header>
+        <h3>${escapeHtml(analysis.regime)}</h3>
+        <p>${escapeHtml(analysis.pulse)}</p>
+        <footer>
+          <div>
+            <span>지금의 우선순위</span>
+            <strong>${decisionMode}</strong>
+          </div>
+          <button type="button" data-open-chapter="analysis">심층 분석 <span aria-hidden="true">→</span></button>
+        </footer>
       </article>
-      <article class="board-card">
-        <span>핵심 가격</span>
-        <strong>${selected ? `${selected.name} ${formatMarketValue(selected)}` : "--"}</strong>
-        <p>${selected ? `${signed(selected.changePercent)}% 움직이며 현재 차트의 기준입니다.` : "시장 데이터를 불러오는 중입니다."}</p>
-      </article>
-      <article class="board-card">
-        <span>글로벌 신호</span>
-        <strong>${globalLeaders.map((market) => market.name).join(" · ") || "확인 중"}</strong>
-        <p>${globalLeaders.map((market) => `${market.name} ${signed(market.changePercent)}%`).join(", ") || "글로벌 가격 신호를 정리하고 있습니다."}</p>
-      </article>
-      <article class="board-card">
-        <span>한국 체크</span>
-        <strong>${koreaWatch.map((item) => item.state).slice(0, 3).join(" · ") || "확인 중"}</strong>
-        <p>${koreaWatch.map((item) => `${item.label}: ${item.state}`).join(", ") || "환율, 수출, 중국 변수를 같이 봅니다."}</p>
-      </article>
-      <article class="board-card board-card-main">
-        <span>판단 순서</span>
-        <strong>${analysis.riskScore >= 66 ? "방어 먼저" : analysis.riskScore >= 45 ? "확인 먼저" : "회복 확인"}</strong>
-        <p>${bullets.join(" ") || "시장, 한국, 뉴스 챕터를 순서대로 확인하면 오늘의 흐름을 빠르게 잡을 수 있습니다."}</p>
-      </article>
+      <div class="brief-metric-stack">
+        <article class="brief-metric" data-tone="${selectedTone}">
+          <span>핵심 가격</span>
+          <div>
+            <strong>${selected ? `${escapeHtml(selected.name)} ${formatMarketValue(selected)}` : "--"}</strong>
+            <em>${selected ? `${signed(selected.changePercent)}%` : "확인 중"}</em>
+          </div>
+          <p>현재 시장 차트의 기준 지표</p>
+        </article>
+        <article class="brief-metric" data-tone="neutral">
+          <span>글로벌 움직임</span>
+          <strong>${escapeHtml(globalLeaders.map((market) => market.name).join(" · ") || "확인 중")}</strong>
+          <p>${escapeHtml(globalCopy || "글로벌 가격 신호를 정리하고 있습니다.")}</p>
+        </article>
+        <article class="brief-metric" data-tone="watch">
+          <span>한국 체크</span>
+          <strong>${escapeHtml(koreaWatch.map((item) => item.state).slice(0, 3).join(" · ") || "확인 중")}</strong>
+          <p>${escapeHtml(koreaCopy || "환율, 수출, 중국 변수를 같이 봅니다.")}</p>
+        </article>
+      </div>
     </div>
+    <section class="decision-ribbon" aria-label="오늘의 판단 순서">
+      <div>
+        <p class="section-kicker">판단 순서</p>
+        <strong>${decisionMode}</strong>
+      </div>
+      <ol>
+        ${(bullets.length ? bullets : ["시장 가격 방향 확인", "한국 변수 교차 확인", "뉴스 원문으로 이유 확인"])
+          .slice(0, 3)
+          .map((item, index) => `<li><span>${String(index + 1).padStart(2, "0")}</span><p>${escapeHtml(item)}</p></li>`)
+          .join("")}
+      </ol>
+    </section>
     <div class="board-heading board-heading-spaced">
       <div>
         <p class="section-kicker">빠른 판단표</p>
@@ -626,9 +657,13 @@ function renderBriefBoard(snapshot) {
       ${renderSignalRow("원/달러", usdkrw ? `${formatMarketValue(usdkrw)} · ${signed(usdkrw.changePercent)}%` : "--", usdkrw?.value > 1380 ? "한국 자산 부담" : "부담 제한", usdkrw?.value > 1380 ? "negative" : "neutral")}
       ${renderSignalRow("변동성", vix ? `${formatMarketValue(vix)} · ${signed(vix.changePercent)}%` : "--", vix?.value > 20 ? "경계 확대" : "극단 공포 아님", vix?.value > 20 ? "negative" : "positive")}
       ${renderSignalRow("에너지", wti ? `${formatMarketValue(wti)} · ${signed(wti.changePercent)}%` : "--", Math.abs(wti?.changePercent || 0) > 2 ? "물가·비용 민감" : "영향 제한", Math.abs(wti?.changePercent || 0) > 2 ? "watch" : "neutral")}
-      ${renderSignalRow("종합", `${analysis.riskScore}/100`, analysis.riskScore >= 66 ? "방어 우위" : analysis.riskScore >= 45 ? "확인 구간" : "회복 구간", analysis.riskScore >= 66 ? "negative" : analysis.riskScore >= 45 ? "watch" : "positive")}
+      ${renderSignalRow("종합", `${analysis.riskScore}/100`, decisionMode, tone)}
     </div>
   `;
+
+  elements.briefBoard.querySelector("[data-open-chapter='analysis']")?.addEventListener("click", () => {
+    setActiveChapter("analysis");
+  });
 }
 
 function renderMarkets(markets) {
@@ -654,12 +689,14 @@ function renderMarkets(markets) {
       button.innerHTML = `
         <span class="ticker-name">${market.name}<em>${statusLabel}</em></span>
         <strong class="ticker-value">${formatMarketValue(market)}</strong>
+        <canvas class="ticker-sparkline" width="76" height="30" aria-hidden="true"></canvas>
         <span class="ticker-change">
           <span aria-hidden="true">${market.direction === "up" ? "▲" : "▼"}</span>
           ${signed(market.changePercent)}%
         </span>
         <span class="ticker-live">${statusLabel}</span>
       `;
+      drawTickerSparkline(button.querySelector(".ticker-sparkline"), market);
       button.addEventListener("click", () => {
         state.selectedMarket = market.id;
         renderTabs(state.snapshot.markets);
@@ -672,6 +709,57 @@ function renderMarkets(markets) {
       return button;
     })
   );
+}
+
+function drawTickerSparkline(canvas, market) {
+  const values = (market?.series || [])
+    .slice(-20)
+    .map((point) => Number(point.value))
+    .filter(Number.isFinite);
+  if (!canvas || values.length < 2) return;
+
+  const width = 76;
+  const height = 30;
+  const ratio = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = Math.round(width * ratio);
+  canvas.height = Math.round(height * ratio);
+  const context = canvas.getContext("2d");
+  context.scale(ratio, ratio);
+  context.clearRect(0, 0, width, height);
+
+  const minimum = Math.min(...values);
+  const maximum = Math.max(...values);
+  const range = maximum - minimum || 1;
+  const points = values.map((value, index) => ({
+    x: 2 + (index / (values.length - 1)) * (width - 4),
+    y: 3 + ((maximum - value) / range) * (height - 7)
+  }));
+  const color = market.direction === "up" ? "#65d777" : "#fb7185";
+
+  context.beginPath();
+  context.moveTo(points[0].x, height - 2);
+  points.forEach((point) => context.lineTo(point.x, point.y));
+  context.lineTo(points.at(-1).x, height - 2);
+  context.closePath();
+  context.fillStyle = market.direction === "up" ? "rgba(101, 215, 119, 0.10)" : "rgba(251, 113, 133, 0.10)";
+  context.fill();
+
+  context.beginPath();
+  points.forEach((point, index) => {
+    if (index === 0) context.moveTo(point.x, point.y);
+    else context.lineTo(point.x, point.y);
+  });
+  context.strokeStyle = color;
+  context.lineWidth = 1.6;
+  context.lineCap = "round";
+  context.lineJoin = "round";
+  context.stroke();
+
+  const last = points.at(-1);
+  context.beginPath();
+  context.arc(last.x, last.y, 2.2, 0, Math.PI * 2);
+  context.fillStyle = color;
+  context.fill();
 }
 
 function setActiveChapter(chapter, { skipAnimation = false } = {}) {
