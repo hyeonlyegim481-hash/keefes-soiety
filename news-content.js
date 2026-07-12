@@ -1,4 +1,4 @@
-const ARTICLE_TIMEOUT_MS = 4_000;
+const ARTICLE_TOTAL_TIMEOUT_MS = 7_000;
 const articleCache = new Map();
 
 export async function enrichHeadlineWithArticle(headline) {
@@ -19,7 +19,8 @@ export async function enrichHeadlineWithArticle(headline) {
   };
 
   try {
-    const articleUrl = await decodeGoogleNewsUrl(base.articleUrl);
+    const signal = AbortSignal.timeout(ARTICLE_TOTAL_TIMEOUT_MS);
+    const articleUrl = await decodeGoogleNewsUrl(base.articleUrl, signal);
     const fallback = { ...base, articleUrl };
     if (!isSafePublicUrl(articleUrl)) return rememberArticleResult(cacheKey, fallback);
 
@@ -29,7 +30,7 @@ export async function enrichHeadlineWithArticle(headline) {
         "user-agent": "Mozilla/5.0 (compatible; KeefesSoiety/1.0; +https://keefes-soiety.vercel.app)"
       },
       redirect: "follow",
-      signal: AbortSignal.timeout(ARTICLE_TIMEOUT_MS)
+      signal
     });
     if (!response.ok) return rememberArticleResult(cacheKey, fallback);
 
@@ -71,7 +72,7 @@ function rememberArticleResult(cacheKey, result) {
   return result;
 }
 
-async function decodeGoogleNewsUrl(sourceUrl) {
+async function decodeGoogleNewsUrl(sourceUrl, signal = AbortSignal.timeout(ARTICLE_TOTAL_TIMEOUT_MS)) {
   const url = new URL(sourceUrl);
   const pathParts = url.pathname.split("/").filter(Boolean);
   const articleIndex = pathParts.findIndex((part) => part === "articles" || part === "read");
@@ -85,7 +86,7 @@ async function decodeGoogleNewsUrl(sourceUrl) {
 
   const articlePage = await fetch(`https://news.google.com/articles/${articleId}`, {
     headers: { "user-agent": "Mozilla/5.0" },
-    signal: AbortSignal.timeout(ARTICLE_TIMEOUT_MS)
+    signal
   });
   if (!articlePage.ok) return sourceUrl;
   const html = await articlePage.text();
@@ -108,7 +109,7 @@ async function decodeGoogleNewsUrl(sourceUrl) {
     method: "POST",
     headers: { "content-type": "application/x-www-form-urlencoded;charset=UTF-8" },
     body,
-    signal: AbortSignal.timeout(ARTICLE_TIMEOUT_MS)
+    signal
   });
   if (!decodedResponse.ok) return sourceUrl;
   const responseText = await decodedResponse.text();
