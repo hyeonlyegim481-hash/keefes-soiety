@@ -1,21 +1,21 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=36";
+} from "./glossary-data.js?v=37";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=36";
+} from "./glossary-extra-data.js?v=37";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=36";
+} from "./glossary-more-data.js?v=37";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=36";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=36";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=36";
+} from "./glossary-pro-data.js?v=37";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=37";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=37";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions];
 const glossaryCategoryOrder = [

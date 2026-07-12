@@ -1,9 +1,13 @@
-const ARTICLE_TIMEOUT_MS = 2_500;
+const ARTICLE_TIMEOUT_MS = 4_000;
 const articleCache = new Map();
 
 export async function enrichHeadlineWithArticle(headline) {
   const cacheKey = String(headline?.id || headline?.url || headline?.title || "");
-  if (cacheKey && articleCache.has(cacheKey)) return articleCache.get(cacheKey);
+  if (cacheKey && articleCache.has(cacheKey)) {
+    const cached = articleCache.get(cacheKey);
+    if (cached.expiresAt > Date.now()) return cached.result;
+    articleCache.delete(cacheKey);
+  }
 
   const base = {
     ...headline,
@@ -33,12 +37,19 @@ export async function enrichHeadlineWithArticle(headline) {
     if (!contentType.includes("text/html")) return rememberArticleResult(cacheKey, fallback);
     const html = (await response.text()).slice(0, 1_500_000);
     const articleContent = extractArticleContent(html);
-    if (articleContent.length < 120 || isBlockedArticleContent(articleContent)) {
+    if (
+      articleContent.length < 240 ||
+      isBlockedArticleContent(articleContent) ||
+      !hasArticleEvidence(articleContent, base.title)
+    ) {
       return rememberArticleResult(cacheKey, fallback);
     }
 
     const articleSummary = buildExtractiveSummary(articleContent, base.title, 3);
     const articleKeyPoints = buildKeyPoints(articleContent, base.title, 3);
+    if (articleSummary.length < 80 || articleKeyPoints.length < 2) {
+      return rememberArticleResult(cacheKey, fallback);
+    }
     return rememberArticleResult(cacheKey, {
       ...base,
       articleUrl,
@@ -55,7 +66,8 @@ export async function enrichHeadlineWithArticle(headline) {
 function rememberArticleResult(cacheKey, result) {
   if (!cacheKey) return result;
   if (articleCache.size > 100) articleCache.clear();
-  articleCache.set(cacheKey, result);
+  const ttl = result.contentBasis === "article" ? 30 * 60_000 : 45_000;
+  articleCache.set(cacheKey, { result, expiresAt: Date.now() + ttl });
   return result;
 }
 
@@ -127,15 +139,22 @@ function decodeLegacyArticleUrl(bytes) {
 
 function extractArticleContent(html) {
   const jsonBody = html.match(/"articleBody"\s*:\s*"((?:\\.|[^"\\])*)"/i)?.[1];
-  const jsonText = jsonBody ? decodeJsonString(jsonBody) : "";
-  const metaDescription = readMetaDescription(html);
+  const jsonText = stripBoilerplatePhrases(jsonBody ? decodeJsonString(jsonBody) : "");
+  const metaDescription = stripBoilerplatePhrases(readMetaDescription(html));
   const paragraphTexts = [...html.matchAll(/<p\b[^>]*>([\s\S]*?)<\/p>/gi)]
-    .map((match) => cleanHtmlText(match[1]))
+    .map((match) => stripBoilerplatePhrases(cleanHtmlText(match[1])))
     .filter((text) => text.length >= 45 && !isBoilerplate(text));
   const uniqueParagraphs = [...new Set(paragraphTexts)].slice(0, 30);
-  return [jsonText, metaDescription, ...uniqueParagraphs]
-    .map((text) => cleanPlainText(text))
-    .filter((text, index, list) => text && list.indexOf(text) === index)
+  const paragraphContent = uniqueParagraphs.join(" ");
+
+  if (jsonText.length >= 240 && !isBoilerplate(jsonText)) {
+    return jsonText.slice(0, 12_000);
+  }
+  if (paragraphContent.length >= 240) {
+    return paragraphContent.slice(0, 12_000);
+  }
+  return [metaDescription, ...uniqueParagraphs]
+    .filter((text, index, list) => text && !isBoilerplate(text) && list.indexOf(text) === index)
     .join(" ")
     .slice(0, 12_000);
 }
@@ -156,6 +175,33 @@ function readAttribute(tag, name) {
   return match?.[2] || "";
 }
 
+const articleKeywordStopWords = new Set([
+  "관련", "대한", "통해", "위해", "오늘", "이번", "종합", "속보", "단독", "전망", "한국", "경제", "시장", "뉴스"
+]);
+
+function hasArticleEvidence(content, title) {
+  const text = cleanPlainText(content);
+  const sentences = rankSentences(text, title);
+  if (text.length < 240 || sentences.length < 2) return false;
+
+  const titleKeywords = cleanPlainText(title)
+    .split(/[^0-9A-Za-z가-힣]+/)
+    .filter((word) => word.length >= 2 && !articleKeywordStopWords.has(word))
+    .slice(0, 12);
+  if (titleKeywords.length === 0) return text.length >= 500 && sentences.length >= 3;
+  return titleKeywords.some((word) => text.includes(word));
+}
+
+function stripBoilerplatePhrases(value) {
+  return cleanPlainText(value)
+    .replace(/\(예시\)\s*다음뉴스는\s*국내외 주요이슈와\s*실시간 속보,?\s*문화생활 및 다양한 분야의 뉴스를\s*입체적으로 전달하고 있습니다\.?/gi, " ")
+    .replace(/가장 빠른 뉴스가 있고\s*다양한 정보,?\s*쌍방향 소통이 숨쉬는\s*다음뉴스를 만나보세요\.?/gi, " ")
+    .replace(/다양한 정보와?\s*쌍방향 소통이 숨쉬는\s*다음뉴스(?:를 만나보세요)?\.?/gi, " ")
+    .replace(/다음뉴스를 만나보세요\.?/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 function buildExtractiveSummary(content, title, limit) {
   return rankSentences(content, title)
     .slice(0, limit)
@@ -174,6 +220,7 @@ function rankSentences(content, title) {
     .split(/[^0-9A-Za-z가-힣]+/)
     .filter((word) => word.length >= 2)
     .slice(0, 12);
+  const seenSentences = [];
   return cleanPlainText(content)
     .split(/(?<=[.!?。]|다\.)\s+/)
     .map((sentence, index) => ({
@@ -182,6 +229,14 @@ function rankSentences(content, title) {
       score: keywords.reduce((score, word) => score + (sentence.includes(word) ? 2 : 0), 0) + (index < 5 ? 2 : 0)
     }))
     .filter(({ sentence }) => sentence.length >= 35 && sentence.length <= 420 && !isBoilerplate(sentence))
+    .filter(({ sentence }) => {
+      const fingerprint = sentence.toLowerCase().replace(/[^0-9a-z가-힣]+/g, "");
+      const duplicate = seenSentences.some(
+        (seen) => fingerprint === seen || (Math.min(fingerprint.length, seen.length) >= 35 && (fingerprint.includes(seen) || seen.includes(fingerprint)))
+      );
+      if (!duplicate) seenSentences.push(fingerprint);
+      return !duplicate;
+    })
     .sort((a, b) => b.score - a.score || a.index - b.index)
     .slice(0, 8)
     .sort((a, b) => a.index - b.index)
@@ -234,7 +289,7 @@ function isBlockedArticleContent(value) {
 }
 
 function isBoilerplate(text) {
-  return /무단전재|재배포 금지|저작권|구독|로그인|회원가입|쿠키|개인정보|광고|기자\s*[=@]|copyright|Internet Explorer|익스플로러|지원(?:하지|되지)\s*않는\s*브라우저|브라우저(?:를|의)?\s*(?:업데이트|업그레이드)|자바스크립트(?:를)?\s*활성화|Access Denied|Request (?:blocked|denied)|403 Forbidden|captcha|로봇이 아닙니다|비정상적인 접근|자동화된 접근|접근이 차단/i.test(text);
+  return /무단전재|재배포 금지|저작권|구독|로그인|회원가입|쿠키|개인정보|광고|기자\s*[=@]|copyright|가장 빠른 뉴스|쌍방향 소통이 숨쉬는|다음뉴스를 만나보세요|다음뉴스는 국내외 주요이슈|뉴스를 입체적으로 전달|문화생활 및 다양한 분야의 뉴스|언론사별 뉴스|많이 본 뉴스|뉴스홈|뉴스 전체 메뉴|Internet Explorer|익스플로러|지원(?:하지|되지)\s*않는\s*브라우저|브라우저(?:를|의)?\s*(?:업데이트|업그레이드)|자바스크립트(?:를)?\s*활성화|Access Denied|Request (?:blocked|denied)|403 Forbidden|captcha|로봇이 아닙니다|비정상적인 접근|자동화된 접근|접근이 차단/i.test(text);
 }
 
 function isSafePublicUrl(value) {
@@ -251,4 +306,4 @@ function isSafePublicUrl(value) {
   }
 }
 
-export { buildExtractiveSummary, decodeGoogleNewsUrl, isBlockedArticleContent };
+export { buildExtractiveSummary, decodeGoogleNewsUrl, extractArticleContent, hasArticleEvidence, isBlockedArticleContent };
