@@ -1,21 +1,21 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=37";
+} from "./glossary-data.js?v=38";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=37";
+} from "./glossary-extra-data.js?v=38";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=37";
+} from "./glossary-more-data.js?v=38";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=37";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=37";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=37";
+} from "./glossary-pro-data.js?v=38";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=38";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=38";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions];
 const glossaryCategoryOrder = [
@@ -1357,8 +1357,19 @@ function hasMacroValue(item) {
 
 function macroValueText(item, spaced = false) {
   if (!hasMacroValue(item)) return "확인 불가";
+  const formattedValue = formatter.format(Number(item.value));
+  if (/^%\s*YoY$/i.test(String(item.unit || ""))) {
+    return `전년 대비 ${formattedValue}${spaced ? " %" : "%"}`;
+  }
   const separator = spaced ? " " : "";
-  return `${formatter.format(Number(item.value))}${separator}${item.unit || ""}`;
+  return `${formattedValue}${separator}${item.unit || ""}`;
+}
+
+function exportChangeText(item) {
+  if (!hasMacroValue(item)) return "수출 변화 확인 불가";
+  const value = Number(item.value);
+  if (value === 0) return "작년 같은 달과 비슷한 수준";
+  return `작년 같은 달보다 ${formatter.format(Math.abs(value))}% ${value > 0 ? "증가" : "감소"}`;
 }
 
 function macroDeltaText(item) {
@@ -1397,9 +1408,9 @@ function renderMacro(macro, analysis) {
       <p>소비와 성장주 밸류에이션에 직접 연결됩니다.</p>
     </article>
     <article class="brief-card">
-      <span>수출</span>
-      <strong>${macroValueText(exports)}</strong>
-      <p>반도체, 환율, 중국 수요를 함께 확인합니다.</p>
+      <span>수출 변화</span>
+      <strong>${exportChangeText(exports)}</strong>
+      <p>한국이 해외에 판 상품 금액이 1년 전보다 달라졌다는 뜻입니다. 반도체 판매, 환율 효과, 중국 주문 중 무엇이 변화를 만들었는지 나눠 봅니다.</p>
     </article>
     <article class="brief-card">
       <span>가계 부담</span>
