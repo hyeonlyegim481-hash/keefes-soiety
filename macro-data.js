@@ -69,7 +69,7 @@ export async function fetchMacroIndicators() {
 
 async function fetchBaseRate() {
   const html = await fetchOfficialText(BOK_BASE_RATE_URL, "text/html");
-  const chart = html.match(/var\s+chartObj2_s\s*=\s*(\[\[[\s\S]*?\]\])\s*;/i)?.[1];
+  const chart = html.match(/var\s+chartObj2_s\s*=\s*(\[[\s\S]*?\])\s*;/i)?.[1];
   if (!chart) throw new Error("Base-rate series was not found");
 
   const points = [...chart.matchAll(/\["(\d{4})\/(\d{2})\/(\d{2})\s*",\s*([\d.]+)\]/g)]
@@ -81,8 +81,11 @@ async function fetchBaseRate() {
     .sort((a, b) => a.date.localeCompare(b.date));
   if (!points.length) throw new Error("Base-rate observations were not found");
 
-  const latest = points.at(-1);
-  const previous = points.at(-2);
+  const changes = points.filter(
+    (point, index) => index === 0 || point.value !== points[index - 1].value
+  );
+  const latest = changes.at(-1);
+  const previous = changes.at(-2);
   assertRange(latest.value, 0, 20, "Base rate");
   const delta = previous ? round(latest.value - previous.value, 2) : 0;
   return {
@@ -105,7 +108,8 @@ async function fetchConsumerPrices() {
   );
   if (!entry?.href) throw new Error("Latest CPI release was not found");
 
-  const detailUrl = new URL(entry.href, CPI_LIST_URL).href;
+  const embeddedPath = entry.href.match(/addSearchParam\('([^']+)'\)/)?.[1] || entry.href;
+  const detailUrl = new URL(embeddedPath, CPI_LIST_URL).href;
   const detailHtml = await fetchOfficialText(detailUrl, "text/html");
   const text = htmlToText(detailHtml);
   const period = entry.text.match(/^(\d{4})년\s+(\d{1,2})월/);
@@ -274,6 +278,7 @@ function readAttribute(attributes, name) {
 function htmlToText(value) {
   return decodeHtmlEntities(
     String(value || "")
+      .replace(/<!--[\s\S]*?-->/g, " ")
       .replace(/<script\b[\s\S]*?<\/script>/gi, " ")
       .replace(/<style\b[\s\S]*?<\/style>/gi, " ")
       .replace(/<noscript\b[\s\S]*?<\/noscript>/gi, " ")
