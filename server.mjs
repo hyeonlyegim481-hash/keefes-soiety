@@ -9,6 +9,8 @@ const __dirname = path.dirname(__filename);
 const PORT = Number(process.env.PORT || 4173);
 const CACHE_TTL_MS = 45_000;
 const REQUEST_TIMEOUT_MS = 8_000;
+const NEWS_LOOKBACK_DAYS = 7;
+const NEWS_LOOKBACK_MS = NEWS_LOOKBACK_DAYS * 24 * 60 * 60 * 1000;
 const AI_API_URL = process.env.AI_API_URL || "";
 const AI_API_KEY = process.env.AI_API_KEY || "";
 const AI_MODEL = process.env.AI_MODEL || "";
@@ -80,10 +82,28 @@ const macroFallback = [
 ];
 
 const headlineFeeds = [
-  { topic: "한국경제", query: "한국 경제 환율 금리 수출 반도체" },
-  { topic: "세계경제", query: "global economy Fed dollar oil China economy" },
-  { topic: "금융시장", query: "stock market bond yields dollar Korea economy" }
+  { topic: "한국경제", query: "한국 경제 (환율 OR 금리 OR 물가 OR 수출 OR 반도체) when:7d" },
+  { topic: "한국시장", query: "(코스피 OR 코스닥 OR 원달러 OR 한국은행) when:7d" },
+  { topic: "세계경제", query: "(미국 경제 OR 연준 OR 미국 금리 OR 중국 경제) when:7d" },
+  { topic: "금융시장", query: "(나스닥 OR S&P500 OR 미국 국채 OR 국제유가) when:7d" }
 ];
+
+const newsRelevancePatterns = [
+  /경제|경기|성장률|국내총생산|GDP|침체|회복|소비|고용|실업|economy|growth|recession/i,
+  /금리|기준금리|연준|한국은행|채권|국채|물가|인플레이션|Fed|rate|yield|inflation|CPI/i,
+  /환율|원\/달러|원달러|원화|달러|엔화|위안|외환|currency|dollar|won|yen|yuan/i,
+  /코스피|코스닥|증시|주가|주식|나스닥|S&P\s?500|다우|VIX|stock|market/i,
+  /수출|수입|무역|관세|공급망|export|import|trade|tariff/i,
+  /반도체|메모리|HBM|AI|인공지능|chip|semiconductor|technology/i,
+  /중국|미국|유럽|일본|글로벌|세계경제|China|U\.S\.|Europe|Japan|global/i,
+  /유가|원유|WTI|브렌트|OPEC|에너지|oil|crude|energy/i
+];
+
+const koreaNewsPattern = /한국|국내|코스피|코스닥|원\/달러|원달러|원화|한국은행|반도체|수출|Korea|KOSPI|KOSDAQ|KRW/i;
+const headlineStopWords = new Set([
+  "관련", "대한", "통해", "위해", "전망", "속보", "단독", "종합", "오늘", "이번",
+  "the", "and", "for", "with", "from", "after", "into"
+]);
 
 const server = http.createServer(async (req, res) => {
   try {
@@ -158,20 +178,24 @@ async function getSnapshot() {
   }
 
   const headlineResults = await Promise.allSettled(headlineFeeds.map(fetchHeadlines));
-  const headlines = headlineResults
-    .flatMap((result) => (result.status === "fulfilled" ? result.value : []))
-    .slice(0, 12);
+  const rawHeadlines = headlineResults.flatMap((result) =>
+    result.status === "fulfilled" ? result.value : []
+  );
+  const headlines = rankAndDedupeHeadlines(rawHeadlines, now).slice(0, 12);
+  const availableNewsFeedCount = headlineResults.filter(
+    (result) => result.status === "fulfilled"
+  ).length;
 
   const payload = {
     generatedAt: new Date().toISOString(),
     markets,
-    dataQuality: buildDataQuality(markets),
+    dataQuality: buildDataQuality(markets, rawHeadlines, headlines, availableNewsFeedCount),
     macro: macroFallback,
     headlines,
     analysis: buildAnalysis(markets, headlines),
     sources: {
       markets: "Yahoo Finance chart endpoint",
-      news: "Google News RSS",
+      news: `Google News RSS (최근 ${NEWS_LOOKBACK_DAYS}일·관련도 선별·중복 제거)`,
       macro: "public release cadence snapshot"
     }
   };
@@ -261,20 +285,95 @@ async function fetchHeadlines(feed) {
   }
 
   const xml = await response.text();
-  return [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].slice(0, 5).map((match) => {
+  return [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].slice(0, 10).map((match) => {
     const item = match[1];
     const rawTitle = readTag(item, "title");
     const source = readSource(item);
     const title = cleanHeadline(rawTitle, source);
+    const rawPublishedAt = readTag(item, "pubDate");
+    const publishedTimestamp = Date.parse(rawPublishedAt);
     return {
-      id: hash(`${feed.topic}-${title}-${readTag(item, "pubDate")}`),
+      id: hash(`${feed.topic}-${title}-${rawPublishedAt}`),
       topic: feed.topic,
       title,
       source,
       url: decodeXml(readTag(item, "link")),
-      publishedAt: new Date(readTag(item, "pubDate") || Date.now()).toISOString()
+      publishedAt: Number.isFinite(publishedTimestamp)
+        ? new Date(publishedTimestamp).toISOString()
+        : null
     };
   });
+}
+
+function rankAndDedupeHeadlines(items, now = Date.now()) {
+  const ranked = items
+    .map((item) => scoreHeadline(item, now))
+    .filter(Boolean)
+    .sort((a, b) => b.relevanceScore - a.relevanceScore || b.timestamp - a.timestamp);
+  const selected = [];
+
+  for (const candidate of ranked) {
+    if (selected.some((item) => isDuplicateHeadline(candidate, item))) continue;
+    selected.push(candidate);
+  }
+
+  return selected.map(({ fingerprint, tokens, timestamp, ...item }) => item);
+}
+
+function scoreHeadline(item, now) {
+  const timestamp = Date.parse(item.publishedAt);
+  if (!Number.isFinite(timestamp)) return null;
+
+  const age = now - timestamp;
+  if (age < -10 * 60 * 1000 || age > NEWS_LOOKBACK_MS) return null;
+
+  const title = String(item.title || "").trim();
+  const relevanceMatches = newsRelevancePatterns.filter((pattern) => pattern.test(title)).length;
+  if (!title || relevanceMatches === 0) return null;
+
+  const ageHours = Math.max(0, age) / (60 * 60 * 1000);
+  const freshnessScore = ageHours <= 24 ? 6 : ageHours <= 72 ? 4 : 2;
+  const koreaScore = koreaNewsPattern.test(title) ? 4 : 0;
+  const topicScore = /한국/.test(item.topic) ? 2 : 1;
+  const tokens = headlineTokens(title);
+
+  return {
+    ...item,
+    publishedAt: new Date(timestamp).toISOString(),
+    relevanceScore: freshnessScore + relevanceMatches * 3 + koreaScore + topicScore,
+    fingerprint: normalizeHeadline(title),
+    tokens,
+    timestamp
+  };
+}
+
+function isDuplicateHeadline(left, right) {
+  if (left.fingerprint === right.fingerprint) return true;
+  if (left.tokens.size < 5 || right.tokens.size < 5) return false;
+
+  let shared = 0;
+  for (const token of left.tokens) {
+    if (right.tokens.has(token)) shared += 1;
+  }
+  return shared >= 4 && shared / Math.min(left.tokens.size, right.tokens.size) >= 0.72;
+}
+
+function normalizeHeadline(title) {
+  return String(title)
+    .normalize("NFKC")
+    .toLowerCase()
+    .replace(/[\[\(].*?[\]\)]/g, " ")
+    .replace(/[^0-9a-z가-힣]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function headlineTokens(title) {
+  return new Set(
+    normalizeHeadline(title)
+      .split(" ")
+      .filter((token) => token.length > 1 && !headlineStopWords.has(token))
+  );
 }
 
 async function readJsonBody(req) {
@@ -769,11 +868,14 @@ function buildAnalysis(markets, headlines) {
   };
 }
 
-function buildDataQuality(markets) {
+function buildDataQuality(markets, rawHeadlines = [], headlines = [], availableNewsFeedCount = 0) {
   const requestedIds = marketConfig.map((item) => item.id);
   const availableIds = new Set(markets.map((market) => market.id));
   const timestamps = markets
     .map((market) => Date.parse(market.asOf))
+    .filter(Number.isFinite);
+  const headlineTimestamps = headlines
+    .map((headline) => Date.parse(headline.publishedAt))
     .filter(Number.isFinite);
   return {
     requestedMarketCount: requestedIds.length,
@@ -781,7 +883,19 @@ function buildDataQuality(markets) {
     liveMarketCount: markets.filter((market) => market.live).length,
     missingMarketIds: requestedIds.filter((id) => !availableIds.has(id)),
     latestMarketAt: timestamps.length ? new Date(Math.max(...timestamps)).toISOString() : null,
-    oldestMarketAt: timestamps.length ? new Date(Math.min(...timestamps)).toISOString() : null
+    oldestMarketAt: timestamps.length ? new Date(Math.min(...timestamps)).toISOString() : null,
+    requestedNewsFeedCount: headlineFeeds.length,
+    availableNewsFeedCount,
+    fetchedHeadlineCount: rawHeadlines.length,
+    selectedHeadlineCount: headlines.length,
+    rejectedHeadlineCount: Math.max(0, rawHeadlines.length - headlines.length),
+    newsLookbackDays: NEWS_LOOKBACK_DAYS,
+    newestHeadlineAt: headlineTimestamps.length
+      ? new Date(Math.max(...headlineTimestamps)).toISOString()
+      : null,
+    oldestHeadlineAt: headlineTimestamps.length
+      ? new Date(Math.min(...headlineTimestamps)).toISOString()
+      : null
   };
 }
 function sendJson(res, statusCode, payload) {
@@ -816,8 +930,11 @@ function readSource(xml) {
 
 function cleanHeadline(title, source) {
   const decoded = decodeXml(title).replace(/\s+/g, " ").trim();
-  if (!source) return decoded;
-  return decoded.replace(new RegExp(`\\s+-\\s+${escapeRegExp(source)}$`, "i"), "");
+  if (!source) return decoded.replace(/\s+[|·-]\s*$/, "").trim();
+  return decoded
+    .replace(new RegExp(`(?:\\s+-\\s+${escapeRegExp(source)})+$`, "i"), "")
+    .replace(/\s+[|·-]\s*$/, "")
+    .trim();
 }
 
 function decodeXml(value) {
@@ -868,5 +985,6 @@ export {
   buildAutomatedNewsAnalysis,
   enhanceNewsAnalysisWithAi,
   getSnapshot,
-  normalizeHeadlineInput
+  normalizeHeadlineInput,
+  rankAndDedupeHeadlines
 };

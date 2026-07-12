@@ -1854,6 +1854,27 @@ main {
   padding: 12px 22px 22px;
 }
 
+.news-empty-state {
+  display: grid;
+  gap: 7px;
+  padding: 26px 4px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.news-empty-state strong {
+  color: var(--ink);
+  font-size: 0.95rem;
+}
+
+.news-empty-state p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.65;
+  word-break: keep-all;
+}
+
 .news-item {
   display: grid;
   min-width: 0;

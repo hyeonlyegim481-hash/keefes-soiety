@@ -1,21 +1,21 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=29";
+} from "./glossary-data.js?v=30";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=29";
+} from "./glossary-extra-data.js?v=30";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=29";
+} from "./glossary-more-data.js?v=30";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=29";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=29";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=29";
+} from "./glossary-pro-data.js?v=30";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=30";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=30";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions];
 const glossaryCategoryOrder = [
@@ -494,7 +494,7 @@ function render(snapshot) {
   renderStudy(snapshot);
   renderGlossary();
   renderQuiz();
-  renderNews(snapshot.headlines, snapshot.analysis);
+  renderNews(snapshot.headlines, snapshot.analysis, snapshot.dataQuality);
   drawChart();
   setActiveChapter(state.activeChapter, { skipAnimation: true });
 }
@@ -1897,7 +1897,8 @@ function quizHash(value) {
   return output;
 }
 
-function renderNews(headlines, analysis) {
+function renderNews(headlines = [], analysis, dataQuality = {}) {
+  const lookbackDays = Number(dataQuality?.newsLookbackDays) || 7;
   const topicCounts = headlines.reduce((acc, headline) => {
     acc[headline.topic] = (acc[headline.topic] || 0) + 1;
     return acc;
@@ -1905,9 +1906,11 @@ function renderNews(headlines, analysis) {
   const topTopics = Object.entries(topicCounts)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 3);
-  const firstTopic = topTopics[0]?.[0] || "시장";
+  const firstTopic = topTopics[0]?.[0] || "선별 기사 없음";
   const riskText =
-    analysis?.riskScore >= 66
+    headlines.length === 0
+      ? `최근 ${lookbackDays}일 안에 경제 관련성과 최신성 기준을 통과한 새 기사가 없습니다.`
+      : analysis?.riskScore >= 66
       ? "뉴스는 방어적인 가격 흐름을 확인하는 재료로 봅니다."
       : analysis?.riskScore >= 45
         ? "뉴스는 방향을 정하기보다 변동 요인을 걸러내는 용도입니다."
@@ -1932,53 +1935,67 @@ function renderNews(headlines, analysis) {
       .join("")}
   `;
 
-  elements.newsList.replaceChildren(
-    ...headlines.slice(0, 12).map((headline, index) => {
-      const item = document.createElement("article");
-      const newsUrl = safeNewsUrl(headline.url);
-      item.className = "news-item";
-      item.innerHTML = `
-        <div class="news-item-head">
-          <span class="news-index">${String(index + 1).padStart(2, "0")}</span>
-          <a class="news-link" href="${escapeHtml(newsUrl)}" target="${newsUrl.startsWith("http") ? "_blank" : "_self"}" rel="noreferrer">
-            <span class="news-title">${escapeHtml(headline.title)}</span>
-            <span class="news-meta">
-              <span>${escapeHtml(headline.topic)}</span>
-              <span>${escapeHtml(headline.source)}</span>
-              <span>${relativeTime(headline.publishedAt)}</span>
-            </span>
-          </a>
-        </div>
-        <details class="news-ai-detail">
-          <summary>
-            <span class="ai-label">AI</span>
-            <strong>상세 분석 보기</strong>
-            <em>핵심 의미 · 시장 영향 · 한국 영향 · 다음 확인</em>
-          </summary>
-          <div class="news-ai-output" data-news-analysis>
-            <p>분석을 준비하고 있습니다.</p>
+  if (headlines.length === 0) {
+    elements.newsList.innerHTML = `
+      <article class="news-empty-state">
+        <strong>현재 표시할 새 경제 기사가 없습니다.</strong>
+        <p>최근 ${lookbackDays}일 기사만 사용하며, 오래되거나 경제 관련성이 낮은 기사를 대신 채우지 않습니다.</p>
+      </article>
+    `;
+  } else {
+    elements.newsList.replaceChildren(
+      ...headlines.slice(0, 12).map((headline, index) => {
+        const item = document.createElement("article");
+        const newsUrl = safeNewsUrl(headline.url);
+        item.className = "news-item";
+        item.innerHTML = `
+          <div class="news-item-head">
+            <span class="news-index">${String(index + 1).padStart(2, "0")}</span>
+            <a class="news-link" href="${escapeHtml(newsUrl)}" target="${newsUrl.startsWith("http") ? "_blank" : "_self"}" rel="noreferrer">
+              <span class="news-title">${escapeHtml(headline.title)}</span>
+              <span class="news-meta">
+                <span>${escapeHtml(headline.topic)}</span>
+                <span>${escapeHtml(headline.source)}</span>
+                <span>${relativeTime(headline.publishedAt)}</span>
+              </span>
+            </a>
           </div>
-        </details>
-      `;
-      const details = item.querySelector(".news-ai-detail");
-      details.addEventListener("toggle", () => {
-        if (details.open && details.dataset.loaded !== "true") {
-          loadNewsAnalysis(details, headline, analysis);
-        }
-      });
-      return item;
-    })
-  );
+          <details class="news-ai-detail">
+            <summary>
+              <span class="ai-label">AI</span>
+              <strong>상세 분석 보기</strong>
+              <em>핵심 의미 · 시장 영향 · 한국 영향 · 다음 확인</em>
+            </summary>
+            <div class="news-ai-output" data-news-analysis>
+              <p>분석을 준비하고 있습니다.</p>
+            </div>
+          </details>
+        `;
+        const details = item.querySelector(".news-ai-detail");
+        details.addEventListener("toggle", () => {
+          if (details.open && details.dataset.loaded !== "true") {
+            loadNewsAnalysis(details, headline, analysis);
+          }
+        });
+        return item;
+      })
+    );
+  }
   renderNewsBoard(headlines, topTopics, analysis);
-  renderNewsIntelligence(headlines, topTopics, analysis);
+  renderNewsIntelligence(headlines, topTopics, analysis, dataQuality);
 }
 
 function renderNewsBoard(headlines, topTopics, analysis) {
   const newest = headlines[0];
   const koreaCount = headlines.filter((headline) => /한국|Korea|국내/i.test(headline.topic)).length;
   const globalCount = headlines.filter((headline) => /세계|글로벌|미국|Fed|금리|물가|경제/i.test(headline.topic)).length;
-  const readingMode =
-    analysis?.riskScore >= 66 ? "악재 확인" : analysis?.riskScore >= 45 ? "방향 필터링" : "호재 지속 확인";
+  const readingMode = headlines.length === 0
+    ? "새 기사 대기"
+    : analysis?.riskScore >= 66
+      ? "악재 확인"
+      : analysis?.riskScore >= 45
+        ? "방향 필터링"
+        : "호재 지속 확인";
 
   elements.newsBoard.innerHTML = `
     <div class="board-heading">
@@ -1991,8 +2008,8 @@ function renderNewsBoard(headlines, topTopics, analysis) {
     <div class="chapter-board-grid">
       <article class="board-card board-card-main">
         <span>첫 번째로 볼 기사</span>
-        <strong>${newest?.title || "헤드라인 확인 중"}</strong>
-        <p>${newest ? `${newest.topic} · ${newest.source} · ${relativeTime(newest.publishedAt)}` : "뉴스 데이터를 정리하고 있습니다."}</p>
+        <strong>${escapeHtml(newest?.title || "최근 기준을 통과한 기사 없음")}</strong>
+        <p>${newest ? `${escapeHtml(newest.topic)} · ${escapeHtml(newest.source)} · ${relativeTime(newest.publishedAt)}` : "오래된 기사를 가져와 빈자리를 채우지 않습니다."}</p>
       </article>
       <article class="board-card">
         <span>한국 뉴스</span>
@@ -2013,7 +2030,9 @@ function renderNewsBoard(headlines, topTopics, analysis) {
   `;
 }
 
-function renderNewsIntelligence(headlines, topTopics, analysis) {
+function renderNewsIntelligence(headlines, topTopics, analysis, dataQuality = {}) {
+  const lookbackDays = Number(dataQuality?.newsLookbackDays) || 7;
+  const fetchedCount = Number(dataQuality?.fetchedHeadlineCount) || headlines.length;
   const combined = headlines.map((headline) => headline.title).join(" ");
   const themes = [
     [/금리|연준|Fed|채권|물가|inflation|CPI/i, "금리·물가"],
@@ -2038,7 +2057,7 @@ function renderNewsIntelligence(headlines, topTopics, analysis) {
           <p class="section-kicker">뉴스 인텔리전스</p>
           <h3>헤드라인을 가격 신호와 연결하기</h3>
         </div>
-        <span>${headlines.length}건 분석 대상</span>
+        <span>최근 ${lookbackDays}일 · ${headlines.length}/${fetchedCount}건 선정</span>
       </div>
       <div class="intelligence-grid">
         <article>
@@ -2049,7 +2068,7 @@ function renderNewsIntelligence(headlines, topTopics, analysis) {
         <article>
           <span>최신성</span>
           <strong>24시간 이내 ${freshCount}건</strong>
-          <p>오래된 기사는 배경 설명으로 보고, 현재 가격을 움직이는 재료와 구분해서 읽습니다.</p>
+          <p>최근 ${lookbackDays}일 범위 안에서도 새 기사를 우선하며, 오래된 기사는 자동으로 제외합니다.</p>
         </article>
         <article>
           <span>문장 온도</span>
@@ -2062,7 +2081,7 @@ function renderNewsIntelligence(headlines, topTopics, analysis) {
           <p>${analysis.riskScore >= 66 ? "부정적 뉴스가 가격 약세와 맞물리는지 먼저 확인합니다." : analysis.riskScore >= 45 ? "호재와 악재가 어느 가격에 반영됐는지 구분합니다." : "회복 뉴스가 환율과 주가에 동시에 반영되는지 확인합니다."}</p>
         </article>
       </div>
-      <p class="data-caveat">AI 상세 분석은 각 기사 아래에서 펼칠 수 있습니다. 헤드라인만으로 확정하지 말고 원문과 실제 가격 반응을 함께 확인하세요.</p>
+      <p class="data-caveat">최근 ${lookbackDays}일 기사 중 경제 관련성이 높은 내용을 선별하고 유사 기사를 합쳤습니다. AI 상세 분석은 각 기사 아래에서 펼칠 수 있으며, 최종 판단 전 원문과 실제 가격 반응을 함께 확인하세요.</p>
     </section>
   `;
 }
