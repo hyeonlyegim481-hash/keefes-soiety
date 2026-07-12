@@ -1,21 +1,21 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=31";
+} from "./glossary-data.js?v=32";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=31";
+} from "./glossary-extra-data.js?v=32";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=31";
+} from "./glossary-more-data.js?v=32";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=31";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=31";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=31";
+} from "./glossary-pro-data.js?v=32";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=32";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=32";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions];
 const glossaryCategoryOrder = [
@@ -1285,7 +1285,8 @@ function macroDeltaClass(item) {
 
 function macroBasisText(item) {
   if (item?.status !== "official") return "공식 자료를 불러오지 못했습니다.";
-  return `${item.periodLabel || "최근 공표"} 기준 · 공식 최신 발표`;
+  const basis = item.periodLabel || "최근 공표";
+  return item.stale ? `${basis} 기준 · 마지막 정상 공식값` : `${basis} 기준 · 공식 최신 발표`;
 }
 function renderMacro(macro, analysis) {
   const watchItems = analysis?.koreaWatch || [];
@@ -2130,6 +2131,7 @@ async function loadNewsAnalysis(details, headline, marketAnalysis) {
     const response = await fetch("/api/news-analysis", {
       method: "POST",
       headers: { "content-type": "application/json", accept: "application/json" },
+      signal: AbortSignal.timeout(14_000),
       body: JSON.stringify({
         id: headline.id,
         title: headline.title,

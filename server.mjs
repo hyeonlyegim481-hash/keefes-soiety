@@ -18,6 +18,9 @@ const AI_MODEL = process.env.AI_MODEL || "";
 
 let snapshotCache = null;
 const newsAnalysisCache = new Map();
+const newsAnalysisRateLimits = new Map();
+const NEWS_ANALYSIS_RATE_WINDOW_MS = 60_000;
+const NEWS_ANALYSIS_RATE_LIMIT = 12;
 
 const mimeTypes = {
   ".html": "text/html; charset=utf-8",
@@ -78,6 +81,12 @@ const server = http.createServer(async (req, res) => {
         sendJson(res, 405, { error: "Method not allowed" });
         return;
       }
+      const quota = consumeNewsAnalysisQuota(getRequestClientKey(req));
+      if (!quota.allowed) {
+        res.setHeader("Retry-After", String(quota.retryAfter));
+        sendJson(res, 429, { error: "Too many analysis requests" });
+        return;
+      }
       const input = await readJsonBody(req);
       const requestedHeadline = normalizeHeadlineInput(input);
       if (!requestedHeadline.title) {
@@ -85,11 +94,13 @@ const server = http.createServer(async (req, res) => {
         return;
       }
       const snapshot = await getSnapshot();
-      const trustedHeadline = snapshot.headlines.find((item) =>
-        item.id === requestedHeadline.id || item.title === requestedHeadline.title
-      ) || requestedHeadline;
+      const trustedHeadline = findTrustedHeadline(snapshot, requestedHeadline);
+      if (!trustedHeadline) {
+        sendJson(res, 404, { error: "Headline is not in the current news list" });
+        return;
+      }
       const headline = await enrichHeadlineWithArticle(trustedHeadline);
-      const cacheKey = hash(`${headline.id || headline.title}-${snapshot.generatedAt}`);
+      const cacheKey = hash(`${headline.id || headline.title}-${snapshot.generatedAt.slice(0, 13)}`);
       const cached = newsAnalysisCache.get(cacheKey);
       if (cached) {
         sendJson(res, 200, cached);
@@ -132,11 +143,8 @@ async function getSnapshot() {
   const markets = marketResults.flatMap((result) =>
     result.status === "fulfilled" ? [result.value] : []
   );
-  const requiredMarketIds = ["kospi", "usdkrw", "sp500", "vix", "wti"];
-  const availableMarketIds = new Set(markets.map((market) => market.id));
-  const missingRequired = requiredMarketIds.filter((id) => !availableMarketIds.has(id));
-  if (missingRequired.length) {
-    throw new Error(`Required market data unavailable: ${missingRequired.join(", ")}`);
+  if (!markets.length) {
+    throw new Error("All market data is unavailable");
   }
   const rawHeadlines = headlineResults.flatMap((result) =>
     result.status === "fulfilled" ? result.value : []
@@ -368,6 +376,34 @@ function normalizeHeadlineInput(input) {
   };
 }
 
+function findTrustedHeadline(snapshot, requestedHeadline) {
+  return (snapshot?.headlines || []).find((item) =>
+    item.id === requestedHeadline.id || item.title === requestedHeadline.title
+  ) || null;
+}
+
+function consumeNewsAnalysisQuota(clientKey, now = Date.now()) {
+  const key = String(clientKey || "anonymous").slice(0, 160);
+  const current = newsAnalysisRateLimits.get(key);
+  const windowStart = current?.windowStart || now;
+  const count = current && now - windowStart < NEWS_ANALYSIS_RATE_WINDOW_MS ? current.count : 0;
+  const activeWindowStart = count ? windowStart : now;
+  if (count >= NEWS_ANALYSIS_RATE_LIMIT) {
+    return {
+      allowed: false,
+      retryAfter: Math.max(1, Math.ceil((NEWS_ANALYSIS_RATE_WINDOW_MS - (now - activeWindowStart)) / 1000))
+    };
+  }
+  if (newsAnalysisRateLimits.size > 500) newsAnalysisRateLimits.clear();
+  newsAnalysisRateLimits.set(key, { windowStart: activeWindowStart, count: count + 1 });
+  return { allowed: true, retryAfter: 0 };
+}
+
+function getRequestClientKey(request) {
+  const forwarded = request?.headers?.["x-forwarded-for"];
+  return String(forwarded || request?.socket?.remoteAddress || "local").split(",")[0].trim();
+}
+
 function buildAutomatedNewsAnalysis(headline, snapshot) {
   const title = String(headline.title || "").trim();
   const text = `${title} ${headline.topic || ""} ${headline.articleContent || ""}`;
@@ -563,7 +599,7 @@ async function enhanceNewsAnalysisWithAi(headline, snapshot, fallback) {
           }
         ]
       }),
-      signal: AbortSignal.timeout(15_000)
+      signal: AbortSignal.timeout(7_000)
     });
     if (!response.ok) return fallback;
     const data = await response.json();
@@ -966,7 +1002,9 @@ function formatNumber(value) {
 
 export {
   buildAutomatedNewsAnalysis,
+  consumeNewsAnalysisQuota,
   enhanceNewsAnalysisWithAi,
+  findTrustedHeadline,
   getSnapshot,
   normalizeHeadlineInput,
   rankAndDedupeHeadlines

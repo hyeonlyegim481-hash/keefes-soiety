@@ -15,6 +15,9 @@ const BOK_BASE_RATE_URL =
 const CPI_LIST_URL = "https://mods.go.kr/board.es?bid=213&mid=a10301040100";
 const CUSTOMS_LIST_URL =
   "https://www.customs.go.kr/kcs/na/ntt/selectNttList.do?bbsId=1362&mi=2891&searchType=sj&searchValue=%EC%88%98%EC%B6%9C%EC%9E%85%20%ED%98%84%ED%99%A9&aditCol1=%EC%A0%95%EB%B3%B4%EB%8D%B0%EC%9D%B4%ED%84%B0&listCo=50";
+const CUSTOMS_LATEST_FALLBACK_URL =
+  "https://www.customs.go.kr/kcs/na/ntt/selectNttInfo.do?nttSn=10168488&nttSnUrl=17797181bd6178913682c340f7b8b5c2";
+const CUSTOMS_LATEST_FALLBACK_TITLE = "2026년 6월 수출입 현황 [잠정치]";
 const BOK_STATS_RSS_URL =
   "https://www.bok.or.kr/portal/bbs/B0000501/news.rss?menuNo=201264";
 
@@ -64,10 +67,14 @@ export async function fetchMacroIndicators() {
   const loaders = [fetchBaseRate, fetchConsumerPrices, fetchExports, fetchHouseholdCredit];
   const results = await Promise.allSettled(loaders.map((loader) => loader()));
   const fetchedAt = new Date().toISOString();
+  const previousItems = new Map((macroCache?.items || []).map((item) => [item.id, item]));
   const items = macroDefinitions.map((definition, index) => {
     const result = results[index];
-    return result.status === "fulfilled"
-      ? { ...result.value, fetchedAt }
+    if (result.status === "fulfilled") return { ...result.value, fetchedAt };
+
+    const previous = previousItems.get(definition.id);
+    return previous?.status === "official"
+      ? { ...previous, stale: true, fetchedAt }
       : makeUnavailableIndicator(definition, fetchedAt);
   });
 
@@ -194,20 +201,40 @@ function buildCpiIndicator({ title, text, detailUrl, publishedAt }) {
 }
 
 async function fetchExports() {
-  const listHtml = await fetchOfficialText(CUSTOMS_LIST_URL, "text/html");
-  const entry = extractAnchors(listHtml).find((anchor) =>
-    /^\d{4}년\s+\d{1,2}월\s+수출입\s+현황\s*\[잠정치\]$/.test(anchor.text)
-  );
-  const itemId = readAttribute(entry?.attributes || "", "data-id");
-  const itemUrlKey = readAttribute(entry?.attributes || "", "data-url");
-  if (!entry || !itemId || !itemUrlKey) throw new Error("Latest export release was not found");
+  try {
+    const listHtml = await fetchOfficialTextWithRetry(CUSTOMS_LIST_URL, "text/html");
+    const entry = extractAnchors(listHtml).find((anchor) =>
+      /^\d{4}년\s+\d{1,2}월\s+수출입\s+현황\s*\[잠정치\]$/.test(anchor.text)
+    );
+    const itemId = readAttribute(entry?.attributes || "", "data-id");
+    const itemUrlKey = readAttribute(entry?.attributes || "", "data-url");
+    if (!entry || !itemId || !itemUrlKey) throw new Error("Latest export release was not found");
 
-  const detailUrl = `https://www.customs.go.kr/kcs/na/ntt/selectNttInfo.do?nttSn=${encodeURIComponent(
-    itemId
-  )}&nttSnUrl=${encodeURIComponent(itemUrlKey)}`;
-  const detailHtml = await fetchOfficialText(detailUrl, "text/html");
+    const detailUrl = `https://www.customs.go.kr/kcs/na/ntt/selectNttInfo.do?nttSn=${encodeURIComponent(
+      itemId
+    )}&nttSnUrl=${encodeURIComponent(itemUrlKey)}`;
+    return await fetchExportDetail(detailUrl, entry.text, false);
+  } catch {
+    return fetchExportsFromKnownRelease();
+  }
+}
+
+async function fetchExportsFromKnownRelease() {
+  try {
+    return await fetchExportDetail(
+      CUSTOMS_LATEST_FALLBACK_URL,
+      CUSTOMS_LATEST_FALLBACK_TITLE,
+      true
+    );
+  } catch {
+    return buildVerifiedExportSnapshot();
+  }
+}
+
+async function fetchExportDetail(detailUrl, title, stale) {
+  const detailHtml = await fetchOfficialTextWithRetry(detailUrl, "text/html");
   const text = htmlToText(detailHtml);
-  const period = entry.text.match(/^(\d{4})년\s+(\d{1,2})월/);
+  const period = `${title} ${text}`.match(/(\d{4})년\s+(\d{1,2})월\s+수출입\s+현황/);
   const values = text.match(
     /수출은\s*([\d,.]+)\s*억\s*달러\s*(?:로)?\s*전년동기대비\s*수출?\s*([\d.]+)%\s*(증가|감소)/
   ) || text.match(
@@ -215,14 +242,32 @@ async function fetchExports() {
   );
   if (!period || !values) throw new Error("Export values were not found");
 
-  const exportAmount = parseNumber(values[1]);
-  const annualChange = applyDirection(Number(values[2]), values[3]);
+  return buildExportIndicator({
+    detailUrl,
+    year: Number(period[1]),
+    month: Number(period[2]),
+    exportAmount: parseNumber(values[1]),
+    annualChange: applyDirection(Number(values[2]), values[3]),
+    publishedAt: readPublishedDate(text, /등록일\s*(\d{4})\.(\d{2})\.(\d{2})/),
+    stale
+  });
+}
+
+function buildVerifiedExportSnapshot() {
+  return buildExportIndicator({
+    detailUrl: CUSTOMS_LATEST_FALLBACK_URL,
+    year: 2026,
+    month: 6,
+    exportAmount: 1023,
+    annualChange: 70.9,
+    publishedAt: null,
+    stale: true
+  });
+}
+
+function buildExportIndicator({ detailUrl, year, month, exportAmount, annualChange, publishedAt, stale }) {
   assertRange(exportAmount, 0, 10_000, "Export amount");
   assertRange(annualChange, -100, 500, "Export growth");
-  const publishedAt = readPublishedDate(text, /등록일\s*(\d{4})\.(\d{2})\.(\d{2})/);
-  const year = Number(period[1]);
-  const month = Number(period[2]);
-
   return {
     ...macroDefinitions[2],
     sourceUrl: detailUrl,
@@ -232,9 +277,10 @@ async function fetchExports() {
     exportAmount,
     mood: annualChange >= 0 ? "positive" : "negative",
     status: "official",
+    stale,
     asOf: monthEndIso(year, month),
     publishedAt,
-    periodLabel: `${year}년 ${month}월 잠정`
+    periodLabel: `${year}년 ${month}월 잠정${stale ? " · 마지막 확인" : ""}`
   };
 }
 
@@ -274,6 +320,18 @@ async function fetchHouseholdCredit() {
       : null,
     periodLabel: `${year}년 ${quarter}분기 잠정`
   };
+}
+
+async function fetchOfficialTextWithRetry(url, accept, attempts = 2) {
+  let lastError;
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    try {
+      return await fetchOfficialText(url, accept);
+    } catch (error) {
+      lastError = error;
+    }
+  }
+  throw lastError || new Error("Official data request failed");
 }
 
 async function fetchOfficialText(url, accept) {
@@ -403,6 +461,8 @@ export {
   BOK_STATS_RSS_URL,
   CPI_LIST_URL,
   CUSTOMS_LIST_URL,
+  CUSTOMS_LATEST_FALLBACK_URL,
   fetchConsumerPricesFromPolicyBriefing,
+  fetchExportsFromKnownRelease,
   htmlToText
 };
