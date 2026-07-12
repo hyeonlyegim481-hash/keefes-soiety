@@ -46,7 +46,28 @@ const headlineFeeds = [
   { topic: "한국경제", query: "한국 경제 (환율 OR 금리 OR 물가 OR 수출 OR 반도체) when:7d" },
   { topic: "한국시장", query: "(코스피 OR 코스닥 OR 원달러 OR 한국은행) when:7d" },
   { topic: "세계경제", query: "(미국 경제 OR 연준 OR 미국 금리 OR 중국 경제) when:7d" },
-  { topic: "금융시장", query: "(나스닥 OR S&P500 OR 미국 국채 OR 국제유가) when:7d" }
+  { topic: "금융시장", query: "(나스닥 OR S&P500 OR 미국 국채 OR 국제유가) when:7d" },
+  { topic: "정책·지표", query: "(기획재정부 OR 한국은행 OR 국가데이터처 OR 금융위원회 OR 관세청) (경제 OR 금리 OR 물가 OR 수출) when:7d" },
+  { topic: "산업·기업", query: "(기업 실적 OR 반도체 OR 자동차 OR 조선 OR 배터리 OR 설비투자) 한국 when:7d" },
+  { topic: "부동산·가계", query: "(주택시장 OR 아파트값 OR 전세 OR 가계대출 OR 소비자심리 OR 취업자 OR 실업률 OR 자영업경기) 한국 when:7d" }
+];
+
+const topicRelevancePatterns = {
+  "정책·지표": /기준금리|금통위|물가|소비자물가|GDP|성장률|수출|수입|무역|환율|재정|세금|취업자|실업률|금융위원회|금융감독원|한국은행|한은/i,
+  "산업·기업": /기업|실적|매출|영업이익|순이익|반도체|자동차|조선|배터리|설비투자|상장|수주|공장|CAPEX/i,
+  "부동산·가계": /주택|아파트|전세|월세|부동산|가계대출|주담대|DSR|소비자심리|소매판매|취업자|실업률|자영업\s*(?:경기|매출|대출)/i
+};
+const newsEntityPatterns = [
+  ["kospi", /코스피|KOSPI/i],
+  ["kosdaq", /코스닥|KOSDAQ/i],
+  ["sp500", /S&P\s*500|S&P500/i],
+  ["nasdaq", /나스닥|NASDAQ/i],
+  ["rates", /기준금리|국채금리|채권금리|금통위|연준|FED/i],
+  ["fx", /원\/달러|원달러|원화|환율|달러/i],
+  ["chips", /반도체|HBM|메모리|삼성전자|SK하이닉스/i],
+  ["oil", /유가|WTI|원유|OPEC/i],
+  ["exports", /수출|무역수지/i],
+  ["housing", /주택|아파트|전세|부동산|주담대/i]
 ];
 
 const newsRelevancePatterns = [
@@ -61,8 +82,13 @@ const newsRelevancePatterns = [
 ];
 
 const koreaNewsPattern = /한국|국내|코스피|코스닥|원\/달러|원달러|원화|한국은행|반도체|수출|Korea|KOSPI|KOSDAQ|KRW/i;
+const primaryNewsSourcePattern = /한국은행|국가데이터처|통계청|기획재정부|산업통상자원부|금융위원회|금융감독원|관세청|KDI|대한민국 정책브리핑/i;
+const establishedNewsSourcePattern = /연합뉴스|연합인포맥스|KBS|MBC|SBS|한국경제|매일경제|서울경제|머니투데이|로이터|Reuters|Bloomberg|블룸버그/i;
+const clickbaitHeadlinePattern = /피눈물|대박|충격|발칵|이 사람들|그만할래|무조건|역대급|폭망|몰빵|개미군단|난리 났다/i;
+const scheduleHeadlinePattern = /\[(?:다음주|주간).*일정\]|주요 일정|경제 캘린더/i;
 const headlineStopWords = new Set([
   "관련", "대한", "통해", "위해", "전망", "속보", "단독", "종합", "오늘", "이번",
+  "상승", "하락", "급등", "급락", "반등", "강세", "약세", "혼조", "출발", "마감", "선물",
   "the", "and", "for", "with", "from", "after", "into"
 ]);
 
@@ -149,7 +175,7 @@ async function getSnapshot() {
   const rawHeadlines = headlineResults.flatMap((result) =>
     result.status === "fulfilled" ? result.value : []
   );
-  const headlines = rankAndDedupeHeadlines(rawHeadlines, now).slice(0, 12);
+  const headlines = selectDiverseHeadlines(rankAndDedupeHeadlines(rawHeadlines, now), 12);
   const availableNewsFeedCount = headlineResults.filter(
     (result) => result.status === "fulfilled"
   ).length;
@@ -280,18 +306,70 @@ async function fetchHeadlines(feed) {
 }
 
 function rankAndDedupeHeadlines(items, now = Date.now()) {
-  const ranked = items
-    .map((item) => scoreHeadline(item, now))
-    .filter(Boolean)
-    .sort((a, b) => b.relevanceScore - a.relevanceScore || b.timestamp - a.timestamp);
-  const selected = [];
+  const scored = items.map((item) => scoreHeadline(item, now)).filter(Boolean);
+  const newestFirst = [...scored].sort((a, b) => b.timestamp - a.timestamp);
+  const clustered = [];
 
-  for (const candidate of ranked) {
-    if (selected.some((item) => isDuplicateHeadline(candidate, item))) continue;
-    selected.push(candidate);
+  for (const candidate of newestFirst) {
+    const existing = clustered.find((item) => isDuplicateHeadline(candidate, item));
+    if (existing) {
+      const relatedSources = new Set([...(existing.relatedSources || []), candidate.source].filter(Boolean));
+      existing.relatedSources = [...relatedSources];
+      existing.relatedSourceCount = relatedSources.size;
+      existing.relatedHeadlineCount = (existing.relatedHeadlineCount || 1) + 1;
+      existing.relevanceScore = Math.max(existing.relevanceScore, candidate.relevanceScore);
+      existing.hasPrimaryCorroboration =
+        existing.hasPrimaryCorroboration || candidate.sourceTier === "primary";
+      continue;
+    }
+
+    clustered.push({
+      ...candidate,
+      relatedSources: candidate.source ? [candidate.source] : [],
+      relatedSourceCount: candidate.source ? 1 : 0,
+      relatedHeadlineCount: 1,
+      hasPrimaryCorroboration: candidate.sourceTier === "primary"
+    });
   }
 
-  return selected.map(({ fingerprint, tokens, timestamp, ...item }) => item);
+  return clustered
+    .sort((a, b) => b.relevanceScore - a.relevanceScore || b.timestamp - a.timestamp)
+    .map(({ fingerprint, tokens, entities, timestamp, ...item }) => item);
+}
+
+function selectDiverseHeadlines(items, limit = 12) {
+  const selected = [];
+  const deferred = [];
+  const sourceCounts = new Map();
+  const topicCounts = new Map();
+
+  for (const item of items) {
+    const sourceCount = sourceCounts.get(item.source) || 0;
+    const topicCount = topicCounts.get(item.topic) || 0;
+    if (sourceCount >= 2 || topicCount >= 3) {
+      deferred.push(item);
+      continue;
+    }
+    selected.push(item);
+    sourceCounts.set(item.source, sourceCount + 1);
+    topicCounts.set(item.topic, topicCount + 1);
+    if (selected.length === limit) return selected;
+  }
+
+  for (const item of deferred) {
+    if (selected.includes(item)) continue;
+    const sourceCount = sourceCounts.get(item.source) || 0;
+    if (sourceCount >= 3) continue;
+    selected.push(item);
+    sourceCounts.set(item.source, sourceCount + 1);
+    if (selected.length === limit) return selected;
+  }
+
+  for (const item of items) {
+    if (!selected.includes(item)) selected.push(item);
+    if (selected.length === limit) break;
+  }
+  return selected;
 }
 
 function scoreHeadline(item, now) {
@@ -303,33 +381,60 @@ function scoreHeadline(item, now) {
 
   const title = String(item.title || "").trim();
   const relevanceMatches = newsRelevancePatterns.filter((pattern) => pattern.test(title)).length;
-  if (!title || relevanceMatches === 0) return null;
+  const topicPattern = topicRelevancePatterns[item.topic];
+  if (!title || relevanceMatches === 0 || (topicPattern && !topicPattern.test(title))) return null;
 
   const ageHours = Math.max(0, age) / (60 * 60 * 1000);
   const freshnessScore = ageHours <= 24 ? 6 : ageHours <= 72 ? 4 : 2;
   const koreaScore = koreaNewsPattern.test(title) ? 4 : 0;
-  const topicScore = /한국/.test(item.topic) ? 2 : 1;
+  const topicScore = /한국|정책|산업|부동산/.test(item.topic) ? 2 : 1;
+  const sourceTier = primaryNewsSourcePattern.test(item.source)
+    ? "primary"
+    : establishedNewsSourcePattern.test(item.source)
+      ? "established"
+      : "other";
+  const sourceScore = sourceTier === "primary" ? 6 : sourceTier === "established" ? 2 : 0;
+  const headlinePenalty = (clickbaitHeadlinePattern.test(title) ? 5 : 0) +
+    (scheduleHeadlinePattern.test(title) ? 5 : 0);
   const tokens = headlineTokens(title);
 
   return {
     ...item,
     publishedAt: new Date(timestamp).toISOString(),
-    relevanceScore: freshnessScore + relevanceMatches * 3 + koreaScore + topicScore,
+    sourceTier,
+    relevanceScore: freshnessScore + relevanceMatches * 3 + koreaScore + topicScore + sourceScore - headlinePenalty,
     fingerprint: normalizeHeadline(title),
     tokens,
+    entities: headlineEntities(title),
     timestamp
   };
 }
 
 function isDuplicateHeadline(left, right) {
   if (left.fingerprint === right.fingerprint) return true;
-  if (left.tokens.size < 5 || right.tokens.size < 5) return false;
+  const timeGap = Math.abs(left.timestamp - right.timestamp);
+  if (timeGap > 48 * 60 * 60 * 1000) return false;
+
+  const sharedEntities = [...left.entities].filter((entity) => right.entities.has(entity)).length;
+  if (timeGap <= 18 * 60 * 60 * 1000 && sharedEntities >= 2) return true;
+  if (left.tokens.size < 3 || right.tokens.size < 3) return false;
 
   let shared = 0;
   for (const token of left.tokens) {
     if (right.tokens.has(token)) shared += 1;
   }
-  return shared >= 4 && shared / Math.min(left.tokens.size, right.tokens.size) >= 0.72;
+  const overlap = shared / Math.min(left.tokens.size, right.tokens.size);
+  if (
+    timeGap <= 12 * 60 * 60 * 1000 &&
+    left.source === right.source &&
+    sharedEntities >= 1 &&
+    shared >= 2 &&
+    overlap >= 0.4
+  ) {
+    return true;
+  }
+  if (left.source === right.source && shared >= 3 && overlap >= 0.5) return true;
+  return (shared >= 4 && overlap >= 0.58) || (shared >= 3 && overlap >= 0.72);
 }
 
 function normalizeHeadline(title) {
@@ -340,6 +445,14 @@ function normalizeHeadline(title) {
     .replace(/[^0-9a-z가-힣]+/g, " ")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+function headlineEntities(title) {
+  return new Set(
+    newsEntityPatterns
+      .filter(([, pattern]) => pattern.test(title))
+      .map(([entity]) => entity)
+  );
 }
 
 function headlineTokens(title) {
@@ -404,10 +517,76 @@ function getRequestClientKey(request) {
   return String(forwarded || request?.socket?.remoteAddress || "local").split(",")[0].trim();
 }
 
+function buildArticleMarketContext(headline, markets = []) {
+  const publishedAt = Date.parse(headline?.publishedAt);
+  if (!Number.isFinite(publishedAt) || !markets.length) {
+    return { markets, basis: "current", referenceAt: null };
+  }
+
+  let alignedCount = 0;
+  const alignedMarkets = markets.map((market) => {
+    const series = (market.series || [])
+      .map((point) => ({ ...point, timestamp: Date.parse(point.time), value: Number(point.value) }))
+      .filter((point) => Number.isFinite(point.timestamp) && Number.isFinite(point.value))
+      .sort((a, b) => a.timestamp - b.timestamp);
+    if (series.length < 2) return market;
+
+    let closestIndex = 0;
+    for (let index = 1; index < series.length; index += 1) {
+      if (
+        Math.abs(series[index].timestamp - publishedAt) <
+        Math.abs(series[closestIndex].timestamp - publishedAt)
+      ) {
+        closestIndex = index;
+      }
+    }
+    const closest = series[closestIndex];
+    if (Math.abs(closest.timestamp - publishedAt) > 72 * 60 * 60 * 1000) return market;
+
+    const baseline = series[Math.max(0, closestIndex - 6)];
+    if (!baseline || !baseline.value) return market;
+    const change = closest.value - baseline.value;
+    const changePercent = (change / baseline.value) * 100;
+    alignedCount += 1;
+    return {
+      ...market,
+      value: roundByMagnitude(closest.value),
+      change: roundByMagnitude(change),
+      changePercent: round(changePercent, 2),
+      direction: changePercent >= 0 ? "up" : "down",
+      asOf: closest.time,
+      contextAligned: true
+    };
+  });
+
+  if (alignedCount < Math.max(1, Math.ceil(markets.length / 2))) {
+    return { markets, basis: "current", referenceAt: null };
+  }
+  return {
+    markets: alignedMarkets,
+    basis: "article-time",
+    referenceAt: new Date(publishedAt).toISOString()
+  };
+}
+
+function calculateNewsConfidence(headline, hasArticleContent) {
+  const relatedSourceCount = Number(headline?.relatedSourceCount) || 1;
+  if (!hasArticleContent) return relatedSourceCount > 1 ? "중간" : "낮음";
+
+  const contentLength = String(headline.articleContent || "").length;
+  let score = 1;
+  score += contentLength >= 1_200 ? 2 : contentLength >= 400 ? 1 : 0;
+  score += headline.sourceTier === "primary" || headline.hasPrimaryCorroboration ? 2 : 0;
+  score += relatedSourceCount > 1 ? 1 : 0;
+  score += Array.isArray(headline.articleKeyPoints) && headline.articleKeyPoints.length >= 2 ? 1 : 0;
+  return score >= 5 ? "중상" : score >= 3 ? "중간" : "낮음";
+}
+
 function buildAutomatedNewsAnalysis(headline, snapshot) {
   const title = String(headline.title || "").trim();
   const text = `${title} ${headline.topic || ""} ${headline.articleContent || ""}`;
-  const byId = Object.fromEntries(snapshot.markets.map((market) => [market.id, market]));
+  const marketContext = buildArticleMarketContext(headline, snapshot.markets);
+  const byId = Object.fromEntries(marketContext.markets.map((market) => [market.id, market]));
   const macroById = Object.fromEntries((snapshot.macro || []).map((item) => [item.id, item]));
   const macroValue = (item, unit) =>
     item?.value !== null && item?.value !== undefined && Number.isFinite(Number(item.value))
@@ -537,18 +716,30 @@ function buildAutomatedNewsAnalysis(headline, snapshot) {
     sentiment: `KOSPI ${signed(kospi?.changePercent || 0)}%, S&P 500 ${signed(sp500?.changePercent || 0)}%, VIX ${formatNumber(vix?.value || 0)}를 함께 봐야 헤드라인과 실제 시장 방향이 일치하는지 알 수 있습니다.`
   };
 
-  const headlineAnalysis = `「${title}」은 ${focusText}입니다. 현재 ${snapshot.analysis.regime} 장세와 위험 온도 ${riskScore}/100에서 기사 표현만 보지 말고 관련 가격이 같은 방향으로 반응하는지 확인해야 합니다.`;
+  const priceBasisText = marketContext.basis === "article-time"
+    ? "기사 발표 시점과 가까운 가격"
+    : "현재 확인 가능한 가격";
+  const headlineAnalysis = `「${title}」은 ${focusText}입니다. ${priceBasisText}과 현재 위험 온도 ${riskScore}/100을 구분해 보고, 기사 표현과 실제 가격 방향이 일치하는지 확인해야 합니다.`;
   const hasArticleContent = headline.contentBasis === "article" && headline.articleContent;
   const keyPoints = hasArticleContent && Array.isArray(headline.articleKeyPoints) && headline.articleKeyPoints.length
     ? headline.articleKeyPoints.slice(0, 3)
     : [primary.why, primary.korea, primary.checkpoints[0]];
 
+  const relatedSourceCount = Number(headline.relatedSourceCount) || 1;
+  const corroborationText = relatedSourceCount > 1
+    ? `${relatedSourceCount}개 출처에서 유사 사건을 확인했습니다.`
+    : "현재 선택 목록에서는 단일 출처만 확인됐습니다.";
+
   return {
     signal,
     tone,
-    confidence: hasArticleContent ? "중상" : primary.score >= 2 || secondary ? "중상" : "중간",
-    engineLabel: hasArticleContent ? "원문 기반 자동 분석" : "헤드라인 기반 자동 분석",
+    confidence: calculateNewsConfidence(headline, hasArticleContent),
+    engineLabel: hasArticleContent ? "원문 기반 자동 요약" : "헤드라인 기반 자동 요약",
     contentBasis: hasArticleContent ? "article" : "headline",
+    marketContextBasis: marketContext.basis,
+    marketContextAt: marketContext.referenceAt,
+    relatedSourceCount,
+    relatedSources: headline.relatedSources || [headline.source].filter(Boolean),
     summary: hasArticleContent && headline.articleSummary ? headline.articleSummary : headlineAnalysis,
     keyPoints,
     whyItMatters: `${primary.why}${secondary ? ` 동시에 ${secondary.label} 경로도 영향을 줄 수 있습니다.` : ""}`,
@@ -556,8 +747,8 @@ function buildAutomatedNewsAnalysis(headline, snapshot) {
     koreaImpact: primary.korea,
     checkpoints: primary.checkpoints,
     limitation: hasArticleContent
-      ? "기사 원문에서 핵심 내용을 추려 현재 시장과 연결한 분석입니다. 수치와 인용의 정확한 맥락은 원문에서 다시 확인해야 합니다."
-      : "언론사 원문을 불러오지 못해 기사 제목과 현재 시장 가격을 연결했습니다. 원문을 직접 확인한 뒤 결론을 조정해야 합니다."
+      ? `기사 원문에서 핵심 내용을 추리고 ${priceBasisText}과 연결했습니다. ${corroborationText} 수치와 인용의 맥락은 원문에서 다시 확인해야 합니다.`
+      : `언론사 원문을 불러오지 못해 제목과 ${priceBasisText}을 연결했습니다. ${corroborationText} 원문 확인 전에는 결론을 낮은 강도로 봐야 합니다.`
   };
 }
 
@@ -589,11 +780,11 @@ async function enhanceNewsAnalysisWithAi(headline, snapshot, fallback) {
                 generatedAt: snapshot.generatedAt,
                 riskScore: snapshot.analysis.riskScore,
                 regime: snapshot.analysis.regime,
-                markets: snapshot.markets.map(({ name, value, changePercent }) => ({
-                  name,
-                  value,
-                  changePercent
-                }))
+                marketContextBasis: fallback.marketContextBasis,
+                marketContextAt: fallback.marketContextAt,
+                markets: buildArticleMarketContext(headline, snapshot.markets).markets.map(
+                  ({ name, value, changePercent, asOf }) => ({ name, value, changePercent, asOf })
+                )
               }
             })
           }
@@ -630,8 +821,12 @@ function normalizeAiAnalysis(value, fallback) {
     signal: clean(value?.signal, 40, fallback.signal),
     tone,
     confidence: clean(value?.confidence, 20, fallback.confidence),
-    engineLabel: fallback.contentBasis === "article" ? "AI 원문 심층 분석" : "AI 헤드라인 분석",
+    engineLabel: fallback.contentBasis === "article" ? "생성형 AI 원문 요약" : "생성형 AI 헤드라인 요약",
     contentBasis: fallback.contentBasis,
+    marketContextBasis: fallback.marketContextBasis,
+    marketContextAt: fallback.marketContextAt,
+    relatedSourceCount: fallback.relatedSourceCount,
+    relatedSources: fallback.relatedSources,
     summary: clean(value?.summary, 900, fallback.summary),
     keyPoints,
     whyItMatters: clean(value?.whyItMatters, 600, fallback.whyItMatters),
@@ -902,6 +1097,14 @@ function buildDataQuality(
     fetchedHeadlineCount: rawHeadlines.length,
     selectedHeadlineCount: headlines.length,
     rejectedHeadlineCount: Math.max(0, rawHeadlines.length - headlines.length),
+    uniqueNewsSourceCount: new Set(headlines.map((headline) => headline.source).filter(Boolean)).size,
+    corroboratedHeadlineCount: headlines.filter((headline) => headline.relatedSourceCount > 1).length,
+    primarySourceHeadlineCount: headlines.filter(
+      (headline) => headline.sourceTier === "primary" || headline.hasPrimaryCorroboration
+    ).length,
+    establishedSourceHeadlineCount: headlines.filter(
+      (headline) => headline.sourceTier === "established"
+    ).length,
     newsLookbackDays: NEWS_LOOKBACK_DAYS,
     newestHeadlineAt: headlineTimestamps.length
       ? new Date(Math.max(...headlineTimestamps)).toISOString()
@@ -1007,5 +1210,6 @@ export {
   findTrustedHeadline,
   getSnapshot,
   normalizeHeadlineInput,
-  rankAndDedupeHeadlines
+  rankAndDedupeHeadlines,
+  selectDiverseHeadlines
 };

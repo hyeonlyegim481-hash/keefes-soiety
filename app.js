@@ -1,21 +1,21 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=34";
+} from "./glossary-data.js?v=35";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=34";
+} from "./glossary-extra-data.js?v=35";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=34";
+} from "./glossary-more-data.js?v=35";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=34";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=34";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=34";
+} from "./glossary-pro-data.js?v=35";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=35";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=35";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions];
 const glossaryCategoryOrder = [
@@ -2073,15 +2073,16 @@ function renderNews(headlines = [], analysis, dataQuality = {}) {
               <span class="news-title">${escapeHtml(headline.title)}</span>
               <span class="news-meta">
                 <span>${escapeHtml(headline.topic)}</span>
-                <span>${escapeHtml(headline.source)}</span>
+                <span data-source-tier="${escapeHtml(headline.sourceTier || "other")}">${escapeHtml(headline.source)}</span>
+                ${headline.relatedSourceCount > 1 ? `<span class="news-corroboration">교차 ${headline.relatedSourceCount}곳</span>` : ""}
                 <span>${relativeTime(headline.publishedAt)}</span>
               </span>
             </a>
           </div>
           <details class="news-ai-detail">
             <summary>
-              <span class="ai-label">AI</span>
-              <strong>상세 분석 보기</strong>
+              <span class="ai-label">요약</span>
+              <strong>기사 요약 보기</strong>
               <em>핵심 의미 · 시장 영향 · 한국 영향 · 다음 확인</em>
             </summary>
             <div class="news-ai-output" data-news-analysis>
@@ -2165,8 +2166,10 @@ function renderNewsIntelligence(headlines, topTopics, analysis, dataQuality = {}
   const freshCount = headlines.filter(
     (headline) => Date.now() - new Date(headline.publishedAt).getTime() < 24 * 60 * 60 * 1000
   ).length;
-  const riskTerms = (combined.match(/급락|폭락|위기|전쟁|경고|둔화|부담|급등/gi) || []).length;
-  const opportunityTerms = (combined.match(/회복|호조|상승|돌파|개선|증가|완화/gi) || []).length;
+  const sourceCount = Number(dataQuality?.uniqueNewsSourceCount) || new Set(headlines.map((headline) => headline.source)).size;
+  const corroboratedCount = Number(dataQuality?.corroboratedHeadlineCount) || 0;
+  const primaryCount = Number(dataQuality?.primarySourceHeadlineCount) || 0;
+  const establishedCount = Number(dataQuality?.establishedSourceHeadlineCount) || 0;
 
   elements.newsIntelligence.innerHTML = `
     <section class="expansion-section">
@@ -2189,17 +2192,17 @@ function renderNewsIntelligence(headlines, topTopics, analysis, dataQuality = {}
           <p>최근 ${lookbackDays}일 범위 안에서도 새 기사를 우선하며, 오래된 기사는 자동으로 제외합니다.</p>
         </article>
         <article>
-          <span>문장 온도</span>
-          <strong>경계어 ${riskTerms} · 개선어 ${opportunityTerms}</strong>
-          <p>헤드라인 표현의 강도는 참고 신호이며 실제 시장 반응과 반드시 같지는 않습니다.</p>
+          <span>출처 구성</span>
+          <strong>${sourceCount}곳 · 주요 ${primaryCount + establishedCount}건</strong>
+          <p>같은 매체의 반복 노출을 제한하고 공식·주요 출처를 우선합니다.</p>
         </article>
         <article>
-          <span>가격 교차확인</span>
-          <strong>위험 온도 ${analysis.riskScore}/100</strong>
-          <p>${analysis.riskScore >= 66 ? "부정적 뉴스가 가격 약세와 맞물리는지 먼저 확인합니다." : analysis.riskScore >= 45 ? "호재와 악재가 어느 가격에 반영됐는지 구분합니다." : "회복 뉴스가 환율과 주가에 동시에 반영되는지 확인합니다."}</p>
+          <span>사건 교차확인</span>
+          <strong>복수 출처 ${corroboratedCount}건</strong>
+          <p>유사한 사건은 최신 기사 하나로 묶고 함께 확인된 출처 수를 표시합니다.</p>
         </article>
       </div>
-      <p class="data-caveat">최근 ${lookbackDays}일 기사 중 경제 관련성이 높은 내용을 선별하고 유사 기사를 합쳤습니다. AI 상세 분석은 각 기사 아래에서 펼칠 수 있으며, 최종 판단 전 원문과 실제 가격 반응을 함께 확인하세요.</p>
+      <p class="data-caveat">최근 ${lookbackDays}일 기사 중 경제 관련성이 높은 내용을 선별하고 같은 사건은 최신 기사로 묶었습니다. 상세 요약은 기사 시점 가격을 우선 사용하며, 원문·출처 수·신뢰도를 함께 표시합니다.</p>
     </section>
   `;
 }
@@ -2210,7 +2213,7 @@ async function loadNewsAnalysis(details, headline, marketAnalysis) {
   output.innerHTML = `
     <div class="analysis-loading">
       <span></span>
-      <p>기사 원문을 정리하고 현재 시장 신호와 연결하고 있습니다.</p>
+      <p>기사 원문을 정리하고 기사 시점의 시장 가격과 연결하고 있습니다.</p>
     </div>
   `;
   updateChapterHeight();
@@ -2243,10 +2246,14 @@ function renderNewsAnalysisResult(output, result) {
   const checkpoints = Array.isArray(result.checkpoints) ? result.checkpoints : [];
   const keyPoints = Array.isArray(result.keyPoints) ? result.keyPoints : [];
   const contentBasis = result.contentBasis === "article" ? "원문 내용 기반" : "제목 기반";
+  const marketBasis = result.marketContextBasis === "article-time" ? "기사 시점 가격" : "현재 가격";
+  const sourceBasis = Number(result.relatedSourceCount) > 1
+    ? `교차 ${result.relatedSourceCount}곳`
+    : "단일 출처";
   output.innerHTML = `
     <div class="ai-result-head">
       <span data-tone="${escapeHtml(result.tone || "watch")}">${escapeHtml(result.signal || "혼합 신호")}</span>
-      <em>${escapeHtml(result.engineLabel || "데이터 기반 자동 분석")} · ${contentBasis} · 신뢰도 ${escapeHtml(result.confidence || "중간")}</em>
+      <em>${escapeHtml(result.engineLabel || "데이터 기반 자동 요약")} · ${contentBasis} · ${marketBasis} · ${sourceBasis} · 신뢰도 ${escapeHtml(result.confidence || "중간")}</em>
     </div>
     <section class="ai-article-summary">
       <span>기사 핵심 요약</span>
@@ -2490,8 +2497,12 @@ function buildLocalNewsAnalysis(headline, marketAnalysis = {}) {
   return {
     signal,
     tone,
-    confidence: themes.length >= 2 ? "중상" : "중간",
-    engineLabel: "데이터 기반 자동 분석",
+    confidence: "낮음",
+    engineLabel: "헤드라인 기반 자동 요약",
+    contentBasis: "headline",
+    marketContextBasis: "current",
+    marketContextAt: null,
+    relatedSourceCount: Number(headline.relatedSourceCount) || 1,
     summary: `이 헤드라인은 ${themeText} 변수가 현재 ${marketAnalysis.regime || "시장"} 흐름에 어떤 영향을 주는지 확인해야 하는 기사입니다. 제목의 방향보다 실제 환율·금리·주가 반응이 더 중요합니다.`,
     whyItMatters: hasRates
       ? "금리와 물가는 기업 가치평가, 채권금리, 달러를 동시에 움직여 여러 자산에 파급될 수 있습니다."
@@ -2513,7 +2524,7 @@ function buildLocalNewsAnalysis(headline, marketAnalysis = {}) {
         ? "한국은 대외금리와 환율 변화에 민감합니다. 원화 약세가 길어지면 외국인 수급과 수입물가, 금리 인하 여력에 부담이 됩니다."
         : "한국 시장에서는 대형 수출주와 원/달러, 외국인 순매수 반응을 통해 영향이 실제로 전달되는지 확인합니다.",
     checkpoints,
-    limitation: "헤드라인과 현재 시장 가격을 연결한 1차 분석입니다. 기사 원문, 발표 시점, 기저효과와 이미 가격에 반영됐는지를 반드시 함께 확인하세요."
+    limitation: "원문을 가져오지 못해 헤드라인과 현재 가격을 연결한 낮은 신뢰도의 1차 요약입니다. 기사 원문, 발표 시점, 기저효과와 이미 가격에 반영됐는지를 반드시 함께 확인하세요."
   };
 }
 
