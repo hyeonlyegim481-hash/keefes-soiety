@@ -26,14 +26,14 @@ const mimeTypes = {
 };
 
 const marketConfig = [
-  { id: "kospi", name: "KOSPI", symbol: "^KS11", group: "korea", unit: "pt", fallback: 2865.2 },
-  { id: "kosdaq", name: "KOSDAQ", symbol: "^KQ11", group: "korea", unit: "pt", fallback: 829.4 },
-  { id: "usdkrw", name: "USD/KRW", symbol: "USDKRW=X", group: "korea", unit: "KRW", fallback: 1368.5 },
-  { id: "sp500", name: "S&P 500", symbol: "^GSPC", group: "global", unit: "pt", fallback: 5635.1 },
-  { id: "nasdaq", name: "NASDAQ", symbol: "^IXIC", group: "global", unit: "pt", fallback: 18188.3 },
-  { id: "vix", name: "VIX", symbol: "^VIX", group: "global", unit: "idx", fallback: 15.7 },
-  { id: "wti", name: "WTI", symbol: "CL=F", group: "global", unit: "USD", fallback: 82.4 },
-  { id: "gold", name: "Gold", symbol: "GC=F", group: "global", unit: "USD", fallback: 2388.2 }
+  { id: "kospi", name: "KOSPI", symbol: "^KS11", group: "korea", unit: "pt" },
+  { id: "kosdaq", name: "KOSDAQ", symbol: "^KQ11", group: "korea", unit: "pt" },
+  { id: "usdkrw", name: "USD/KRW", symbol: "USDKRW=X", group: "korea", unit: "KRW" },
+  { id: "sp500", name: "S&P 500", symbol: "^GSPC", group: "global", unit: "pt" },
+  { id: "nasdaq", name: "NASDAQ", symbol: "^IXIC", group: "global", unit: "pt" },
+  { id: "vix", name: "VIX", symbol: "^VIX", group: "global", unit: "idx" },
+  { id: "wti", name: "WTI", symbol: "CL=F", group: "global", unit: "USD" },
+  { id: "gold", name: "Gold", symbol: "GC=F", group: "global", unit: "USD" }
 ];
 
 const macroFallback = [
@@ -147,10 +147,15 @@ async function getSnapshot() {
   }
 
   const marketResults = await Promise.allSettled(marketConfig.map(fetchMarket));
-  const markets = marketResults.map((result, index) => {
-    if (result.status === "fulfilled") return result.value;
-    return buildFallbackMarket(marketConfig[index], index);
-  });
+  const markets = marketResults.flatMap((result) =>
+    result.status === "fulfilled" ? [result.value] : []
+  );
+  const requiredMarketIds = ["kospi", "usdkrw", "sp500", "vix", "wti"];
+  const availableMarketIds = new Set(markets.map((market) => market.id));
+  const missingRequired = requiredMarketIds.filter((id) => !availableMarketIds.has(id));
+  if (missingRequired.length) {
+    throw new Error(`Required market data unavailable: ${missingRequired.join(", ")}`);
+  }
 
   const headlineResults = await Promise.allSettled(headlineFeeds.map(fetchHeadlines));
   const headlines = headlineResults
@@ -160,8 +165,9 @@ async function getSnapshot() {
   const payload = {
     generatedAt: new Date().toISOString(),
     markets,
+    dataQuality: buildDataQuality(markets),
     macro: macroFallback,
-    headlines: headlines.length ? headlines : fallbackHeadlines(),
+    headlines,
     analysis: buildAnalysis(markets, headlines),
     sources: {
       markets: "Yahoo Finance chart endpoint",
@@ -216,20 +222,25 @@ async function fetchMarket(item) {
   const change = current - baseline;
   const changePercent = baseline ? (change / baseline) * 100 : 0;
 
+  const asOf = result.meta?.regularMarketTime
+    ? new Date(result.meta.regularMarketTime * 1000).toISOString()
+    : series.at(-1).time;
+  const ageMs = Date.now() - Date.parse(asOf);
+  const live = Number.isFinite(ageMs) && ageMs >= 0 && ageMs <= 2.5 * 60 * 60 * 1000;
+
   return {
     ...item,
     value: roundByMagnitude(current),
     change: roundByMagnitude(change),
     changePercent: round(changePercent, 2),
     direction: changePercent >= 0 ? "up" : "down",
-    asOf: result.meta?.regularMarketTime
-      ? new Date(result.meta.regularMarketTime * 1000).toISOString()
-      : new Date().toISOString(),
+    asOf,
     series: series.slice(-32).map((point) => ({
       ...point,
       value: roundByMagnitude(point.value)
     })),
-    live: true
+    live,
+    status: live ? "live" : "closed"
   };
 }
 
@@ -758,54 +769,21 @@ function buildAnalysis(markets, headlines) {
   };
 }
 
-function buildFallbackMarket(item, index) {
-  const now = Date.now();
-  const wave = Math.sin(now / 1_800_000 + index) * 0.7;
-  const value = item.fallback * (1 + wave / 100);
-  const changePercent = round(wave, 2);
-  const series = Array.from({ length: 28 }, (_, pointIndex) => {
-    const t = now - (27 - pointIndex) * 3_600_000;
-    const localWave = Math.sin(pointIndex / 2.8 + index) * 0.009;
-    const drift = (pointIndex - 14) * 0.0005;
-    return {
-      time: new Date(t).toISOString(),
-      value: roundByMagnitude(item.fallback * (1 + localWave + drift))
-    };
-  });
-
+function buildDataQuality(markets) {
+  const requestedIds = marketConfig.map((item) => item.id);
+  const availableIds = new Set(markets.map((market) => market.id));
+  const timestamps = markets
+    .map((market) => Date.parse(market.asOf))
+    .filter(Number.isFinite);
   return {
-    ...item,
-    value: roundByMagnitude(value),
-    change: roundByMagnitude((item.fallback * changePercent) / 100),
-    changePercent,
-    direction: changePercent >= 0 ? "up" : "down",
-    asOf: new Date(now).toISOString(),
-    series,
-    live: false
+    requestedMarketCount: requestedIds.length,
+    availableMarketCount: markets.length,
+    liveMarketCount: markets.filter((market) => market.live).length,
+    missingMarketIds: requestedIds.filter((id) => !availableIds.has(id)),
+    latestMarketAt: timestamps.length ? new Date(Math.max(...timestamps)).toISOString() : null,
+    oldestMarketAt: timestamps.length ? new Date(Math.min(...timestamps)).toISOString() : null
   };
 }
-
-function fallbackHeadlines() {
-  return [
-    {
-      id: "fallback-1",
-      topic: "한국경제",
-      title: "환율과 수출 흐름이 한국 증시의 단기 방향을 좌우",
-      source: "keefe's soiety",
-      url: "#",
-      publishedAt: new Date().toISOString()
-    },
-    {
-      id: "fallback-2",
-      topic: "세계경제",
-      title: "미국 금리 기대와 달러 흐름이 글로벌 자금 이동의 중심",
-      source: "keefe's soiety",
-      url: "#",
-      publishedAt: new Date().toISOString()
-    }
-  ];
-}
-
 function sendJson(res, statusCode, payload) {
   sendText(res, statusCode, JSON.stringify(payload), "application/json; charset=utf-8");
 }

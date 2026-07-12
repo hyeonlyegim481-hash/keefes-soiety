@@ -1,21 +1,21 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=28";
+} from "./glossary-data.js?v=29";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=28";
+} from "./glossary-extra-data.js?v=29";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=28";
+} from "./glossary-more-data.js?v=29";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=28";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=28";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=28";
+} from "./glossary-pro-data.js?v=29";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=29";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=29";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions];
 const glossaryCategoryOrder = [
@@ -92,6 +92,12 @@ const compactFormatter = new Intl.NumberFormat("ko-KR", {
   maximumFractionDigits: 1
 });
 const timeFormatter = new Intl.DateTimeFormat("ko-KR", {
+  hour: "2-digit",
+  minute: "2-digit"
+});
+const marketTimeFormatter = new Intl.DateTimeFormat("ko-KR", {
+  month: "numeric",
+  day: "numeric",
   hour: "2-digit",
   minute: "2-digit"
 });
@@ -452,12 +458,24 @@ async function refreshSnapshot({ force = false } = {}) {
       state.selectedMarket = snapshot.markets[0]?.id || "kospi";
     }
     render(snapshot);
-    setConnection(snapshot.markets.some((market) => market.live) ? "live" : "fallback", "실시간");
+    updateConnectionStatus(snapshot);
   } catch {
-    const snapshot = buildClientFallback();
-    state.snapshot = snapshot;
-    render(snapshot);
-    setConnection("error", "대체 데이터");
+    if (state.snapshot) {
+      const snapshot = {
+        ...state.snapshot,
+        markets: state.snapshot.markets.map((market) => ({
+          ...market,
+          live: false,
+          status: "stale"
+        }))
+      };
+      state.snapshot = snapshot;
+      render(snapshot);
+      setConnection("stale", "이전 데이터");
+    } else {
+      renderDataUnavailable();
+      setConnection("error", "데이터 없음");
+    }
   } finally {
     state.isRefreshing = false;
   }
@@ -485,8 +503,16 @@ function renderSummary(snapshot) {
   const { analysis } = snapshot;
   elements.regimeTitle.textContent = analysis.regime;
   elements.pulseText.textContent = analysis.pulse;
-  elements.updatedAt.textContent = timeFormatter.format(new Date(snapshot.generatedAt));
-  elements.sourceLine.textContent = "시장 · 뉴스 · 한국 공표지표";
+  const latestMarketAt = getLatestMarketTimestamp(snapshot);
+  elements.updatedAt.textContent = latestMarketAt
+    ? marketTimeFormatter.format(latestMarketAt)
+    : "기준시각 없음";
+  elements.updatedAt.dateTime = latestMarketAt ? latestMarketAt.toISOString() : "";
+  const quality = snapshot.dataQuality;
+  const marketCount = quality
+    ? `${quality.availableMarketCount}/${quality.requestedMarketCount}개 시장지표`
+    : `${snapshot.markets.length}개 시장지표`;
+  elements.sourceLine.textContent = `${marketCount} 기준 · 확인 ${timeFormatter.format(new Date(snapshot.generatedAt))}`;
   elements.riskScore.textContent = analysis.riskScore;
 
   const circumference = 314;
@@ -611,25 +637,28 @@ function renderMarkets(markets) {
       const button = document.createElement("button");
       const reason = getMarketReason(market);
       const directionLabel = market.direction === "up" ? "상승" : "하락";
+      const statusLabel = getMarketStatusLabel(market);
+      const basisLabel = market.asOf ? marketTimeFormatter.format(new Date(market.asOf)) : "기준시각 없음";
       button.type = "button";
       button.className = "ticker-item";
       button.dataset.direction = market.direction === "up" ? "up" : "down";
       button.dataset.live = String(Boolean(market.live));
-      button.title = `${reason.title}: ${reason.detail}`;
+      button.dataset.status = market.status || (market.live ? "live" : "closed");
+      button.title = `${statusLabel} · ${basisLabel} · ${reason.title}: ${reason.detail}`;
       button.setAttribute(
         "aria-label",
         `${market.name} ${formatMarketValue(market)}, ${directionLabel} ${signed(
           market.changePercent
-        )}퍼센트. 자세한 시장 차트로 이동`
+        )}퍼센트, ${statusLabel}, ${basisLabel} 기준. 자세한 시장 차트로 이동`
       );
       button.innerHTML = `
-        <span class="ticker-name">${market.name}</span>
+        <span class="ticker-name">${market.name}<em>${statusLabel}</em></span>
         <strong class="ticker-value">${formatMarketValue(market)}</strong>
         <span class="ticker-change">
           <span aria-hidden="true">${market.direction === "up" ? "▲" : "▼"}</span>
           ${signed(market.changePercent)}%
         </span>
-        <span class="ticker-live">${market.live ? "실시간" : "스냅샷"}</span>
+        <span class="ticker-live">${statusLabel}</span>
       `;
       button.addEventListener("click", () => {
         state.selectedMarket = market.id;
@@ -2206,118 +2235,59 @@ function setConnection(stateName, label) {
   elements.connectionStatus.querySelector("span:last-child").textContent = label;
 }
 
-function buildClientFallback() {
-  const now = Date.now();
-  const ids = [
-    ["kospi", "KOSPI", "pt", 2865.2],
-    ["usdkrw", "USD/KRW", "KRW", 1368.5],
-    ["sp500", "S&P 500", "pt", 5635.1],
-    ["vix", "VIX", "idx", 15.7]
-  ];
-  const markets = ids.map(([id, name, unit, base], index) => {
-    const changePercent = Number((Math.sin(now / 1_400_000 + index) * 0.8).toFixed(2));
-    return {
-      id,
-      name,
-      group: index < 2 ? "korea" : "global",
-      unit,
-      value: base * (1 + changePercent / 100),
-      change: (base * changePercent) / 100,
-      changePercent,
-      direction: changePercent >= 0 ? "up" : "down",
-      live: false,
-      asOf: new Date(now).toISOString(),
-      series: Array.from({ length: 28 }, (_, pointIndex) => ({
-        time: new Date(now - (27 - pointIndex) * 3_600_000).toISOString(),
-        value: base * (1 + Math.sin(pointIndex / 2.8 + index) * 0.009)
-      }))
-    };
-  });
-
-  return {
-    generatedAt: new Date(now).toISOString(),
-    markets,
-    macro: [
-      { label: "한국 기준금리", value: 3.5, unit: "%", delta: 0, cadence: "금통위", mood: "neutral", source: "한국은행" },
-      { label: "소비자물가", value: 2.4, unit: "% YoY", delta: -0.2, cadence: "월간", mood: "positive", source: "통계청" },
-      { label: "수출 증가율", value: 5.1, unit: "% YoY", delta: 1.4, cadence: "월간", mood: "positive", source: "산업부" },
-      { label: "가계신용", value: 1882, unit: "조원", delta: 4.1, cadence: "분기", mood: "watch", source: "한국은행" }
-    ],
-    headlines: [
-      { topic: "한국경제", title: "환율과 수출 흐름이 한국 증시의 단기 방향을 좌우", source: "keefe's soiety", url: "#", publishedAt: new Date(now).toISOString() },
-      { topic: "세계경제", title: "미국 금리 기대와 달러 흐름이 글로벌 자금 이동의 중심", source: "keefe's soiety", url: "#", publishedAt: new Date(now).toISOString() }
-    ],
-    analysis: {
-      riskScore: 48,
-      regime: "균형 탐색",
-      pulse: "주요 가격이 엇갈리며 방향성을 확인하는 구간입니다.",
-      bullets: [
-        "글로벌: 주식과 변동성 지표가 엇갈리며 경계와 회복 신호가 공존합니다.",
-        "한국: 원/달러와 KOSPI 흐름이 외국인 수급의 핵심 변수입니다.",
-        "금리와 물가 뉴스 민감도를 계속 확인해야 합니다."
-      ],
-      reasonCards: [
-        {
-          title: "글로벌 위험선호",
-          summary: "주식과 변동성 지표를 함께 봤습니다.",
-          detail: "미국 주식, VIX, 달러 흐름은 한국 시장 외국인 수급에 빠르게 영향을 줍니다.",
-          evidence: ["S&P 500", "VIX", "달러"]
-        },
-        {
-          title: "한국 시장 압력",
-          summary: "원/달러와 KOSPI 조합을 봤습니다.",
-          detail: "환율 상승과 주가 약세가 동시에 나타나면 한국 자산에 대한 단기 경계감이 커집니다.",
-          evidence: ["원/달러", "KOSPI", "외국인 수급"]
-        }
-      ],
-      dailyFlow: {
-        title: "오늘 흐름이 이렇게 보이는 이유",
-        lead: "지금은 환율, 미국 증시, 변동성이 서로 다른 신호를 내며 방향을 확인하는 장세입니다.",
-        paragraphs: [
-          "미국 시장이 안정돼도 원/달러가 높으면 한국 증시는 외국인 수급 부담을 먼저 의식할 수 있습니다.",
-          "KOSPI와 환율이 동시에 나빠지는 구간에서는 단기 반등보다 위험 관리 성격의 움직임이 더 강해집니다.",
-          "금리와 물가 뉴스가 다시 커지면 성장주와 수출주 모두 할인율 부담을 받을 수 있습니다."
-        ],
-        conclusion: "따라서 오늘은 환율 안정과 변동성 완화가 같이 확인될 때 흐름이 좋아졌다고 보는 편이 자연스럽습니다.",
-        chapters: [
-          { label: "01", title: "현재 판세", summary: "균형 탐색 구간입니다." },
-          { label: "02", title: "핵심 원인", summary: "환율, 미국 증시, 변동성이 동시에 영향을 줍니다." },
-          { label: "03", title: "한국 영향", summary: "외국인 수급과 반도체 심리가 중요합니다." },
-          { label: "04", title: "다음 체크", summary: "환율 안정과 VIX 하락을 확인해야 합니다." }
-        ],
-        detailedSections: [
-          {
-            title: "1. 가격 흐름 해석",
-            body: "현재 시장은 한쪽 방향으로 단정하기보다 여러 가격 신호를 함께 확인해야 하는 구간입니다."
-          },
-          {
-            title: "2. 한국 시장 영향",
-            body: "한국 시장은 환율과 외국인 수급에 민감하므로 글로벌 흐름보다 더 방어적으로 반응할 수 있습니다."
-          }
-        ]
-      },
-      riskDrivers: [
-        {
-          label: "변동성",
-          impact: "중립",
-          detail: "VIX가 극단 구간이 아니어서 단기 충격은 제한적으로 봅니다."
-        },
-        {
-          label: "원/달러",
-          impact: "중립",
-          detail: "환율 방향이 외국인 수급과 수입물가에 영향을 줍니다."
-        }
-      ],
-      koreaWatch: [
-        { label: "환율 압력", state: "중립", mood: "watch" },
-        { label: "수출 모멘텀", state: "확인 필요", mood: "neutral" },
-        { label: "중국 변수", state: "낮음", mood: "neutral" }
-      ],
-      watchlist: ["원/달러 1,380원대 안착 여부", "미국 장기금리와 VIX 동반 상승 여부"]
-    }
-  };
+function updateConnectionStatus(snapshot) {
+  const quality = snapshot.dataQuality;
+  const missingCount = quality?.missingMarketIds?.length || 0;
+  const liveCount = snapshot.markets.filter((market) => market.live).length;
+  if (missingCount > 0) {
+    setConnection("partial", "일부 데이터");
+  } else if (liveCount === snapshot.markets.length && liveCount > 0) {
+    setConnection("live", "실시간");
+  } else if (liveCount > 0) {
+    setConnection("partial", "일부 실시간");
+  } else {
+    setConnection("closed", "마감 기준");
+  }
 }
 
+function getMarketStatusLabel(market) {
+  if (market?.status === "stale") return "이전";
+  return market?.live ? "실시간" : "마감";
+}
+
+function getLatestMarketTimestamp(snapshot) {
+  const times = (snapshot.markets || [])
+    .map((market) => new Date(market.asOf))
+    .filter((date) => Number.isFinite(date.getTime()));
+  if (!times.length) return null;
+  return new Date(Math.max(...times.map((date) => date.getTime())));
+}
+
+function renderDataUnavailable() {
+  elements.regimeTitle.textContent = "데이터 연결 확인 필요";
+  elements.pulseText.textContent = "실제 시장 시세를 불러오지 못했습니다. 임의의 대체 숫자는 표시하지 않습니다.";
+  elements.updatedAt.textContent = "기준시각 없음";
+  elements.updatedAt.removeAttribute("datetime");
+  elements.sourceLine.textContent = "잠시 후 새로고침하면 다시 확인합니다.";
+  elements.riskScore.textContent = "--";
+  elements.riskMeter.style.strokeDashoffset = 314;
+  elements.riskMeter.style.stroke = "#cbd5db";
+  elements.watchChips.replaceChildren();
+  elements.riskDrivers.replaceChildren();
+  elements.riskLegend.replaceChildren();
+  elements.marketStrip.innerHTML = `
+    <div class="market-unavailable">
+      <strong>시장 데이터를 가져오지 못했습니다.</strong>
+      <span>실제 시세 연결이 복구되면 자동으로 다시 표시됩니다.</span>
+    </div>
+  `;
+  elements.briefBoard.innerHTML = `
+    <div class="data-unavailable-panel">
+      <strong>분석을 잠시 멈췄습니다.</strong>
+      <p>신뢰할 수 있는 시장 데이터가 없는 상태에서는 위험 온도와 시장 해석을 만들지 않습니다.</p>
+    </div>
+  `;
+}
 function renderSignalRow(label, value, interpretation, tone = "neutral") {
   return `
     <div class="signal-row" role="row" data-tone="${tone}">

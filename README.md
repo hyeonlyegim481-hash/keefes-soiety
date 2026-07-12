@@ -14,7 +14,7 @@ Node.js가 PATH에 잡혀 있는 환경에서는 `npm start` 또는 `node server
 
 ## 현재 구성
 
-- 실시간 시장 지표 프록시: KOSPI, USD/KRW, S&P 500, VIX, 원자재 등
+- 기준시각을 표시하는 시장 지표 프록시: KOSPI, USD/KRW, S&P 500, VIX, 원자재 등
 - Google News RSS 기반 경제 헤드라인 수집
 - 한국 관점 위험 점수와 체크포인트 자동 생성
 - 기사별 상세 분석: 핵심 의미, 시장 영향, 한국 영향, 다음 확인 항목

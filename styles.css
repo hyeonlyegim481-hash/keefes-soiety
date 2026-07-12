@@ -143,7 +143,12 @@ h2 {
   background: var(--green);
 }
 
-.connection-pill[data-state="fallback"] .status-dot,
+.connection-pill[data-state="closed"] .status-dot,
+.connection-pill[data-state="partial"] .status-dot,
+.connection-pill[data-state="stale"] .status-dot {
+  background: var(--amber);
+}
+
 .connection-pill[data-state="error"] .status-dot {
   background: var(--red);
 }
@@ -550,6 +555,48 @@ main {
   font-weight: 700;
 }
 
+.market-unavailable {
+  display: grid;
+  width: 100%;
+  min-height: 54px;
+  place-content: center;
+  gap: 2px;
+  padding: 8px 14px;
+  color: #d7e0e6;
+  text-align: center;
+}
+
+.market-unavailable strong,
+.market-unavailable span {
+  font-size: 0.72rem;
+}
+
+.market-unavailable span {
+  color: #9aa8b2;
+}
+
+.data-unavailable-panel {
+  display: grid;
+  gap: 6px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--amber);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.data-unavailable-panel strong {
+  color: var(--charcoal);
+  font-size: 0.88rem;
+}
+
+.data-unavailable-panel p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 650;
+  line-height: 1.55;
+}
 .market-strip {
   display: flex;
   overflow-x: auto;
@@ -588,11 +635,26 @@ main {
 }
 
 .ticker-name {
+  display: inline-flex;
+  min-width: 0;
   grid-column: 1;
   grid-row: 1;
+  align-items: center;
+  gap: 5px;
   color: #f8fafc;
   font-size: 0.77rem;
   font-weight: 850;
+}
+
+.ticker-name em {
+  color: #aab7c1;
+  font-size: 0.58rem;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.ticker-item[data-status="live"] .ticker-name em {
+  color: #72e27f;
 }
 
 .ticker-value {
