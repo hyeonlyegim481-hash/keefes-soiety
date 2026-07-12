@@ -886,6 +886,29 @@ main {
   color: var(--teal);
 }
 
+.chart-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px 14px;
+  padding: 12px 22px 0;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 650;
+  line-height: 1.45;
+}
+
+.chart-meta span {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  align-items: baseline;
+}
+
+.chart-meta b {
+  color: var(--charcoal);
+  font-size: 0.7rem;
+}
+
 .chart-frame {
   height: 370px;
   padding: 10px 16px 16px;

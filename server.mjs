@@ -204,6 +204,26 @@ async function getSnapshot() {
   return payload;
 }
 
+function normalizeMarketSeries(timestamps = [], closes = []) {
+  return timestamps
+    .map((timestamp, index) => {
+      const numericTimestamp = Number(timestamp);
+      const rawValue = closes[index];
+      const value = rawValue === null || rawValue === undefined ? Number.NaN : Number(rawValue);
+      return {
+        time: Number.isFinite(numericTimestamp) ? new Date(numericTimestamp * 1000).toISOString() : "",
+        value
+      };
+    })
+    .filter(
+      (point) =>
+        point.time &&
+        Number.isFinite(Date.parse(point.time)) &&
+        Number.isFinite(point.value) &&
+        point.value > 0
+    );
+}
+
 async function fetchMarket(item) {
   const endpoint = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(
     item.symbol
@@ -227,12 +247,7 @@ async function fetchMarket(item) {
   const timestamps = result.timestamp || [];
   const quote = result.indicators?.quote?.[0] || {};
   const closes = quote.close || [];
-  const series = timestamps
-    .map((timestamp, index) => ({
-      time: new Date(timestamp * 1000).toISOString(),
-      value: Number(closes[index])
-    }))
-    .filter((point) => Number.isFinite(point.value));
+  const series = normalizeMarketSeries(timestamps, closes);
 
   if (!series.length) throw new Error(`No usable prices for ${item.symbol}`);
 
@@ -259,10 +274,13 @@ async function fetchMarket(item) {
     changePercent: round(changePercent, 2),
     direction: changePercent >= 0 ? "up" : "down",
     asOf,
-    series: series.slice(-32).map((point) => ({
+    series: series.slice(-160).map((point) => ({
       ...point,
       value: roundByMagnitude(point.value)
     })),
+    chartRange: "5d",
+    chartInterval: "1h",
+    chartSource: "Yahoo Finance",
     live,
     status: live ? "live" : "closed"
   };
@@ -1210,6 +1228,7 @@ export {
   findTrustedHeadline,
   getSnapshot,
   normalizeHeadlineInput,
+  normalizeMarketSeries,
   rankAndDedupeHeadlines,
   selectDiverseHeadlines
 };

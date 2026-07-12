@@ -1,21 +1,21 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=38";
+} from "./glossary-data.js?v=39";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=38";
+} from "./glossary-extra-data.js?v=39";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=38";
+} from "./glossary-more-data.js?v=39";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=38";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=38";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=38";
+} from "./glossary-pro-data.js?v=39";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=39";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=39";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions];
 const glossaryCategoryOrder = [
@@ -52,6 +52,7 @@ const elements = {
   marketConnections: document.querySelector("#marketConnections"),
   chartTabs: document.querySelector("#chartTabs"),
   chartTitle: document.querySelector("#chartTitle"),
+  chartMeta: document.querySelector("#chartMeta"),
   marketChart: document.querySelector("#marketChart"),
   analysisList: document.querySelector("#analysisList"),
   analysisBoard: document.querySelector("#analysisBoard"),
@@ -2357,6 +2358,13 @@ function drawChart() {
   if (!market) return;
 
   elements.chartTitle.textContent = market.name;
+  const series = (market.series || [])
+    .map((point) => ({
+      time: new Date(point.time),
+      value: point.value === null || point.value === undefined ? Number.NaN : Number(point.value)
+    }))
+    .filter((point) => Number.isFinite(point.time.getTime()) && Number.isFinite(point.value) && point.value > 0)
+    .sort((a, b) => a.time - b.time);
   const canvas = elements.marketChart;
   const context = canvas.getContext("2d");
   const rect = canvas.getBoundingClientRect();
@@ -2367,21 +2375,59 @@ function drawChart() {
 
   const width = rect.width;
   const height = rect.height;
-  const padding = { top: 22, right: 18, bottom: 36, left: 58 };
-  const plotWidth = width - padding.left - padding.right;
-  const plotHeight = height - padding.top - padding.bottom;
-  const values = market.series.map((point) => point.value);
-  const min = Math.min(...values);
-  const max = Math.max(...values);
-  const range = max - min || Math.max(1, max * 0.01);
-
   context.clearRect(0, 0, width, height);
   context.fillStyle = "#ffffff";
   context.fillRect(0, 0, width, height);
+
+  if (series.length < 2) {
+    elements.chartMeta.innerHTML = `<span><b>조회 상태</b>유효한 가격 데이터가 부족합니다.</span>`;
+    context.fillStyle = "#65717d";
+    context.font = "600 13px Inter, system-ui, sans-serif";
+    context.fillText("표시할 유효 시세가 부족합니다.", 24, 42);
+    return;
+  }
+
+  const firstPoint = series[0];
+  const lastPoint = series.at(-1);
+  const firstTime = firstPoint.time.getTime();
+  const lastTime = lastPoint.time.getTime();
+  const timeRange = Math.max(1, lastTime - firstTime);
+  const periodChange = firstPoint.value ? ((lastPoint.value - firstPoint.value) / firstPoint.value) * 100 : 0;
+  const statusLabel = market.live ? "실시간" : market.status === "stale" ? "이전 데이터" : "마감";
+  const pointValue = market.unit === "KRW"
+    ? `${formatter.format(lastPoint.value)}원`
+    : formatter.format(lastPoint.value);
+  const startLabel = marketTimeFormatter.format(firstPoint.time);
+  const endLabel = marketTimeFormatter.format(lastPoint.time);
+
+  elements.chartMeta.innerHTML = `
+    <span><b>조회 기간</b>${escapeHtml(startLabel)} ~ ${escapeHtml(endLabel)}</span>
+    <span><b>데이터</b>5일 조회 · 1시간 간격 · 유효 ${series.length}개</span>
+    <span><b>변화율</b>기간 ${signed(periodChange)}% · 전일 ${signed(market.changePercent)}%</span>
+    <span><b>출처</b>Yahoo Finance · ${statusLabel}</span>
+  `;
+  canvas.setAttribute(
+    "aria-label",
+    `${market.name} ${startLabel}부터 ${endLabel}까지 1시간 가격 차트. 기간 변화 ${signed(periodChange)}퍼센트`
+  );
+
+  const padding = { top: 28, right: 18, bottom: 42, left: 62 };
+  const plotWidth = width - padding.left - padding.right;
+  const plotHeight = height - padding.top - padding.bottom;
+  const values = series.map((point) => point.value);
+  const rawMin = Math.min(...values);
+  const rawMax = Math.max(...values);
+  const rawRange = rawMax - rawMin;
+  const margin = rawRange > 0 ? rawRange * 0.08 : Math.max(0.01, rawMax * 0.005);
+  const min = rawMin - margin;
+  const max = rawMax + margin;
+  const range = max - min;
+
   context.strokeStyle = "#e4eaee";
   context.lineWidth = 1;
   context.font = "12px Inter, system-ui, sans-serif";
   context.fillStyle = "#65717d";
+  context.textAlign = "left";
 
   for (let index = 0; index < 5; index += 1) {
     const y = padding.top + (plotHeight / 4) * index;
@@ -2393,15 +2439,15 @@ function drawChart() {
     context.fillText(compactFormatter.format(labelValue), 8, y + 4);
   }
 
-  const coordinates = market.series.map((point, index) => {
-    const x = padding.left + (plotWidth / Math.max(1, market.series.length - 1)) * index;
+  const coordinates = series.map((point) => {
+    const x = padding.left + ((point.time.getTime() - firstTime) / timeRange) * plotWidth;
     const y = padding.top + plotHeight - ((point.value - min) / range) * plotHeight;
     return { x, y };
   });
 
-  const lineColor = market.direction === "up" ? "#15803d" : "#dc2626";
+  const lineColor = periodChange >= 0 ? "#15803d" : "#dc2626";
   const area = context.createLinearGradient(0, padding.top, 0, height - padding.bottom);
-  area.addColorStop(0, market.direction === "up" ? "rgba(21, 128, 61, 0.18)" : "rgba(220, 38, 38, 0.16)");
+  area.addColorStop(0, periodChange >= 0 ? "rgba(21, 128, 61, 0.18)" : "rgba(220, 38, 38, 0.16)");
   area.addColorStop(1, "rgba(255, 255, 255, 0)");
 
   context.beginPath();
@@ -2434,7 +2480,14 @@ function drawChart() {
 
   context.fillStyle = "#172026";
   context.font = "700 13px Inter, system-ui, sans-serif";
-  context.fillText(`${formatMarketValue(market)} · ${signed(market.changePercent)}%`, padding.left, 20);
+  context.textAlign = "left";
+  context.fillText(`최근 차트값 ${pointValue} · 기간 ${signed(periodChange)}%`, padding.left, 20);
+  context.fillStyle = "#65717d";
+  context.font = "11px Inter, system-ui, sans-serif";
+  context.fillText(startLabel, padding.left, height - 12);
+  context.textAlign = "right";
+  context.fillText(endLabel, width - padding.right, height - 12);
+  context.textAlign = "left";
 }
 
 function setConnection(stateName, label) {
