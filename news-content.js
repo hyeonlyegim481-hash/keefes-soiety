@@ -233,4 +233,4 @@ function isSafePublicUrl(value) {
   }
 }
 
-export { buildExtractiveSummary };
+export { buildExtractiveSummary, decodeGoogleNewsUrl };

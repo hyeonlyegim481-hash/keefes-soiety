@@ -1,6 +1,14 @@
+import { decodeGoogleNewsUrl } from "./news-content.js";
+
 const REQUEST_TIMEOUT_MS = 8_000;
 const MACRO_CACHE_TTL_MS = 6 * 60 * 60 * 1000;
-const OFFICIAL_DATA_HOSTS = new Set(["www.bok.or.kr", "mods.go.kr", "www.customs.go.kr"]);
+const OFFICIAL_DATA_HOSTS = new Set([
+  "www.bok.or.kr",
+  "mods.go.kr",
+  "www.customs.go.kr",
+  "news.google.com",
+  "www.korea.kr"
+]);
 
 const BOK_BASE_RATE_URL =
   "https://www.bok.or.kr/portal/singl/baseRate/list.do?dataSeCd=01&menuNo=200643";
@@ -102,6 +110,14 @@ async function fetchBaseRate() {
 }
 
 async function fetchConsumerPrices() {
+  try {
+    return await fetchConsumerPricesFromStatisticsOffice();
+  } catch {
+    return fetchConsumerPricesFromPolicyBriefing();
+  }
+}
+
+async function fetchConsumerPricesFromStatisticsOffice() {
   const listHtml = await fetchOfficialText(CPI_LIST_URL, "text/html");
   const entry = extractAnchors(listHtml).find((anchor) =>
     /^\d{4}년\s+\d{1,2}월\s+소비자물가동향$/.test(anchor.text)
@@ -112,12 +128,41 @@ async function fetchConsumerPrices() {
   const detailUrl = new URL(embeddedPath, CPI_LIST_URL).href;
   const detailHtml = await fetchOfficialText(detailUrl, "text/html");
   const text = htmlToText(detailHtml);
-  const period = entry.text.match(/^(\d{4})년\s+(\d{1,2})월/);
+  return buildCpiIndicator({
+    title: entry.text,
+    text,
+    detailUrl,
+    publishedAt: readPublishedDate(text, /게시일\s*(\d{4})-(\d{2})-(\d{2})/)
+  });
+}
+
+async function fetchConsumerPricesFromPolicyBriefing() {
+  const query = encodeURIComponent("site:korea.kr 소비자물가동향 when:45d");
+  const rssUrl = `https://news.google.com/rss/search?q=${query}&hl=ko&gl=KR&ceid=KR:ko`;
+  const rss = await fetchOfficialText(rssUrl, "application/rss+xml,text/xml");
+  const release = readRssItems(rss).find((item) =>
+    /^\d{4}년\s+\d{1,2}월\s+소비자물가동향(?:\s+-\s+대한민국 정책브리핑)?$/.test(item.title)
+  );
+  if (!release?.link) throw new Error("Latest CPI policy briefing was not found");
+
+  const detailUrl = await decodeGoogleNewsUrl(release.link);
+  const detailHtml = await fetchOfficialText(detailUrl, "text/html");
+  const timestamp = Date.parse(release.publishedAt);
+  return buildCpiIndicator({
+    title: release.title.replace(/\s+-\s+대한민국 정책브리핑$/, ""),
+    text: htmlToText(detailHtml),
+    detailUrl,
+    publishedAt: Number.isFinite(timestamp) ? new Date(timestamp).toISOString() : null
+  });
+}
+
+function buildCpiIndicator({ title, text, detailUrl, publishedAt }) {
+  const period = title.match(/^(\d{4})년\s+(\d{1,2})월/);
   const commonDirection = text.match(
-    /소비자물가지수는\s*전월대비\s*([\d.]+)%\s*,?\s*전년동월대비\s*([\d.]+)%\s*(?:각각\s*)?(상승|하락)/
+    /소비자물가지수는[\s\S]{0,100}?전월대비\s*([\d.]+)%\s*,?\s*전년동월대비\s*([\d.]+)%\s*(?:각각\s*)?(상승|하락)/
   );
   const mixedDirection = text.match(
-    /소비자물가지수는\s*전월대비\s*([\d.]+)%\s*(상승|하락)[,\s]+전년동월대비\s*([\d.]+)%\s*(상승|하락)/
+    /소비자물가지수는[\s\S]{0,100}?전월대비\s*([\d.]+)%\s*(상승|하락)(?:하였고|하였으며|했고|하고|,)?\s*,?\s*전년동월대비\s*([\d.]+)%\s*(상승|하락)/
   );
   if (!period || (!commonDirection && !mixedDirection)) {
     throw new Error("CPI values were not found");
@@ -131,7 +176,6 @@ async function fetchConsumerPrices() {
     : applyDirection(Number(mixedDirection[3]), mixedDirection[4]);
   assertRange(monthChange, -20, 20, "Monthly CPI change");
   assertRange(annualChange, -20, 50, "Annual CPI change");
-  const publishedAt = readPublishedDate(text, /게시일\s*(\d{4})-(\d{2})-(\d{2})/);
   const year = Number(period[1]);
   const month = Number(period[2]);
 
@@ -359,5 +403,6 @@ export {
   BOK_STATS_RSS_URL,
   CPI_LIST_URL,
   CUSTOMS_LIST_URL,
+  fetchConsumerPricesFromPolicyBriefing,
   htmlToText
 };
