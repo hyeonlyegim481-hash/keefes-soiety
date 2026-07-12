@@ -16,7 +16,8 @@ export async function enrichHeadlineWithArticle(headline) {
 
   try {
     const articleUrl = await decodeGoogleNewsUrl(base.articleUrl);
-    if (!isSafePublicUrl(articleUrl)) return base;
+    const fallback = { ...base, articleUrl };
+    if (!isSafePublicUrl(articleUrl)) return rememberArticleResult(cacheKey, fallback);
 
     const response = await fetch(articleUrl, {
       headers: {
@@ -26,32 +27,36 @@ export async function enrichHeadlineWithArticle(headline) {
       redirect: "follow",
       signal: AbortSignal.timeout(ARTICLE_TIMEOUT_MS)
     });
-    if (!response.ok) return base;
+    if (!response.ok) return rememberArticleResult(cacheKey, fallback);
 
     const contentType = response.headers.get("content-type") || "";
-    if (!contentType.includes("text/html")) return base;
+    if (!contentType.includes("text/html")) return rememberArticleResult(cacheKey, fallback);
     const html = (await response.text()).slice(0, 1_500_000);
     const articleContent = extractArticleContent(html);
-    if (articleContent.length < 120) return { ...base, articleUrl };
+    if (articleContent.length < 120 || isBlockedArticleContent(articleContent)) {
+      return rememberArticleResult(cacheKey, fallback);
+    }
 
     const articleSummary = buildExtractiveSummary(articleContent, base.title, 3);
     const articleKeyPoints = buildKeyPoints(articleContent, base.title, 3);
-    const enriched = {
+    return rememberArticleResult(cacheKey, {
       ...base,
       articleUrl,
       articleContent: articleContent.slice(0, 7_000),
       articleSummary,
       articleKeyPoints,
       contentBasis: "article"
-    };
-    if (cacheKey) {
-      if (articleCache.size > 100) articleCache.clear();
-      articleCache.set(cacheKey, enriched);
-    }
-    return enriched;
+    });
   } catch {
-    return base;
+    return rememberArticleResult(cacheKey, base);
   }
+}
+
+function rememberArticleResult(cacheKey, result) {
+  if (!cacheKey) return result;
+  if (articleCache.size > 100) articleCache.clear();
+  articleCache.set(cacheKey, result);
+  return result;
 }
 
 async function decodeGoogleNewsUrl(sourceUrl) {
@@ -215,8 +220,21 @@ function decodeHtmlEntities(value) {
     .replace(/&#x([0-9a-f]+);/gi, (_, code) => String.fromCodePoint(Number.parseInt(code, 16)));
 }
 
+function isBlockedArticleContent(value) {
+  const text = cleanPlainText(value);
+  if (!text) return true;
+
+  const compatibilityWarning =
+    /잠깐!?\s*현재\s*Internet Explorer\s*8\s*이하|Internet Explorer\s*(?:[0-8](?:\.0)?|이하)|익스플로러\s*8\s*이하|지원(?:하지|되지)\s*않는\s*브라우저|브라우저(?:를|의)?\s*(?:업데이트|업그레이드)|최신\s*브라우저(?:를)?\s*(?:사용|설치)|자바스크립트(?:를)?\s*활성화/i;
+  if (compatibilityWarning.test(text)) return true;
+
+  const blockedRequest =
+    /Access Denied|Request (?:blocked|denied)|403 Forbidden|captcha|로봇이 아닙니다|비정상적인 접근|자동화된 접근|접근이 차단/i;
+  return text.length < 2_000 && blockedRequest.test(text);
+}
+
 function isBoilerplate(text) {
-  return /무단전재|재배포 금지|저작권|구독|로그인|회원가입|쿠키|개인정보|광고|기자\s*[=@]|copyright/i.test(text);
+  return /무단전재|재배포 금지|저작권|구독|로그인|회원가입|쿠키|개인정보|광고|기자\s*[=@]|copyright|Internet Explorer|익스플로러|지원(?:하지|되지)\s*않는\s*브라우저|브라우저(?:를|의)?\s*(?:업데이트|업그레이드)|자바스크립트(?:를)?\s*활성화|Access Denied|Request (?:blocked|denied)|403 Forbidden|captcha|로봇이 아닙니다|비정상적인 접근|자동화된 접근|접근이 차단/i.test(text);
 }
 
 function isSafePublicUrl(value) {
@@ -233,4 +251,4 @@ function isSafePublicUrl(value) {
   }
 }
 
-export { buildExtractiveSummary, decodeGoogleNewsUrl };
+export { buildExtractiveSummary, decodeGoogleNewsUrl, isBlockedArticleContent };
