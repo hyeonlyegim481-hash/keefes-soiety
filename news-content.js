@@ -46,17 +46,16 @@ export async function enrichHeadlineWithArticle(headline) {
       return rememberArticleResult(cacheKey, fallback);
     }
 
-    const articleSummary = buildExtractiveSummary(articleContent, base.title, 3);
-    const articleKeyPoints = buildKeyPoints(articleContent, base.title, 3);
-    if (articleSummary.length < 80 || articleKeyPoints.length < 2) {
+    const articleDigest = buildArticleDigest(articleContent, base.title);
+    if (articleDigest.summary.length < 45 || articleDigest.keyPoints.length < 2) {
       return rememberArticleResult(cacheKey, fallback);
     }
     return rememberArticleResult(cacheKey, {
       ...base,
       articleUrl,
       articleContent: articleContent.slice(0, 7_000),
-      articleSummary,
-      articleKeyPoints,
+      articleSummary: articleDigest.summary,
+      articleKeyPoints: articleDigest.keyPoints,
       contentBasis: "article"
     });
   } catch {
@@ -210,10 +209,12 @@ function buildExtractiveSummary(content, title, limit) {
     .slice(0, 900);
 }
 
-function buildKeyPoints(content, title, limit) {
-  return rankSentences(content, title)
-    .slice(0, limit)
-    .map((sentence) => sentence.slice(0, 240));
+function buildArticleDigest(content, title) {
+  const sentences = rankSentences(content, title);
+  return {
+    summary: String(sentences[0] || "").slice(0, 420),
+    keyPoints: sentences.slice(1, 4).map((sentence) => sentence.slice(0, 260))
+  };
 }
 
 function rankSentences(content, title) {
@@ -224,11 +225,21 @@ function rankSentences(content, title) {
   const seenSentences = [];
   return cleanPlainText(content)
     .split(/(?<=[.!?。]|다\.)\s+/)
-    .map((sentence, index) => ({
-      sentence: sentence.trim(),
-      index,
-      score: keywords.reduce((score, word) => score + (sentence.includes(word) ? 2 : 0), 0) + (index < 5 ? 2 : 0)
-    }))
+    .map((sentence, index) => {
+      const cleanSentence = sentence.trim();
+      const titleScore = keywords.reduce(
+        (score, word) => score + (cleanSentence.includes(word) ? 3 : 0),
+        0
+      );
+      const numberScore = Math.min(3, (cleanSentence.match(/\d+(?:[.,]\d+)?(?:%|원|달러|조원|억|만|배|명)?/g) || []).length);
+      const economyScore = /금리|물가|환율|수출|매출|이익|고용|투자|주가|채권|달러|유가|정부|중앙은행|기업|시장/i.test(cleanSentence) ? 2 : 0;
+      const readableLengthScore = cleanSentence.length >= 55 && cleanSentence.length <= 240 ? 1 : 0;
+      return {
+        sentence: cleanSentence,
+        index,
+        score: titleScore + numberScore + economyScore + readableLengthScore + (index < 5 ? 2 : 0)
+      };
+    })
     .filter(({ sentence }) => sentence.length >= 35 && sentence.length <= 420 && !isBoilerplate(sentence))
     .filter(({ sentence }) => {
       const fingerprint = sentence.toLowerCase().replace(/[^0-9a-z가-힣]+/g, "");
@@ -307,4 +318,4 @@ function isSafePublicUrl(value) {
   }
 }
 
-export { buildExtractiveSummary, decodeGoogleNewsUrl, extractArticleContent, hasArticleEvidence, isBlockedArticleContent };
+export { buildArticleDigest, buildExtractiveSummary, decodeGoogleNewsUrl, extractArticleContent, hasArticleEvidence, isBlockedArticleContent };

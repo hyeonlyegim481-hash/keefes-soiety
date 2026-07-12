@@ -1,21 +1,21 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=39";
+} from "./glossary-data.js?v=40";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=39";
+} from "./glossary-extra-data.js?v=40";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=39";
+} from "./glossary-more-data.js?v=40";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=39";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=39";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=39";
+} from "./glossary-pro-data.js?v=40";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=40";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=40";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions];
 const glossaryCategoryOrder = [
@@ -2306,9 +2306,12 @@ async function loadNewsAnalysis(details, headline, marketAnalysis) {
 }
 
 function renderNewsAnalysisResult(output, result) {
-  const checkpoints = Array.isArray(result.checkpoints) ? result.checkpoints : [];
-  const keyPoints = Array.isArray(result.keyPoints) ? result.keyPoints : [];
-  const contentBasis = result.contentBasis === "article" ? "원문 내용 기반" : "제목 기반";
+  const checkpoints = Array.isArray(result.checkpoints) ? result.checkpoints.slice(0, 3) : [];
+  const keyPoints = Array.isArray(result.keyPoints) ? result.keyPoints.slice(0, 3) : [];
+  const isArticleBased = result.contentBasis === "article";
+  const contentBasis = isArticleBased ? "원문 내용 기반" : "제목 기반";
+  const summaryLabel = isArticleBased ? "한 줄 요약" : "제목 기반 해석";
+  const pointsLabel = isArticleBased ? "핵심 사실" : "읽는 포인트";
   const marketBasis = result.marketContextBasis === "article-time" ? "기사 시점 가격" : "현재 가격";
   const sourceBasis = Number(result.relatedSourceCount) > 1
     ? `교차 ${result.relatedSourceCount}곳`
@@ -2319,15 +2322,22 @@ function renderNewsAnalysisResult(output, result) {
       <em>${escapeHtml(result.engineLabel || "데이터 기반 자동 요약")} · ${contentBasis} · ${marketBasis} · ${sourceBasis} · 신뢰도 ${escapeHtml(result.confidence || "중간")}</em>
     </div>
     <section class="ai-article-summary">
-      <span>기사 핵심 요약</span>
+      <span>${summaryLabel}</span>
       <p>${escapeHtml(result.summary || "현재 시장과의 연결을 확인하고 있습니다.")}</p>
     </section>
     ${keyPoints.length ? `
       <div class="ai-key-points">
-        <strong>핵심 내용</strong>
-        ${keyPoints.map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
+        <header>
+          <strong>${pointsLabel}</strong>
+          <em>${keyPoints.length}개</em>
+        </header>
+        ${keyPoints.map((item, index) => `<span><b>${String(index + 1).padStart(2, "0")}</b><i>${escapeHtml(item)}</i></span>`).join("")}
       </div>
     ` : ""}
+    <div class="ai-section-title">
+      <strong>경제적 의미</strong>
+      <span>기사 내용이 시장과 한국에 이어지는 경로</span>
+    </div>
     <div class="ai-analysis-grid">
       <article>
         <span>왜 중요한가</span>
@@ -2342,14 +2352,18 @@ function renderNewsAnalysisResult(output, result) {
         <p>${escapeHtml(result.koreaImpact || "환율과 외국인 수급으로 이어지는지 확인합니다.")}</p>
       </article>
     </div>
-    <div class="ai-checkpoints">
-      <strong>다음 확인</strong>
-      ${checkpoints.map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
+    ${checkpoints.length ? `
+      <div class="ai-checkpoints">
+        <strong>다음에 확인할 것</strong>
+        ${checkpoints.map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
+      </div>
+    ` : ""}
+    <div class="ai-limitation">
+      <strong>주의할 점</strong>
+      <span>${escapeHtml(result.limitation || "기사 원문과 실제 가격 반응을 함께 확인해야 합니다.")}</span>
     </div>
-    <p class="ai-limitation">${escapeHtml(result.limitation || "헤드라인 분석이므로 기사 원문과 실제 가격 반응을 함께 확인해야 합니다.")}</p>
   `;
 }
-
 function drawChart() {
   if (!state.snapshot) return;
   const market =
