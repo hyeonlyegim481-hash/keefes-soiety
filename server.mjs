@@ -250,6 +250,72 @@ function normalizeMarketSeries(timestamps = [], closes = []) {
     );
 }
 
+function getRegularTradingPeriod(meta = {}) {
+  const regular = meta?.currentTradingPeriod?.regular;
+  const start = Number(regular?.start) * 1000;
+  const end = Number(regular?.end) * 1000;
+  return Number.isFinite(start) && Number.isFinite(end) && end > start
+    ? { start, end }
+    : null;
+}
+
+function isRegularMarketOpen(meta = {}, now = Date.now()) {
+  const period = getRegularTradingPeriod(meta);
+  if (!period) return null;
+  return now >= period.start && now < period.end;
+}
+
+function resolveMarketPoint(meta = {}, series = [], now = Date.now()) {
+  const lastPoint = series.at(-1);
+  const marketOpen = isRegularMarketOpen(meta, now);
+  const metaValue = Number(meta?.regularMarketPrice);
+  const metaTime = Number(meta?.regularMarketTime);
+  const metaPoint = {
+    value: metaValue,
+    time: Number.isFinite(metaTime) ? new Date(metaTime * 1000).toISOString() : ""
+  };
+  const hasMetaPoint =
+    Number.isFinite(metaPoint.value) &&
+    metaPoint.value > 0 &&
+    Number.isFinite(Date.parse(metaPoint.time));
+
+  if (marketOpen !== false && hasMetaPoint) {
+    return { ...metaPoint, marketOpen };
+  }
+  return {
+    value: lastPoint?.value,
+    time: lastPoint?.time || metaPoint.time,
+    marketOpen
+  };
+}
+
+function resolvePreviousClose(meta = {}, series = [], current = 0) {
+  const candidates = [
+    meta?.previousClose,
+    meta?.chartPreviousClose,
+    series.length > 1 ? series.at(-2)?.value : null,
+    current
+  ];
+  const value = candidates
+    .map(Number)
+    .find((candidate) => Number.isFinite(candidate) && candidate > 0);
+  return value || current;
+}
+
+function resolveMarketStatus(meta = {}, asOf, now = Date.now()) {
+  const marketOpen = isRegularMarketOpen(meta, now);
+  const ageMs = now - Date.parse(asOf);
+  const recent =
+    Number.isFinite(ageMs) &&
+    ageMs >= -5 * 60 * 1000 &&
+    ageMs <= 2.5 * 60 * 60 * 1000;
+  const live = marketOpen === null ? recent : marketOpen && recent;
+  return {
+    live,
+    status: live ? "live" : marketOpen ? "stale" : "closed"
+  };
+}
+
 async function fetchMarket(item) {
   const endpoint = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(
     item.symbol
@@ -277,21 +343,15 @@ async function fetchMarket(item) {
 
   if (!series.length) throw new Error(`No usable prices for ${item.symbol}`);
 
-  const previousClose = Number(result.meta?.chartPreviousClose);
-  const current = Number(result.meta?.regularMarketPrice) || series.at(-1).value;
-  const baseline = Number.isFinite(previousClose)
-    ? previousClose
-    : series.length > 1
-      ? series.at(-2).value
-      : current;
+  const now = Date.now();
+  const marketPoint = resolveMarketPoint(result.meta, series, now);
+  const current = Number(marketPoint.value) || series.at(-1).value;
+  const baseline = resolvePreviousClose(result.meta, series, current);
   const change = current - baseline;
   const changePercent = baseline ? (change / baseline) * 100 : 0;
 
-  const asOf = result.meta?.regularMarketTime
-    ? new Date(result.meta.regularMarketTime * 1000).toISOString()
-    : series.at(-1).time;
-  const ageMs = Date.now() - Date.parse(asOf);
-  const live = Number.isFinite(ageMs) && ageMs >= 0 && ageMs <= 2.5 * 60 * 60 * 1000;
+  const asOf = marketPoint.time || series.at(-1).time;
+  const { live, status } = resolveMarketStatus(result.meta, asOf, now);
 
   return {
     ...item,
@@ -308,7 +368,7 @@ async function fetchMarket(item) {
     chartInterval: "1h",
     chartSource: "Yahoo Finance",
     live,
-    status: live ? "live" : "closed"
+    status
   };
 }
 
@@ -1383,5 +1443,8 @@ export {
   normalizeHeadlineInput,
   normalizeMarketSeries,
   rankAndDedupeHeadlines,
+  resolveMarketPoint,
+  resolveMarketStatus,
+  resolvePreviousClose,
   selectDiverseHeadlines
 };

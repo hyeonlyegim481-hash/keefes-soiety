@@ -1,4 +1,4 @@
-const ARTICLE_TOTAL_TIMEOUT_MS = 7_000;
+const ARTICLE_TOTAL_TIMEOUT_MS = 6_000;
 const articleCache = new Map();
 
 export async function enrichHeadlineWithArticle(headline) {

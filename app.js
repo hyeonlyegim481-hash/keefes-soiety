@@ -1,24 +1,24 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=46";
+} from "./glossary-data.js?v=48";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=46";
+} from "./glossary-extra-data.js?v=48";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=46";
+} from "./glossary-more-data.js?v=48";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=46";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=46";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=46";
-import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=46";
-import { indicatorCategories, indicatorCountries, indicatorDefinitions } from "./indicator-data.js?v=46";
-import { indicatorSnapshot } from "./indicator-values.js?v=46";
+} from "./glossary-pro-data.js?v=48";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=48";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=48";
+import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=48";
+import { indicatorCategories, indicatorCountries, indicatorDefinitions } from "./indicator-data.js?v=48";
+import { indicatorSnapshot } from "./indicator-values.js?v=48";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions];
 const glossaryCategoryOrder = [
@@ -682,7 +682,20 @@ if ("ResizeObserver" in window) {
 }
 
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/sw.js").catch(() => {});
+  const hadServiceWorkerController = Boolean(navigator.serviceWorker.controller);
+  let reloadingForServiceWorker = false;
+  navigator.serviceWorker
+    .register("/sw.js?v=48")
+    .then((registration) => {
+      registration.update().catch(() => {});
+      setInterval(() => registration.update().catch(() => {}), 5 * 60_000);
+      navigator.serviceWorker.addEventListener("controllerchange", () => {
+        if (!hadServiceWorkerController || reloadingForServiceWorker) return;
+        reloadingForServiceWorker = true;
+        window.location.reload();
+      });
+    })
+    .catch(() => {});
 }
 
 renderIndicators();
@@ -3319,7 +3332,7 @@ async function loadNewsAnalysis(details, headline, marketAnalysis) {
     const response = await fetch("/api/news-analysis", {
       method: "POST",
       headers: { "content-type": "application/json", accept: "application/json" },
-      signal: AbortSignal.timeout(14_000),
+      signal: AbortSignal.timeout(20_000),
       body: JSON.stringify({
         id: headline.id,
         title: headline.title,
