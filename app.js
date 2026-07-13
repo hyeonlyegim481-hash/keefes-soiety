@@ -1,22 +1,24 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=44";
+} from "./glossary-data.js?v=45";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=44";
+} from "./glossary-extra-data.js?v=45";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=44";
+} from "./glossary-more-data.js?v=45";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=44";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=44";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=44";
-import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=44";
+} from "./glossary-pro-data.js?v=45";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=45";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=45";
+import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=45";
+import { indicatorCategories, indicatorCountries, indicatorDefinitions } from "./indicator-data.js?v=45";
+import { indicatorSnapshot } from "./indicator-values.js?v=45";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions];
 const glossaryCategoryOrder = [
@@ -115,6 +117,13 @@ const elements = {
   historyTimeline: document.querySelector("#historyTimeline"),
   historyPatterns: document.querySelector("#historyPatterns"),
   historyCount: document.querySelector("#historyCount"),
+  indicatorUpdate: document.querySelector("#indicatorUpdate"),
+  indicatorSummary: document.querySelector("#indicatorSummary"),
+  indicatorCategoryTabs: document.querySelector("#indicatorCategoryTabs"),
+  indicatorSearch: document.querySelector("#indicatorSearch"),
+  indicatorCount: document.querySelector("#indicatorCount"),
+  indicatorList: document.querySelector("#indicatorList"),
+  indicatorDetail: document.querySelector("#indicatorDetail"),
   glossaryTotal: document.querySelector("#glossaryTotal"),
   glossaryLevels: document.querySelector("#glossaryLevels"),
   glossarySearch: document.querySelector("#glossarySearch"),
@@ -345,6 +354,9 @@ let state = {
   isRefreshing: false,
   activeChapter: initialChapter,
   historyEra: "overview",
+  indicatorCategory: "all",
+  indicatorQuery: "",
+  selectedIndicatorId: "fertility",
   glossaryQuery: "",
   glossaryLevel: "all",
   glossaryCategory: "전체",
@@ -375,6 +387,25 @@ elements.historyEraTabs.addEventListener("click", (event) => {
   state.historyEra = button.dataset.historyEra;
   renderHistory(state.snapshot);
   requestAnimationFrame(updateChapterHeight);
+});
+elements.indicatorCategoryTabs.addEventListener("click", (event) => {
+  const button = event.target.closest?.("[data-indicator-category]");
+  if (!button) return;
+  state.indicatorCategory = button.dataset.indicatorCategory;
+  state.indicatorQuery = "";
+  elements.indicatorSearch.value = "";
+  renderIndicators();
+});
+elements.indicatorSearch.addEventListener("input", () => {
+  state.indicatorQuery = elements.indicatorSearch.value;
+  state.indicatorCategory = "all";
+  renderIndicators();
+});
+elements.indicatorList.addEventListener("click", (event) => {
+  const button = event.target.closest?.("[data-indicator-id]");
+  if (!button) return;
+  state.selectedIndicatorId = button.dataset.indicatorId;
+  renderIndicators();
 });
 elements.glossarySearch.addEventListener("input", () => {
   state.glossaryQuery = elements.glossarySearch.value;
@@ -467,6 +498,7 @@ elements.chapterWindow.addEventListener("pointercancel", () => {
 });
 window.addEventListener("resize", () => {
   drawChart();
+  drawIndicatorTrend();
   updateChapterHeight();
 });
 document.addEventListener(
@@ -496,6 +528,8 @@ if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("/sw.js").catch(() => {});
 }
 
+renderIndicators();
+setActiveChapter(state.activeChapter, { skipAnimation: true });
 refreshSnapshot();
 setInterval(() => refreshSnapshot(), 60_000);
 
@@ -567,6 +601,7 @@ function render(snapshot) {
   renderMarketConnections(snapshot.markets, snapshot.analysis);
   renderAnalysis(snapshot.analysis);
   renderMacro(snapshot.macro, snapshot.analysis);
+  renderIndicators();
   renderStudy(snapshot);
   renderHistory(snapshot);
   renderGlossary();
@@ -880,6 +915,9 @@ function setActiveChapter(chapter, { skipAnimation = false } = {}) {
 
   if (nextChapter === "markets") {
     requestAnimationFrame(drawChart);
+  }
+  if (nextChapter === "indicators") {
+    requestAnimationFrame(drawIndicatorTrend);
   }
 }
 
@@ -1343,6 +1381,334 @@ function renderScenarioMatrix(analysis, dailyFlow) {
       <p class="data-caveat">시나리오 비중은 현재 가격 신호를 정리하기 위한 설명값이며 투자 확률이나 수익률 예측이 아닙니다.</p>
     </section>
   `;
+}
+
+function renderIndicators() {
+  const query = state.indicatorQuery.trim().toLocaleLowerCase("ko-KR");
+  const filtered = indicatorDefinitions.filter((indicator) => {
+    const categoryMatch = state.indicatorCategory === "all" || indicator.category === state.indicatorCategory;
+    const searchable = `${indicator.name} ${indicator.shortName} ${indicator.description} ${getIndicatorCategoryLabel(indicator.category)}`.toLocaleLowerCase("ko-KR");
+    return categoryMatch && (!query || searchable.includes(query));
+  });
+
+  if (!filtered.some((indicator) => indicator.id === state.selectedIndicatorId)) {
+    state.selectedIndicatorId = filtered[0]?.id || state.selectedIndicatorId;
+  }
+
+  const fertility = indicatorSnapshot.indicators.fertility?.countries?.KOR;
+  const latestYear = Math.max(
+    ...indicatorDefinitions.flatMap((indicator) => {
+      const countries = indicatorSnapshot.indicators[indicator.id]?.countries || {};
+      return Object.values(countries).filter(Boolean).map((item) => item.year);
+    })
+  );
+  const datedCount = indicatorDefinitions.filter((indicator) =>
+    indicatorSnapshot.indicators[indicator.id]?.countries?.KOR
+  ).length;
+
+  elements.indicatorUpdate.textContent = `WDI ${indicatorSnapshot.dataUpdatedAt.replaceAll("-", ".")} 갱신`;
+  elements.indicatorSummary.innerHTML = `
+    <div>
+      <span>수록 범위</span>
+      <strong>${indicatorDefinitions.length}개 지표 · ${indicatorCategories.length - 1}개 분야</strong>
+      <p>인구부터 기술, 환경, 분배까지 같은 기준으로 비교합니다.</p>
+    </div>
+    <div>
+      <span>한국 합계출산율</span>
+      <strong>${fertility ? formatIndicatorValue(indicatorDefinitions[0], fertility) : "--"}</strong>
+      <p>${fertility ? `${fertility.year}년 기준 · 세계 ${formatIndicatorValue(indicatorDefinitions[0], indicatorSnapshot.indicators.fertility.countries.WLD)}` : "기준값 없음"}</p>
+    </div>
+    <div>
+      <span>데이터 기준</span>
+      <strong>최신 ${latestYear}년 · 한국 ${datedCount}/${indicatorDefinitions.length}</strong>
+      <p>지표마다 공표 시차가 달라 카드에 실제 기준연도를 따로 표시합니다.</p>
+    </div>
+  `;
+
+  elements.indicatorCategoryTabs.innerHTML = indicatorCategories
+    .map((category) => {
+      const count = category.id === "all"
+        ? indicatorDefinitions.length
+        : indicatorDefinitions.filter((indicator) => indicator.category === category.id).length;
+      return `
+        <button type="button" role="tab" data-indicator-category="${category.id}" aria-selected="${state.indicatorCategory === category.id}">
+          ${escapeHtml(category.label)} <span>${count}</span>
+        </button>
+      `;
+    })
+    .join("");
+
+  elements.indicatorCount.textContent = `${filtered.length}개 표시`;
+  elements.indicatorList.innerHTML = filtered.length
+    ? filtered.map(renderIndicatorListItem).join("")
+    : `
+      <div class="indicator-empty">
+        <strong>검색 결과가 없습니다.</strong>
+        <p>출산, 고용, 의료, 인터넷처럼 더 짧은 단어로 찾아보세요.</p>
+      </div>
+    `;
+
+  const selected = indicatorDefinitions.find((indicator) => indicator.id === state.selectedIndicatorId);
+  if (!filtered.length || !selected) {
+    elements.indicatorDetail.innerHTML = `
+      <div class="indicator-detail-empty">
+        <span>지표 선택</span>
+        <strong>왼쪽 목록에서 확인할 지표를 선택하세요.</strong>
+      </div>
+    `;
+    return;
+  }
+
+  renderIndicatorDetail(selected);
+  requestAnimationFrame(() => {
+    drawIndicatorTrend();
+    updateChapterHeight();
+  });
+}
+
+function renderIndicatorListItem(indicator) {
+  const data = indicatorSnapshot.indicators[indicator.id];
+  const korea = data?.countries?.KOR;
+  const delta = korea?.previous ? korea.value - korea.previous.value : null;
+  const isSelected = indicator.id === state.selectedIndicatorId;
+  return `
+    <button class="indicator-list-item" type="button" data-indicator-id="${indicator.id}" aria-pressed="${isSelected}">
+      <span class="indicator-list-meta">
+        <em>${escapeHtml(getIndicatorCategoryLabel(indicator.category))}</em>
+        <i>${korea ? `${korea.year}년` : "자료 없음"}</i>
+      </span>
+      <strong>${escapeHtml(indicator.name)}</strong>
+      <span class="indicator-list-value">
+        <b>${korea ? formatIndicatorValue(indicator, korea) : "--"}</b>
+        <small>${delta == null ? "직전값 없음" : `직전 ${formatIndicatorDelta(indicator, delta)}`}</small>
+      </span>
+      <p>${escapeHtml(indicator.description)}</p>
+    </button>
+  `;
+}
+
+function renderIndicatorDetail(indicator) {
+  const data = indicatorSnapshot.indicators[indicator.id];
+  const countryData = indicatorCountries
+    .map((country) => ({ ...country, observation: data?.countries?.[country.id] }))
+    .filter((country) => country.observation);
+  const korea = data?.countries?.KOR;
+  const world = data?.countries?.WLD;
+  const values = countryData.map((country) => country.observation.value);
+  const scaleMin = Math.min(0, ...values);
+  const scaleMax = Math.max(0, ...values);
+  const range = scaleMax - scaleMin || 1;
+  const zeroPosition = ((0 - scaleMin) / range) * 100;
+  const comparison = buildIndicatorComparison(indicator, korea, world);
+  const trend = data?.koreaTrend || [];
+  const first = trend[0];
+  const last = trend.at(-1);
+  const trendDelta = first && last ? last.value - first.value : null;
+
+  elements.indicatorDetail.innerHTML = `
+    <header class="indicator-detail-head">
+      <div>
+        <p class="section-kicker">${escapeHtml(getIndicatorCategoryLabel(indicator.category))} · ${escapeHtml(indicator.code)}</p>
+        <h3>${escapeHtml(indicator.name)}</h3>
+        <p>${escapeHtml(indicator.description)}</p>
+      </div>
+      <div class="indicator-primary-value">
+        <span>한국 ${korea ? `${korea.year}년` : "기준 없음"}</span>
+        <strong>${korea ? formatIndicatorValue(indicator, korea) : "--"}</strong>
+        <em>${korea?.previous ? `직전 공표 ${formatIndicatorDelta(indicator, korea.value - korea.previous.value)}` : "직전 공표 없음"}</em>
+      </div>
+    </header>
+    <div class="indicator-comparison-note">
+      <span>세계와 비교</span>
+      <strong>${escapeHtml(comparison.title)}</strong>
+      <p>${escapeHtml(comparison.detail)}</p>
+    </div>
+    <section class="indicator-country-section">
+      <div class="indicator-section-title">
+        <div>
+          <span>국가 비교</span>
+          <strong>같은 지표, 각국 최신 공표값</strong>
+        </div>
+        <em>연도는 행별 표시</em>
+      </div>
+      <div class="indicator-country-list">
+        ${countryData.map((country) => {
+          const valuePosition = ((country.observation.value - scaleMin) / range) * 100;
+          const left = Math.min(zeroPosition, valuePosition);
+          const width = Math.max(2, Math.abs(valuePosition - zeroPosition));
+          return `
+            <div class="indicator-country-row" data-country="${country.id}">
+              <span>${escapeHtml(country.label)}</span>
+              <div class="indicator-country-track" ${scaleMin < 0 ? `data-has-zero="true" style="--zero:${zeroPosition}%"` : ""}>
+                <i style="left:${left}%;width:${width}%"></i>
+              </div>
+              <strong>${formatIndicatorValue(indicator, country.observation)}</strong>
+              <em>${country.observation.year}</em>
+            </div>
+          `;
+        }).join("")}
+      </div>
+    </section>
+    <section class="indicator-trend-section">
+      <div class="indicator-section-title">
+        <div>
+          <span>한국 추세</span>
+          <strong>${first && last ? `${first.year}~${last.year}년` : "자료 없음"}</strong>
+        </div>
+        <em>${trendDelta == null ? "변화 계산 불가" : `기간 변화 ${formatIndicatorDelta(indicator, trendDelta)}`}</em>
+      </div>
+      <div class="indicator-trend-frame">
+        <canvas id="indicatorTrendCanvas" width="760" height="220" aria-label="${escapeHtml(indicator.name)} 한국 추세 차트"></canvas>
+      </div>
+    </section>
+    <div class="indicator-reading-grid">
+      <section>
+        <span>이렇게 읽기</span>
+        <p>${escapeHtml(indicator.reading)}</p>
+      </section>
+      <section>
+        <span>주의할 점</span>
+        <p>${escapeHtml(indicator.caution)}</p>
+      </section>
+    </div>
+    <footer class="indicator-source-row">
+      <div>
+        <span>출처</span>
+        <strong>${escapeHtml(indicator.source)}</strong>
+        <em>데이터셋 갱신 ${indicatorSnapshot.dataUpdatedAt.replaceAll("-", ".")}</em>
+      </div>
+      <a href="${safeNewsUrl(indicator.sourceUrl)}" target="_blank" rel="noopener noreferrer">원자료 보기 <span aria-hidden="true">↗</span></a>
+    </footer>
+  `;
+}
+
+function drawIndicatorTrend() {
+  const canvas = document.querySelector("#indicatorTrendCanvas");
+  if (!canvas) return;
+  const indicator = indicatorDefinitions.find((item) => item.id === state.selectedIndicatorId);
+  const series = indicatorSnapshot.indicators[state.selectedIndicatorId]?.koreaTrend || [];
+  if (!indicator || series.length < 2) return;
+
+  const rect = canvas.getBoundingClientRect();
+  const width = Math.max(280, rect.width || 760);
+  const height = Math.max(190, rect.height || 220);
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = Math.round(width * dpr);
+  canvas.height = Math.round(height * dpr);
+  const context = canvas.getContext("2d");
+  context.scale(dpr, dpr);
+  context.clearRect(0, 0, width, height);
+  context.fillStyle = "#ffffff";
+  context.fillRect(0, 0, width, height);
+
+  const padding = { top: 24, right: 18, bottom: 34, left: 54 };
+  const plotWidth = width - padding.left - padding.right;
+  const plotHeight = height - padding.top - padding.bottom;
+  const values = series.map((point) => point.value);
+  const rawMin = Math.min(...values);
+  const rawMax = Math.max(...values);
+  const margin = (rawMax - rawMin || Math.max(1, Math.abs(rawMax))) * 0.12;
+  const min = rawMin - margin;
+  const max = rawMax + margin;
+  const range = max - min || 1;
+
+  context.strokeStyle = "#e2e8eb";
+  context.lineWidth = 1;
+  context.fillStyle = "#6b7780";
+  context.font = "11px Inter, system-ui, sans-serif";
+  context.textAlign = "right";
+  for (let index = 0; index < 4; index += 1) {
+    const y = padding.top + (plotHeight / 3) * index;
+    context.beginPath();
+    context.moveTo(padding.left, y);
+    context.lineTo(width - padding.right, y);
+    context.stroke();
+    const label = max - (range / 3) * index;
+    context.fillText(formatIndicatorNumber(indicator, label), padding.left - 8, y + 4);
+  }
+
+  const points = series.map((point, index) => ({
+    x: padding.left + (index / (series.length - 1)) * plotWidth,
+    y: padding.top + plotHeight - ((point.value - min) / range) * plotHeight
+  }));
+  const area = context.createLinearGradient(0, padding.top, 0, height - padding.bottom);
+  area.addColorStop(0, "rgba(15, 118, 110, 0.17)");
+  area.addColorStop(1, "rgba(15, 118, 110, 0)");
+  context.beginPath();
+  points.forEach((point, index) => index ? context.lineTo(point.x, point.y) : context.moveTo(point.x, point.y));
+  context.lineTo(points.at(-1).x, height - padding.bottom);
+  context.lineTo(points[0].x, height - padding.bottom);
+  context.closePath();
+  context.fillStyle = area;
+  context.fill();
+
+  context.beginPath();
+  points.forEach((point, index) => index ? context.lineTo(point.x, point.y) : context.moveTo(point.x, point.y));
+  context.strokeStyle = "#0f766e";
+  context.lineWidth = 2.5;
+  context.lineJoin = "round";
+  context.lineCap = "round";
+  context.stroke();
+  const lastPoint = points.at(-1);
+  context.beginPath();
+  context.arc(lastPoint.x, lastPoint.y, 4, 0, Math.PI * 2);
+  context.fillStyle = "#c28b24";
+  context.fill();
+
+  context.fillStyle = "#65717d";
+  context.font = "11px Inter, system-ui, sans-serif";
+  context.textAlign = "left";
+  context.fillText(String(series[0].year), padding.left, height - 11);
+  context.textAlign = "right";
+  context.fillText(String(series.at(-1).year), width - padding.right, height - 11);
+}
+
+function buildIndicatorComparison(indicator, korea, world) {
+  if (!korea || !world) {
+    return {
+      title: "비교 가능한 세계 집계값이 없습니다.",
+      detail: "국가마다 조사 시점이 다른 지표는 각 행의 기준연도를 먼저 확인하세요."
+    };
+  }
+  const difference = korea.value - world.value;
+  const direction = Math.abs(difference) < 10 ** -indicator.precision ? "비슷함" : difference > 0 ? "높음" : "낮음";
+  return {
+    title: `한국이 세계보다 ${formatIndicatorMagnitude(indicator, Math.abs(difference))} ${direction}`,
+    detail: `한국 ${korea.year}년 ${formatIndicatorValue(indicator, korea)}, 세계 ${world.year}년 ${formatIndicatorValue(indicator, world)}입니다. 기준연도가 다르면 방향만 참고하세요.`
+  };
+}
+
+function formatIndicatorValue(indicator, observation) {
+  const value = typeof observation === "number" ? observation : observation?.value;
+  if (!Number.isFinite(value)) return "--";
+  const formatted = formatIndicatorNumber(indicator, value);
+  if (indicator.format === "currency") return `$${formatted}`;
+  if (indicator.unit === "%") return `${formatted}%`;
+  return `${formatted} ${indicator.unit}`;
+}
+
+function formatIndicatorNumber(indicator, value) {
+  return new Intl.NumberFormat("ko-KR", {
+    minimumFractionDigits: indicator.precision,
+    maximumFractionDigits: indicator.precision
+  }).format(value);
+}
+
+function formatIndicatorDelta(indicator, value) {
+  const sign = value > 0 ? "+" : "";
+  if (indicator.format === "currency") return `${sign}$${formatIndicatorNumber(indicator, value)}`;
+  const suffix = indicator.unit === "%" ? "%p" : indicator.unit;
+  return `${sign}${formatIndicatorNumber(indicator, value)} ${suffix}`;
+}
+
+function formatIndicatorMagnitude(indicator, value) {
+  if (indicator.format === "currency") return `$${formatIndicatorNumber(indicator, value)}`;
+  const suffix = indicator.unit === "%" ? "%p" : indicator.unit;
+  return `${formatIndicatorNumber(indicator, value)} ${suffix}`;
+}
+
+function getIndicatorCategoryLabel(categoryId) {
+  return indicatorCategories.find((category) => category.id === categoryId)?.label || "기타";
 }
 
 function renderHistory(snapshot) {

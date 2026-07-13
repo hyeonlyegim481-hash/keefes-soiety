@@ -8,9 +8,9 @@
       content="최신 시장 데이터와 한국 경제 흐름을 기준시각과 함께 정리하는 대시보드"
     />
     <meta name="theme-color" content="#f6f7f8" />
-    <link rel="manifest" href="/manifest.json?v=44" />
+    <link rel="manifest" href="/manifest.json?v=45" />
     <link rel="icon" href="/assets/econest-icon.png" type="image/png" />
-    <link rel="stylesheet" href="/styles.css?v=44" />
+    <link rel="stylesheet" href="/styles.css?v=45" />
     <title>keefe's soiety</title>
   </head>
   <body>
@@ -38,6 +38,7 @@
         <button class="chapter-tab" type="button" data-chapter="brief" aria-selected="true">핵심</button>
         <button class="chapter-tab" type="button" data-chapter="markets" aria-selected="false">시장</button>
         <button class="chapter-tab" type="button" data-chapter="korea" aria-selected="false">한국</button>
+        <button class="chapter-tab" type="button" data-chapter="indicators" aria-selected="false">지표</button>
         <button class="chapter-tab" type="button" data-chapter="analysis" aria-selected="false">심층</button>
         <button class="chapter-tab" type="button" data-chapter="study" aria-selected="false">공부</button>
         <button class="chapter-tab" type="button" data-chapter="history" aria-selected="false">역사</button>
@@ -125,6 +126,39 @@
                 <div class="chapter-board" id="koreaBoard"></div>
                 <div class="macro-grid" id="macroGrid"></div>
                 <div class="chapter-expansion" id="koreaImpact"></div>
+              </article>
+            </section>
+
+            <section class="chapter-pane chapter-single" id="indicators" data-chapter-panel="indicators" aria-label="한국과 세계 지표">
+              <article class="panel indicator-panel">
+                <div class="panel-heading indicator-heading">
+                  <div>
+                    <p class="section-kicker">한국과 세계</p>
+                    <h2>생활과 경제를 읽는 28개 지표</h2>
+                  </div>
+                  <span class="indicator-update" id="indicatorUpdate"></span>
+                </div>
+                <div class="indicator-summary" id="indicatorSummary"></div>
+                <div class="indicator-toolbar">
+                  <div class="indicator-category-tabs" id="indicatorCategoryTabs" role="tablist" aria-label="지표 분야"></div>
+                  <label class="indicator-search" for="indicatorSearch">
+                    <span>지표 검색</span>
+                    <input id="indicatorSearch" type="search" placeholder="출산율, 고용, 환경 등" autocomplete="off" />
+                  </label>
+                </div>
+                <div class="indicator-layout">
+                  <section class="indicator-directory" aria-label="지표 목록">
+                    <header>
+                      <div>
+                        <p class="section-kicker">지표 목록</p>
+                        <h3>분야별 기준값</h3>
+                      </div>
+                      <span id="indicatorCount"></span>
+                    </header>
+                    <div class="indicator-list" id="indicatorList"></div>
+                  </section>
+                  <aside class="indicator-detail" id="indicatorDetail" aria-live="polite"></aside>
+                </div>
               </article>
             </section>
 
@@ -246,7 +280,7 @@
       </footer>
     </div>
 
-    <script type="module" src="/app.js?v=44"></script>
+    <script type="module" src="/app.js?v=45"></script>
   </body>
 </html>
 
