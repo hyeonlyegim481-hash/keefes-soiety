@@ -1,21 +1,21 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=42";
+} from "./glossary-data.js?v=43";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=42";
+} from "./glossary-extra-data.js?v=43";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=42";
+} from "./glossary-more-data.js?v=43";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=42";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=42";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=42";
+} from "./glossary-pro-data.js?v=43";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=43";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=43";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions];
 const glossaryCategoryOrder = [
@@ -32,6 +32,44 @@ const glossaryTerms = [
 ];
 
 const GLOSSARY_PAGE_SIZE = 24;
+
+const ECONOMIC_QUOTES = [
+  {
+    text: "가격은 지불하는 것이고, 가치는 얻는 것이다.",
+    author: "워런 버핏",
+    lesson: "가격의 하루 움직임과 경제적 가치를 분리해서 봅니다."
+  },
+  {
+    text: "단기적으로 시장은 투표기계지만, 장기적으로는 저울이다.",
+    author: "벤저민 그레이엄",
+    lesson: "인기보다 이익과 현금흐름이 실제로 변했는지 확인합니다."
+  },
+  {
+    text: "소비는 모든 생산의 유일한 목적이다.",
+    author: "애덤 스미스",
+    lesson: "생산지표를 볼 때 최종 수요가 함께 살아나는지 확인합니다."
+  },
+  {
+    text: "무엇을 소유했는지, 왜 소유했는지 알아야 한다.",
+    author: "피터 린치",
+    lesson: "시장 전망보다 판단의 근거와 틀릴 조건을 먼저 적어봅니다."
+  },
+  {
+    text: "투자에서 중요한 것은 무엇을 사느냐뿐 아니라 얼마에 사느냐이다.",
+    author: "하워드 막스",
+    lesson: "좋은 뉴스와 이미 가격에 반영된 기대를 구분합니다."
+  },
+  {
+    text: "큰돈은 사고파는 데서가 아니라 기다리는 데서 벌린다.",
+    author: "찰리 멍거",
+    lesson: "한 번의 수치보다 같은 방향의 신호가 이어지는지 봅니다."
+  },
+  {
+    text: "고통과 성찰이 발전을 만든다.",
+    author: "레이 달리오",
+    lesson: "틀린 판단은 지우지 말고 어떤 신호를 놓쳤는지 복기합니다."
+  }
+];
 
 const elements = {
   connectionStatus: document.querySelector("#connectionStatus"),
@@ -56,6 +94,7 @@ const elements = {
   marketChart: document.querySelector("#marketChart"),
   analysisList: document.querySelector("#analysisList"),
   analysisBoard: document.querySelector("#analysisBoard"),
+  analysisQuote: document.querySelector("#analysisQuote"),
   koreaBrief: document.querySelector("#koreaBrief"),
   macroGrid: document.querySelector("#macroGrid"),
   koreaBoard: document.querySelector("#koreaBoard"),
@@ -1006,11 +1045,52 @@ function renderMarketConnections(markets, analysis) {
   `;
 }
 
+function renderEconomicQuote(analysis) {
+  if (!elements.analysisQuote) return;
+
+  const dateKey = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Seoul",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  }).format(new Date());
+  const quoteIndex = dateKey.split("-").reduce((total, value) => total + Number(value), 0) % ECONOMIC_QUOTES.length;
+  const quote = ECONOMIC_QUOTES[quoteIndex];
+  const marketApplication =
+    analysis.riskScore >= 66
+      ? "지금은 기대수익보다 손실을 키울 수 있는 환율과 변동성부터 확인할 구간입니다."
+      : analysis.riskScore >= 45
+        ? "지금은 방향을 예측하기보다 판단을 바꿀 확인 신호를 기다릴 구간입니다."
+        : "지금은 회복 신호를 보되 가격 상승과 실제 가치 개선을 구분할 구간입니다.";
+
+  elements.analysisQuote.innerHTML = `
+    <span class="quote-label">오늘의 경제 명언</span>
+    <blockquote>${quote.text}</blockquote>
+    <div class="quote-meta">
+      <cite>${quote.author}</cite>
+      <p><strong>오늘의 적용</strong> ${quote.lesson} ${marketApplication}</p>
+    </div>
+  `;
+}
+
 function renderAnalysis(analysis) {
   const dailyFlow = analysis.dailyFlow || buildDailyFlowFallback(analysis);
   const chapters = dailyFlow.chapters || buildChapterFallback(analysis, dailyFlow);
   const detailedSections = dailyFlow.detailedSections || buildDetailedFallback(dailyFlow);
   const reasonCards = analysis.reasonCards || [];
+  const transmissionPath = dailyFlow.transmissionPath || [
+    { label: "01 글로벌", title: "주가와 변동성", body: "미국 주가와 VIX가 같은 방향인지 확인합니다." },
+    { label: "02 환율", title: "달러와 원화", body: "달러 움직임이 원/달러 환율에 전달되는지 봅니다." },
+    { label: "03 수급", title: "외국인과 KOSPI", body: "환율 부담이 국내 수급을 흔드는지 확인합니다." },
+    { label: "04 실물", title: "수출과 기업 이익", body: "가격 신호가 수출과 이익 전망까지 이어지는지 봅니다." }
+  ];
+  const counterSignals = dailyFlow.counterSignals || [
+    "주가와 환율이 서로 다른 방향이면 한쪽 신호만으로 결론을 내리지 않습니다.",
+    "하루 반등보다 환율·변동성·수급이 며칠 같은 방향으로 이어지는지 확인합니다."
+  ];
+  const verdictTone = analysis.riskScore >= 66 ? "negative" : analysis.riskScore >= 45 ? "watch" : "positive";
+
+  renderEconomicQuote(analysis);
 
   const chapterItem = document.createElement("li");
   chapterItem.className = "chapter-summary";
@@ -1019,7 +1099,7 @@ function renderAnalysis(analysis) {
       <div class="analysis-part-heading">
         <p class="article-label">Part 1</p>
         <h3>챕터 요약</h3>
-        <span>핵심만 빠르게 보기</span>
+        <span>결론과 근거를 먼저 확인</span>
       </div>
       <div class="chapter-grid">
         ${chapters
@@ -1044,24 +1124,54 @@ function renderAnalysis(analysis) {
       <div class="analysis-part-heading">
         <p class="article-label">Part 2</p>
         <h3>심층 분석</h3>
-        <span>왜 이런 흐름인지 자세히 보기</span>
+        <span>가격 신호가 한국 경제로 전달되는 과정</span>
       </div>
       <article class="deep-analysis">
+        <div class="analysis-verdict" data-tone="${verdictTone}">
+          <span>오늘의 판단</span>
+          <strong>${dailyFlow.verdict || dailyFlow.title}</strong>
+          <em>위험 온도 ${analysis.riskScore}/100</em>
+        </div>
         <h4>${dailyFlow.title}</h4>
         <p class="article-lead">${dailyFlow.lead}</p>
-        <details class="daily-brief">
-          <summary>자세한 분석 펼치기</summary>
-          <div class="daily-brief-body">
-            ${detailedSections
+        <section class="transmission-block" aria-label="경제 전파 경로">
+          <div class="transmission-heading">
+            <span>경제 전파 경로</span>
+            <p>각 신호가 다음 단계로 실제 이어지는지 확인합니다.</p>
+          </div>
+          <ol class="transmission-path">
+            ${transmissionPath
               .map(
-                (section) => `
-                  <section class="deep-section">
-                    <h5>${section.title}</h5>
-                    <p>${section.body}</p>
-                  </section>
+                (item) => `
+                  <li>
+                    <span>${item.label}</span>
+                    <strong>${item.title}</strong>
+                    <p>${item.body}</p>
+                  </li>
                 `
               )
               .join("")}
+          </ol>
+        </section>
+        <details class="daily-brief">
+          <summary>세부 근거와 반대 신호 보기</summary>
+          <div class="daily-brief-body">
+            <div class="deep-section-list">
+              ${detailedSections
+                .map(
+                  (section) => `
+                    <section class="deep-section">
+                      <h5>${section.title}</h5>
+                      <p>${section.body}</p>
+                    </section>
+                  `
+                )
+                .join("")}
+            </div>
+            <aside class="counter-signal-block">
+              <strong>이 해석과 반대되는 신호</strong>
+              ${counterSignals.map((item) => `<p>${item}</p>`).join("")}
+            </aside>
             <p class="article-conclusion">${dailyFlow.conclusion}</p>
           </div>
         </details>
@@ -1076,7 +1186,7 @@ function renderAnalysis(analysis) {
       <div class="analysis-part-heading">
         <p class="article-label">Part 3</p>
         <h3>분석 축</h3>
-        <span>심층 파트에서 따로 보는 변수</span>
+        <span>결론을 만든 변수와 실제 수치</span>
       </div>
       <div class="reason-grid">
         ${reasonCards
@@ -1102,60 +1212,82 @@ function renderAnalysis(analysis) {
   const watchItem = document.createElement("li");
   watchItem.className = "watch-note";
   watchItem.innerHTML = `
-    <strong>다음에 확인할 흐름</strong>
+    <strong>판단이 바뀌는지 확인할 흐름</strong>
     <div class="watch-note-list">
       ${analysis.watchlist.map((item) => `<span>${item}</span>`).join("")}
     </div>
   `;
 
-  elements.analysisList.replaceChildren(
-    chapterItem,
-    articleItem,
-    reasonItem,
-    watchItem
-  );
+  elements.analysisList.replaceChildren(chapterItem, articleItem, reasonItem, watchItem);
   renderAnalysisBoard(analysis, dailyFlow, reasonCards);
   renderScenarioMatrix(analysis, dailyFlow);
 }
-
 function renderAnalysisBoard(analysis, dailyFlow, reasonCards) {
   const riskMode =
     analysis.riskScore >= 66 ? "방어 시나리오" : analysis.riskScore >= 45 ? "확인 시나리오" : "회복 시나리오";
   const paragraphs = dailyFlow.paragraphs || [];
+  const keyNumbers = dailyFlow.keyNumbers || (reasonCards || [])
+    .flatMap((card) => card.evidence || [])
+    .slice(0, 4)
+    .map((value, index) => ({ label: `핵심 근거 ${index + 1}`, value, context: "현재 판단에 반영된 수치" }));
+  const upside = dailyFlow.upsideCondition || {
+    title: "환율 안정 + 변동성 완화",
+    body: "원/달러와 VIX가 함께 낮아지면 한국 시장의 외국인 수급 부담이 줄어듭니다."
+  };
+  const downside = dailyFlow.downsideCondition || {
+    title: "달러 강세 + 유가 상승",
+    body: "달러와 에너지 가격이 함께 오르면 물가와 기업 비용 부담이 커질 수 있습니다."
+  };
+  const invalidation = dailyFlow.invalidation || {
+    title: (analysis.watchlist || []).slice(0, 2).join(" · ") || "환율 · 변동성 · 수급",
+    body: paragraphs[0] || "가격과 뉴스 신호가 같은 방향으로 이어지는지 확인합니다."
+  };
 
   elements.analysisBoard.innerHTML = `
     <div class="board-heading">
       <div>
-        <p class="section-kicker">심층 확장</p>
-        <h3>시나리오별 해석</h3>
+        <p class="section-kicker">심층 브리핑</p>
+        <h3>결론을 만든 핵심 수치</h3>
       </div>
       <span>${riskMode}</span>
     </div>
+    <div class="analysis-evidence-strip">
+      ${keyNumbers
+        .map(
+          (item) => `
+            <div class="analysis-evidence-item">
+              <span>${item.label}</span>
+              <strong>${item.value}</strong>
+              <p>${item.context}</p>
+            </div>
+          `
+        )
+        .join("")}
+    </div>
     <div class="chapter-board-grid">
       <article class="board-card board-card-main">
-        <span>기본 시나리오</span>
-        <strong>${dailyFlow.title}</strong>
+        <span>기본 판단</span>
+        <strong>${dailyFlow.verdict || dailyFlow.title}</strong>
         <p>${dailyFlow.lead}</p>
       </article>
       <article class="board-card">
         <span>좋아지는 조건</span>
-        <strong>환율 안정 + 변동성 완화</strong>
-        <p>원/달러가 안정되고 VIX가 낮아지면 한국 증시의 외국인 수급 부담이 줄어듭니다.</p>
+        <strong>${upside.title}</strong>
+        <p>${upside.body}</p>
       </article>
       <article class="board-card">
         <span>나빠지는 조건</span>
-        <strong>달러 강세 + 유가 변동</strong>
-        <p>달러와 에너지 가격이 동시에 부담을 주면 물가와 기업 비용 우려가 커집니다.</p>
+        <strong>${downside.title}</strong>
+        <p>${downside.body}</p>
       </article>
       <article class="board-card">
-        <span>확인할 증거</span>
-        <strong>${reasonCards.map((card) => card.title).slice(0, 3).join(" · ") || "가격 · 환율 · 뉴스"}</strong>
-        <p>${paragraphs[0] || "가격 흐름과 뉴스 키워드가 같은 방향인지 확인합니다."}</p>
+        <span>현재 판단을 바꿀 증거</span>
+        <strong>${invalidation.title}</strong>
+        <p>${invalidation.body}</p>
       </article>
     </div>
   `;
 }
-
 function renderScenarioMatrix(analysis, dailyFlow) {
   const weights =
     analysis.riskScore >= 66
