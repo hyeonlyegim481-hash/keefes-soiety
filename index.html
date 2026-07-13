@@ -8,9 +8,9 @@
       content="최신 시장 데이터와 한국 경제 흐름을 기준시각과 함께 정리하는 대시보드"
     />
     <meta name="theme-color" content="#f6f7f8" />
-    <link rel="manifest" href="/manifest.json?v=43" />
+    <link rel="manifest" href="/manifest.json?v=44" />
     <link rel="icon" href="/assets/econest-icon.png" type="image/png" />
-    <link rel="stylesheet" href="/styles.css?v=43" />
+    <link rel="stylesheet" href="/styles.css?v=44" />
     <title>keefe's soiety</title>
   </head>
   <body>
@@ -40,6 +40,7 @@
         <button class="chapter-tab" type="button" data-chapter="korea" aria-selected="false">한국</button>
         <button class="chapter-tab" type="button" data-chapter="analysis" aria-selected="false">심층</button>
         <button class="chapter-tab" type="button" data-chapter="study" aria-selected="false">공부</button>
+        <button class="chapter-tab" type="button" data-chapter="history" aria-selected="false">역사</button>
         <button class="chapter-tab" type="button" data-chapter="news" aria-selected="false">뉴스</button>
         <button class="chapter-tab" type="button" data-chapter="glossary" aria-selected="false">용어</button>
         <button class="chapter-tab" type="button" data-chapter="quiz" aria-selected="false">퀴즈</button>
@@ -157,6 +158,25 @@
               </article>
             </section>
 
+
+            <section class="chapter-pane chapter-single" id="history" data-chapter-panel="history" aria-label="경제 역사">
+              <article class="panel history-panel">
+                <div class="panel-heading history-heading">
+                  <div>
+                    <p class="section-kicker">경제 역사</p>
+                    <h2>경제사의 큰 흐름</h2>
+                  </div>
+                  <span class="history-count" id="historyCount"></span>
+                </div>
+                <div class="history-brief" id="historyBrief"></div>
+                <div class="history-era-tabs" id="historyEraTabs" role="tablist" aria-label="경제사 시대 선택"></div>
+                <div class="history-overview" id="historyOverview"></div>
+                <div class="history-layout">
+                  <section class="history-timeline" id="historyTimeline" aria-label="경제사 사건 타임라인"></section>
+                  <aside class="history-patterns" id="historyPatterns" aria-label="반복되는 경제사 패턴"></aside>
+                </div>
+              </article>
+            </section>
             <section class="chapter-pane chapter-single" id="news" data-chapter-panel="news" aria-label="뉴스 전문">
               <article class="panel news-panel">
                 <div class="panel-heading">
@@ -226,7 +246,7 @@
       </footer>
     </div>
 
-    <script type="module" src="/app.js?v=43"></script>
+    <script type="module" src="/app.js?v=44"></script>
   </body>
 </html>
 

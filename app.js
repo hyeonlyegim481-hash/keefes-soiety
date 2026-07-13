@@ -1,21 +1,22 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=43";
+} from "./glossary-data.js?v=44";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=43";
+} from "./glossary-extra-data.js?v=44";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=43";
+} from "./glossary-more-data.js?v=44";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=43";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=43";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=43";
+} from "./glossary-pro-data.js?v=44";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=44";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=44";
+import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=44";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions];
 const glossaryCategoryOrder = [
@@ -108,6 +109,12 @@ const elements = {
   thinkingLab: document.querySelector("#thinkingLab"),
   dailyTerm: document.querySelector("#dailyTerm"),
   studyQuiz: document.querySelector("#studyQuiz"),
+  historyBrief: document.querySelector("#historyBrief"),
+  historyEraTabs: document.querySelector("#historyEraTabs"),
+  historyOverview: document.querySelector("#historyOverview"),
+  historyTimeline: document.querySelector("#historyTimeline"),
+  historyPatterns: document.querySelector("#historyPatterns"),
+  historyCount: document.querySelector("#historyCount"),
   glossaryTotal: document.querySelector("#glossaryTotal"),
   glossaryLevels: document.querySelector("#glossaryLevels"),
   glossarySearch: document.querySelector("#glossarySearch"),
@@ -337,6 +344,7 @@ let state = {
   selectedMarket: "kospi",
   isRefreshing: false,
   activeChapter: initialChapter,
+  historyEra: "overview",
   glossaryQuery: "",
   glossaryLevel: "all",
   glossaryCategory: "전체",
@@ -360,6 +368,13 @@ if (elements.chapterProgress && elements.chapterTabs.length) {
 elements.refreshButton.addEventListener("click", () => refreshSnapshot({ force: true }));
 elements.chapterTabs.forEach((tab) => {
   tab.addEventListener("click", () => setActiveChapter(tab.dataset.chapter));
+});
+elements.historyEraTabs.addEventListener("click", (event) => {
+  const button = event.target.closest?.("[data-history-era]");
+  if (!button) return;
+  state.historyEra = button.dataset.historyEra;
+  renderHistory(state.snapshot);
+  requestAnimationFrame(updateChapterHeight);
 });
 elements.glossarySearch.addEventListener("input", () => {
   state.glossaryQuery = elements.glossarySearch.value;
@@ -553,6 +568,7 @@ function render(snapshot) {
   renderAnalysis(snapshot.analysis);
   renderMacro(snapshot.macro, snapshot.analysis);
   renderStudy(snapshot);
+  renderHistory(snapshot);
   renderGlossary();
   renderQuiz();
   renderNews(snapshot.headlines, snapshot.analysis, snapshot.dataQuality);
@@ -1329,6 +1345,174 @@ function renderScenarioMatrix(analysis, dailyFlow) {
   `;
 }
 
+function renderHistory(snapshot) {
+  const overviewView = {
+    id: "overview",
+    label: "큰 흐름",
+    period: "1760s-2020s",
+    title: "경제사는 충격보다 전달 경로와 정책 대응의 기록입니다",
+    summary: "산업혁명부터 팬데믹 이후까지 생산성, 신용, 물가, 환율과 정책이 어떻게 경제 질서를 바꿨는지 핵심 전환점으로 봅니다.",
+    question: "사건의 이름보다 충격이 신용·고용·물가·환율로 전달된 순서를 비교합니다."
+  };
+  const views = [overviewView, ...historyEras];
+  const selectedView = views.find((era) => era.id === state.historyEra) || overviewView;
+  const visibleEvents = state.historyEra === "overview"
+    ? historyEvents.filter((event) => event.featured)
+    : historyEvents.filter((event) => event.era === state.historyEra);
+  const currentLink = getHistoryCurrentLink(snapshot);
+
+  elements.historyCount.textContent = `${historyEvents.length}개 사건 · ${historyEras.length}개 시대`;
+  elements.historyBrief.innerHTML = `
+    <article class="history-brief-card">
+      <span>기록 범위</span>
+      <strong>1760s-2020s</strong>
+      <p>산업혁명부터 공급망 재편까지 약 260년의 변화입니다.</p>
+    </article>
+    <article class="history-brief-card">
+      <span>현재 선택</span>
+      <strong>${escapeHtml(selectedView.label)} · ${escapeHtml(selectedView.period)}</strong>
+      <p>${visibleEvents.length}개 핵심 사건을 시간순으로 봅니다.</p>
+    </article>
+    <article class="history-brief-card history-brief-current" data-tone="${currentLink.tone}">
+      <span>오늘과 연결</span>
+      <strong>${escapeHtml(currentLink.title)}</strong>
+      <p>${escapeHtml(currentLink.body)}</p>
+    </article>
+  `;
+
+  elements.historyEraTabs.innerHTML = views
+    .map((era) => {
+      const count = era.id === "overview"
+        ? historyEvents.filter((event) => event.featured).length
+        : historyEvents.filter((event) => event.era === era.id).length;
+      const isSelected = era.id === selectedView.id;
+      return `
+        <button
+          class="history-era-button"
+          type="button"
+          role="tab"
+          data-history-era="${era.id}"
+          aria-selected="${isSelected}"
+        >
+          <strong>${escapeHtml(era.label)}</strong>
+          <span>${escapeHtml(era.period)} · ${count}</span>
+        </button>
+      `;
+    })
+    .join("");
+
+  elements.historyOverview.innerHTML = `
+    <div>
+      <p class="section-kicker">${escapeHtml(selectedView.period)}</p>
+      <h3>${escapeHtml(selectedView.title)}</h3>
+      <p>${escapeHtml(selectedView.summary)}</p>
+    </div>
+    <aside>
+      <span>핵심 질문</span>
+      <strong>${escapeHtml(selectedView.question)}</strong>
+    </aside>
+  `;
+
+  elements.historyTimeline.innerHTML = `
+    <div class="history-section-heading">
+      <div>
+        <p class="section-kicker">시간의 흐름</p>
+        <h3>${escapeHtml(selectedView.label)}의 전환점</h3>
+      </div>
+      <span>${visibleEvents.length}개 사건</span>
+    </div>
+    <div class="history-event-list">
+      ${visibleEvents.map(renderHistoryEvent).join("")}
+    </div>
+  `;
+
+  elements.historyPatterns.innerHTML = `
+    <div class="history-section-heading history-pattern-heading">
+      <div>
+        <p class="section-kicker">반복되는 구조</p>
+        <h3>경제사의 다섯 패턴</h3>
+      </div>
+    </div>
+    <div class="history-pattern-list">
+      ${historyPatterns
+        .map(
+          (pattern) => `
+            <article class="history-pattern-card">
+              <span>${escapeHtml(pattern.label)}</span>
+              <strong>${escapeHtml(pattern.title)}</strong>
+              <div class="history-pattern-steps">
+                ${pattern.steps.map((step) => `<em>${escapeHtml(step)}</em>`).join('<i aria-hidden="true">→</i>')}
+              </div>
+              <p>${escapeHtml(pattern.lesson)}</p>
+            </article>
+          `
+        )
+        .join("")}
+    </div>
+  `;
+}
+
+function renderHistoryEvent(event) {
+  return `
+    <details class="history-event">
+      <summary>
+        <time>${escapeHtml(event.year)}</time>
+        <div class="history-event-summary">
+          <div class="history-event-tags">
+            <span>${escapeHtml(event.region)}</span>
+            <em>${escapeHtml(event.category)}</em>
+          </div>
+          <h4>${escapeHtml(event.title)}</h4>
+          <p>${escapeHtml(event.summary)}</p>
+        </div>
+        <span class="history-event-toggle" aria-hidden="true"></span>
+      </summary>
+      <div class="history-event-body">
+        <section>
+          <span>원인</span>
+          <p>${escapeHtml(event.cause)}</p>
+        </section>
+        <section>
+          <span>결과</span>
+          <p>${escapeHtml(event.result)}</p>
+        </section>
+        <section>
+          <span>오늘의 의미</span>
+          <p>${escapeHtml(event.today)}</p>
+        </section>
+        <div class="history-term-row">
+          ${(event.terms || []).map((term) => `<span>${escapeHtml(term)}</span>`).join("")}
+        </div>
+      </div>
+    </details>
+  `;
+}
+
+function getHistoryCurrentLink(snapshot) {
+  const riskScore = snapshot?.analysis?.riskScore ?? 50;
+  const usdkrw = snapshot?.markets?.find((market) => market.id === "usdkrw");
+  const vix = snapshot?.markets?.find((market) => market.id === "vix");
+
+  if (riskScore >= 66) {
+    return {
+      tone: "negative",
+      title: "위기와 같은지보다 연결 고리를 확인",
+      body: `위험 온도 ${riskScore}/100입니다. 과거 위기와 같다고 단정하지 말고 환율·신용·유동성이 함께 악화되는지 비교합니다.`
+    };
+  }
+  if (riskScore >= 45) {
+    return {
+      tone: "watch",
+      title: "엇갈린 신호는 전환기의 특징",
+      body: `원/달러 ${usdkrw ? formatMarketValue(usdkrw) : "확인 중"}, VIX ${vix ? formatMarketValue(vix) : "확인 중"}가 같은 방향으로 모이는지 경제사의 전환기와 비교합니다.`
+    };
+  }
+  return {
+    tone: "positive",
+    title: "회복과 과열을 구분",
+    body: `위험 온도 ${riskScore}/100입니다. 생산성과 이익 개선이 자산가격 상승을 실제로 뒷받침하는지 과거 회복기와 비교합니다.`
+  };
+}
 function renderStudy(snapshot) {
   const { analysis, markets } = snapshot;
   const byId = Object.fromEntries(markets.map((market) => [market.id, market]));
