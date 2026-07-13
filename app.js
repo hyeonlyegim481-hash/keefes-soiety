@@ -1,24 +1,24 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=45";
+} from "./glossary-data.js?v=46";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=45";
+} from "./glossary-extra-data.js?v=46";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=45";
+} from "./glossary-more-data.js?v=46";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=45";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=45";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=45";
-import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=45";
-import { indicatorCategories, indicatorCountries, indicatorDefinitions } from "./indicator-data.js?v=45";
-import { indicatorSnapshot } from "./indicator-values.js?v=45";
+} from "./glossary-pro-data.js?v=46";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=46";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=46";
+import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=46";
+import { indicatorCategories, indicatorCountries, indicatorDefinitions } from "./indicator-data.js?v=46";
+import { indicatorSnapshot } from "./indicator-values.js?v=46";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions];
 const glossaryCategoryOrder = [
@@ -74,6 +74,145 @@ const ECONOMIC_QUOTES = [
   }
 ];
 
+const ECONOMIC_RELATIONSHIPS = [
+  {
+    id: "rate-hike",
+    label: "금리 인상",
+    category: "통화정책",
+    trigger: "중앙은행이 기준금리를 올린다",
+    summary: "돈을 빌리는 비용을 높여 과열된 수요와 물가 압력을 낮추려는 흐름입니다.",
+    steps: [
+      { title: "기준금리 ↑", detail: "중앙은행이 단기 자금의 기준 가격을 높입니다." },
+      { title: "예금·대출금리 ↑", detail: "은행 조달비용과 채권금리가 반응하며 가계와 기업의 금리도 오릅니다." },
+      { title: "이자 부담 ↑", detail: "기존 변동금리 대출과 새로 빌리는 돈의 비용이 커집니다." },
+      { title: "소비·투자 ↓", detail: "가계는 소비를 줄이고 기업은 수익성이 낮은 투자 계획을 미룹니다." },
+      { title: "수요·물가 압력 ↓", detail: "경제 전체의 지출이 둔화되며 수요 측 물가 압력이 낮아질 수 있습니다." }
+    ],
+    effects: ["채권가격 하락 가능", "원화 강세 가능", "성장주 부담", "예금 매력 상승"],
+    exception: "물가가 유가·전쟁 같은 공급 충격으로 오르면 금리를 올려도 물가가 천천히 내려갈 수 있습니다. 경기가 매우 강하면 소비와 투자도 예상보다 덜 줄어듭니다.",
+    lag: "대출금리는 비교적 빠르게 반응하지만 소비·투자·물가에는 보통 수개월에서 1년 이상 시차가 생깁니다."
+  },
+  {
+    id: "rate-cut",
+    label: "금리 인하",
+    category: "통화정책",
+    trigger: "중앙은행이 기준금리를 내린다",
+    summary: "자금조달 부담을 낮춰 소비와 투자를 살리고 경기 둔화를 완화하려는 흐름입니다.",
+    steps: [
+      { title: "기준금리 ↓", detail: "중앙은행이 단기 자금의 기준 가격을 낮춥니다." },
+      { title: "시장·대출금리 ↓", detail: "채권금리와 은행의 신규 대출금리가 내려갈 가능성이 커집니다." },
+      { title: "이자 부담 ↓", detail: "가계의 가처분소득과 기업의 자금조달 여건이 나아질 수 있습니다." },
+      { title: "소비·투자 ↑", detail: "주택, 설비, 재고처럼 금리에 민감한 지출이 회복될 여지가 생깁니다." },
+      { title: "성장·자산가격 ↑", detail: "경기 기대와 미래 이익의 현재가치가 높아져 주식·부동산에 우호적일 수 있습니다." }
+    ],
+    effects: ["채권가격 상승 가능", "원화 약세 가능", "성장주 우호", "부채 증가 주의"],
+    exception: "금리 인하가 심각한 침체 신호로 받아들여지면 주가와 투자가 바로 오르지 않을 수 있습니다. 이미 부채가 많으면 낮은 금리에도 새 대출 수요가 약할 수 있습니다.",
+    lag: "금융시장은 발표 전에 움직이기도 하지만 실제 고용과 투자는 여러 분기에 걸쳐 반응합니다."
+  },
+  {
+    id: "oil-up",
+    label: "유가 상승",
+    category: "물가·원자재",
+    trigger: "국제유가가 빠르게 오른다",
+    summary: "에너지를 수입하는 한국에는 생산비와 생활비를 동시에 높이는 공급 충격이 될 수 있습니다.",
+    steps: [
+      { title: "국제유가 ↑", detail: "원유 공급 차질이나 세계 수요 증가로 에너지 가격이 오릅니다." },
+      { title: "수입단가 ↑", detail: "달러로 결제하는 원유·가스의 국내 도입 비용이 커집니다." },
+      { title: "기업 비용 ↑", detail: "운송, 항공, 화학, 제조업의 연료와 원재료 비용이 늘어납니다." },
+      { title: "소비자물가 ↑", detail: "휘발유·전기·운송비를 거쳐 생활물가로 일부 전가될 수 있습니다." },
+      { title: "실질소득·성장 ↓", detail: "같은 소득으로 살 수 있는 양이 줄고 기업 마진도 압박받을 수 있습니다." }
+    ],
+    effects: ["정유업종 혼합", "항공·운송 부담", "물가 기대 상승", "금리 인하 지연 가능"],
+    exception: "유가가 세계 경기 회복 때문에 오른다면 수출 증가가 비용 부담을 일부 상쇄할 수 있습니다. 기업이 비용을 흡수하면 소비자물가 전가는 제한됩니다.",
+    lag: "주유소 가격은 비교적 빠르지만 전기요금과 제품가격, 중앙은행 판단에는 더 긴 시차가 생깁니다."
+  },
+  {
+    id: "won-weakness",
+    label: "원화 약세",
+    category: "환율",
+    trigger: "원/달러 환율이 오른다",
+    summary: "수입품은 비싸지고 수출기업의 원화 환산 매출은 늘 수 있어 한국 경제에 영향이 엇갈립니다.",
+    steps: [
+      { title: "원/달러 ↑", detail: "달러 한 단위를 사는 데 더 많은 원화가 필요해집니다." },
+      { title: "수입물가 ↑", detail: "원유, 곡물, 부품처럼 달러 결제 상품의 원화 가격이 오릅니다." },
+      { title: "가계 구매력 ↓", detail: "해외여행과 수입 소비재가 비싸지고 생활물가 부담이 커질 수 있습니다." },
+      { title: "수출기업 매출 ↑ 가능", detail: "같은 달러 매출을 원화로 바꿀 때 장부상 매출이 커질 수 있습니다." },
+      { title: "금리·외국인 수급 부담", detail: "환율 불안이 길어지면 물가와 외국인 환차손 우려가 함께 커질 수 있습니다." }
+    ],
+    effects: ["수입기업 부담", "수출기업 일부 수혜", "외국인 수급 경계", "해외소비 비용 상승"],
+    exception: "해외 수요가 약하거나 원자재를 많이 수입하는 기업은 원화 약세의 수출 효과가 작을 수 있습니다. 환헤지 비율에 따라서도 실적 영향이 달라집니다.",
+    lag: "금융시장은 즉시 반응하지만 수입물가와 기업 실적은 계약 갱신과 재고 소진 뒤 나타날 수 있습니다."
+  },
+  {
+    id: "fiscal-expansion",
+    label: "재정 확대",
+    category: "정부정책",
+    trigger: "정부가 지출이나 지원을 늘린다",
+    summary: "정부 수요를 늘려 민간 경기와 고용을 받치지만 재정 부담과 물가도 함께 살펴봐야 합니다.",
+    steps: [
+      { title: "정부지출 ↑", detail: "인프라, 복지, 보조금, 공공구매에 더 많은 예산이 투입됩니다." },
+      { title: "기업 주문·가계소득 ↑", detail: "정부 계약과 이전소득을 통해 민간 부문으로 돈이 이동합니다." },
+      { title: "소비·투자 ↑", detail: "소득과 매출 기대가 높아지면서 추가 지출이 만들어질 수 있습니다." },
+      { title: "생산·고용 ↑", detail: "남는 생산 여력이 있다면 기업이 생산과 채용을 늘립니다." },
+      { title: "물가·국채 부담 ↑ 가능", detail: "경제가 이미 과열됐다면 물가, 국채 발행, 금리 부담이 더 커질 수 있습니다." }
+    ],
+    effects: ["내수업종 우호", "고용 개선 가능", "국채금리 상승 가능", "재정건전성 점검"],
+    exception: "수입품 구매나 저축으로 빠지는 비중이 크면 국내 생산 효과가 작습니다. 경제가 과열된 상태에서는 생산보다 물가가 더 많이 오를 수 있습니다.",
+    lag: "현금성 지원은 비교적 빠르지만 인프라 투자와 생산성 효과는 집행 절차 때문에 오래 걸립니다."
+  },
+  {
+    id: "exports-up",
+    label: "수출 회복",
+    category: "대외경제",
+    trigger: "세계 수요와 한국 수출 주문이 늘어난다",
+    summary: "수출기업의 생산과 이익이 늘고 고용·투자로 파급되면 한국 경기 전반의 회복 신호가 됩니다.",
+    steps: [
+      { title: "해외 수요 ↑", detail: "미국·중국 등 주요 시장의 소비와 설비투자가 늘어납니다." },
+      { title: "수출 주문 ↑", detail: "반도체, 자동차, 조선 등 한국 기업의 해외 주문이 증가합니다." },
+      { title: "생산·가동률 ↑", detail: "재고가 줄고 공장 가동률과 기업 매출이 개선됩니다." },
+      { title: "고용·설비투자 ↑", detail: "회복이 지속되면 기업이 인력과 생산능력을 늘립니다." },
+      { title: "성장·경상수지 개선", detail: "수출의 국내 부가가치가 늘면 GDP와 외화 수입에 긍정적입니다." }
+    ],
+    effects: ["KOSPI 대형주 우호", "원화 강세 가능", "설비투자 증가", "지역·업종 격차 가능"],
+    exception: "환율 효과나 낮은 전년도 기저 때문에 증가율만 높을 수도 있습니다. 수입 원재료가 함께 급증하면 무역수지 개선은 작을 수 있습니다.",
+    lag: "수주와 통관은 먼저 보이지만 고용과 설비투자는 회복 지속 여부를 확인한 뒤 늦게 반응합니다."
+  },
+  {
+    id: "wage-up",
+    label: "임금 상승",
+    category: "노동·소비",
+    trigger: "근로자의 임금이 생산성보다 빠르게 오른다",
+    summary: "가계소득과 소비에는 힘이 되지만 기업 비용과 서비스 물가에는 부담이 될 수 있습니다.",
+    steps: [
+      { title: "명목임금 ↑", detail: "근로자가 받는 급여의 원화 금액이 늘어납니다." },
+      { title: "가계소득 ↑", detail: "물가보다 임금이 더 오르면 실제 구매 가능한 양도 늘어납니다." },
+      { title: "소비 ↑", detail: "외식, 여행, 내구재 등 선택적 소비가 확대될 수 있습니다." },
+      { title: "기업 인건비 ↑", detail: "생산성이 같이 늘지 않으면 기업의 단위당 비용이 상승합니다." },
+      { title: "고용·가격 조정", detail: "기업은 가격을 올리거나 자동화, 채용 축소, 마진 감소로 대응할 수 있습니다." }
+    ],
+    effects: ["내수소비 우호", "서비스물가 압력", "자동화 투자 증가", "기업별 마진 차이"],
+    exception: "생산성이 임금만큼 오르면 기업 비용 부담 없이 소득과 소비가 늘 수 있습니다. 경기침체기에는 임금이 올라도 불안 때문에 저축이 증가할 수 있습니다.",
+    lag: "소비는 급여 지급 뒤 빠르게 반응할 수 있지만 기업의 가격·고용 조정은 계약과 사업계획에 따라 늦게 나타납니다."
+  },
+  {
+    id: "home-price-down",
+    label: "집값 하락",
+    category: "부동산·신용",
+    trigger: "주택가격이 넓은 지역에서 지속적으로 내린다",
+    summary: "가계의 자산가치와 담보 여력이 줄어 소비, 건설, 금융기관 건전성에 영향을 줄 수 있습니다.",
+    steps: [
+      { title: "주택가격 ↓", detail: "거래가격과 기대가격이 낮아지며 주택 보유자의 자산가치가 줄어듭니다." },
+      { title: "담보가치·부의 효과 ↓", detail: "추가 대출 여력과 자산 상승에서 느끼는 소비 자신감이 약해집니다." },
+      { title: "소비·주택거래 ↓", detail: "가계가 지출을 줄이고 매수자는 추가 하락을 기다릴 수 있습니다." },
+      { title: "건설·관련 고용 ↓", detail: "분양과 착공이 줄면 건설, 자재, 중개업으로 충격이 번집니다." },
+      { title: "신용위험 ↑ 가능", detail: "가격 하락과 소득 감소가 겹치면 연체와 금융기관 손실 우려가 커집니다." }
+    ],
+    effects: ["건설업 부담", "가계소비 둔화", "임차시장 혼합", "금융안정 점검"],
+    exception: "소득과 고용이 견조하고 하락폭이 작다면 소비 충격은 제한적일 수 있습니다. 집값 하락은 무주택자의 구매 접근성을 개선하는 효과도 있습니다.",
+    lag: "거래량은 먼저 줄고 착공, 고용, 연체율은 여러 분기 뒤에 악화될 수 있습니다."
+  }
+];
+
 const elements = {
   connectionStatus: document.querySelector("#connectionStatus"),
   refreshButton: document.querySelector("#refreshButton"),
@@ -109,6 +248,7 @@ const elements = {
   scenarioMatrix: document.querySelector("#scenarioMatrix"),
   studyBrief: document.querySelector("#studyBrief"),
   thinkingLab: document.querySelector("#thinkingLab"),
+  relationshipLab: document.querySelector("#relationshipLab"),
   dailyTerm: document.querySelector("#dailyTerm"),
   studyQuiz: document.querySelector("#studyQuiz"),
   historyBrief: document.querySelector("#historyBrief"),
@@ -357,6 +497,8 @@ let state = {
   indicatorCategory: "all",
   indicatorQuery: "",
   selectedIndicatorId: "fertility",
+  relationshipScenario: "rate-hike",
+  relationshipStep: 0,
   glossaryQuery: "",
   glossaryLevel: "all",
   glossaryCategory: "전체",
@@ -406,6 +548,21 @@ elements.indicatorList.addEventListener("click", (event) => {
   if (!button) return;
   state.selectedIndicatorId = button.dataset.indicatorId;
   renderIndicators();
+});
+elements.relationshipLab.addEventListener("click", (event) => {
+  const scenarioButton = event.target.closest?.("[data-relationship-scenario]");
+  if (scenarioButton) {
+    state.relationshipScenario = scenarioButton.dataset.relationshipScenario;
+    state.relationshipStep = 0;
+    renderRelationshipLab(state.snapshot);
+    requestAnimationFrame(updateChapterHeight);
+    return;
+  }
+  const stepButton = event.target.closest?.("[data-relationship-step]");
+  if (!stepButton) return;
+  state.relationshipStep = Number(stepButton.dataset.relationshipStep);
+  renderRelationshipLab(state.snapshot);
+  requestAnimationFrame(updateChapterHeight);
 });
 elements.glossarySearch.addEventListener("input", () => {
   state.glossaryQuery = elements.glossarySearch.value;
@@ -1879,6 +2036,137 @@ function getHistoryCurrentLink(snapshot) {
     body: `위험 온도 ${riskScore}/100입니다. 생산성과 이익 개선이 자산가격 상승을 실제로 뒷받침하는지 과거 회복기와 비교합니다.`
   };
 }
+function renderRelationshipLab(snapshot) {
+  const scenario = ECONOMIC_RELATIONSHIPS.find((item) => item.id === state.relationshipScenario) || ECONOMIC_RELATIONSHIPS[0];
+  const selectedIndex = Math.min(scenario.steps.length - 1, Math.max(0, state.relationshipStep));
+  const selectedStep = scenario.steps[selectedIndex];
+  const previousStep = selectedIndex > 0 ? scenario.steps[selectedIndex - 1] : null;
+  const currentSignal = getRelationshipCurrentSignal(scenario.id, snapshot);
+  const stepLabels = ["정책·충격", "1차 반응", "자금·소득", "실물경제", "최종 파급"];
+
+  elements.relationshipLab.innerHTML = `
+    <section class="expansion-section relationship-section">
+      <div class="board-heading">
+        <div>
+          <p class="section-kicker">경제 연결 지도</p>
+          <h3>한 변화가 다른 숫자로 이어지는 과정</h3>
+        </div>
+        <span>상황과 단계를 눌러보기</span>
+      </div>
+      <div class="relationship-tabs" role="tablist" aria-label="경제 변화 선택">
+        ${ECONOMIC_RELATIONSHIPS.map((item) => `
+          <button type="button" role="tab" data-relationship-scenario="${item.id}" aria-selected="${item.id === scenario.id}">
+            <span>${escapeHtml(item.category)}</span>
+            <strong>${escapeHtml(item.label)}</strong>
+          </button>
+        `).join("")}
+      </div>
+      <header class="relationship-intro">
+        <div>
+          <span>${escapeHtml(scenario.category)}</span>
+          <h4>${escapeHtml(scenario.trigger)}</h4>
+        </div>
+        <p>${escapeHtml(scenario.summary)}</p>
+      </header>
+      <div class="relationship-chain" aria-label="${escapeHtml(scenario.label)} 전달 경로">
+        ${scenario.steps.map((step, index) => `
+          <button type="button" class="relationship-step" data-relationship-step="${index}" aria-pressed="${index === selectedIndex}">
+            <span>${String(index + 1).padStart(2, "0")} · ${escapeHtml(stepLabels[index] || "파급")}</span>
+            <strong>${escapeHtml(step.title)}</strong>
+          </button>
+        `).join("")}
+      </div>
+      <div class="relationship-step-explainer">
+        <div>
+          <span>선택한 단계 ${String(selectedIndex + 1).padStart(2, "0")}</span>
+          <strong>${escapeHtml(selectedStep.title)}</strong>
+        </div>
+        <p>${escapeHtml(selectedStep.detail)}</p>
+        <em>${previousStep ? `${escapeHtml(previousStep.title)}에서 ${escapeHtml(selectedStep.title)}로 전달` : "변화의 출발점"}</em>
+      </div>
+      <div class="relationship-effects" aria-label="함께 볼 영향">
+        <strong>함께 움직일 수 있는 것</strong>
+        <div>${scenario.effects.map((effect) => `<span>${escapeHtml(effect)}</span>`).join("")}</div>
+      </div>
+      <div class="relationship-learning-grid">
+        <section class="relationship-current">
+          <span>${escapeHtml(currentSignal.label)}</span>
+          <strong>${escapeHtml(currentSignal.value)}</strong>
+          <p>${escapeHtml(currentSignal.detail)}</p>
+        </section>
+        <section>
+          <span>항상 이렇게 되지는 않음</span>
+          <p>${escapeHtml(scenario.exception)}</p>
+        </section>
+        <section>
+          <span>시차</span>
+          <p>${escapeHtml(scenario.lag)}</p>
+        </section>
+      </div>
+    </section>
+  `;
+}
+
+function getRelationshipCurrentSignal(scenarioId, snapshot) {
+  const markets = snapshot?.markets || [];
+  const macro = snapshot?.macro || [];
+  const byId = Object.fromEntries(markets.map((market) => [market.id, market]));
+  const rate = macro.find((item) => /금리/.test(item.label));
+  const cpi = macro.find((item) => /물가/.test(item.label));
+  const exports = macro.find((item) => /수출/.test(item.label));
+  const credit = macro.find((item) => /신용/.test(item.label));
+  const usdkrw = byId.usdkrw;
+  const wti = byId.wti;
+
+  const signals = {
+    "rate-hike": {
+      label: "현재 숫자에 대입",
+      value: `기준금리 ${macroValueText(rate)} · 물가 ${macroValueText(cpi)}`,
+      detail: "금리가 높아도 물가가 충분히 낮아졌는지, 가계대출과 투자가 실제로 둔화되는지 확인합니다."
+    },
+    "rate-cut": {
+      label: "현재 숫자에 대입",
+      value: `기준금리 ${macroValueText(rate)} · 위험 ${snapshot?.analysis?.riskScore ?? "--"}/100`,
+      detail: "금리 인하 기대만 보지 말고 인하 이유가 물가 안정인지 경기 급랭인지 구분합니다."
+    },
+    "oil-up": {
+      label: "현재 시장 신호",
+      value: wti ? `WTI ${formatMarketValue(wti)} · ${signed(wti.changePercent)}%` : "WTI 확인 중",
+      detail: "하루 상승보다 몇 주간 높은 가격이 이어지는지 봐야 기업 비용과 물가 파급을 판단할 수 있습니다."
+    },
+    "won-weakness": {
+      label: "현재 시장 신호",
+      value: usdkrw ? `원/달러 ${formatMarketValue(usdkrw)} · ${signed(usdkrw.changePercent)}%` : "환율 확인 중",
+      detail: "환율 상승과 외국인 매도, 수입물가 상승이 동시에 나타나는지 교차 확인합니다."
+    },
+    "fiscal-expansion": {
+      label: "현재 판단에 대입",
+      value: `위험 온도 ${snapshot?.analysis?.riskScore ?? "--"}/100`,
+      detail: "경기가 약할 때의 재정 확대와 이미 물가가 높은 상태의 재정 확대는 결과가 다릅니다."
+    },
+    "exports-up": {
+      label: "현재 한국 지표",
+      value: `수출 ${macroValueText(exports)}`,
+      detail: "증가율뿐 아니라 수출액, 반도체 비중, 환율 효과와 전년도 기저를 함께 확인합니다."
+    },
+    "wage-up": {
+      label: "현재 판단에 대입",
+      value: `물가 ${macroValueText(cpi)}`,
+      detail: "명목임금보다 임금상승률에서 물가상승률을 뺀 실질임금이 소비 여력을 더 잘 보여줍니다."
+    },
+    "home-price-down": {
+      label: "현재 한국 지표",
+      value: `가계신용 ${macroValueText(credit)}`,
+      detail: "가격만 보지 말고 거래량, 연체율, 건설 착공과 가계부채가 함께 악화되는지 확인합니다."
+    }
+  };
+  return signals[scenarioId] || {
+    label: "현재 숫자와 연결",
+    value: "시장 지표 확인",
+    detail: "한 숫자보다 여러 경로가 같은 방향인지 확인합니다."
+  };
+}
+
 function renderStudy(snapshot) {
   const { analysis, markets } = snapshot;
   const byId = Object.fromEntries(markets.map((market) => [market.id, market]));
@@ -1942,6 +2230,8 @@ function renderStudy(snapshot) {
       </div>
     </section>
   `;
+
+  renderRelationshipLab(snapshot);
 
   elements.dailyTerm.innerHTML = `
     <section class="expansion-section">

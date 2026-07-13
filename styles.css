@@ -6293,3 +6293,339 @@ h1 {
     padding: 14px 15px 17px;
   }
 }
+
+/* Interactive economic relationship map */
+.relationship-section {
+  gap: 14px;
+}
+
+.relationship-tabs {
+  display: flex;
+  overflow-x: auto;
+  gap: 6px;
+  padding-bottom: 3px;
+  scrollbar-width: thin;
+}
+
+.relationship-tabs button {
+  display: grid;
+  min-width: 118px;
+  min-height: 52px;
+  flex: 0 0 auto;
+  align-content: center;
+  gap: 2px;
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--muted);
+  text-align: left;
+}
+
+.relationship-tabs button span {
+  color: #7a8790;
+  font-size: 0.61rem;
+  font-weight: 760;
+}
+
+.relationship-tabs button strong {
+  color: var(--charcoal);
+  font-size: 0.76rem;
+  line-height: 1.25;
+}
+
+.relationship-tabs button[aria-selected="true"] {
+  border-color: #0f766e;
+  background: #eef7f5;
+  box-shadow: inset 0 -3px #0f766e;
+}
+
+.relationship-tabs button[aria-selected="true"] span,
+.relationship-tabs button[aria-selected="true"] strong {
+  color: #0f665f;
+}
+
+.relationship-tabs button:focus-visible,
+.relationship-step:focus-visible {
+  outline: 2px solid rgba(37, 99, 235, 0.42);
+  outline-offset: 2px;
+}
+
+.relationship-intro {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.55fr) minmax(0, 1.45fr);
+  align-items: center;
+  gap: 20px;
+  padding: 15px 16px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: #17262e;
+  color: #ffffff;
+}
+
+.relationship-intro > div {
+  display: grid;
+  gap: 4px;
+}
+
+.relationship-intro span {
+  color: #90b8b0;
+  font-size: 0.66rem;
+  font-weight: 820;
+}
+
+.relationship-intro h4 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 0.92rem;
+  line-height: 1.35;
+  letter-spacing: 0;
+  word-break: keep-all;
+}
+
+.relationship-intro p {
+  margin: 0;
+  color: #d9e2e5;
+  font-size: 0.76rem;
+  font-weight: 620;
+  line-height: 1.55;
+  word-break: keep-all;
+}
+
+.relationship-chain {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(148px, 1fr));
+  overflow-x: auto;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: #ffffff;
+  scrollbar-width: thin;
+}
+
+.relationship-step {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  min-height: 92px;
+  align-content: center;
+  gap: 7px;
+  padding: 13px 22px 13px 13px;
+  border: 0;
+  border-right: 1px solid var(--line);
+  border-radius: 0;
+  background: #ffffff;
+  color: inherit;
+  text-align: left;
+}
+
+.relationship-step:last-child {
+  border-right: 0;
+}
+
+.relationship-step:not(:last-child)::after {
+  position: absolute;
+  top: 50%;
+  right: 7px;
+  color: #a0aab1;
+  font-size: 1.08rem;
+  font-weight: 850;
+  content: "›";
+  transform: translateY(-50%);
+}
+
+.relationship-step span {
+  color: var(--teal);
+  font-size: 0.62rem;
+  font-weight: 820;
+}
+
+.relationship-step strong {
+  color: var(--charcoal);
+  font-size: 0.79rem;
+  line-height: 1.35;
+  word-break: keep-all;
+}
+
+.relationship-step:hover {
+  background: #f8fafb;
+}
+
+.relationship-step[aria-pressed="true"] {
+  background: #eef7f5;
+  box-shadow: inset 0 -4px #0f766e;
+}
+
+.relationship-step-explainer {
+  display: grid;
+  grid-template-columns: minmax(150px, 0.34fr) minmax(0, 1.26fr) auto;
+  align-items: center;
+  gap: 16px;
+  padding: 13px 15px;
+  border-left: 4px solid var(--teal);
+  background: #f4f8f8;
+}
+
+.relationship-step-explainer > div {
+  display: grid;
+  gap: 3px;
+}
+
+.relationship-step-explainer span {
+  color: var(--teal);
+  font-size: 0.62rem;
+  font-weight: 850;
+}
+
+.relationship-step-explainer strong {
+  color: var(--charcoal);
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.relationship-step-explainer p {
+  margin: 0;
+  color: #40505a;
+  font-size: 0.76rem;
+  font-weight: 640;
+  line-height: 1.52;
+  word-break: keep-all;
+}
+
+.relationship-step-explainer em {
+  color: #7a8790;
+  font-size: 0.64rem;
+  font-style: normal;
+  font-weight: 730;
+  white-space: nowrap;
+}
+
+.relationship-effects {
+  display: grid;
+  grid-template-columns: minmax(130px, 0.24fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  padding: 3px 0;
+}
+
+.relationship-effects > strong {
+  color: var(--charcoal);
+  font-size: 0.72rem;
+}
+
+.relationship-effects > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.relationship-effects span {
+  display: inline-flex;
+  min-height: 27px;
+  align-items: center;
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #ffffff;
+  color: #59666f;
+  font-size: 0.66rem;
+  font-weight: 760;
+}
+
+.relationship-learning-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: #ffffff;
+}
+
+.relationship-learning-grid section {
+  display: grid;
+  min-width: 0;
+  align-content: start;
+  gap: 6px;
+  padding: 14px;
+  border-right: 1px solid var(--line);
+}
+
+.relationship-learning-grid section:last-child {
+  border-right: 0;
+}
+
+.relationship-learning-grid span {
+  color: var(--amber);
+  font-size: 0.65rem;
+  font-weight: 850;
+}
+
+.relationship-learning-grid strong {
+  color: var(--ink);
+  font-size: 0.82rem;
+  line-height: 1.38;
+  overflow-wrap: anywhere;
+}
+
+.relationship-learning-grid p {
+  margin: 0;
+  color: #52606a;
+  font-size: 0.72rem;
+  font-weight: 620;
+  line-height: 1.52;
+  word-break: keep-all;
+}
+
+.relationship-current {
+  background: #f7f9f9;
+}
+
+.relationship-current span {
+  color: var(--teal);
+}
+
+@media (max-width: 900px) {
+  .relationship-intro,
+  .relationship-step-explainer {
+    grid-template-columns: 1fr;
+    gap: 9px;
+  }
+
+  .relationship-step-explainer em {
+    white-space: normal;
+  }
+
+  .relationship-learning-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .relationship-learning-grid section,
+  .relationship-learning-grid section:last-child {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .relationship-learning-grid section:last-child {
+    border-bottom: 0;
+  }
+}
+
+@media (max-width: 620px) {
+  .relationship-tabs button {
+    min-width: 108px;
+  }
+
+  .relationship-intro {
+    padding: 14px;
+  }
+
+  .relationship-chain {
+    grid-template-columns: repeat(5, 142px);
+  }
+
+  .relationship-step {
+    min-height: 88px;
+  }
+
+  .relationship-effects {
+    grid-template-columns: 1fr;
+  }
+}
