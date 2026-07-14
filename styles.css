@@ -8392,3 +8392,162 @@ h1 {
     flex-direction: column;
   }
 }
+
+/* v55: expanded economic history explanations */
+.history-era-lenses {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.history-era-lenses article {
+  display: grid;
+  min-width: 0;
+  align-content: start;
+  gap: 4px;
+  padding: 10px 11px;
+  border-left: 3px solid var(--line-strong);
+  background: #f7f9f9;
+}
+
+.history-era-lenses article:first-child {
+  border-left-color: var(--teal);
+}
+
+.history-era-lenses article:nth-child(2) {
+  border-left-color: var(--amber);
+}
+
+.history-era-lenses article:last-child {
+  border-left-color: var(--blue);
+}
+
+.history-era-lenses span {
+  color: var(--teal);
+  font-size: 0.66rem;
+  font-weight: 850;
+}
+
+.history-era-lenses p {
+  color: #53616a;
+  font-size: 0.71rem;
+  line-height: 1.48;
+}
+
+.history-expand-hint {
+  margin: -2px 0 0;
+  padding: 9px 11px;
+  border-left: 3px solid var(--amber);
+  background: #f8faf9;
+  color: #59666f;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.history-event-body {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 18px;
+}
+
+.history-event-flow {
+  display: grid;
+  grid-column: 1 / -1;
+  gap: 9px;
+  padding: 13px;
+  border: 1px solid rgba(15, 118, 110, 0.2);
+  border-radius: 6px;
+  background: #f2f8f7;
+}
+
+.history-event-flow > span {
+  color: var(--teal);
+  font-size: 0.68rem;
+  font-weight: 880;
+}
+
+.history-event-flow ol {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.history-event-flow li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+}
+
+.history-event-flow li:not(:last-child)::after {
+  position: absolute;
+  top: 50%;
+  right: -9px;
+  color: #8da39e;
+  content: "→";
+  font-size: 0.72rem;
+  transform: translateY(-50%);
+}
+
+.history-event-flow i {
+  display: inline-grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  border-radius: 50%;
+  background: #0f766e;
+  color: #ffffff;
+  font-size: 0.63rem;
+  font-style: normal;
+  font-weight: 850;
+}
+
+.history-event-flow strong {
+  color: #34424a;
+  font-size: 0.69rem;
+  line-height: 1.38;
+  word-break: keep-all;
+}
+
+.history-event-body section {
+  padding-top: 12px;
+}
+
+.history-event-body section span {
+  font-size: 0.69rem;
+}
+
+.history-event-body section p {
+  font-size: 0.76rem;
+  line-height: 1.58;
+}
+
+@media (max-width: 720px) {
+  .history-era-lenses,
+  .history-event-body {
+    grid-template-columns: 1fr;
+  }
+
+  .history-event-body {
+    gap: 12px;
+  }
+
+  .history-event-body .history-term-row {
+    grid-column: auto;
+  }
+
+  .history-event-flow ol {
+    grid-template-columns: 1fr;
+    gap: 7px;
+  }
+
+  .history-event-flow li:not(:last-child)::after {
+    display: none;
+  }
+}

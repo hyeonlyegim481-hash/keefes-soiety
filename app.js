@@ -1,25 +1,26 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=54";
+} from "./glossary-data.js?v=56";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=54";
+} from "./glossary-extra-data.js?v=56";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=54";
+} from "./glossary-more-data.js?v=56";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=54";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=54";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=54";
-import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=54";
-import { indicatorCategories, indicatorCountries, indicatorDefinitions } from "./indicator-data.js?v=54";
-import { indicatorSnapshot } from "./indicator-values.js?v=54";
-import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=54";
+} from "./glossary-pro-data.js?v=56";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=56";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=56";
+import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=56";
+import { historyDeepDives, historyEraDetails } from "./history-detail-data.js?v=56";
+import { indicatorCategories, indicatorCountries, indicatorDefinitions } from "./indicator-data.js?v=56";
+import { indicatorSnapshot } from "./indicator-values.js?v=56";
+import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=56";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions];
 const glossaryCategoryOrder = [
@@ -756,7 +757,7 @@ if ("serviceWorker" in navigator) {
   const hadServiceWorkerController = Boolean(navigator.serviceWorker.controller);
   let reloadingForServiceWorker = false;
   navigator.serviceWorker
-    .register("/sw.js?v=54")
+    .register("/sw.js?v=56")
     .then((registration) => {
       registration.update().catch(() => {});
       setInterval(() => registration.update().catch(() => {}), 5 * 60_000);
@@ -1885,6 +1886,7 @@ function renderHistory(snapshot) {
   };
   const views = [overviewView, ...historyEras];
   const selectedView = views.find((era) => era.id === state.historyEra) || overviewView;
+  const selectedEraDetails = historyEraDetails[selectedView.id] || [];
   const visibleEvents = state.historyEra === "overview"
     ? historyEvents.filter((event) => event.featured)
     : historyEvents.filter((event) => event.era === state.historyEra);
@@ -1935,6 +1937,14 @@ function renderHistory(snapshot) {
       <p class="section-kicker">${escapeHtml(selectedView.period)}</p>
       <h3>${escapeHtml(selectedView.title)}</h3>
       <p>${escapeHtml(selectedView.summary)}</p>
+      <div class="history-era-lenses">
+        ${selectedEraDetails.map((detail) => `
+          <article>
+            <span>${escapeHtml(detail.label)}</span>
+            <p>${escapeHtml(detail.text)}</p>
+          </article>
+        `).join("")}
+      </div>
     </div>
     <aside>
       <span>핵심 질문</span>
@@ -1950,8 +1960,9 @@ function renderHistory(snapshot) {
       </div>
       <span>${visibleEvents.length}개 사건</span>
     </div>
+    <p class="history-expand-hint">첫 사건은 펼쳐져 있습니다. 다른 사건도 눌러 원인부터 오늘의 교훈까지 확인하세요.</p>
     <div class="history-event-list">
-      ${visibleEvents.map(renderHistoryEvent).join("")}
+      ${visibleEvents.map((event, index) => renderHistoryEvent(event, index)).join("")}
     </div>
   `;
 
@@ -1981,9 +1992,11 @@ function renderHistory(snapshot) {
   `;
 }
 
-function renderHistoryEvent(event) {
+function renderHistoryEvent(event, index) {
+  const detail = historyDeepDives[event.id] || {};
+  const flow = detail.flow || [];
   return `
-    <details class="history-event">
+    <details class="history-event" ${index === 0 ? "open" : ""}>
       <summary>
         <time>${escapeHtml(event.year)}</time>
         <div class="history-event-summary">
@@ -1997,16 +2010,39 @@ function renderHistoryEvent(event) {
         <span class="history-event-toggle" aria-hidden="true"></span>
       </summary>
       <div class="history-event-body">
+        <div class="history-event-flow">
+          <span>경제가 움직인 순서</span>
+          <ol>
+            ${flow.map((step, stepIndex) => `
+              <li>
+                <i>${stepIndex + 1}</i>
+                <strong>${escapeHtml(step)}</strong>
+              </li>
+            `).join("")}
+          </ol>
+        </div>
         <section>
-          <span>원인</span>
+          <span>배경과 촉발</span>
           <p>${escapeHtml(event.cause)}</p>
         </section>
         <section>
-          <span>결과</span>
+          <span>당시 경제의 결과</span>
           <p>${escapeHtml(event.result)}</p>
         </section>
         <section>
-          <span>오늘의 의미</span>
+          <span>정책은 어떻게 대응했나</span>
+          <p>${escapeHtml(detail.policy || "정책 대응 자료를 정리하고 있습니다.")}</p>
+        </section>
+        <section>
+          <span>한국과의 연결</span>
+          <p>${escapeHtml(detail.korea || "한국 경제와의 연결을 정리하고 있습니다.")}</p>
+        </section>
+        <section>
+          <span>자주 하는 오해</span>
+          <p>${escapeHtml(detail.misconception || "한 가지 원인만으로 사건 전체를 설명하지 않도록 주의합니다.")}</p>
+        </section>
+        <section>
+          <span>오늘의 교훈</span>
           <p>${escapeHtml(event.today)}</p>
         </section>
         <div class="history-term-row">
