@@ -8326,3 +8326,69 @@ h1 {
     font-size: 2.55rem;
   }
 }
+
+/* v54: core quote placement */
+.brief-quote {
+  display: grid;
+  grid-template-columns: auto minmax(240px, 0.72fr) minmax(0, 1.28fr);
+  grid-column: 1 / -1;
+  align-items: center;
+  gap: 8px 16px;
+  margin: 0;
+  padding: 11px 16px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--amber);
+  border-radius: 6px;
+  background: #f8faf9;
+  box-shadow: none;
+}
+
+.brief-quote .quote-label {
+  grid-row: auto;
+  align-self: center;
+  color: var(--amber);
+}
+
+.brief-quote blockquote {
+  font-size: 0.86rem;
+  line-height: 1.42;
+}
+
+.brief-quote .quote-meta {
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.brief-quote .quote-meta p {
+  font-size: 0.7rem;
+  line-height: 1.4;
+}
+
+@media (max-width: 900px) {
+  .brief-quote {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .brief-quote .quote-meta {
+    grid-column: 2;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 620px) {
+  .brief-quote {
+    grid-template-columns: 1fr;
+    gap: 5px;
+    padding: 12px 13px;
+  }
+
+  .brief-quote .quote-label,
+  .brief-quote .quote-meta {
+    grid-column: auto;
+  }
+
+  .brief-quote .quote-meta {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

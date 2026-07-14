@@ -1,25 +1,25 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=53";
+} from "./glossary-data.js?v=54";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=53";
+} from "./glossary-extra-data.js?v=54";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=53";
+} from "./glossary-more-data.js?v=54";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=53";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=53";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=53";
-import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=53";
-import { indicatorCategories, indicatorCountries, indicatorDefinitions } from "./indicator-data.js?v=53";
-import { indicatorSnapshot } from "./indicator-values.js?v=53";
-import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=53";
+} from "./glossary-pro-data.js?v=54";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=54";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=54";
+import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=54";
+import { indicatorCategories, indicatorCountries, indicatorDefinitions } from "./indicator-data.js?v=54";
+import { indicatorSnapshot } from "./indicator-values.js?v=54";
+import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=54";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions];
 const glossaryCategoryOrder = [
@@ -756,7 +756,7 @@ if ("serviceWorker" in navigator) {
   const hadServiceWorkerController = Boolean(navigator.serviceWorker.controller);
   let reloadingForServiceWorker = false;
   navigator.serviceWorker
-    .register("/sw.js?v=53")
+    .register("/sw.js?v=54")
     .then((registration) => {
       registration.update().catch(() => {});
       setInterval(() => registration.update().catch(() => {}), 5 * 60_000);
