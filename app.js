@@ -1,25 +1,25 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=51";
+} from "./glossary-data.js?v=53";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=51";
+} from "./glossary-extra-data.js?v=53";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=51";
+} from "./glossary-more-data.js?v=53";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=51";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=51";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=51";
-import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=51";
-import { indicatorCategories, indicatorCountries, indicatorDefinitions } from "./indicator-data.js?v=51";
-import { indicatorSnapshot } from "./indicator-values.js?v=51";
-import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=51";
+} from "./glossary-pro-data.js?v=53";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=53";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=53";
+import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=53";
+import { indicatorCategories, indicatorCountries, indicatorDefinitions } from "./indicator-data.js?v=53";
+import { indicatorSnapshot } from "./indicator-values.js?v=53";
+import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=53";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions];
 const glossaryCategoryOrder = [
@@ -594,7 +594,32 @@ elements.indicatorList.addEventListener("click", (event) => {
   if (!button) return;
   state.selectedIndicatorId = button.dataset.indicatorId;
   renderIndicators();
+  revealSelectedIndicatorTrend();
 });
+
+function revealSelectedIndicatorTrend() {
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      const trendSection = elements.indicatorDetail.querySelector(".indicator-trend-section");
+      if (!trendSection) return;
+
+      const rect = trendSection.getBoundingClientRect();
+      const topGuard = Math.min(150, window.innerHeight * 0.2);
+      const isVisible = rect.top >= topGuard && rect.bottom <= window.innerHeight - 24;
+      if (isVisible) return;
+
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      trendSection.scrollIntoView({
+        behavior: reduceMotion ? "auto" : "smooth",
+        block: rect.height + topGuard < window.innerHeight ? "center" : "start",
+        inline: "nearest"
+      });
+      trendSection.classList.add("is-revealed");
+      window.setTimeout(() => trendSection.classList.remove("is-revealed"), 1100);
+    });
+  });
+}
+
 elements.relationshipLab.addEventListener("click", (event) => {
   const scenarioButton = event.target.closest?.("[data-relationship-scenario]");
   if (scenarioButton) {
@@ -731,7 +756,7 @@ if ("serviceWorker" in navigator) {
   const hadServiceWorkerController = Boolean(navigator.serviceWorker.controller);
   let reloadingForServiceWorker = false;
   navigator.serviceWorker
-    .register("/sw.js?v=51")
+    .register("/sw.js?v=53")
     .then((registration) => {
       registration.update().catch(() => {});
       setInterval(() => registration.update().catch(() => {}), 5 * 60_000);
@@ -1661,6 +1686,18 @@ function renderIndicatorDetail(indicator) {
       <strong>${escapeHtml(comparison.title)}</strong>
       <p>${escapeHtml(comparison.detail)}</p>
     </div>
+    <section class="indicator-trend-section">
+      <div class="indicator-section-title">
+        <div>
+          <span>선택한 지표 추세</span>
+          <strong>${escapeHtml(indicator.name)} · ${first && last ? `${first.year}~${last.year}년` : "자료 없음"}</strong>
+        </div>
+        <em>${trendDelta == null ? "변화 계산 불가" : `기간 변화 ${formatIndicatorDelta(indicator, trendDelta)}`}</em>
+      </div>
+      <div class="indicator-trend-frame">
+        <canvas id="indicatorTrendCanvas" width="760" height="220" aria-label="${escapeHtml(indicator.name)} 한국 추세 차트"></canvas>
+      </div>
+    </section>
     <section class="indicator-country-section">
       <div class="indicator-section-title">
         <div>
@@ -1685,18 +1722,6 @@ function renderIndicatorDetail(indicator) {
             </div>
           `;
         }).join("")}
-      </div>
-    </section>
-    <section class="indicator-trend-section">
-      <div class="indicator-section-title">
-        <div>
-          <span>한국 추세</span>
-          <strong>${first && last ? `${first.year}~${last.year}년` : "자료 없음"}</strong>
-        </div>
-        <em>${trendDelta == null ? "변화 계산 불가" : `기간 변화 ${formatIndicatorDelta(indicator, trendDelta)}`}</em>
-      </div>
-      <div class="indicator-trend-frame">
-        <canvas id="indicatorTrendCanvas" width="760" height="220" aria-label="${escapeHtml(indicator.name)} 한국 추세 차트"></canvas>
       </div>
     </section>
     <div class="indicator-reading-grid">

@@ -6184,6 +6184,17 @@ h1 {
   border-bottom: 1px solid var(--line);
 }
 
+.indicator-trend-section {
+  scroll-margin-top: 132px;
+  background: #f7fbfa;
+  transition: background-color 240ms ease, box-shadow 240ms ease;
+}
+
+.indicator-trend-section.is-revealed {
+  box-shadow: inset 4px 0 #0f766e;
+  background: #edf8f5;
+}
+
 .indicator-section-title {
   display: flex;
   align-items: flex-end;
@@ -6492,6 +6503,16 @@ h1 {
   .indicator-country-section,
   .indicator-trend-section {
     padding: 16px 15px;
+  }
+
+  .indicator-trend-section .indicator-section-title {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .indicator-trend-section .indicator-section-title em {
+    text-align: left;
   }
 
   .indicator-country-row {
