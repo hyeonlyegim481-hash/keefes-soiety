@@ -1,26 +1,27 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=56";
+} from "./glossary-data.js?v=57";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=56";
+} from "./glossary-extra-data.js?v=57";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=56";
+} from "./glossary-more-data.js?v=57";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=56";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=56";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=56";
-import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=56";
-import { historyDeepDives, historyEraDetails } from "./history-detail-data.js?v=56";
-import { indicatorCategories, indicatorCountries, indicatorDefinitions } from "./indicator-data.js?v=56";
-import { indicatorSnapshot } from "./indicator-values.js?v=56";
-import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=56";
+} from "./glossary-pro-data.js?v=57";
+import { glossarySpecialTerms } from "./glossary-special-data.js?v=57";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=57";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=57";
+import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=57";
+import { historyDeepDives, historyEraDetails } from "./history-detail-data.js?v=57";
+import { indicatorCategories, indicatorCountries, indicatorDefinitions } from "./indicator-data.js?v=57";
+import { indicatorSnapshot } from "./indicator-values.js?v=57";
+import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=57";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions];
 const glossaryCategoryOrder = [
@@ -33,7 +34,8 @@ const glossaryTerms = [
   ...coreGlossaryTerms.map((item) => ({ ...item, level: "core" })),
   ...glossaryExtraTerms.map((item) => ({ ...item, level: "advanced" })),
   ...glossaryMoreTerms.map((item) => ({ ...item, level: "advanced" })),
-  ...glossaryProTerms.map((item) => ({ ...item, level: "advanced" }))
+  ...glossaryProTerms.map((item) => ({ ...item, level: "advanced" })),
+  ...glossarySpecialTerms.map((item) => ({ ...item, level: "advanced" }))
 ];
 
 const GLOSSARY_PAGE_SIZE = 24;
@@ -757,7 +759,7 @@ if ("serviceWorker" in navigator) {
   const hadServiceWorkerController = Boolean(navigator.serviceWorker.controller);
   let reloadingForServiceWorker = false;
   navigator.serviceWorker
-    .register("/sw.js?v=56")
+    .register("/sw.js?v=57")
     .then((registration) => {
       registration.update().catch(() => {});
       setInterval(() => registration.update().catch(() => {}), 5 * 60_000);
@@ -2595,7 +2597,7 @@ function renderGlossary() {
     { id: "advanced", label: "심화", detail: "금융·정책·위기 확장어" }
   ];
 
-  elements.glossaryTotal.textContent = `전체 ${glossaryTerms.length} · 핵심 ${coreGlossaryTerms.length} · 심화 ${glossaryExtraTerms.length + glossaryMoreTerms.length + glossaryProTerms.length}`;
+  elements.glossaryTotal.textContent = `전체 ${glossaryTerms.length} · 핵심 ${coreGlossaryTerms.length} · 심화 ${glossaryExtraTerms.length + glossaryMoreTerms.length + glossaryProTerms.length + glossarySpecialTerms.length}`;
   elements.glossaryLevels.replaceChildren(
     ...levels.map((item) => {
       const count = item.id === "all"
