@@ -1,24 +1,25 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=50";
+} from "./glossary-data.js?v=51";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=50";
+} from "./glossary-extra-data.js?v=51";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=50";
+} from "./glossary-more-data.js?v=51";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=50";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=50";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=50";
-import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=50";
-import { indicatorCategories, indicatorCountries, indicatorDefinitions } from "./indicator-data.js?v=50";
-import { indicatorSnapshot } from "./indicator-values.js?v=50";
+} from "./glossary-pro-data.js?v=51";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=51";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=51";
+import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=51";
+import { indicatorCategories, indicatorCountries, indicatorDefinitions } from "./indicator-data.js?v=51";
+import { indicatorSnapshot } from "./indicator-values.js?v=51";
+import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=51";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions];
 const glossaryCategoryOrder = [
@@ -511,6 +512,7 @@ let chartRenderState = null;
 
 let state = {
   snapshot: null,
+  narrative: null,
   selectedMarket: "kospi",
   isRefreshing: false,
   activeChapter: initialChapter,
@@ -729,7 +731,7 @@ if ("serviceWorker" in navigator) {
   const hadServiceWorkerController = Boolean(navigator.serviceWorker.controller);
   let reloadingForServiceWorker = false;
   navigator.serviceWorker
-    .register("/sw.js?v=50")
+    .register("/sw.js?v=51")
     .then((registration) => {
       registration.update().catch(() => {});
       setInterval(() => registration.update().catch(() => {}), 5 * 60_000);
@@ -806,15 +808,17 @@ async function fetchSnapshotWithRetry({ attempts = 1 } = {}) {
 }
 
 function render(snapshot) {
-  renderSummary(snapshot);
-  renderBriefBoard(snapshot);
+  const narrative = buildEconomicNarrative(snapshot);
+  state.narrative = narrative;
+  renderSummary(snapshot, narrative);
+  renderBriefBoard(snapshot, narrative);
   renderMarkets(snapshot.markets);
   renderTabs(snapshot.markets);
   renderMarketBrief(snapshot.markets);
   renderMarketBoard(snapshot.markets);
   renderMarketConnections(snapshot.markets, snapshot.analysis);
-  renderAnalysis(snapshot.analysis);
-  renderMacro(snapshot.macro, snapshot.analysis);
+  renderAnalysis(snapshot, narrative);
+  renderMacro(snapshot.macro, snapshot.analysis, narrative);
   renderIndicators();
   renderStudy(snapshot);
   renderHistory(snapshot);
@@ -825,10 +829,10 @@ function render(snapshot) {
   setActiveChapter(state.activeChapter, { skipAnimation: true });
 }
 
-function renderSummary(snapshot) {
+function renderSummary(snapshot, narrative = state.narrative) {
   const { analysis } = snapshot;
-  elements.regimeTitle.textContent = analysis.regime;
-  elements.pulseText.textContent = analysis.pulse;
+  elements.regimeTitle.textContent = narrative?.heroTitle || analysis.regime;
+  elements.pulseText.textContent = narrative?.plainSummary || analysis.pulse;
   const latestMarketAt = getLatestMarketTimestamp(snapshot);
   elements.updatedAt.textContent = latestMarketAt
     ? marketTimeFormatter.format(latestMarketAt)
@@ -900,98 +904,90 @@ function renderSummary(snapshot) {
   );
 }
 
-function renderBriefBoard(snapshot) {
-  const { analysis, markets } = snapshot;
-  const byId = Object.fromEntries(markets.map((market) => [market.id, market]));
-  const selected = markets.find((market) => market.id === state.selectedMarket) || markets[0];
-  const globalLeaders = [...markets]
-    .filter((market) => market.group !== "korea")
-    .sort((a, b) => Math.abs(b.changePercent) - Math.abs(a.changePercent))
-    .slice(0, 2);
-  const koreaWatch = analysis.koreaWatch || [];
-  const bullets = analysis.bullets || [];
-  const risingCount = markets.filter((market) => market.changePercent > 0).length;
-  const fallingCount = markets.length - risingCount;
-  const vix = byId.vix;
-  const usdkrw = byId.usdkrw;
-  const wti = byId.wti;
+function renderBriefBoard(snapshot, narrative = state.narrative) {
+  const { analysis } = snapshot;
   const tone = analysis.riskScore >= 66 ? "negative" : analysis.riskScore >= 45 ? "watch" : "positive";
-  const decisionMode = analysis.riskScore >= 66 ? "방어 먼저" : analysis.riskScore >= 45 ? "확인 먼저" : "회복 확인";
-  const selectedTone = selected?.changePercent >= 0 ? "positive" : "negative";
-  const globalCopy = globalLeaders.map((market) => `${market.name} ${signed(market.changePercent)}%`).join(" · ");
-  const koreaCopy = koreaWatch.map((item) => `${item.label} ${item.state}`).slice(0, 3).join(" · ");
+  const reasons = narrative?.coreReasons || [];
+  const breadth = narrative?.breadth || { rising: 0, falling: 0, total: snapshot.markets.length };
 
   elements.briefBoard.innerHTML = `
-    <div class="brief-command-grid">
-      <article class="brief-thesis" data-tone="${tone}">
-        <header>
-          <span>오늘의 경제 판단</span>
-          <em>위험 온도 <strong>${analysis.riskScore}</strong>/100</em>
-        </header>
-        <h3>${escapeHtml(analysis.regime)}</h3>
-        <p>${escapeHtml(analysis.pulse)}</p>
-        <footer>
-          <div>
-            <span>지금의 우선순위</span>
-            <strong>${decisionMode}</strong>
-          </div>
-          <button type="button" data-open-chapter="analysis">심층 분석 <span aria-hidden="true">→</span></button>
-        </footer>
-      </article>
-      <div class="brief-metric-stack">
-        <article class="brief-metric" data-tone="${selectedTone}">
-          <span>핵심 가격</span>
-          <div>
-            <strong>${selected ? `${escapeHtml(selected.name)} ${formatMarketValue(selected)}` : "--"}</strong>
-            <em>${selected ? `${signed(selected.changePercent)}%` : "확인 중"}</em>
-          </div>
-          <p>현재 시장 차트의 기준 지표</p>
-        </article>
-        <article class="brief-metric" data-tone="neutral">
-          <span>글로벌 움직임</span>
-          <strong>${escapeHtml(globalLeaders.map((market) => market.name).join(" · ") || "확인 중")}</strong>
-          <p>${escapeHtml(globalCopy || "글로벌 가격 신호를 정리하고 있습니다.")}</p>
-        </article>
-        <article class="brief-metric" data-tone="watch">
-          <span>한국 체크</span>
-          <strong>${escapeHtml(koreaWatch.map((item) => item.state).slice(0, 3).join(" · ") || "확인 중")}</strong>
-          <p>${escapeHtml(koreaCopy || "환율, 수출, 중국 변수를 같이 봅니다.")}</p>
-        </article>
+    <section class="explain-hero" data-tone="${tone}">
+      <header>
+        <span>30초 이해</span>
+        <em>위험 온도 <strong>${analysis.riskScore}</strong>/100 · ${escapeHtml(narrative?.riskBand || analysis.regime)}</em>
+      </header>
+      <h3>${escapeHtml(narrative?.title || analysis.regime)}</h3>
+      <p>${escapeHtml(narrative?.meaning || analysis.pulse)}</p>
+    </section>
+
+    <section class="reason-ledger" aria-label="오늘의 흐름을 만든 이유">
+      <div class="board-heading">
+        <div>
+          <p class="section-kicker">숫자에서 결론까지</p>
+          <h3>왜 이렇게 해석하는가</h3>
+        </div>
+        <span>사실 → 의미</span>
       </div>
-    </div>
-    <section class="decision-ribbon" aria-label="오늘의 판단 순서">
-      <div>
-        <p class="section-kicker">판단 순서</p>
-        <strong>${decisionMode}</strong>
-      </div>
-      <ol>
-        ${(bullets.length ? bullets : ["시장 가격 방향 확인", "한국 변수 교차 확인", "뉴스 원문으로 이유 확인"])
-          .slice(0, 3)
-          .map((item, index) => `<li><span>${String(index + 1).padStart(2, "0")}</span><p>${escapeHtml(item)}</p></li>`)
+      <ol class="cause-list">
+        ${reasons
+          .map(
+            (item, index) => `
+              <li data-tone="${item.tone || "neutral"}">
+                <span class="cause-number">${String(index + 1).padStart(2, "0")}</span>
+                <div class="cause-fact">
+                  <em>확인된 숫자</em>
+                  <strong>${escapeHtml(item.label)}</strong>
+                  <b>${escapeHtml(item.fact)}</b>
+                </div>
+                <span class="cause-arrow" aria-hidden="true">→</span>
+                <div class="cause-meaning">
+                  <em>쉽게 말하면</em>
+                  <p>${escapeHtml(item.meaning)}</p>
+                  <small>${escapeHtml(item.confidence)}</small>
+                </div>
+              </li>
+            `
+          )
           .join("")}
       </ol>
     </section>
-    <div class="board-heading board-heading-spaced">
+
+    <section class="brief-two-up">
       <div>
-        <p class="section-kicker">빠른 판단표</p>
-        <h3>숫자를 읽는 순서</h3>
+        <span>한국에서 중요한 뜻</span>
+        <strong>${escapeHtml(narrative?.korea?.title || "환율과 수출을 함께 확인합니다.")}</strong>
+        <p>${escapeHtml(narrative?.korea?.summary || "")}</p>
       </div>
-      <span>상승 ${risingCount} · 하락 ${fallingCount}</span>
-    </div>
-    <div class="signal-table" role="table" aria-label="오늘의 핵심 신호">
-      ${renderSignalRow("시장 폭", `${risingCount}/${markets.length} 상승`, risingCount >= fallingCount ? "위험선호 우세" : "방어 우세", risingCount >= fallingCount ? "positive" : "negative")}
-      ${renderSignalRow("원/달러", usdkrw ? `${formatMarketValue(usdkrw)} · ${signed(usdkrw.changePercent)}%` : "--", usdkrw?.value > 1380 ? "한국 자산 부담" : "부담 제한", usdkrw?.value > 1380 ? "negative" : "neutral")}
-      ${renderSignalRow("변동성", vix ? `${formatMarketValue(vix)} · ${signed(vix.changePercent)}%` : "--", vix?.value > 20 ? "경계 확대" : "극단 공포 아님", vix?.value > 20 ? "negative" : "positive")}
-      ${renderSignalRow("에너지", wti ? `${formatMarketValue(wti)} · ${signed(wti.changePercent)}%` : "--", Math.abs(wti?.changePercent || 0) > 2 ? "물가·비용 민감" : "영향 제한", Math.abs(wti?.changePercent || 0) > 2 ? "watch" : "neutral")}
-      ${renderSignalRow("종합", `${analysis.riskScore}/100`, decisionMode, tone)}
-    </div>
+      <div>
+        <span>다음에 확인할 것</span>
+        <ul>
+          ${(narrative?.nextChecks || analysis.watchlist || [])
+            .slice(0, 4)
+            .map((item) => `<li>${escapeHtml(item)}</li>`)
+            .join("")}
+        </ul>
+      </div>
+    </section>
+
+    <footer class="brief-verdict-bar">
+      <div>
+        <span>시장 폭</span>
+        <strong>${breadth.rising}/${breadth.total}개 상승</strong>
+        <em>상승 ${breadth.rising} · 하락 ${breadth.falling}</em>
+      </div>
+      <div>
+        <span>오늘의 결론</span>
+        <strong>${escapeHtml(narrative?.heroTitle || analysis.regime)}</strong>
+        <em>한 지표가 아니라 교차 신호 기준</em>
+      </div>
+      <button type="button" data-open-chapter="analysis">근거 전체 보기 <span aria-hidden="true">→</span></button>
+    </footer>
   `;
 
   elements.briefBoard.querySelector("[data-open-chapter='analysis']")?.addEventListener("click", () => {
     setActiveChapter("analysis");
   });
 }
-
 function renderMarkets(markets) {
   elements.marketStrip.replaceChildren(
     ...markets.map((market) => {
@@ -1186,35 +1182,43 @@ function renderMarketBrief(markets) {
     return;
   }
 
-  const sorted = [...markets].sort((a, b) => b.changePercent - a.changePercent);
-  const strongest = sorted[0];
-  const weakest = sorted.at(-1);
-  const reason = getMarketReason(selected);
+  const read = getMarketDeepRead(selected, markets, state.narrative);
+  const statusLabel = getMarketStatusLabel(selected);
+  const basisLabel = selected.asOf
+    ? marketTimeFormatter.format(new Date(selected.asOf))
+    : "기준시각 없음";
 
   elements.marketBrief.innerHTML = `
-    <article class="brief-card brief-card-main">
-      <span>선택 지표</span>
-      <strong>${selected.name} ${formatMarketValue(selected)}</strong>
-      <p>${reason.detail}</p>
-    </article>
-    <article class="brief-card">
-      <span>강한 쪽</span>
-      <strong>${strongest.name}</strong>
-      <p class="${strongest.direction === "up" ? "up" : "down"}">${signed(strongest.changePercent)}% 움직임</p>
-    </article>
-    <article class="brief-card">
-      <span>약한 쪽</span>
-      <strong>${weakest.name}</strong>
-      <p class="${weakest.direction === "up" ? "up" : "down"}">${signed(weakest.changePercent)}% 움직임</p>
-    </article>
-    <article class="brief-card">
-      <span>시장 해석</span>
-      <strong>${reason.title}</strong>
-      <p>${selected.group === "korea" ? "한국 시장 민감도를 먼저 봅니다." : "글로벌 자금 흐름과 연결해 봅니다."}</p>
-    </article>
+    <section class="market-readable" data-tone="${escapeHtml(read.tone || "neutral")}">
+      <header class="market-read-head">
+        <div>
+          <span>지금 선택한 지표</span>
+          <strong>${escapeHtml(selected.name)} ${escapeHtml(formatMarketValue(selected))}</strong>
+          <em class="${selected.direction === "up" ? "up" : "down"}">${escapeHtml(signed(selected.changePercent))}%</em>
+        </div>
+        <p>${escapeHtml(statusLabel)} · ${escapeHtml(basisLabel)}</p>
+      </header>
+      <div class="market-explain-grid">
+        <article>
+          <span>이 숫자는 무엇인가</span>
+          <p>${escapeHtml(read.definition)}</p>
+        </article>
+        <article>
+          <span>오늘 얼마나 움직였나</span>
+          <p>${escapeHtml(read.movement)}</p>
+        </article>
+        <article>
+          <span>쉽게 해석하면</span>
+          <p>${escapeHtml(read.interpretation)}</p>
+        </article>
+      </div>
+      <aside class="market-caution">
+        <strong>이 숫자만 보고 단정하면 안 되는 것</strong>
+        <p>${escapeHtml(read.caution)}</p>
+      </aside>
+    </section>
   `;
 }
-
 function renderMarketBoard(markets) {
   elements.marketBoard.innerHTML = `
     <div class="board-heading">
@@ -1227,14 +1231,14 @@ function renderMarketBoard(markets) {
     <div class="market-card-grid">
       ${markets
         .map((market) => {
-          const reason = getMarketReason(market);
+          const read = getMarketDeepRead(market, markets, state.narrative);
           const isSelected = market.id === state.selectedMarket;
           return `
             <button class="market-mini-card" type="button" data-market-id="${market.id}" aria-pressed="${isSelected}">
               <span>${market.group === "korea" ? "한국" : "글로벌"}</span>
               <strong>${market.name}</strong>
               <em class="${market.direction === "up" ? "up" : "down"}">${formatMarketValue(market)} · ${signed(market.changePercent)}%</em>
-              <p>${reason.title}</p>
+              <p>${escapeHtml(read.interpretation)}</p>
             </button>
           `;
         })
@@ -1254,65 +1258,49 @@ function renderMarketBoard(markets) {
     });
   });
 }
-
 function renderMarketConnections(markets, analysis) {
-  const byId = Object.fromEntries(markets.map((market) => [market.id, market]));
-  const selected = byId[state.selectedMarket] || markets[0];
-  const kospi = byId.kospi;
-  const sp500 = byId.sp500;
-  const nasdaq = byId.nasdaq;
-  const usdkrw = byId.usdkrw;
-  const vix = byId.vix;
-  const wti = byId.wti;
-  const sorted = [...markets].sort((a, b) => b.changePercent - a.changePercent);
-  const koreaGap = (kospi?.changePercent || 0) - (sp500?.changePercent || 0);
-  const techTone = ((nasdaq?.changePercent || 0) + (sp500?.changePercent || 0)) / 2;
+  const selected = markets.find((market) => market.id === state.selectedMarket) || markets[0];
+  const read = getMarketDeepRead(selected, markets, state.narrative);
+  const tensions = state.narrative?.tensions || [];
 
   elements.marketConnections.innerHTML = `
-    <section class="expansion-section">
+    <section class="expansion-section cross-reading">
       <div class="board-heading">
         <div>
-          <p class="section-kicker">교차 시장 분석</p>
-          <h3>숫자들이 서로 말해주는 것</h3>
+          <p class="section-kicker">한 지표를 세 지표로 검증</p>
+          <h3>${escapeHtml(selected?.name || "시장")} 해석이 맞는지 확인하는 법</h3>
         </div>
-        <span>${selected?.name || "시장"} 기준</span>
+        <span>교차 확인 ${read.checks.length}개</span>
       </div>
-      <div class="relationship-grid">
-        <article class="relationship-card">
-          <span>미국 위험선호</span>
-          <strong>${techTone >= 0 ? "주식 선호" : "방어 선호"}</strong>
-          <p>S&amp;P 500 ${signed(sp500?.changePercent || 0)}%, NASDAQ ${signed(nasdaq?.changePercent || 0)}%를 함께 본 결과입니다.</p>
-        </article>
-        <article class="relationship-card">
-          <span>한국 상대 흐름</span>
-          <strong>${koreaGap >= 0 ? "미국 대비 강함" : "미국 대비 약함"}</strong>
-          <p>KOSPI와 S&amp;P 500의 등락률 차이는 ${signed(koreaGap)}%p입니다. 환율과 외국인 수급이 차이를 만들 수 있습니다.</p>
-        </article>
-        <article class="relationship-card">
-          <span>환율·변동성</span>
-          <strong>${usdkrw?.value > 1380 || vix?.value > 20 ? "경계 조합" : "혼합 신호"}</strong>
-          <p>원/달러 ${formatMarketValue(usdkrw)}, VIX ${formatMarketValue(vix)}입니다. 둘이 함께 오르면 한국 시장 부담이 커집니다.</p>
-        </article>
-        <article class="relationship-card">
-          <span>원가 압력</span>
-          <strong>${Math.abs(wti?.changePercent || 0) > 2 ? "민감도 높음" : "제한적"}</strong>
-          <p>WTI ${signed(wti?.changePercent || 0)}%는 운송·화학·항공과 물가 기대에 먼저 반영될 수 있습니다.</p>
-        </article>
+      <div class="cross-check-list">
+        ${read.checks
+          .map(
+            (item, index) => `
+              <article data-tone="${escapeHtml(item.tone || "neutral")}">
+                <span>확인 ${index + 1}</span>
+                <div>
+                  <strong>${escapeHtml(item.name)}</strong>
+                  <em>${escapeHtml(item.value)}</em>
+                </div>
+                <p>${escapeHtml(item.question)}</p>
+              </article>
+            `
+          )
+          .join("")}
       </div>
-      <div class="ranking-panel">
-        <div>
-          <span>상승 순위</span>
-          <strong>${sorted.slice(0, 3).map((market) => `${market.name} ${signed(market.changePercent)}%`).join(" · ")}</strong>
-        </div>
-        <div>
-          <span>위험 해석</span>
-          <strong>${analysis.riskScore}/100 · ${analysis.regime}</strong>
-        </div>
+      <div class="market-context-band">
+        <span>시장 전체 결론</span>
+        <strong>${escapeHtml(read.overallContext)}</strong>
+        <em>위험 온도 ${escapeHtml(String(analysis.riskScore))}/100</em>
       </div>
+      <div class="tension-list">
+        <strong>결론을 서두르면 안 되는 반대 신호</strong>
+        ${tensions.slice(0, 3).map((item) => `<p>${escapeHtml(item)}</p>`).join("")}
+      </div>
+      <p class="data-caveat">지표가 같은 시간에 움직였다는 사실만으로 원인과 결과가 확정되지는 않습니다. 교차 지표는 해석을 검증하는 단서입니다.</p>
     </section>
   `;
 }
-
 function renderEconomicQuote(analysis) {
   if (!elements.analysisQuote) return;
 
@@ -1341,262 +1329,198 @@ function renderEconomicQuote(analysis) {
   `;
 }
 
-function renderAnalysis(analysis) {
-  const dailyFlow = analysis.dailyFlow || buildDailyFlowFallback(analysis);
-  const chapters = dailyFlow.chapters || buildChapterFallback(analysis, dailyFlow);
-  const detailedSections = dailyFlow.detailedSections || buildDetailedFallback(dailyFlow);
-  const reasonCards = analysis.reasonCards || [];
-  const transmissionPath = dailyFlow.transmissionPath || [
-    { label: "01 글로벌", title: "주가와 변동성", body: "미국 주가와 VIX가 같은 방향인지 확인합니다." },
-    { label: "02 환율", title: "달러와 원화", body: "달러 움직임이 원/달러 환율에 전달되는지 봅니다." },
-    { label: "03 수급", title: "외국인과 KOSPI", body: "환율 부담이 국내 수급을 흔드는지 확인합니다." },
-    { label: "04 실물", title: "수출과 기업 이익", body: "가격 신호가 수출과 이익 전망까지 이어지는지 봅니다." }
-  ];
-  const counterSignals = dailyFlow.counterSignals || [
-    "주가와 환율이 서로 다른 방향이면 한쪽 신호만으로 결론을 내리지 않습니다.",
-    "하루 반등보다 환율·변동성·수급이 며칠 같은 방향으로 이어지는지 확인합니다."
-  ];
+function renderAnalysis(snapshot, narrative = state.narrative) {
+  const analysis = snapshot?.analysis || {};
+  const facts = narrative?.facts || [];
+  const inferences = narrative?.inferences || [];
+  const tensions = narrative?.tensions || [];
+  const limitations = narrative?.limitations || [];
   const verdictTone = analysis.riskScore >= 66 ? "negative" : analysis.riskScore >= 45 ? "watch" : "positive";
 
   renderEconomicQuote(analysis);
+  renderAnalysisBoard(analysis, narrative);
+  renderScenarioMatrix(analysis, narrative);
 
-  const chapterItem = document.createElement("li");
-  chapterItem.className = "chapter-summary";
-  chapterItem.innerHTML = `
-    <section>
-      <div class="analysis-part-heading">
-        <p class="article-label">Part 1</p>
-        <h3>챕터 요약</h3>
-        <span>결론과 근거를 먼저 확인</span>
-      </div>
-      <div class="chapter-grid">
-        ${chapters
-          .map(
-            (chapter) => `
-              <article class="chapter-card">
-                <span>${chapter.label}</span>
-                <strong>${chapter.title}</strong>
-                <p>${chapter.summary}</p>
-              </article>
-            `
-          )
-          .join("")}
-      </div>
-    </section>
-  `;
-
-  const articleItem = document.createElement("li");
-  articleItem.className = "analysis-article";
-  articleItem.innerHTML = `
-    <section>
-      <div class="analysis-part-heading">
-        <p class="article-label">Part 2</p>
-        <h3>심층 분석</h3>
-        <span>가격 신호가 한국 경제로 전달되는 과정</span>
-      </div>
-      <article class="deep-analysis">
-        <div class="analysis-verdict" data-tone="${verdictTone}">
-          <span>오늘의 판단</span>
-          <strong>${dailyFlow.verdict || dailyFlow.title}</strong>
-          <em>위험 온도 ${analysis.riskScore}/100</em>
-        </div>
-        <h4>${dailyFlow.title}</h4>
-        <p class="article-lead">${dailyFlow.lead}</p>
-        <section class="transmission-block" aria-label="경제 전파 경로">
-          <div class="transmission-heading">
-            <span>경제 전파 경로</span>
-            <p>각 신호가 다음 단계로 실제 이어지는지 확인합니다.</p>
-          </div>
-          <ol class="transmission-path">
-            ${transmissionPath
-              .map(
-                (item) => `
-                  <li>
-                    <span>${item.label}</span>
-                    <strong>${item.title}</strong>
-                    <p>${item.body}</p>
-                  </li>
-                `
-              )
-              .join("")}
-          </ol>
-        </section>
-        <details class="daily-brief">
-          <summary>세부 근거와 반대 신호 보기</summary>
-          <div class="daily-brief-body">
-            <div class="deep-section-list">
-              ${detailedSections
-                .map(
-                  (section) => `
-                    <section class="deep-section">
-                      <h5>${section.title}</h5>
-                      <p>${section.body}</p>
-                    </section>
-                  `
-                )
-                .join("")}
-            </div>
-            <aside class="counter-signal-block">
-              <strong>이 해석과 반대되는 신호</strong>
-              ${counterSignals.map((item) => `<p>${item}</p>`).join("")}
-            </aside>
-            <p class="article-conclusion">${dailyFlow.conclusion}</p>
-          </div>
-        </details>
-      </article>
-    </section>
-  `;
-
-  const reasonItem = document.createElement("li");
-  reasonItem.className = "analysis-reasons";
-  reasonItem.innerHTML = `
-    <section>
-      <div class="analysis-part-heading">
-        <p class="article-label">Part 3</p>
-        <h3>분석 축</h3>
-        <span>결론을 만든 변수와 실제 수치</span>
-      </div>
-      <div class="reason-grid">
-        ${reasonCards
-          .map(
-            (card) => `
-              <details class="reason-card">
-                <summary>
-                  <span>${card.title}</span>
-                  <strong>${card.summary}</strong>
-                </summary>
-                <p>${card.detail}</p>
-                <div class="evidence-row">
-                  ${(card.evidence || []).map((item) => `<span>${item}</span>`).join("")}
-                </div>
-              </details>
-            `
-          )
-          .join("")}
-      </div>
-    </section>
-  `;
-
-  const watchItem = document.createElement("li");
-  watchItem.className = "watch-note";
-  watchItem.innerHTML = `
-    <strong>판단이 바뀌는지 확인할 흐름</strong>
-    <div class="watch-note-list">
-      ${analysis.watchlist.map((item) => `<span>${item}</span>`).join("")}
-    </div>
-  `;
-
-  elements.analysisList.replaceChildren(chapterItem, articleItem, reasonItem, watchItem);
-  renderAnalysisBoard(analysis, dailyFlow, reasonCards);
-  renderScenarioMatrix(analysis, dailyFlow);
-}
-function renderAnalysisBoard(analysis, dailyFlow, reasonCards) {
-  const riskMode =
-    analysis.riskScore >= 66 ? "방어 시나리오" : analysis.riskScore >= 45 ? "확인 시나리오" : "회복 시나리오";
-  const paragraphs = dailyFlow.paragraphs || [];
-  const keyNumbers = dailyFlow.keyNumbers || (reasonCards || [])
-    .flatMap((card) => card.evidence || [])
-    .slice(0, 4)
-    .map((value, index) => ({ label: `핵심 근거 ${index + 1}`, value, context: "현재 판단에 반영된 수치" }));
-  const upside = dailyFlow.upsideCondition || {
-    title: "환율 안정 + 변동성 완화",
-    body: "원/달러와 VIX가 함께 낮아지면 한국 시장의 외국인 수급 부담이 줄어듭니다."
-  };
-  const downside = dailyFlow.downsideCondition || {
-    title: "달러 강세 + 유가 상승",
-    body: "달러와 에너지 가격이 함께 오르면 물가와 기업 비용 부담이 커질 수 있습니다."
-  };
-  const invalidation = dailyFlow.invalidation || {
-    title: (analysis.watchlist || []).slice(0, 2).join(" · ") || "환율 · 변동성 · 수급",
-    body: paragraphs[0] || "가격과 뉴스 신호가 같은 방향으로 이어지는지 확인합니다."
-  };
-
-  elements.analysisBoard.innerHTML = `
-    <div class="board-heading">
+  elements.analysisList.innerHTML = `
+    <li class="deep-thesis" data-tone="${verdictTone}">
+      <span>심층 결론</span>
+      <h3>${escapeHtml(narrative?.title || analysis.regime || "현재 시장을 교차 확인합니다.")}</h3>
+      <p>${escapeHtml(narrative?.meaning || analysis.pulse || "")}</p>
       <div>
-        <p class="section-kicker">심층 브리핑</p>
-        <h3>결론을 만든 핵심 수치</h3>
+        <strong>왜 중요한가</strong>
+        <em>${escapeHtml(narrative?.korea?.title || "한국에서는 환율과 수출의 전파 경로를 함께 봐야 합니다.")}</em>
       </div>
-      <span>${riskMode}</span>
-    </div>
-    <div class="analysis-evidence-strip">
-      ${keyNumbers
-        .map(
-          (item) => `
-            <div class="analysis-evidence-item">
-              <span>${item.label}</span>
-              <strong>${item.value}</strong>
-              <p>${item.context}</p>
-            </div>
-          `
-        )
-        .join("")}
-    </div>
-    <div class="chapter-board-grid">
-      <article class="board-card board-card-main">
-        <span>기본 판단</span>
-        <strong>${dailyFlow.verdict || dailyFlow.title}</strong>
-        <p>${dailyFlow.lead}</p>
-      </article>
-      <article class="board-card">
-        <span>좋아지는 조건</span>
-        <strong>${upside.title}</strong>
-        <p>${upside.body}</p>
-      </article>
-      <article class="board-card">
-        <span>나빠지는 조건</span>
-        <strong>${downside.title}</strong>
-        <p>${downside.body}</p>
-      </article>
-      <article class="board-card">
-        <span>현재 판단을 바꿀 증거</span>
-        <strong>${invalidation.title}</strong>
-        <p>${invalidation.body}</p>
-      </article>
-    </div>
-  `;
-}
-function renderScenarioMatrix(analysis, dailyFlow) {
-  const weights =
-    analysis.riskScore >= 66
-      ? { defense: 55, base: 30, recovery: 15 }
-      : analysis.riskScore >= 45
-        ? { defense: 25, base: 50, recovery: 25 }
-        : { defense: 15, base: 35, recovery: 50 };
-  const checkpoints = analysis.watchlist || [];
+    </li>
 
-  elements.scenarioMatrix.innerHTML = `
-    <section class="expansion-section">
-      <div class="board-heading">
-        <div>
-          <p class="section-kicker">시나리오 지도</p>
-          <h3>어떤 조건에서 해석이 바뀌는가</h3>
-        </div>
-        <span>예측 아닌 해석 비중</span>
+    <li class="evidence-separation">
+      <div class="analysis-part-heading">
+        <p class="article-label">Evidence</p>
+        <h3>사실과 해석을 분리해서 보기</h3>
+        <span>왼쪽은 확인된 값, 오른쪽은 그 값에서 도출한 판단입니다.</span>
       </div>
-      <div class="scenario-grid">
-        ${renderScenarioCard("방어", weights.defense, "환율·유가·변동성이 함께 상승", "현금흐름이 안정적인 업종과 방어자산 선호가 강해질 수 있습니다.", "negative")}
-        ${renderScenarioCard("기본", weights.base, dailyFlow.title, dailyFlow.lead, "watch")}
-        ${renderScenarioCard("회복", weights.recovery, "환율 안정·VIX 하락·주가 반등", "한국 증시에서는 외국인 수급과 반도체 대형주가 회복을 확인해줄 가능성이 큽니다.", "positive")}
+      <div class="fact-inference-grid">
+        <section class="fact-column">
+          <header>
+            <span>01</span>
+            <div>
+              <strong>확인된 사실</strong>
+              <p>가격과 공식 발표에서 직접 읽을 수 있는 내용</p>
+            </div>
+          </header>
+          ${facts
+            .map(
+              (item) => `
+                <article>
+                  <span>${escapeHtml(item.label)}</span>
+                  <strong>${escapeHtml(item.value)}</strong>
+                  <p>${escapeHtml(item.note)}</p>
+                </article>
+              `
+            )
+            .join("")}
+        </section>
+        <section class="inference-column">
+          <header>
+            <span>02</span>
+            <div>
+              <strong>가능성이 높은 해석</strong>
+              <p>사실을 연결한 판단이며 확정된 원인은 아닙니다.</p>
+            </div>
+          </header>
+          ${inferences
+            .map(
+              (item) => `
+                <article>
+                  <span>${escapeHtml(item.label)} · 신뢰도 ${escapeHtml(item.confidence)}</span>
+                  <strong>${escapeHtml(item.title)}</strong>
+                  <p>근거: ${escapeHtml(item.basis)}</p>
+                </article>
+              `
+            )
+            .join("")}
+        </section>
       </div>
-      <div class="checkpoint-grid">
-        ${checkpoints
-          .slice(0, 4)
+    </li>
+
+    <li class="deep-counter">
+      <div class="analysis-part-heading">
+        <p class="article-label">Countercheck</p>
+        <h3>현재 결론과 충돌하는 신호</h3>
+        <span>심층 분석은 맞는 근거뿐 아니라 틀릴 수 있는 근거도 함께 봅니다.</span>
+      </div>
+      <div class="counter-evidence-list">
+        ${tensions
           .map(
             (item, index) => `
               <article>
-                <span>체크 ${index + 1}</span>
-                <strong>${item}</strong>
+                <span>반대 신호 ${index + 1}</span>
+                <p>${escapeHtml(item)}</p>
               </article>
             `
           )
           .join("")}
       </div>
-      <p class="data-caveat">시나리오 비중은 현재 가격 신호를 정리하기 위한 설명값이며 투자 확률이나 수익률 예측이 아닙니다.</p>
+    </li>
+
+    <li class="analysis-limitations">
+      <div>
+        <span>분석의 한계</span>
+        <strong>여기까지는 말할 수 있고, 그 이상은 단정하지 않습니다.</strong>
+      </div>
+      <ul>
+        ${limitations.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
+      </ul>
+    </li>
+  `;
+}
+function renderAnalysisBoard(analysis, narrative = state.narrative) {
+  const components = narrative?.riskComponents || [];
+  const actual = Number(analysis.riskScore || narrative?.riskScore || 0);
+  const rebuilt = Number(narrative?.rebuiltRisk || actual);
+  const adjustment = components.slice(1).reduce((sum, item) => sum + Number(item.points || 0), 0);
+
+  elements.analysisBoard.innerHTML = `
+    <section class="analysis-score-board">
+      <div class="board-heading">
+        <div>
+          <p class="section-kicker">계산을 공개하는 심층 분석</p>
+          <h3>위험 온도 ${actual}점은 이렇게 만들어졌습니다</h3>
+        </div>
+        <span>설명 모델 · 수익률 예측 아님</span>
+      </div>
+      <div class="risk-formula">
+        <div class="risk-formula-total" data-tone="${actual >= 66 ? "negative" : actual >= 45 ? "watch" : "positive"}">
+          <span>현재 위험 온도</span>
+          <strong>${actual}</strong>
+          <em>/100 · ${escapeHtml(narrative?.riskBand || analysis.regime || "")}</em>
+          <p>중립 출발점에 현재 시장 신호를 더하고 뺀 값입니다.</p>
+        </div>
+        <ol class="risk-component-list">
+          ${components
+            .map(
+              (item, index) => `
+                <li>
+                  <span>${index === 0 ? "출발" : `조정 ${index}`}</span>
+                  <strong>${escapeHtml(item.label)}</strong>
+                  <b class="${Number(item.points) > 0 ? "negative" : Number(item.points) < 0 ? "positive" : "neutral"}">${Number(item.points) > 0 ? "+" : ""}${item.points}점</b>
+                  <p>${escapeHtml(item.reason)}</p>
+                </li>
+              `
+            )
+            .join("")}
+        </ol>
+      </div>
+      <footer class="risk-formula-check">
+        <span>검산</span>
+        <strong>기본 42점 ${adjustment >= 0 ? "+" : "-"} ${Math.abs(adjustment)}점 = ${rebuilt}점</strong>
+        <em>화면 표시값 ${actual}점${actual === rebuilt ? "과 일치" : "과 차이 있음"}</em>
+      </footer>
     </section>
   `;
 }
+function renderScenarioMatrix(analysis, narrative = state.narrative) {
+  const scenarios = narrative?.scenarios || [];
+  const toneById = { base: "watch", better: "positive", worse: "negative" };
 
+  elements.scenarioMatrix.innerHTML = `
+    <section class="expansion-section scenario-reading">
+      <div class="board-heading">
+        <div>
+          <p class="section-kicker">조건이 바뀌면 결론도 바뀜</p>
+          <h3>기본·개선·악화 시나리오</h3>
+        </div>
+        <span>확률 대신 확인 조건</span>
+      </div>
+      <div class="scenario-condition-grid">
+        ${scenarios
+          .map(
+            (scenario) => `
+              <article data-tone="${toneById[scenario.id] || "neutral"}" data-current="${scenario.id === "base"}">
+                <header>
+                  <span>${escapeHtml(scenario.label)}</span>
+                  ${scenario.id === "base" ? "<em>현재 기본값</em>" : ""}
+                </header>
+                <h4>${escapeHtml(scenario.title)}</h4>
+                <div>
+                  <strong>이 조건이면</strong>
+                  <p>${escapeHtml(scenario.trigger)}</p>
+                </div>
+                <div>
+                  <strong>이렇게 해석</strong>
+                  <p>${escapeHtml(scenario.meaning)}</p>
+                </div>
+                <footer>
+                  ${(scenario.checks || []).map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
+                </footer>
+              </article>
+            `
+          )
+          .join("")}
+      </div>
+      <p class="data-caveat">세 시나리오는 발생 확률이 아닙니다. 어떤 데이터가 나오면 현재 판단을 유지하거나 바꿔야 하는지 보여주는 조건표입니다.</p>
+    </section>
+  `;
+}
 function renderIndicators() {
   const query = state.indicatorQuery.trim().toLocaleLowerCase("ko-KR");
   const filtered = indicatorDefinitions.filter((indicator) => {
@@ -2438,34 +2362,37 @@ function macroBasisText(item) {
   const basis = item.periodLabel || "최근 공표";
   return item.stale ? `${basis} 기준 · 마지막 정상 공식값` : `${basis} 기준 · 공식 최신 발표`;
 }
-function renderMacro(macro, analysis) {
-  const watchItems = analysis?.koreaWatch || [];
+function renderMacro(macro, analysis, narrative = state.narrative) {
+  const korea = narrative?.korea || {};
   const inflation = macro.find((item) => /소비자|물가/.test(item.label));
   const policyRate = macro.find((item) => /금리/.test(item.label));
   const exports = macro.find((item) => /수출/.test(item.label));
   const credit = macro.find((item) => /신용/.test(item.label));
 
   elements.koreaBrief.innerHTML = `
-    <article class="brief-card brief-card-main">
-      <span>한국 체크</span>
-      <strong>${watchItems.map((item) => `${item.label} ${item.state}`).join(" · ") || "환율과 수출 확인"}</strong>
-      <p>한국 챕터는 글로벌 가격이 국내 환율, 물가, 수출, 가계 부담으로 어떻게 이어지는지 보는 곳입니다.</p>
-    </article>
-    <article class="brief-card">
-      <span>금리/물가</span>
-      <strong>${macroValueText(policyRate)} · ${macroValueText(inflation)}</strong>
-      <p>소비와 성장주 밸류에이션에 직접 연결됩니다.</p>
-    </article>
-    <article class="brief-card">
-      <span>수출 변화</span>
-      <strong>${exportChangeText(exports)}</strong>
-      <p>한국이 해외에 판 상품 금액이 1년 전보다 달라졌다는 뜻입니다. 반도체 판매, 환율 효과, 중국 주문 중 무엇이 변화를 만들었는지 나눠 봅니다.</p>
-    </article>
-    <article class="brief-card">
-      <span>가계 부담</span>
-      <strong>${macroValueText(credit)}</strong>
-      <p>내수와 금융 안정성을 보는 보조 지표입니다.</p>
-    </article>
+    <section class="korea-readable">
+      <header>
+        <span>한국 경제 한 줄 결론</span>
+        <h3>${escapeHtml(korea.title || "환율·수출·물가를 함께 확인해야 합니다.")}</h3>
+        <p>${escapeHtml(korea.summary || "")}</p>
+      </header>
+      <div class="korea-balance">
+        <article data-tone="positive">
+          <span>버팀목</span>
+          <strong>${escapeHtml(korea.good || exportChangeText(exports))}</strong>
+          <p>해외 판매가 기업 매출과 제조업 생산을 받쳐줄 가능성을 보여줍니다.</p>
+        </article>
+        <article data-tone="negative">
+          <span>부담</span>
+          <strong>${escapeHtml(korea.burden || `물가 ${macroValueText(inflation)}`)}</strong>
+          <p>환율과 물가가 높으면 수출 호조가 가계의 체감경기까지 곧바로 이어지지 않을 수 있습니다.</p>
+        </article>
+      </div>
+      <footer>
+        <span>같이 봐야 할 공식값</span>
+        <p>기준금리 ${escapeHtml(macroValueText(policyRate))} · 소비자물가 ${escapeHtml(macroValueText(inflation))} · 가계신용 ${escapeHtml(macroValueText(credit))}</p>
+      </footer>
+    </section>
   `;
 
   elements.macroGrid.replaceChildren(
@@ -2486,91 +2413,98 @@ function renderMacro(macro, analysis) {
         </div>
         <p class="macro-basis">${escapeHtml(macroBasisText(item))}</p>
         <details class="macro-detail">
-          <summary>용어 설명</summary>
-          <p>${getMacroReason(item)}</p>
+          <summary>무슨 뜻인가</summary>
+          <p>${escapeHtml(getMacroReason(item))}</p>
         </details>
       `;
       return node;
     })
   );
-  renderKoreaBoard(macro, analysis);
-  renderKoreaImpact(macro, analysis, state.snapshot?.markets || []);
+  renderKoreaBoard(macro, analysis, narrative);
+  renderKoreaImpact(macro, analysis, state.snapshot?.markets || [], narrative);
 }
-
-function renderKoreaBoard(macro, analysis) {
-  const watchItems = analysis?.koreaWatch || [];
-  const itemByLabel = (pattern) => macro.find((item) => pattern.test(item.label));
-  const rate = itemByLabel(/금리/);
-  const cpi = itemByLabel(/물가/);
-  const exports = itemByLabel(/수출/);
-  const credit = itemByLabel(/신용/);
+function renderKoreaBoard(macro, analysis, narrative = state.narrative) {
+  const chains = narrative?.korea?.chains || [];
 
   elements.koreaBoard.innerHTML = `
     <div class="board-heading">
       <div>
-        <p class="section-kicker">한국 영향 경로</p>
-        <h3>글로벌 흐름이 한국으로 오는 길</h3>
+        <p class="section-kicker">숫자가 생활로 오는 과정</p>
+        <h3>한국 경제를 움직이는 세 갈래</h3>
       </div>
-      <span>${watchItems.length}개 체크</span>
+      <span>원인 → 전달 → 결과</span>
     </div>
-    <div class="chapter-board-grid">
-      <article class="board-card board-card-main">
-        <span>오늘 한국 포인트</span>
-        <strong>${watchItems.map((item) => `${item.label} ${item.state}`).join(" · ") || "환율과 수출"}</strong>
-        <p>한국은 글로벌 가격을 그대로 따라가기보다 환율, 반도체 수출, 가계 부담을 거쳐 반응합니다.</p>
-      </article>
-      <article class="board-card">
-        <span>금리와 물가</span>
-        <strong>${macroValueText(rate)} · ${macroValueText(cpi)}</strong>
-        <p>금리와 물가는 소비, 부동산, 성장주 할인율에 바로 연결됩니다.</p>
-      </article>
-      <article class="board-card">
-        <span>수출 체력</span>
-        <strong>${macroValueText(exports)}</strong>
-        <p>반도체와 중국 수요가 같이 좋아야 한국 증시의 상승 신뢰도가 높아집니다.</p>
-      </article>
-      <article class="board-card">
-        <span>내수 부담</span>
-        <strong>${macroValueText(credit)}</strong>
-        <p>가계신용은 소비 여력과 금융 안정성을 동시에 보는 보조 신호입니다.</p>
-      </article>
+    <div class="economic-chain-list">
+      ${chains
+        .map(
+          (chain, index) => `
+            <article class="economic-chain">
+              <header>
+                <span>경로 ${index + 1}</span>
+                <strong>${escapeHtml(chain.label)}</strong>
+                <em>출발: ${escapeHtml(chain.start)}</em>
+              </header>
+              <ol class="chain-steps">
+                ${chain.steps
+                  .map((step, stepIndex) => `
+                    <li>
+                      <span>${stepIndex + 1}</span>
+                      <strong>${escapeHtml(step)}</strong>
+                    </li>
+                  `)
+                  .join("")}
+              </ol>
+              <p class="chain-result"><span>현재 해석</span> ${escapeHtml(chain.result)}</p>
+              <p class="chain-caution"><span>확인할 점</span> ${escapeHtml(chain.caution)}</p>
+            </article>
+          `
+        )
+        .join("")}
     </div>
   `;
 }
-
-function renderKoreaImpact(macro, analysis, markets) {
-  const byId = Object.fromEntries(markets.map((market) => [market.id, market]));
-  const findMacro = (pattern) => macro.find((item) => pattern.test(item.label));
-  const rate = findMacro(/금리/);
-  const cpi = findMacro(/물가/);
-  const exports = findMacro(/수출/);
-  const credit = findMacro(/신용/);
-  const usdkrw = byId.usdkrw;
-  const kospi = byId.kospi;
-  const wti = byId.wti;
+function renderKoreaImpact(macro, analysis, markets, narrative = state.narrative) {
+  const korea = narrative?.korea || {};
+  const limitations = narrative?.limitations || [];
 
   elements.koreaImpact.innerHTML = `
-    <section class="expansion-section">
+    <section class="expansion-section korea-impact-reading">
       <div class="board-heading">
         <div>
-          <p class="section-kicker">한국 체감 영향</p>
-          <h3>산업과 생활로 번지는 경로</h3>
+          <p class="section-kicker">누구에게 어떻게 영향을 주나</p>
+          <h3>가계·기업·정책을 따로 보기</h3>
         </div>
-        <span>${analysis.regime}</span>
+        <span>위험 온도 ${analysis.riskScore}/100</span>
       </div>
-      <div class="impact-grid">
-        ${renderImpactCard("반도체·수출", macroValueText(exports), usdkrw?.value > 1380 ? "원화 약세는 매출 환산에 도움이 될 수 있지만 외국인 수급 부담도 같이 커집니다." : "환율 부담이 크지 않으면 수출 실적 자체의 힘이 더 중요해집니다.", "positive")}
-        ${renderImpactCard("내수·소비", macroValueText(cpi), `물가와 가계신용 ${macroValueText(credit)}이 소비 여력을 결정합니다.`, (cpi?.value || 0) > 3 ? "negative" : "watch")}
-        ${renderImpactCard("부동산·금융", macroValueText(rate), "기준금리가 오래 높게 유지되면 대출 이자와 부동산 거래 회복 속도가 느려질 수 있습니다.", (rate?.value || 0) >= 3.5 ? "watch" : "neutral")}
-        ${renderImpactCard("운송·화학", wti ? `${formatMarketValue(wti)} · ${signed(wti.changePercent)}%` : "--", "유가 급등은 항공·운송·화학의 비용 부담으로 이어지고 소비자물가에도 시차를 두고 반영됩니다.", Math.abs(wti?.changePercent || 0) > 2 ? "negative" : "neutral")}
-        ${renderImpactCard("외국인 수급", kospi ? `${signed(kospi.changePercent)}%` : "--", `KOSPI와 원/달러 ${usdkrw ? formatMarketValue(usdkrw) : "--"}가 같은 방향으로 악화되는지 확인합니다.`, usdkrw?.value > 1380 && (kospi?.changePercent || 0) < 0 ? "negative" : "watch")}
-        ${renderImpactCard("정책 여력", `${analysis.riskScore}/100`, "물가가 안정돼도 환율이 높으면 한국은행이 빠르게 완화적으로 움직이기 어려울 수 있습니다.", analysis.riskScore >= 66 ? "negative" : "watch")}
+      <div class="korea-impact-list">
+        <article data-audience="household">
+          <span>가계</span>
+          <strong>이자 부담과 생활비가 소비 여력을 결정</strong>
+          <p>${escapeHtml(korea.household || "금리와 가계부채를 함께 확인합니다.")}</p>
+          <em>따라서 수출이 좋아져도 대출 이자와 물가가 높으면 가계가 느끼는 경기는 늦게 회복될 수 있습니다.</em>
+        </article>
+        <article data-audience="business">
+          <span>기업</span>
+          <strong>수출 매출과 수입 원가가 동시에 움직임</strong>
+          <p>${escapeHtml(korea.business || "수출과 원가를 함께 확인합니다.")}</p>
+          <em>수출기업과 내수기업, 원자재 수입기업의 체감이 서로 다를 수 있습니다.</em>
+        </article>
+        <article data-audience="policy">
+          <span>한국은행·정부</span>
+          <strong>경기를 돕고 싶어도 환율과 물가를 무시할 수 없음</strong>
+          <p>${escapeHtml(korea.policy || "물가와 환율이 정책 여력을 결정합니다.")}</p>
+          <em>금리를 내리면 이자 부담은 줄지만 원화와 물가에 새 부담을 줄 가능성도 함께 봐야 합니다.</em>
+        </article>
       </div>
-      <p class="data-caveat">한국 공표지표는 실시간 시세가 아니라 발표 주기별 최신 스냅샷입니다. 발표일과 기준월을 함께 확인해야 합니다.</p>
+      <div class="korea-evidence-note">
+        <span>현재 판단의 균형</span>
+        <p><strong>긍정 근거</strong> ${escapeHtml(korea.good || "수출 흐름")}</p>
+        <p><strong>부담 근거</strong> ${escapeHtml(korea.burden || "환율과 물가")}</p>
+      </div>
+      <p class="data-caveat">${escapeHtml(limitations[0] || "한국 공표지표는 실시간 시세가 아니라 발표 주기별 최신값입니다.")}</p>
     </section>
   `;
 }
-
 function renderGlossary() {
   const query = normalizeGlossaryText(state.glossaryQuery);
   const queryTokens = query.split(/\s+/).filter(Boolean);

@@ -1,4 +1,4 @@
-const CACHE_NAME = "keefes-soiety-v50";
+const CACHE_NAME = "keefes-soiety-v51";
 const APP_SHELL = [
   "/",
   "/index.html",
@@ -14,6 +14,7 @@ const APP_SHELL = [
   "/history-data.js",
   "/indicator-data.js",
   "/indicator-values.js",
+  "/economic-narrative.js",
   "/manifest.json",
   "/assets/econest-icon.png"
 ];
