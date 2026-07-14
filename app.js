@@ -1,24 +1,24 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=48";
+} from "./glossary-data.js?v=49";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=48";
+} from "./glossary-extra-data.js?v=49";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=48";
+} from "./glossary-more-data.js?v=49";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=48";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=48";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=48";
-import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=48";
-import { indicatorCategories, indicatorCountries, indicatorDefinitions } from "./indicator-data.js?v=48";
-import { indicatorSnapshot } from "./indicator-values.js?v=48";
+} from "./glossary-pro-data.js?v=49";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=49";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=49";
+import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=49";
+import { indicatorCategories, indicatorCountries, indicatorDefinitions } from "./indicator-data.js?v=49";
+import { indicatorSnapshot } from "./indicator-values.js?v=49";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions];
 const glossaryCategoryOrder = [
@@ -685,7 +685,7 @@ if ("serviceWorker" in navigator) {
   const hadServiceWorkerController = Boolean(navigator.serviceWorker.controller);
   let reloadingForServiceWorker = false;
   navigator.serviceWorker
-    .register("/sw.js?v=48")
+    .register("/sw.js?v=49")
     .then((registration) => {
       registration.update().catch(() => {});
       setInterval(() => registration.update().catch(() => {}), 5 * 60_000);
