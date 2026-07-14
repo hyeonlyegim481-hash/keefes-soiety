@@ -8551,3 +8551,303 @@ h1 {
     display: none;
   }
 }
+
+/* v59: image-led economic history reading */
+.history-overview {
+  grid-template-columns: minmax(300px, 0.86fr) minmax(0, 1.14fr);
+  gap: 24px;
+}
+
+.history-era-visual {
+  display: grid;
+  min-width: 0;
+  align-content: start;
+  gap: 8px;
+  margin: 0;
+}
+
+.history-era-image-frame {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #e9eef0;
+}
+
+.history-era-image-frame::after {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  content: "";
+  pointer-events: none;
+}
+
+.history-era-image-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.history-era-visual[data-focus="left"] img {
+  object-position: left center;
+}
+
+.history-era-visual[data-focus="center"] img {
+  object-position: center;
+}
+
+.history-era-visual[data-focus="right"] img {
+  object-position: right center;
+}
+
+.history-era-image-frame > span {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  padding: 4px 9px;
+  border: 1px solid rgba(255, 255, 255, 0.62);
+  border-radius: 6px;
+  background: rgba(20, 30, 36, 0.84);
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 850;
+  backdrop-filter: blur(5px);
+}
+
+.history-era-visual figcaption {
+  color: #68757e;
+  font-size: 0.66rem;
+  font-weight: 620;
+  line-height: 1.48;
+  word-break: keep-all;
+}
+
+.history-era-copy {
+  display: grid;
+  min-width: 0;
+  align-content: start;
+  gap: 7px;
+}
+
+.history-era-copy .history-era-summary {
+  color: #34434b;
+  font-size: 0.86rem;
+  font-weight: 740;
+  line-height: 1.58;
+}
+
+.history-era-narrative {
+  display: grid;
+  gap: 7px;
+  margin-top: 3px;
+  padding-left: 12px;
+  border-left: 3px solid var(--teal);
+}
+
+.history-era-narrative p {
+  color: #4a5861;
+  font-size: 0.78rem;
+  line-height: 1.62;
+}
+
+.history-era-question {
+  margin-top: 3px;
+  padding-top: 10px;
+  padding-left: 12px;
+  border-top: 1px solid var(--line);
+  border-left: 3px solid var(--amber);
+}
+
+.history-era-structure {
+  display: grid;
+  grid-column: 1 / -1;
+  gap: 12px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.history-era-structure-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.history-era-structure-heading span {
+  color: var(--teal);
+  font-size: 0.7rem;
+  font-weight: 880;
+}
+
+.history-era-structure-heading strong {
+  color: var(--charcoal);
+  font-size: 0.82rem;
+}
+
+.history-era-structure-list {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.history-era-structure-list article {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: 25px minmax(0, 1fr);
+  align-content: start;
+  gap: 8px;
+  padding: 10px 0;
+  border-top: 2px solid var(--line-strong);
+}
+
+.history-era-structure-list article:nth-child(1) {
+  border-top-color: var(--teal);
+}
+
+.history-era-structure-list article:nth-child(2) {
+  border-top-color: var(--amber);
+}
+
+.history-era-structure-list article:nth-child(3) {
+  border-top-color: var(--blue);
+}
+
+.history-era-structure-list article:nth-child(4) {
+  border-top-color: var(--green);
+}
+
+.history-era-structure-list i {
+  display: inline-grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border-radius: 50%;
+  background: #eef3f4;
+  color: var(--teal);
+  font-size: 0.65rem;
+  font-style: normal;
+  font-weight: 900;
+}
+
+.history-era-structure-list article > div {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.history-era-structure-list span {
+  color: var(--muted);
+  font-size: 0.65rem;
+  font-weight: 800;
+}
+
+.history-era-structure-list strong {
+  color: var(--charcoal);
+  font-size: 0.76rem;
+  line-height: 1.4;
+  word-break: keep-all;
+}
+
+.history-era-structure-list p {
+  color: #58656e;
+  font-size: 0.7rem;
+  line-height: 1.5;
+}
+
+.history-event-checklist {
+  display: grid;
+  grid-column: 1 / -1;
+  gap: 9px;
+  padding: 12px;
+  border-left: 3px solid var(--amber);
+  background: #f8faf9;
+}
+
+.history-event-checklist > span {
+  color: #85620f;
+  font-size: 0.69rem;
+  font-weight: 880;
+}
+
+.history-event-checklist ul {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.history-event-checklist li {
+  position: relative;
+  min-width: 0;
+  padding-left: 14px;
+  color: #42505a;
+  font-size: 0.72rem;
+  font-weight: 680;
+  line-height: 1.48;
+  word-break: keep-all;
+}
+
+.history-event-checklist li::before {
+  position: absolute;
+  top: 0.48em;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--amber);
+  content: "";
+}
+
+@media (max-width: 1040px) {
+  .history-overview {
+    grid-template-columns: 1fr;
+  }
+
+  .history-era-visual {
+    grid-column: 1;
+  }
+
+  .history-era-image-frame {
+    aspect-ratio: 2 / 1;
+  }
+
+  .history-era-structure-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .history-era-image-frame {
+    aspect-ratio: 16 / 10;
+  }
+
+  .history-era-copy .history-era-summary {
+    font-size: 0.82rem;
+  }
+
+  .history-era-narrative p {
+    font-size: 0.76rem;
+  }
+
+  .history-era-structure-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .history-era-structure-list,
+  .history-event-checklist ul {
+    grid-template-columns: 1fr;
+  }
+
+  .history-era-structure-list article {
+    padding: 9px 0;
+  }
+}

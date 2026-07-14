@@ -1,4 +1,4 @@
-const CACHE_NAME = "keefes-soiety-v58";
+const CACHE_NAME = "keefes-soiety-v59";
 const APP_SHELL = [
   "/",
   "/index.html",
@@ -15,11 +15,16 @@ const APP_SHELL = [
   "/quiz-scenario-more-data.js",
   "/history-data.js",
   "/history-detail-data.js",
+  "/history-reading-data.js",
   "/indicator-data.js",
   "/indicator-values.js",
   "/economic-narrative.js",
   "/manifest.json",
-  "/assets/econest-icon.png"
+  "/assets/econest-icon.png",
+  "/assets/history/history-overview.jpg",
+  "/assets/history/history-industrial.jpg",
+  "/assets/history/history-depression-postwar.jpg",
+  "/assets/history/history-modern-korea.jpg"
 ];
 
 self.addEventListener("install", (event) => {
