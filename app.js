@@ -1,29 +1,30 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=59";
+} from "./glossary-data.js?v=60";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=59";
+} from "./glossary-extra-data.js?v=60";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=59";
+} from "./glossary-more-data.js?v=60";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=59";
-import { glossarySpecialTerms } from "./glossary-special-data.js?v=59";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=59";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=59";
-import { moreScenarioQuestions } from "./quiz-scenario-more-data.js?v=59";
-import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=59";
-import { historyDeepDives, historyEraDetails } from "./history-detail-data.js?v=59";
-import { historyEraProfiles, historyEventPerspectives } from "./history-reading-data.js?v=59";
-import { indicatorCategories, indicatorCountries, indicatorDefinitions } from "./indicator-data.js?v=59";
-import { indicatorSnapshot } from "./indicator-values.js?v=59";
-import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=59";
+} from "./glossary-pro-data.js?v=60";
+import { glossarySpecialTerms } from "./glossary-special-data.js?v=60";
+import { glossaryCoreExtraTerms } from "./glossary-core-extra-data.js?v=60";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=60";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=60";
+import { moreScenarioQuestions } from "./quiz-scenario-more-data.js?v=60";
+import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=60";
+import { historyDeepDives, historyEraDetails } from "./history-detail-data.js?v=60";
+import { historyEraProfiles, historyEventPerspectives } from "./history-reading-data.js?v=60";
+import { indicatorCategories, indicatorCountries, indicatorDefinitions } from "./indicator-data.js?v=60";
+import { indicatorSnapshot } from "./indicator-values.js?v=60";
+import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=60";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions, ...moreScenarioQuestions];
 const glossaryCategoryOrder = [
@@ -34,6 +35,7 @@ const glossaryCategoryOrder = [
 ];
 const glossaryTerms = [
   ...coreGlossaryTerms.map((item) => ({ ...item, level: "core" })),
+  ...glossaryCoreExtraTerms.map((item) => ({ ...item, level: "core" })),
   ...glossaryExtraTerms.map((item) => ({ ...item, level: "advanced" })),
   ...glossaryMoreTerms.map((item) => ({ ...item, level: "advanced" })),
   ...glossaryProTerms.map((item) => ({ ...item, level: "advanced" })),
@@ -761,7 +763,7 @@ if ("serviceWorker" in navigator) {
   const hadServiceWorkerController = Boolean(navigator.serviceWorker.controller);
   let reloadingForServiceWorker = false;
   navigator.serviceWorker
-    .register("/sw.js?v=59")
+    .register("/sw.js?v=60")
     .then((registration) => {
       registration.update().catch(() => {});
       setInterval(() => registration.update().catch(() => {}), 5 * 60_000);
@@ -2647,7 +2649,7 @@ function renderGlossary() {
     { id: "advanced", label: "심화", detail: "금융·정책·위기 확장어" }
   ];
 
-  elements.glossaryTotal.textContent = `전체 ${glossaryTerms.length} · 핵심 ${coreGlossaryTerms.length} · 심화 ${glossaryExtraTerms.length + glossaryMoreTerms.length + glossaryProTerms.length + glossarySpecialTerms.length}`;
+  elements.glossaryTotal.textContent = `전체 ${glossaryTerms.length} · 핵심 ${coreGlossaryTerms.length + glossaryCoreExtraTerms.length} · 심화 ${glossaryExtraTerms.length + glossaryMoreTerms.length + glossaryProTerms.length + glossarySpecialTerms.length}`;
   elements.glossaryLevels.replaceChildren(
     ...levels.map((item) => {
       const count = item.id === "all"
