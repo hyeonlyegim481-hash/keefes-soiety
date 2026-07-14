@@ -1,24 +1,24 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=49";
+} from "./glossary-data.js?v=50";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=49";
+} from "./glossary-extra-data.js?v=50";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=49";
+} from "./glossary-more-data.js?v=50";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=49";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=49";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=49";
-import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=49";
-import { indicatorCategories, indicatorCountries, indicatorDefinitions } from "./indicator-data.js?v=49";
-import { indicatorSnapshot } from "./indicator-values.js?v=49";
+} from "./glossary-pro-data.js?v=50";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=50";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=50";
+import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=50";
+import { indicatorCategories, indicatorCountries, indicatorDefinitions } from "./indicator-data.js?v=50";
+import { indicatorSnapshot } from "./indicator-values.js?v=50";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions];
 const glossaryCategoryOrder = [
@@ -233,6 +233,14 @@ const elements = {
   chartTabs: document.querySelector("#chartTabs"),
   chartTitle: document.querySelector("#chartTitle"),
   chartMeta: document.querySelector("#chartMeta"),
+  chartFrame: document.querySelector("#chartFrame"),
+  chartCanvasWrap: document.querySelector("#chartCanvasWrap"),
+  chartCurrentValue: document.querySelector("#chartCurrentValue"),
+  chartStatusText: document.querySelector("#chartStatusText"),
+  chartPeriodBadge: document.querySelector("#chartPeriodBadge"),
+  chartHoverLine: document.querySelector("#chartHoverLine"),
+  chartHoverDot: document.querySelector("#chartHoverDot"),
+  chartTooltip: document.querySelector("#chartTooltip"),
   marketChart: document.querySelector("#marketChart"),
   analysisList: document.querySelector("#analysisList"),
   analysisBoard: document.querySelector("#analysisBoard"),
@@ -294,6 +302,18 @@ const timeFormatter = new Intl.DateTimeFormat("ko-KR", {
 const marketTimeFormatter = new Intl.DateTimeFormat("ko-KR", {
   month: "numeric",
   day: "numeric",
+  hour: "2-digit",
+  minute: "2-digit"
+});
+const chartAxisTimeFormatter = new Intl.DateTimeFormat("ko-KR", {
+  month: "numeric",
+  day: "numeric",
+  hour: "2-digit"
+});
+const chartTooltipTimeFormatter = new Intl.DateTimeFormat("ko-KR", {
+  month: "long",
+  day: "numeric",
+  weekday: "short",
   hour: "2-digit",
   minute: "2-digit"
 });
@@ -487,6 +507,7 @@ const economicTerms = [
 ];
 const initialChapter = new URLSearchParams(window.location.search).get("chapter") || "brief";
 let swipeStart = null;
+let chartRenderState = null;
 
 let state = {
   snapshot: null,
@@ -522,6 +543,29 @@ if (elements.chapterProgress && elements.chapterTabs.length) {
 elements.refreshButton.addEventListener("click", () => refreshSnapshot({ force: true }));
 elements.chapterTabs.forEach((tab) => {
   tab.addEventListener("click", () => setActiveChapter(tab.dataset.chapter));
+});
+elements.chartCanvasWrap.addEventListener("pointerdown", (event) => {
+  event.stopPropagation();
+  handleChartPointer(event);
+});
+elements.chartCanvasWrap.addEventListener("pointermove", (event) => {
+  if (event.pointerType === "mouse" || event.buttons === 1) {
+    handleChartPointer(event);
+  }
+});
+elements.chartCanvasWrap.addEventListener("pointerup", (event) => {
+  event.stopPropagation();
+});
+elements.chartCanvasWrap.addEventListener("pointerleave", (event) => {
+  if (event.pointerType === "mouse") hideChartTooltip();
+});
+elements.chartCanvasWrap.addEventListener("pointercancel", (event) => {
+  if (event.pointerType === "mouse") hideChartTooltip();
+});
+document.addEventListener("pointerdown", (event) => {
+  if (event.pointerType !== "mouse" && !elements.chartCanvasWrap.contains(event.target)) {
+    hideChartTooltip();
+  }
 });
 elements.historyEraTabs.addEventListener("click", (event) => {
   const button = event.target.closest?.("[data-history-era]");
@@ -685,7 +729,7 @@ if ("serviceWorker" in navigator) {
   const hadServiceWorkerController = Boolean(navigator.serviceWorker.controller);
   let reloadingForServiceWorker = false;
   navigator.serviceWorker
-    .register("/sw.js?v=49")
+    .register("/sw.js?v=50")
     .then((registration) => {
       registration.update().catch(() => {});
       setInterval(() => registration.update().catch(() => {}), 5 * 60_000);
@@ -3421,6 +3465,7 @@ function drawChart() {
     state.snapshot.markets[0];
   if (!market) return;
 
+  hideChartTooltip();
   elements.chartTitle.textContent = market.name;
   const series = (market.series || [])
     .map((point) => ({
@@ -3429,10 +3474,13 @@ function drawChart() {
     }))
     .filter((point) => Number.isFinite(point.time.getTime()) && Number.isFinite(point.value) && point.value > 0)
     .sort((a, b) => a.time - b.time);
+
   const canvas = elements.marketChart;
   const context = canvas.getContext("2d");
   const rect = canvas.getBoundingClientRect();
-  const dpr = window.devicePixelRatio || 1;
+  if (rect.width < 40 || rect.height < 40) return;
+
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
   canvas.width = Math.max(1, Math.round(rect.width * dpr));
   canvas.height = Math.max(1, Math.round(rect.height * dpr));
   context.scale(dpr, dpr);
@@ -3440,58 +3488,75 @@ function drawChart() {
   const width = rect.width;
   const height = rect.height;
   context.clearRect(0, 0, width, height);
-  context.fillStyle = "#ffffff";
-  context.fillRect(0, 0, width, height);
 
   if (series.length < 2) {
+    chartRenderState = null;
     elements.chartMeta.innerHTML = `<span><b>조회 상태</b>유효한 가격 데이터가 부족합니다.</span>`;
+    elements.chartCurrentValue.textContent = "--";
+    elements.chartStatusText.textContent = "데이터 확인 필요";
+    elements.chartPeriodBadge.dataset.direction = "flat";
+    elements.chartPeriodBadge.querySelector("strong").textContent = "--";
     context.fillStyle = "#65717d";
-    context.font = "600 13px Inter, system-ui, sans-serif";
+    context.font = "650 13px Inter, system-ui, sans-serif";
     context.fillText("표시할 유효 시세가 부족합니다.", 24, 42);
     return;
   }
 
   const firstPoint = series[0];
   const lastPoint = series.at(-1);
-  const firstTime = firstPoint.time.getTime();
-  const lastTime = lastPoint.time.getTime();
-  const timeRange = Math.max(1, lastTime - firstTime);
-  const periodChange = firstPoint.value ? ((lastPoint.value - firstPoint.value) / firstPoint.value) * 100 : 0;
+
+  const periodChange = firstPoint.value
+    ? ((lastPoint.value - firstPoint.value) / firstPoint.value) * 100
+    : 0;
+  const direction = periodChange > 0.005 ? "up" : periodChange < -0.005 ? "down" : "flat";
   const statusLabel = market.live ? "실시간" : market.status === "stale" ? "이전 데이터" : "마감";
-  const pointValue = market.unit === "KRW"
-    ? `${formatter.format(lastPoint.value)}원`
-    : formatter.format(lastPoint.value);
+  const pointValue = formatChartPointValue(market, lastPoint.value);
   const startLabel = marketTimeFormatter.format(firstPoint.time);
   const endLabel = marketTimeFormatter.format(lastPoint.time);
 
+  elements.chartCurrentValue.textContent = pointValue;
+  elements.chartCurrentValue.parentElement.dataset.direction = direction;
+  elements.chartStatusText.textContent = `${statusLabel} · ${endLabel} 기준`;
+  elements.chartPeriodBadge.dataset.direction = direction;
+  elements.chartPeriodBadge.querySelector("strong").textContent = `${signed(periodChange)}%`;
   elements.chartMeta.innerHTML = `
     <span><b>조회 기간</b>${escapeHtml(startLabel)} ~ ${escapeHtml(endLabel)}</span>
-    <span><b>데이터</b>5일 조회 · 1시간 간격 · 유효 ${series.length}개</span>
-    <span><b>변화율</b>기간 ${signed(periodChange)}% · 전일 ${signed(market.changePercent)}%</span>
-    <span><b>출처</b>Yahoo Finance · ${statusLabel}</span>
+    <span><b>데이터 간격</b>5일 · 1시간 · 비거래 시간 제외 · ${series.length}개</span>
+    <span><b>비교</b>기간 ${signed(periodChange)}% · 전일 ${signed(market.changePercent)}%</span>
+    <span><b>출처·상태</b>Yahoo Finance · ${statusLabel}</span>
   `;
   canvas.setAttribute(
     "aria-label",
     `${market.name} ${startLabel}부터 ${endLabel}까지 1시간 가격 차트. 기간 변화 ${signed(periodChange)}퍼센트`
   );
 
-  const padding = { top: 28, right: 18, bottom: 42, left: 62 };
+  const compact = width < 560;
+  const padding = compact
+    ? { top: 18, right: 14, bottom: 44, left: 54 }
+    : { top: 20, right: 22, bottom: 48, left: 68 };
   const plotWidth = width - padding.left - padding.right;
   const plotHeight = height - padding.top - padding.bottom;
   const values = series.map((point) => point.value);
   const rawMin = Math.min(...values);
   const rawMax = Math.max(...values);
   const rawRange = rawMax - rawMin;
-  const margin = rawRange > 0 ? rawRange * 0.08 : Math.max(0.01, rawMax * 0.005);
+  const margin = rawRange > 0 ? rawRange * 0.12 : Math.max(0.01, rawMax * 0.006);
   const min = rawMin - margin;
   const max = rawMax + margin;
   const range = max - min;
+  const lineColor =
+    direction === "up" ? "#087b6d" : direction === "down" ? "#d1493f" : "#51636e";
+  const areaTop =
+    direction === "up" ? "rgba(8, 123, 109, 0.24)" : direction === "down" ? "rgba(209, 73, 63, 0.22)" : "rgba(81, 99, 110, 0.17)";
+  const haloColor =
+    direction === "up" ? "rgba(8, 123, 109, 0.18)" : direction === "down" ? "rgba(209, 73, 63, 0.18)" : "rgba(81, 99, 110, 0.16)";
 
-  context.strokeStyle = "#e4eaee";
+  context.save();
+  context.strokeStyle = "rgba(92, 111, 121, 0.16)";
+  context.fillStyle = "#74828b";
   context.lineWidth = 1;
-  context.font = "12px Inter, system-ui, sans-serif";
-  context.fillStyle = "#65717d";
-  context.textAlign = "left";
+  context.setLineDash([3, 6]);
+  context.font = `${compact ? "600 10px" : "600 11px"} Inter, system-ui, sans-serif`;
 
   for (let index = 0; index < 5; index += 1) {
     const y = padding.top + (plotHeight / 4) * index;
@@ -3500,60 +3565,244 @@ function drawChart() {
     context.lineTo(width - padding.right, y);
     context.stroke();
     const labelValue = max - (range / 4) * index;
-    context.fillText(compactFormatter.format(labelValue), 8, y + 4);
+    context.textAlign = "right";
+    context.fillText(compactFormatter.format(labelValue), padding.left - 10, y + 4);
   }
 
-  const coordinates = series.map((point) => {
-    const x = padding.left + ((point.time.getTime() - firstTime) / timeRange) * plotWidth;
+  const timeTickCount = compact ? 3 : width < 820 ? 4 : 5;
+  for (let index = 0; index < timeTickCount; index += 1) {
+    const ratio = index / (timeTickCount - 1);
+    const x = padding.left + plotWidth * ratio;
+    context.beginPath();
+    context.moveTo(x, padding.top);
+    context.lineTo(x, height - padding.bottom);
+    context.stroke();
+
+    const tickIndex = Math.min(series.length - 1, Math.round((series.length - 1) * ratio));
+    const tickTime = series[tickIndex].time;
+    context.fillStyle = "#74828b";
+    context.textAlign = index === 0 ? "left" : index === timeTickCount - 1 ? "right" : "center";
+    context.fillText(
+      chartAxisTimeFormatter.format(tickTime),
+      x,
+      height - 13
+    );
+  }
+  context.restore();
+
+  const coordinates = series.map((point, index) => {
+    const x = padding.left + (index / (series.length - 1)) * plotWidth;
     const y = padding.top + plotHeight - ((point.value - min) / range) * plotHeight;
     return { x, y };
   });
 
-  const lineColor = periodChange >= 0 ? "#15803d" : "#dc2626";
+  const baselineY =
+    padding.top + plotHeight - ((firstPoint.value - min) / range) * plotHeight;
+  context.save();
+  context.strokeStyle = "rgba(183, 131, 33, 0.66)";
+  context.lineWidth = 1;
+  context.setLineDash([6, 5]);
+  context.beginPath();
+  context.moveTo(padding.left, baselineY);
+  context.lineTo(width - padding.right, baselineY);
+  context.stroke();
+  context.fillStyle = "#9a742b";
+  context.font = "700 10px Inter, system-ui, sans-serif";
+  context.textAlign = "right";
+  context.fillText(
+    "조회 시작",
+    width - padding.right,
+    Math.max(padding.top + 11, baselineY - 7)
+  );
+  context.restore();
+
   const area = context.createLinearGradient(0, padding.top, 0, height - padding.bottom);
-  area.addColorStop(0, periodChange >= 0 ? "rgba(21, 128, 61, 0.18)" : "rgba(220, 38, 38, 0.16)");
+  area.addColorStop(0, areaTop);
+  area.addColorStop(0.72, direction === "up" ? "rgba(8, 123, 109, 0.07)" : direction === "down" ? "rgba(209, 73, 63, 0.07)" : "rgba(81, 99, 110, 0.05)");
   area.addColorStop(1, "rgba(255, 255, 255, 0)");
 
-  context.beginPath();
+  const coordinateSegments = [];
+  let currentSegment = [];
   coordinates.forEach((point, index) => {
-    if (index === 0) context.moveTo(point.x, point.y);
-    else context.lineTo(point.x, point.y);
+    const previousTime = series[index - 1]?.time.getTime();
+    const currentTime = series[index].time.getTime();
+    if (index > 0 && currentTime - previousTime > 2.5 * 60 * 60 * 1000) {
+      if (currentSegment.length) coordinateSegments.push(currentSegment);
+      currentSegment = [];
+    }
+    currentSegment.push(point);
   });
-  context.lineTo(coordinates.at(-1).x, height - padding.bottom);
-  context.lineTo(coordinates[0].x, height - padding.bottom);
-  context.closePath();
-  context.fillStyle = area;
-  context.fill();
+  if (currentSegment.length) coordinateSegments.push(currentSegment);
 
-  context.beginPath();
-  coordinates.forEach((point, index) => {
-    if (index === 0) context.moveTo(point.x, point.y);
-    else context.lineTo(point.x, point.y);
+  context.fillStyle = area;
+  coordinateSegments.forEach((segment) => {
+    if (segment.length < 2) return;
+    context.beginPath();
+    segment.forEach((point, index) => {
+      if (index === 0) context.moveTo(point.x, point.y);
+      else context.lineTo(point.x, point.y);
+    });
+    context.lineTo(segment.at(-1).x, height - padding.bottom);
+    context.lineTo(segment[0].x, height - padding.bottom);
+    context.closePath();
+    context.fill();
   });
+
+  context.save();
   context.strokeStyle = lineColor;
-  context.lineWidth = 3;
+  context.lineWidth = compact ? 2.5 : 3;
   context.lineJoin = "round";
   context.lineCap = "round";
-  context.stroke();
+  context.shadowColor = haloColor;
+  context.shadowBlur = 11;
+  context.shadowOffsetY = 3;
+  coordinateSegments.forEach((segment) => {
+    if (segment.length < 2) return;
+    context.beginPath();
+    segment.forEach((point, index) => {
+      if (index === 0) context.moveTo(point.x, point.y);
+      else context.lineTo(point.x, point.y);
+    });
+    context.stroke();
+  });
+  context.restore();
+
+  const maximumIndex = values.indexOf(rawMax);
+  const minimumIndex = values.indexOf(rawMin);
+  drawChartExtremum(context, coordinates[maximumIndex], "고점", rawMax, "#b78321", width, padding, !compact);
+  if (minimumIndex !== maximumIndex) {
+    drawChartExtremum(context, coordinates[minimumIndex], "저점", rawMin, "#667781", width, padding, !compact);
+  }
 
   const last = coordinates.at(-1);
   context.beginPath();
-  context.arc(last.x, last.y, 4, 0, Math.PI * 2);
+  context.arc(last.x, last.y, compact ? 7 : 8.5, 0, Math.PI * 2);
+  context.fillStyle = haloColor;
+  context.fill();
+  context.beginPath();
+  context.arc(last.x, last.y, compact ? 4.2 : 4.8, 0, Math.PI * 2);
+  context.fillStyle = "#ffffff";
+  context.fill();
+  context.beginPath();
+  context.arc(last.x, last.y, compact ? 2.6 : 3, 0, Math.PI * 2);
   context.fillStyle = lineColor;
   context.fill();
 
-  context.fillStyle = "#172026";
-  context.font = "700 13px Inter, system-ui, sans-serif";
-  context.textAlign = "left";
-  context.fillText(`최근 차트값 ${pointValue} · 기간 ${signed(periodChange)}%`, padding.left, 20);
-  context.fillStyle = "#65717d";
-  context.font = "11px Inter, system-ui, sans-serif";
-  context.fillText(startLabel, padding.left, height - 12);
-  context.textAlign = "right";
-  context.fillText(endLabel, width - padding.right, height - 12);
-  context.textAlign = "left";
+  chartRenderState = {
+    series,
+    coordinates,
+    market,
+    padding,
+    width,
+    height,
+    plotHeight,
+    firstValue: firstPoint.value,
+    lineColor
+  };
 }
 
+function formatChartPointValue(market, value) {
+  const formatted = formatter.format(value);
+  return market.unit === "KRW" ? `${formatted}원` : formatted;
+}
+
+function drawChartExtremum(context, point, label, value, color, width, padding, showLabel) {
+  if (!point) return;
+  context.save();
+  context.beginPath();
+  context.arc(point.x, point.y, 3.2, 0, Math.PI * 2);
+  context.fillStyle = "#ffffff";
+  context.fill();
+  context.lineWidth = 1.8;
+  context.strokeStyle = color;
+  context.stroke();
+
+  if (showLabel) {
+    const alignRight = point.x > width - 150;
+    const labelX = point.x + (alignRight ? -9 : 9);
+    const labelY = point.y < padding.top + 28 ? point.y + 20 : point.y - 10;
+    context.fillStyle = color;
+    context.font = "750 10px Inter, system-ui, sans-serif";
+    context.textAlign = alignRight ? "right" : "left";
+    context.fillText(`${label} ${compactFormatter.format(value)}`, labelX, labelY);
+  }
+  context.restore();
+}
+
+function handleChartPointer(event) {
+  const chart = chartRenderState;
+  if (!chart || !chart.coordinates.length) return;
+
+  const canvasRect = elements.marketChart.getBoundingClientRect();
+  const localX = event.clientX - canvasRect.left;
+  const localY = event.clientY - canvasRect.top;
+  const inPlot =
+    localX >= chart.padding.left &&
+    localX <= chart.width - chart.padding.right &&
+    localY >= chart.padding.top &&
+    localY <= chart.height - chart.padding.bottom;
+
+  if (!inPlot && event.pointerType === "mouse") {
+    hideChartTooltip();
+    return;
+  }
+
+  let closestIndex = 0;
+  let closestDistance = Number.POSITIVE_INFINITY;
+  chart.coordinates.forEach((point, index) => {
+    const distance = Math.abs(point.x - localX);
+    if (distance < closestDistance) {
+      closestDistance = distance;
+      closestIndex = index;
+    }
+  });
+  showChartTooltip(closestIndex);
+}
+
+function showChartTooltip(index) {
+  const chart = chartRenderState;
+  const point = chart?.coordinates[index];
+  const datum = chart?.series[index];
+  if (!chart || !point || !datum) return;
+
+  const wrapRect = elements.chartCanvasWrap.getBoundingClientRect();
+  const canvasRect = elements.marketChart.getBoundingClientRect();
+  const offsetX = canvasRect.left - wrapRect.left;
+  const offsetY = canvasRect.top - wrapRect.top;
+  const left = offsetX + point.x;
+  const top = offsetY + point.y;
+  const changeFromStart = chart.firstValue
+    ? ((datum.value - chart.firstValue) / chart.firstValue) * 100
+    : 0;
+  const direction =
+    changeFromStart > 0.005 ? "up" : changeFromStart < -0.005 ? "down" : "flat";
+
+  elements.chartHoverLine.hidden = false;
+  elements.chartHoverLine.style.left = `${left}px`;
+  elements.chartHoverLine.style.top = `${offsetY + chart.padding.top}px`;
+  elements.chartHoverLine.style.height = `${chart.plotHeight}px`;
+
+  elements.chartHoverDot.hidden = false;
+  elements.chartHoverDot.style.left = `${left}px`;
+  elements.chartHoverDot.style.top = `${top}px`;
+  elements.chartHoverDot.style.backgroundColor = chart.lineColor;
+
+  elements.chartTooltip.hidden = false;
+  elements.chartTooltip.dataset.side = left > wrapRect.width * 0.68 ? "left" : "right";
+  elements.chartTooltip.style.left = `${left}px`;
+  elements.chartTooltip.style.top = `${Math.max(58, Math.min(wrapRect.height - 58, top))}px`;
+  elements.chartTooltip.innerHTML = `
+    <span>${escapeHtml(chartTooltipTimeFormatter.format(datum.time))}</span>
+    <strong>${escapeHtml(formatChartPointValue(chart.market, datum.value))}</strong>
+    <em data-direction="${direction}">조회 시작 대비 ${signed(changeFromStart)}%</em>
+  `;
+}
+
+function hideChartTooltip() {
+  elements.chartHoverLine.hidden = true;
+  elements.chartHoverDot.hidden = true;
+  elements.chartTooltip.hidden = true;
+}
 function setConnection(stateName, label) {
   elements.connectionStatus.dataset.state = stateName;
   elements.connectionStatus.querySelector("span:last-child").textContent = label;

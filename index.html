@@ -8,9 +8,9 @@
       content="최신 시장 데이터와 한국 경제 흐름을 기준시각과 함께 정리하는 대시보드"
     />
     <meta name="theme-color" content="#f6f7f8" />
-    <link rel="manifest" href="/manifest.json?v=49" />
+    <link rel="manifest" href="/manifest.json?v=50" />
     <link rel="icon" href="/assets/econest-icon.png" type="image/png" />
-    <link rel="stylesheet" href="/styles.css?v=49" />
+    <link rel="stylesheet" href="/styles.css?v=50" />
     <title>keefe's soiety</title>
   </head>
   <body>
@@ -105,8 +105,24 @@
                   <div class="segmented" id="chartTabs" role="tablist"></div>
                 </div>
                 <div class="chart-meta" id="chartMeta" aria-live="polite"></div>
-                <div class="chart-frame">
-                  <canvas id="marketChart" width="960" height="420" aria-label="시장 가격 차트"></canvas>
+                <div class="chart-frame" id="chartFrame">
+                  <div class="chart-visual-head">
+                    <div class="chart-current-reading">
+                      <span>최근 차트값</span>
+                      <strong id="chartCurrentValue">--</strong>
+                      <em id="chartStatusText">데이터 확인 중</em>
+                    </div>
+                    <div class="chart-period-reading" id="chartPeriodBadge" data-direction="flat">
+                      <span>조회 기간 등락</span>
+                      <strong>--</strong>
+                    </div>
+                  </div>
+                  <div class="chart-canvas-wrap" id="chartCanvasWrap">
+                    <canvas id="marketChart" width="960" height="420" aria-label="시장 가격 차트"></canvas>
+                    <i class="chart-hover-line" id="chartHoverLine" hidden aria-hidden="true"></i>
+                    <i class="chart-hover-dot" id="chartHoverDot" hidden aria-hidden="true"></i>
+                    <div class="chart-tooltip" id="chartTooltip" role="status" hidden></div>
+                  </div>
                 </div>
                 <div class="market-brief" id="marketBrief"></div>
                 <div class="market-board" id="marketBoard"></div>
@@ -281,7 +297,7 @@
       </footer>
     </div>
 
-    <script type="module" src="/app.js?v=49"></script>
+    <script type="module" src="/app.js?v=50"></script>
   </body>
 </html>
 
