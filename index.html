@@ -8,9 +8,9 @@
       content="최신 시장 데이터와 한국 경제 흐름을 기준시각과 함께 정리하는 대시보드"
     />
     <meta name="theme-color" content="#f6f7f8" />
-    <link rel="manifest" href="/manifest.json?v=60" />
+    <link rel="manifest" href="/manifest.json?v=61" />
     <link rel="icon" href="/assets/econest-icon.png" type="image/png" />
-    <link rel="stylesheet" href="/styles.css?v=60" />
+    <link rel="stylesheet" href="/styles.css?v=61" />
     <title>keefe's soiety</title>
   </head>
   <body>
@@ -39,6 +39,7 @@
         <button class="chapter-tab" type="button" data-chapter="markets" aria-selected="false">시장</button>
         <button class="chapter-tab" type="button" data-chapter="korea" aria-selected="false">한국</button>
         <button class="chapter-tab" type="button" data-chapter="indicators" aria-selected="false">지표</button>
+        <button class="chapter-tab" type="button" data-chapter="future" aria-selected="false">미래산업</button>
         <button class="chapter-tab" type="button" data-chapter="analysis" aria-selected="false">심층</button>
         <button class="chapter-tab" type="button" data-chapter="study" aria-selected="false">공부</button>
         <button class="chapter-tab" type="button" data-chapter="history" aria-selected="false">역사</button>
@@ -180,6 +181,44 @@
               </article>
             </section>
 
+            <section class="chapter-pane chapter-single" id="future" data-chapter-panel="future" aria-label="미래산업">
+              <article class="panel future-panel">
+                <div class="panel-heading future-heading">
+                  <div>
+                    <p class="section-kicker">산업과 기업</p>
+                    <h2>미래산업을 돈의 흐름으로 읽기</h2>
+                  </div>
+                  <span class="future-update" id="futureUpdate"></span>
+                </div>
+                <div class="future-summary" id="futureSummary"></div>
+                <div class="future-industry-tabs" id="futureIndustryTabs" role="tablist" aria-label="미래산업 분야"></div>
+                <section class="future-story" id="futureStory" aria-live="polite"></section>
+                <section class="future-company-section" aria-label="기업 체력 비교">
+                  <header class="future-section-heading">
+                    <div>
+                      <p class="section-kicker">공식 실적 스냅샷</p>
+                      <h3>기업의 단단한 정도와 매출</h3>
+                    </div>
+                    <span id="futureCompanyCount"></span>
+                  </header>
+                  <div class="future-company-list" id="futureCompanyList"></div>
+                </section>
+                <section class="future-compare-section" id="futureCompareSection" aria-label="선택 기업 비교">
+                  <header class="future-section-heading">
+                    <div>
+                      <p class="section-kicker">최대 3개</p>
+                      <h3>직접 비교</h3>
+                    </div>
+                    <span id="futureCompareCount"></span>
+                  </header>
+                  <div class="future-compare" id="futureCompare"></div>
+                </section>
+                <details class="future-method">
+                  <summary>사업체력 점수와 숫자 기준 보기</summary>
+                  <div id="futureMethod"></div>
+                </details>
+              </article>
+            </section>
             <section class="chapter-pane chapter-single" id="analysis" data-chapter-panel="analysis" aria-label="심층 전문">
               <article class="panel analysis-panel">
                 <div class="panel-heading">
@@ -298,7 +337,7 @@
       </footer>
     </div>
 
-    <script type="module" src="/app.js?v=60"></script>
+    <script type="module" src="/app.js?v=61"></script>
   </body>
 </html>
 
