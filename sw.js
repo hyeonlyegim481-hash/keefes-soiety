@@ -1,40 +1,19 @@
-const CACHE_NAME = "keefes-soiety-v64";
-const APP_SHELL = [
+const CACHE_NAME = "keefes-soiety-v65";
+const CORE_SHELL = [
   "/",
   "/index.html",
-  "/styles.css",
-  "/app.js",
-  "/news-content.js",
-  "/glossary-data.js",
-  "/glossary-extra-data.js",
-  "/glossary-more-data.js",
-  "/glossary-pro-data.js",
-  "/glossary-special-data.js",
-  "/glossary-core-extra-data.js",
-  "/quiz-data.js",
-  "/quiz-scenario-extra-data.js",
-  "/quiz-scenario-more-data.js",
-  "/history-data.js",
-  "/history-detail-data.js",
-  "/history-reading-data.js",
-  "/indicator-data.js",
-  "/indicator-values.js",
-  "/economic-narrative.js",
-  "/future-industry-data.js",
-  "/future-industry-ui.js",
-  "/resource-production-data.js",
-  "/resource-production-ui.js",
-  "/assets/world-production-map.webp",
-  "/manifest.json",
-  "/assets/econest-icon.png",
-  "/assets/history/history-overview.jpg",
-  "/assets/history/history-industrial.jpg",
-  "/assets/history/history-depression-postwar.jpg",
-  "/assets/history/history-modern-korea.jpg"
+  "/styles.css?v=65",
+  "/app.js?v=65",
+  "/manifest.json?v=65",
+  "/assets/econest-icon.png"
 ];
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL)));
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) =>
+      Promise.allSettled(CORE_SHELL.map((asset) => cache.add(asset)))
+    )
+  );
   self.skipWaiting();
 });
 
@@ -52,14 +31,38 @@ self.addEventListener("fetch", (event) => {
   if (requestUrl.pathname.startsWith("/api/")) return;
   if (requestUrl.origin !== location.origin || event.request.method !== "GET") return;
 
+  if (event.request.mode === "navigate") {
+    event.respondWith(fetchNavigation(event.request));
+    return;
+  }
+
   event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        const copy = response.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
-        return response;
-      })
-      .catch(() => caches.match(event.request).then((cached) => cached || caches.match("/")))
+    caches.match(event.request).then((cached) => cached || fetchAndCache(event.request))
   );
 });
 
+async function fetchNavigation(request) {
+  try {
+    const response = await fetch(request, { signal: AbortSignal.timeout(3_500) });
+    if (response.ok) {
+      const cache = await caches.open(CACHE_NAME);
+      cache.put("/index.html", response.clone()).catch(() => {});
+    }
+    return response;
+  } catch {
+    return (
+      (await caches.match(request)) ||
+      (await caches.match("/index.html")) ||
+      (await caches.match("/"))
+    );
+  }
+}
+
+async function fetchAndCache(request) {
+  const response = await fetch(request);
+  if (response.ok) {
+    const cache = await caches.open(CACHE_NAME);
+    cache.put(request, response.clone()).catch(() => {});
+  }
+  return response;
+}

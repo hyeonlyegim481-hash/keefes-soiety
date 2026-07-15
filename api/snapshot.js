@@ -8,7 +8,7 @@ export default async function handler(request, response) {
 
   try {
     const snapshot = await getSnapshot();
-    response.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=300");
+    response.setHeader("Cache-Control", "public, s-maxage=60, stale-while-revalidate=900");
     return response.status(200).json(snapshot);
   } catch (error) {
     return response.status(500).json({

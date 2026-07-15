@@ -2,6 +2,8 @@ import { decodeGoogleNewsUrl } from "./news-content.js";
 
 const REQUEST_TIMEOUT_MS = 8_000;
 const MACRO_CACHE_TTL_MS = 6 * 60 * 60 * 1000;
+const MACRO_RETRY_TTL_MS = 5 * 60 * 1000;
+const MACRO_LOADER_TIMEOUT_MS = 4_500;
 const OFFICIAL_DATA_HOSTS = new Set([
   "www.bok.or.kr",
   "mods.go.kr",
@@ -60,12 +62,14 @@ let macroCache = null;
 
 export async function fetchMacroIndicators() {
   const now = Date.now();
-  if (macroCache && now - macroCache.createdAt < MACRO_CACHE_TTL_MS) {
+  if (macroCache && now - macroCache.createdAt < macroCache.ttlMs) {
     return macroCache.items.map((item) => ({ ...item }));
   }
 
   const loaders = [fetchBaseRate, fetchConsumerPrices, fetchExports, fetchHouseholdCredit];
-  const results = await Promise.allSettled(loaders.map((loader) => loader()));
+  const results = await Promise.allSettled(
+    loaders.map((loader) => withTimeout(loader(), MACRO_LOADER_TIMEOUT_MS))
+  );
   const fetchedAt = new Date().toISOString();
   const previousItems = new Map((macroCache?.items || []).map((item) => [item.id, item]));
   const items = macroDefinitions.map((definition, index) => {
@@ -78,8 +82,32 @@ export async function fetchMacroIndicators() {
       : makeUnavailableIndicator(definition, fetchedAt);
   });
 
-  macroCache = { createdAt: now, items };
+  const allOfficial = items.every((item) => item.status === "official");
+  macroCache = {
+    createdAt: now,
+    ttlMs: allOfficial ? MACRO_CACHE_TTL_MS : MACRO_RETRY_TTL_MS,
+    items
+  };
   return items.map((item) => ({ ...item }));
+}
+
+function withTimeout(promise, timeoutMs) {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(
+      () => reject(new Error("Official data request timed out")),
+      timeoutMs
+    );
+    promise.then(
+      (value) => {
+        clearTimeout(timer);
+        resolve(value);
+      },
+      (error) => {
+        clearTimeout(timer);
+        reject(error);
+      }
+    );
+  });
 }
 
 async function fetchBaseRate() {

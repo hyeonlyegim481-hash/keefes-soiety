@@ -1,37 +1,37 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=64";
+} from "./glossary-data.js?v=65";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=64";
+} from "./glossary-extra-data.js?v=65";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=64";
+} from "./glossary-more-data.js?v=65";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=64";
-import { glossarySpecialTerms } from "./glossary-special-data.js?v=64";
-import { glossaryCoreExtraTerms } from "./glossary-core-extra-data.js?v=64";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=64";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=64";
-import { moreScenarioQuestions } from "./quiz-scenario-more-data.js?v=64";
-import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=64";
-import { historyDeepDives, historyEraDetails } from "./history-detail-data.js?v=64";
-import { historyEraProfiles, historyEventPerspectives } from "./history-reading-data.js?v=64";
-import { indicatorCategories, indicatorCountries, indicatorDefinitions } from "./indicator-data.js?v=64";
-import { indicatorSnapshot } from "./indicator-values.js?v=64";
-import { resourceProductionIndicators } from "./resource-production-data.js?v=64";
+} from "./glossary-pro-data.js?v=65";
+import { glossarySpecialTerms } from "./glossary-special-data.js?v=65";
+import { glossaryCoreExtraTerms } from "./glossary-core-extra-data.js?v=65";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=65";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=65";
+import { moreScenarioQuestions } from "./quiz-scenario-more-data.js?v=65";
+import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=65";
+import { historyDeepDives, historyEraDetails } from "./history-detail-data.js?v=65";
+import { historyEraProfiles, historyEventPerspectives } from "./history-reading-data.js?v=65";
+import { indicatorCategories, indicatorCountries, indicatorDefinitions } from "./indicator-data.js?v=65";
+import { indicatorSnapshot } from "./indicator-values.js?v=65";
+import { resourceProductionIndicators } from "./resource-production-data.js?v=65";
 import {
   bindResourceProductionDetail,
   formatProductionExact,
   renderResourceProductionDetail
-} from "./resource-production-ui.js?v=64";
-import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=64";
-import { initFutureIndustryChapter } from "./future-industry-ui.js?v=64";
+} from "./resource-production-ui.js?v=65";
+import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=65";
+import { initFutureIndustryChapter } from "./future-industry-ui.js?v=65";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions, ...moreScenarioQuestions];
 const allIndicatorDefinitions = [...indicatorDefinitions, ...resourceProductionIndicators];
@@ -51,6 +51,8 @@ const glossaryTerms = [
 ];
 
 const GLOSSARY_PAGE_SIZE = 24;
+const SNAPSHOT_STORAGE_KEY = "keefes-soiety.snapshot.v1";
+const SNAPSHOT_STORAGE_MAX_AGE_MS = 3 * 24 * 60 * 60 * 1000;
 
 const ECONOMIC_QUOTES = [
   {
@@ -781,7 +783,7 @@ if ("serviceWorker" in navigator) {
   const hadServiceWorkerController = Boolean(navigator.serviceWorker.controller);
   let reloadingForServiceWorker = false;
   navigator.serviceWorker
-    .register("/sw.js?v=64")
+    .register("/sw.js?v=65")
     .then((registration) => {
       registration.update().catch(() => {});
       setInterval(() => registration.update().catch(() => {}), 5 * 60_000);
@@ -797,6 +799,12 @@ if ("serviceWorker" in navigator) {
 initFutureIndustryChapter({ updateHeight: updateChapterHeight });
 renderIndicators();
 setActiveChapter(state.activeChapter, { skipAnimation: true });
+const restoredSnapshot = restoreStoredSnapshot();
+if (restoredSnapshot) {
+  state.snapshot = restoredSnapshot;
+  render(restoredSnapshot);
+  setConnection("stale", "저장 데이터");
+}
 refreshSnapshot();
 setInterval(() => refreshSnapshot(), 60_000);
 
@@ -806,8 +814,9 @@ async function refreshSnapshot({ force = false } = {}) {
   setConnection("loading", "업데이트");
 
   try {
-    const snapshot = await fetchSnapshotWithRetry({ attempts: state.snapshot ? 1 : 2 });
+    const snapshot = await fetchSnapshot();
     state.snapshot = snapshot;
+    storeSnapshot(snapshot);
     if (!snapshot.markets.some((market) => market.id === state.selectedMarket)) {
       state.selectedMarket = snapshot.markets[0]?.id || "kospi";
     }
@@ -835,27 +844,59 @@ async function refreshSnapshot({ force = false } = {}) {
   }
 }
 
-async function fetchSnapshotWithRetry({ attempts = 1 } = {}) {
-  let lastError;
+async function fetchSnapshot() {
+  const response = await fetch("/api/snapshot", {
+    headers: { accept: "application/json" },
+    signal: AbortSignal.timeout(12_000)
+  });
+  if (!response.ok) throw new Error(`Snapshot failed: ${response.status}`);
 
-  for (let attempt = 1; attempt <= attempts; attempt += 1) {
-    try {
-      const response = await fetch(`/api/snapshot?ts=${Date.now()}`, {
-        headers: { accept: "application/json" },
-        signal: AbortSignal.timeout(22_000)
-      });
-      if (!response.ok) throw new Error(`Snapshot failed: ${response.status}`);
-      return await response.json();
-    } catch (error) {
-      lastError = error;
-      if (attempt < attempts) {
-        setConnection("loading", "서버 준비 중");
-        await new Promise((resolve) => setTimeout(resolve, 1_500));
-      }
-    }
+  const snapshot = await response.json();
+  if (!Array.isArray(snapshot?.markets) || !snapshot.markets.length) {
+    throw new Error("Snapshot has no market data");
   }
+  return snapshot;
+}
 
-  throw lastError;
+function restoreStoredSnapshot() {
+  try {
+    const stored = JSON.parse(localStorage.getItem(SNAPSHOT_STORAGE_KEY) || "null");
+    if (
+      !stored?.savedAt ||
+      Date.now() - stored.savedAt > SNAPSHOT_STORAGE_MAX_AGE_MS ||
+      !Array.isArray(stored.snapshot?.markets) ||
+      !stored.snapshot.markets.length
+    ) {
+      localStorage.removeItem(SNAPSHOT_STORAGE_KEY);
+      return null;
+    }
+    return {
+      ...stored.snapshot,
+      markets: stored.snapshot.markets.map((market) => ({
+        ...market,
+        live: false,
+        status: "stale"
+      }))
+    };
+  } catch {
+    try {
+      localStorage.removeItem(SNAPSHOT_STORAGE_KEY);
+    } catch {
+      // Ignore storage access errors.
+    }
+    return null;
+  }
+}
+
+function storeSnapshot(snapshot) {
+  try {
+    localStorage.setItem(
+      SNAPSHOT_STORAGE_KEY,
+      JSON.stringify({ savedAt: Date.now(), snapshot })
+    );
+  } catch {
+    // Storage can be unavailable in private browsing or when the quota is full.
+  }
 }
 
 function render(snapshot) {

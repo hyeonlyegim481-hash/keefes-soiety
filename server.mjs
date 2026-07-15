@@ -9,7 +9,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PORT = Number(process.env.PORT || 4173);
 const CACHE_TTL_MS = 45_000;
-const REQUEST_TIMEOUT_MS = 8_000;
+const REQUEST_TIMEOUT_MS = 5_000;
+const MARKET_STALE_CACHE_MS = 6 * 60 * 60 * 1000;
 const NEWS_LOOKBACK_DAYS = 7;
 const NEWS_LOOKBACK_MS = NEWS_LOOKBACK_DAYS * 24 * 60 * 60 * 1000;
 const AI_API_URL = process.env.AI_API_URL || "";
@@ -17,6 +18,7 @@ const AI_API_KEY = process.env.AI_API_KEY || "";
 const AI_MODEL = process.env.AI_MODEL || "";
 
 let snapshotCache = null;
+const marketCache = new Map();
 const newsAnalysisCache = new Map();
 const newsAnalysisRateLimits = new Map();
 const NEWS_ANALYSIS_RATE_WINDOW_MS = 60_000;
@@ -317,7 +319,32 @@ function resolveMarketStatus(meta = {}, asOf, now = Date.now()) {
 }
 
 async function fetchMarket(item) {
-  const endpoint = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(
+  let lastError;
+  for (const hostname of ["query1.finance.yahoo.com", "query2.finance.yahoo.com"]) {
+    try {
+      const market = await fetchMarketFromHost(item, hostname);
+      marketCache.set(item.id, { createdAt: Date.now(), market });
+      return market;
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  const cached = marketCache.get(item.id);
+  if (cached && Date.now() - cached.createdAt < MARKET_STALE_CACHE_MS) {
+    return {
+      ...cached.market,
+      live: false,
+      status: "stale",
+      recoveredFromCache: true
+    };
+  }
+
+  throw lastError || new Error(`Market request failed for ${item.symbol}`);
+}
+
+async function fetchMarketFromHost(item, hostname) {
+  const endpoint = `https://${hostname}/v8/finance/chart/${encodeURIComponent(
     item.symbol
   )}?range=5d&interval=1h&includePrePost=false`;
   const response = await fetch(endpoint, {
@@ -329,7 +356,9 @@ async function fetchMarket(item) {
   });
 
   if (!response.ok) {
-    throw new Error(`Market request failed for ${item.symbol}: ${response.status}`);
+    throw new Error(
+      `Market request failed for ${item.symbol} at ${hostname}: ${response.status}`
+    );
   }
 
   const data = await response.json();
@@ -1439,6 +1468,7 @@ export {
   consumeNewsAnalysisQuota,
   enhanceNewsAnalysisWithAi,
   findTrustedHeadline,
+  fetchMarket,
   getSnapshot,
   normalizeHeadlineInput,
   normalizeMarketSeries,

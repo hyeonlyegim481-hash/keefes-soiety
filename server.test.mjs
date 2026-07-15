@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
+  fetchMarket,
   resolveMarketPoint,
   resolveMarketStatus,
   resolvePreviousClose
@@ -74,4 +75,57 @@ test("distinguishes a stale open market from a closed market", () => {
     resolveMarketStatus(closedMeta, new Date(now - 5 * hour).toISOString(), now),
     { live: false, status: "closed" }
   );
+});
+
+test("retries the secondary Yahoo host when the primary host is unavailable", async () => {
+  const originalFetch = globalThis.fetch;
+  const calls = [];
+  const timestamp = Math.floor(now / 1000);
+  globalThis.fetch = async (url) => {
+    calls.push(String(url));
+    if (String(url).includes("query1.finance.yahoo.com")) {
+      return { ok: false, status: 429 };
+    }
+    return {
+      ok: true,
+      json: async () => ({
+        chart: {
+          result: [
+            {
+              timestamp: [timestamp - 3600, timestamp],
+              meta: {
+                regularMarketPrice: 110,
+                regularMarketTime: timestamp,
+                previousClose: 100,
+                currentTradingPeriod: {
+                  regular: {
+                    start: timestamp - 3600,
+                    end: timestamp + 3600
+                  }
+                }
+              },
+              indicators: { quote: [{ close: [100, 110] }] }
+            }
+          ]
+        }
+      })
+    };
+  };
+
+  try {
+    const market = await fetchMarket({
+      id: "test-market",
+      name: "Test",
+      symbol: "TEST",
+      group: "test",
+      unit: "pt"
+    });
+    assert.equal(calls.length, 2);
+    assert.match(calls[0], /query1\.finance\.yahoo\.com/);
+    assert.match(calls[1], /query2\.finance\.yahoo\.com/);
+    assert.equal(market.value, 110);
+    assert.equal(market.changePercent, 10);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 });
