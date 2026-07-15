@@ -1,33 +1,40 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=61";
+} from "./glossary-data.js?v=64";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=61";
+} from "./glossary-extra-data.js?v=64";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=61";
+} from "./glossary-more-data.js?v=64";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=61";
-import { glossarySpecialTerms } from "./glossary-special-data.js?v=61";
-import { glossaryCoreExtraTerms } from "./glossary-core-extra-data.js?v=61";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=61";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=61";
-import { moreScenarioQuestions } from "./quiz-scenario-more-data.js?v=61";
-import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=61";
-import { historyDeepDives, historyEraDetails } from "./history-detail-data.js?v=61";
-import { historyEraProfiles, historyEventPerspectives } from "./history-reading-data.js?v=61";
-import { indicatorCategories, indicatorCountries, indicatorDefinitions } from "./indicator-data.js?v=61";
-import { indicatorSnapshot } from "./indicator-values.js?v=61";
-import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=61";
-import { initFutureIndustryChapter } from "./future-industry-ui.js?v=61";
+} from "./glossary-pro-data.js?v=64";
+import { glossarySpecialTerms } from "./glossary-special-data.js?v=64";
+import { glossaryCoreExtraTerms } from "./glossary-core-extra-data.js?v=64";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=64";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=64";
+import { moreScenarioQuestions } from "./quiz-scenario-more-data.js?v=64";
+import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=64";
+import { historyDeepDives, historyEraDetails } from "./history-detail-data.js?v=64";
+import { historyEraProfiles, historyEventPerspectives } from "./history-reading-data.js?v=64";
+import { indicatorCategories, indicatorCountries, indicatorDefinitions } from "./indicator-data.js?v=64";
+import { indicatorSnapshot } from "./indicator-values.js?v=64";
+import { resourceProductionIndicators } from "./resource-production-data.js?v=64";
+import {
+  bindResourceProductionDetail,
+  formatProductionExact,
+  renderResourceProductionDetail
+} from "./resource-production-ui.js?v=64";
+import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=64";
+import { initFutureIndustryChapter } from "./future-industry-ui.js?v=64";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions, ...moreScenarioQuestions];
+const allIndicatorDefinitions = [...indicatorDefinitions, ...resourceProductionIndicators];
 const glossaryCategoryOrder = [
   ...coreGlossaryCategories,
   ...glossaryExtraCategories,
@@ -515,7 +522,12 @@ const economicTerms = [
     answer: "기업 고유의 위험이 커졌다기보다 시장 전체 금리 수준이 오른 영향일 가능성이 큽니다."
   }
 ];
-const initialChapter = new URLSearchParams(window.location.search).get("chapter") || "brief";
+const initialParameters = new URLSearchParams(window.location.search);
+const initialChapter = initialParameters.get("chapter") || "brief";
+const requestedIndicator = initialParameters.get("indicator");
+const initialIndicator = allIndicatorDefinitions.some((indicator) => indicator.id === requestedIndicator)
+  ? requestedIndicator
+  : "fertility";
 let swipeStart = null;
 let chartRenderState = null;
 
@@ -526,9 +538,9 @@ let state = {
   isRefreshing: false,
   activeChapter: initialChapter,
   historyEra: "overview",
-  indicatorCategory: "all",
+  indicatorCategory: initialIndicator.startsWith("production-") ? "resources" : "all",
   indicatorQuery: "",
-  selectedIndicatorId: "fertility",
+  selectedIndicatorId: initialIndicator,
   relationshipScenario: "rate-hike",
   relationshipStep: 0,
   glossaryQuery: "",
@@ -602,6 +614,9 @@ elements.indicatorList.addEventListener("click", (event) => {
   const button = event.target.closest?.("[data-indicator-id]");
   if (!button) return;
   state.selectedIndicatorId = button.dataset.indicatorId;
+  const url = new URL(window.location.href);
+  url.searchParams.set("indicator", state.selectedIndicatorId);
+  history.replaceState(null, "", url);
   renderIndicators();
   revealSelectedIndicatorTrend();
 });
@@ -610,7 +625,7 @@ elements.indicatorList.addEventListener("click", (event) => {
 function revealSelectedIndicatorTrend() {
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      const trendSection = elements.indicatorDetail.querySelector(".indicator-trend-section");
+      const trendSection = elements.indicatorDetail.querySelector(".resource-map-section, .indicator-trend-section");
       if (!trendSection) return;
 
       const rect = trendSection.getBoundingClientRect();
@@ -766,7 +781,7 @@ if ("serviceWorker" in navigator) {
   const hadServiceWorkerController = Boolean(navigator.serviceWorker.controller);
   let reloadingForServiceWorker = false;
   navigator.serviceWorker
-    .register("/sw.js?v=61")
+    .register("/sw.js?v=64")
     .then((registration) => {
       registration.update().catch(() => {});
       setInterval(() => registration.update().catch(() => {}), 5 * 60_000);
@@ -1559,7 +1574,7 @@ function renderScenarioMatrix(analysis, narrative = state.narrative) {
 }
 function renderIndicators() {
   const query = state.indicatorQuery.trim().toLocaleLowerCase("ko-KR");
-  const filtered = indicatorDefinitions.filter((indicator) => {
+  const filtered = allIndicatorDefinitions.filter((indicator) => {
     const categoryMatch = state.indicatorCategory === "all" || indicator.category === state.indicatorCategory;
     const searchable = `${indicator.name} ${indicator.shortName} ${indicator.description} ${getIndicatorCategoryLabel(indicator.category)}`.toLocaleLowerCase("ko-KR");
     return categoryMatch && (!query || searchable.includes(query));
@@ -1574,18 +1589,15 @@ function renderIndicators() {
     ...indicatorDefinitions.flatMap((indicator) => {
       const countries = indicatorSnapshot.indicators[indicator.id]?.countries || {};
       return Object.values(countries).filter(Boolean).map((item) => item.year);
-    })
+    }),
+    ...resourceProductionIndicators.map((indicator) => indicator.year)
   );
-  const datedCount = indicatorDefinitions.filter((indicator) =>
-    indicatorSnapshot.indicators[indicator.id]?.countries?.KOR
-  ).length;
-
-  elements.indicatorUpdate.textContent = `WDI ${indicatorSnapshot.dataUpdatedAt.replaceAll("-", ".")} 갱신`;
+  elements.indicatorUpdate.textContent = `WDI + USGS · 지표별 기준연도 표시`;
   elements.indicatorSummary.innerHTML = `
     <div>
       <span>수록 범위</span>
-      <strong>${indicatorDefinitions.length}개 지표 · ${indicatorCategories.length - 1}개 분야</strong>
-      <p>인구부터 기술, 환경, 분배까지 같은 기준으로 비교합니다.</p>
+      <strong>${allIndicatorDefinitions.length}개 지표 · ${indicatorCategories.length - 1}개 분야</strong>
+      <p>인구부터 기술, 환경과 세계 자원 생산까지 비교합니다.</p>
     </div>
     <div>
       <span>한국 합계출산율</span>
@@ -1594,16 +1606,16 @@ function renderIndicators() {
     </div>
     <div>
       <span>데이터 기준</span>
-      <strong>최신 ${latestYear}년 · 한국 ${datedCount}/${indicatorDefinitions.length}</strong>
-      <p>지표마다 공표 시차가 달라 카드에 실제 기준연도를 따로 표시합니다.</p>
+      <strong>최신 ${latestYear}년 · 생산지도 ${resourceProductionIndicators.length}개</strong>
+      <p>세계은행과 USGS 자료의 실제 기준연도를 지표마다 표시합니다.</p>
     </div>
   `;
 
   elements.indicatorCategoryTabs.innerHTML = indicatorCategories
     .map((category) => {
       const count = category.id === "all"
-        ? indicatorDefinitions.length
-        : indicatorDefinitions.filter((indicator) => indicator.category === category.id).length;
+        ? allIndicatorDefinitions.length
+        : allIndicatorDefinitions.filter((indicator) => indicator.category === category.id).length;
       return `
         <button type="button" role="tab" data-indicator-category="${category.id}" aria-selected="${state.indicatorCategory === category.id}">
           ${escapeHtml(category.label)} <span>${count}</span>
@@ -1618,11 +1630,11 @@ function renderIndicators() {
     : `
       <div class="indicator-empty">
         <strong>검색 결과가 없습니다.</strong>
-        <p>출산, 고용, 의료, 인터넷처럼 더 짧은 단어로 찾아보세요.</p>
+        <p>출산, 리튬, 고용, 의료처럼 더 짧은 단어로 찾아보세요.</p>
       </div>
     `;
 
-  const selected = indicatorDefinitions.find((indicator) => indicator.id === state.selectedIndicatorId);
+  const selected = allIndicatorDefinitions.find((indicator) => indicator.id === state.selectedIndicatorId);
   if (!filtered.length || !selected) {
     elements.indicatorDetail.innerHTML = `
       <div class="indicator-detail-empty">
@@ -1630,6 +1642,13 @@ function renderIndicators() {
         <strong>왼쪽 목록에서 확인할 지표를 선택하세요.</strong>
       </div>
     `;
+    return;
+  }
+
+  if (selected.kind === "resource-production") {
+    elements.indicatorDetail.innerHTML = renderResourceProductionDetail(selected);
+    bindResourceProductionDetail(elements.indicatorDetail, updateChapterHeight);
+    requestAnimationFrame(updateChapterHeight);
     return;
   }
 
@@ -1641,6 +1660,27 @@ function renderIndicators() {
 }
 
 function renderIndicatorListItem(indicator) {
+  if (indicator.kind === "resource-production") {
+    const leader = [...indicator.countries]
+      .filter((country) => country.id !== "OTH")
+      .sort((a, b) => b.value - a.value)[0];
+    const isSelected = indicator.id === state.selectedIndicatorId;
+    return `
+      <button class="indicator-list-item resource-indicator-list-item" type="button" data-indicator-id="${indicator.id}" aria-pressed="${isSelected}">
+        <span class="indicator-list-meta">
+          <em>${escapeHtml(getIndicatorCategoryLabel(indicator.category))}</em>
+          <i>${indicator.year}년 추정</i>
+        </span>
+        <strong>${escapeHtml(indicator.name)}</strong>
+        <span class="indicator-list-value">
+          <b>${escapeHtml(leader.label)} ${formatProductionExact(leader.value, indicator.unit)}</b>
+          <small>세계 ${formatProductionExact(indicator.worldTotal, indicator.unit)}</small>
+        </span>
+        <p>${escapeHtml(indicator.description)}</p>
+      </button>
+    `;
+  }
+
   const data = indicatorSnapshot.indicators[indicator.id];
   const korea = data?.countries?.KOR;
   const delta = korea?.previous ? korea.value - korea.previous.value : null;

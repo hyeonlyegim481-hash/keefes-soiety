@@ -1,4 +1,4 @@
-import { futureCompanies, futureIndustries, futureIndustryMethod } from "./future-industry-data.js?v=61";
+import { futureCompanies, futureIndustries, futureIndustryMethod } from "./future-industry-data.js?v=64";
 
 const numberFormatter = new Intl.NumberFormat("ko-KR", { maximumFractionDigits: 1 });
 const companyById = new Map(futureCompanies.map((company) => [company.id, company]));

@@ -14,6 +14,7 @@ export const indicatorCategories = [
   { id: "labor", label: "노동" },
   { id: "health", label: "건강" },
   { id: "education", label: "교육·기술" },
+  { id: "resources", label: "자원 생산" },
   { id: "environment", label: "환경·에너지" },
   { id: "society", label: "사회·연결" }
 ];
