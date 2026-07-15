@@ -1,37 +1,37 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=65";
+} from "./glossary-data.js?v=66";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=65";
+} from "./glossary-extra-data.js?v=66";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=65";
+} from "./glossary-more-data.js?v=66";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=65";
-import { glossarySpecialTerms } from "./glossary-special-data.js?v=65";
-import { glossaryCoreExtraTerms } from "./glossary-core-extra-data.js?v=65";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=65";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=65";
-import { moreScenarioQuestions } from "./quiz-scenario-more-data.js?v=65";
-import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=65";
-import { historyDeepDives, historyEraDetails } from "./history-detail-data.js?v=65";
-import { historyEraProfiles, historyEventPerspectives } from "./history-reading-data.js?v=65";
-import { indicatorCategories, indicatorCountries, indicatorDefinitions } from "./indicator-data.js?v=65";
-import { indicatorSnapshot } from "./indicator-values.js?v=65";
-import { resourceProductionIndicators } from "./resource-production-data.js?v=65";
+} from "./glossary-pro-data.js?v=66";
+import { glossarySpecialTerms } from "./glossary-special-data.js?v=66";
+import { glossaryCoreExtraTerms } from "./glossary-core-extra-data.js?v=66";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=66";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=66";
+import { moreScenarioQuestions } from "./quiz-scenario-more-data.js?v=66";
+import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=66";
+import { historyDeepDives, historyEraDetails } from "./history-detail-data.js?v=66";
+import { historyEraProfiles, historyEventPerspectives } from "./history-reading-data.js?v=66";
+import { indicatorCategories, indicatorCountries, indicatorDefinitions } from "./indicator-data.js?v=66";
+import { indicatorSnapshot } from "./indicator-values.js?v=66";
+import { resourceProductionIndicators } from "./resource-production-data.js?v=66";
 import {
   bindResourceProductionDetail,
   formatProductionExact,
   renderResourceProductionDetail
-} from "./resource-production-ui.js?v=65";
-import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=65";
-import { initFutureIndustryChapter } from "./future-industry-ui.js?v=65";
+} from "./resource-production-ui.js?v=66";
+import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=66";
+import { initFutureIndustryChapter } from "./future-industry-ui.js?v=66";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions, ...moreScenarioQuestions];
 const allIndicatorDefinitions = [...indicatorDefinitions, ...resourceProductionIndicators];
@@ -783,7 +783,7 @@ if ("serviceWorker" in navigator) {
   const hadServiceWorkerController = Boolean(navigator.serviceWorker.controller);
   let reloadingForServiceWorker = false;
   navigator.serviceWorker
-    .register("/sw.js?v=65")
+    .register("/sw.js?v=66")
     .then((registration) => {
       registration.update().catch(() => {});
       setInterval(() => registration.update().catch(() => {}), 5 * 60_000);
@@ -799,14 +799,16 @@ if ("serviceWorker" in navigator) {
 initFutureIndustryChapter({ updateHeight: updateChapterHeight });
 renderIndicators();
 setActiveChapter(state.activeChapter, { skipAnimation: true });
-const restoredSnapshot = restoreStoredSnapshot();
-if (restoredSnapshot) {
-  state.snapshot = restoredSnapshot;
-  render(restoredSnapshot);
-  setConnection("stale", "저장 데이터");
-}
-refreshSnapshot();
-setInterval(() => refreshSnapshot(), 60_000);
+queueMicrotask(() => {
+  const restoredSnapshot = restoreStoredSnapshot();
+  if (restoredSnapshot) {
+    state.snapshot = restoredSnapshot;
+    render(restoredSnapshot);
+    setConnection("stale", "저장 데이터");
+  }
+  refreshSnapshot();
+  setInterval(() => refreshSnapshot(), 60_000);
+});
 
 async function refreshSnapshot({ force = false } = {}) {
   if (state.isRefreshing && !force) return;
