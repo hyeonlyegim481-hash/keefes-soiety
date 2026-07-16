@@ -1,5 +1,5 @@
 export const indicatorSnapshot = {
-  "dataUpdatedAt": "2026-07-01",
+  "dataUpdatedAt": "2026-07-16",
   "indicators": {
     "fertility": {
       "countries": {
@@ -1369,8 +1369,7 @@ export const indicatorSnapshot = {
         },
         "WLD": {
           "year": 2022,
-          "value": 1.8609,
-          "previous": null
+          "value": 1.8609
         },
         "USA": {
           "year": 2022,
@@ -2276,7 +2275,6 @@ export const indicatorSnapshot = {
             "value": 32.7
           }
         },
-        "WLD": null,
         "USA": {
           "year": 2024,
           "value": 41.8,
@@ -2624,6 +2622,946 @@ export const indicatorSnapshot = {
         {
           "year": 2025,
           "value": 20.3333
+        }
+      ]
+    },
+    "consumer-inflation": {
+      "countries": {
+        "KOR": {
+          "year": 2025,
+          "value": 2.1231,
+          "previous": {
+            "year": 2024,
+            "value": 2.3217
+          }
+        },
+        "WLD": {
+          "year": 2025,
+          "value": 3.0414,
+          "previous": {
+            "year": 2024,
+            "value": 3.0145
+          }
+        },
+        "USA": {
+          "year": 2024,
+          "value": 2.9495,
+          "previous": {
+            "year": 2023,
+            "value": 4.1163
+          }
+        },
+        "JPN": {
+          "year": 2025,
+          "value": 3.1725,
+          "previous": {
+            "year": 2024,
+            "value": 2.7385
+          }
+        },
+        "CHN": {
+          "year": 2025,
+          "value": 0.0596,
+          "previous": {
+            "year": 2024,
+            "value": 0.2181
+          }
+        },
+        "DEU": {
+          "year": 2025,
+          "value": 2.1718,
+          "previous": {
+            "year": 2024,
+            "value": 2.2565
+          }
+        }
+      },
+      "koreaTrend": [
+        {
+          "year": 2015,
+          "value": 0.7063
+        },
+        {
+          "year": 2016,
+          "value": 0.9717
+        },
+        {
+          "year": 2017,
+          "value": 1.9443
+        },
+        {
+          "year": 2018,
+          "value": 1.4758
+        },
+        {
+          "year": 2019,
+          "value": 0.383
+        },
+        {
+          "year": 2020,
+          "value": 0.5373
+        },
+        {
+          "year": 2021,
+          "value": 2.4983
+        },
+        {
+          "year": 2022,
+          "value": 5.0895
+        },
+        {
+          "year": 2023,
+          "value": 3.5975
+        },
+        {
+          "year": 2024,
+          "value": 2.3217
+        },
+        {
+          "year": 2025,
+          "value": 2.1231
+        }
+      ]
+    },
+    "real-interest-rate": {
+      "countries": {
+        "KOR": {
+          "year": 2025,
+          "value": 1.034,
+          "previous": {
+            "year": 2024,
+            "value": 0.6345
+          }
+        },
+        "USA": {
+          "year": 2021,
+          "value": -1.2557,
+          "previous": {
+            "year": 2020,
+            "value": 2.1702
+          }
+        },
+        "JPN": {
+          "year": 2017,
+          "value": 0.9721,
+          "previous": {
+            "year": 2016,
+            "value": 0.4569
+          }
+        },
+        "CHN": {
+          "year": 2024,
+          "value": 5.1534,
+          "previous": {
+            "year": 2023,
+            "value": 4.8815
+          }
+        }
+      },
+      "koreaTrend": [
+        {
+          "year": 2015,
+          "value": 0.2953
+        },
+        {
+          "year": 2016,
+          "value": 1.2787
+        },
+        {
+          "year": 2017,
+          "value": 1.429
+        },
+        {
+          "year": 2018,
+          "value": 3.0785
+        },
+        {
+          "year": 2019,
+          "value": 4.0956
+        },
+        {
+          "year": 2020,
+          "value": 1.1955
+        },
+        {
+          "year": 2021,
+          "value": -0.2872
+        },
+        {
+          "year": 2022,
+          "value": 2.4405
+        },
+        {
+          "year": 2023,
+          "value": 3.0877
+        },
+        {
+          "year": 2024,
+          "value": 0.6345
+        },
+        {
+          "year": 2025,
+          "value": 1.034
+        }
+      ]
+    },
+    "private-credit": {
+      "countries": {
+        "KOR": {
+          "year": 2024,
+          "value": 160.3472,
+          "previous": {
+            "year": 2023,
+            "value": 163.5156
+          }
+        },
+        "WLD": {
+          "year": 2024,
+          "value": 140.3205,
+          "previous": {
+            "year": 2023,
+            "value": 135.9708
+          }
+        },
+        "USA": {
+          "year": 2025,
+          "value": 201.2661,
+          "previous": {
+            "year": 2024,
+            "value": 195.8751
+          }
+        },
+        "JPN": {
+          "year": 2025,
+          "value": 187.4066,
+          "previous": {
+            "year": 2024,
+            "value": 187.068
+          }
+        },
+        "CHN": {
+          "year": 2024,
+          "value": 194.3125,
+          "previous": {
+            "year": 2023,
+            "value": 189.6067
+          }
+        },
+        "DEU": {
+          "year": 2023,
+          "value": 77.2535,
+          "previous": {
+            "year": 2022,
+            "value": 81.0792
+          }
+        }
+      },
+      "koreaTrend": [
+        {
+          "year": 2015,
+          "value": 125.8588
+        },
+        {
+          "year": 2016,
+          "value": 128.0407
+        },
+        {
+          "year": 2017,
+          "value": 129.5391
+        },
+        {
+          "year": 2018,
+          "value": 133.5041
+        },
+        {
+          "year": 2019,
+          "value": 142.6525
+        },
+        {
+          "year": 2020,
+          "value": 154.7479
+        },
+        {
+          "year": 2021,
+          "value": 159.9261
+        },
+        {
+          "year": 2022,
+          "value": 162.7695
+        },
+        {
+          "year": 2023,
+          "value": 163.5156
+        },
+        {
+          "year": 2024,
+          "value": 160.3472
+        }
+      ]
+    },
+    "broad-money": {
+      "countries": {
+        "KOR": {
+          "year": 2024,
+          "value": 162.7136,
+          "previous": {
+            "year": 2023,
+            "value": 162.1029
+          }
+        },
+        "WLD": {
+          "year": 2024,
+          "value": 136.1056,
+          "previous": {
+            "year": 2023,
+            "value": 135.5654
+          }
+        },
+        "USA": {
+          "year": 2025,
+          "value": 99.7158,
+          "previous": {
+            "year": 2024,
+            "value": 98.7563
+          }
+        },
+        "JPN": {
+          "year": 2025,
+          "value": 246.7781,
+          "previous": {
+            "year": 2024,
+            "value": 256.7248
+          }
+        },
+        "CHN": {
+          "year": 2024,
+          "value": 227.669,
+          "previous": {
+            "year": 2023,
+            "value": 222.0112
+          }
+        }
+      },
+      "koreaTrend": [
+        {
+          "year": 2015,
+          "value": 129.1019
+        },
+        {
+          "year": 2016,
+          "value": 131.3379
+        },
+        {
+          "year": 2017,
+          "value": 130.8194
+        },
+        {
+          "year": 2018,
+          "value": 134.5489
+        },
+        {
+          "year": 2019,
+          "value": 142.7824
+        },
+        {
+          "year": 2020,
+          "value": 155.4475
+        },
+        {
+          "year": 2021,
+          "value": 162.6386
+        },
+        {
+          "year": 2022,
+          "value": 161.7293
+        },
+        {
+          "year": 2023,
+          "value": 162.1029
+        },
+        {
+          "year": 2024,
+          "value": 162.7136
+        }
+      ]
+    },
+    "market-capitalization": {
+      "countries": {
+        "KOR": {
+          "year": 2025,
+          "value": 147.2284,
+          "previous": {
+            "year": 2024,
+            "value": 83.0488
+          }
+        },
+        "WLD": {
+          "year": 2025,
+          "value": 148.5394,
+          "previous": {
+            "year": 2024,
+            "value": 129.3628
+          }
+        },
+        "USA": {
+          "year": 2025,
+          "value": 224.0446,
+          "previous": {
+            "year": 2024,
+            "value": 212.2522
+          }
+        },
+        "JPN": {
+          "year": 2025,
+          "value": 171.5956,
+          "previous": {
+            "year": 2024,
+            "value": 150.6126
+          }
+        },
+        "CHN": {
+          "year": 2025,
+          "value": 79.5406,
+          "previous": {
+            "year": 2024,
+            "value": 62.7654
+          }
+        },
+        "DEU": {
+          "year": 2025,
+          "value": 57.3882,
+          "previous": {
+            "year": 2024,
+            "value": 43.6284
+          }
+        }
+      },
+      "koreaTrend": [
+        {
+          "year": 2015,
+          "value": 79.989
+        },
+        {
+          "year": 2016,
+          "value": 79.4441
+        },
+        {
+          "year": 2017,
+          "value": 103.6002
+        },
+        {
+          "year": 2018,
+          "value": 77.4957
+        },
+        {
+          "year": 2019,
+          "value": 84.7973
+        },
+        {
+          "year": 2020,
+          "value": 124.7765
+        },
+        {
+          "year": 2021,
+          "value": 114.2276
+        },
+        {
+          "year": 2022,
+          "value": 91.3939
+        },
+        {
+          "year": 2023,
+          "value": 106.6781
+        },
+        {
+          "year": 2024,
+          "value": 83.0488
+        },
+        {
+          "year": 2025,
+          "value": 147.2284
+        }
+      ]
+    },
+    "current-account": {
+      "countries": {
+        "KOR": {
+          "year": 2025,
+          "value": 6.5721,
+          "previous": {
+            "year": 2024,
+            "value": 5.3308
+          }
+        },
+        "USA": {
+          "year": 2025,
+          "value": -3.627,
+          "previous": {
+            "year": 2024,
+            "value": -4.0456
+          }
+        },
+        "JPN": {
+          "year": 2025,
+          "value": 4.865,
+          "previous": {
+            "year": 2024,
+            "value": 4.622
+          }
+        },
+        "CHN": {
+          "year": 2025,
+          "value": 3.7697,
+          "previous": {
+            "year": 2024,
+            "value": 2.4682
+          }
+        },
+        "DEU": {
+          "year": 2025,
+          "value": 4.5059,
+          "previous": {
+            "year": 2024,
+            "value": 5.8938
+          }
+        }
+      },
+      "koreaTrend": [
+        {
+          "year": 2015,
+          "value": 6.8294
+        },
+        {
+          "year": 2016,
+          "value": 6.201
+        },
+        {
+          "year": 2017,
+          "value": 4.399
+        },
+        {
+          "year": 2018,
+          "value": 4.2465
+        },
+        {
+          "year": 2019,
+          "value": 3.408
+        },
+        {
+          "year": 2020,
+          "value": 4.3865
+        },
+        {
+          "year": 2021,
+          "value": 4.3185
+        },
+        {
+          "year": 2022,
+          "value": 1.2915
+        },
+        {
+          "year": 2023,
+          "value": 1.7633
+        },
+        {
+          "year": 2024,
+          "value": 5.3308
+        },
+        {
+          "year": 2025,
+          "value": 6.5721
+        }
+      ]
+    },
+    "fdi-inflows": {
+      "countries": {
+        "KOR": {
+          "year": 2025,
+          "value": 0.8441,
+          "previous": {
+            "year": 2024,
+            "value": 0.6859
+          }
+        },
+        "WLD": {
+          "year": 2025,
+          "value": 1.263,
+          "previous": {
+            "year": 2024,
+            "value": 1.3647
+          }
+        },
+        "USA": {
+          "year": 2025,
+          "value": 1.3017,
+          "previous": {
+            "year": 2024,
+            "value": 1.0139
+          }
+        },
+        "JPN": {
+          "year": 2025,
+          "value": 1.0328,
+          "previous": {
+            "year": 2024,
+            "value": 0.4505
+          }
+        },
+        "CHN": {
+          "year": 2025,
+          "value": 0.4102,
+          "previous": {
+            "year": 2024,
+            "value": 0.2277
+          }
+        },
+        "DEU": {
+          "year": 2025,
+          "value": 1.8846,
+          "previous": {
+            "year": 2024,
+            "value": 1.3368
+          }
+        }
+      },
+      "koreaTrend": [
+        {
+          "year": 2015,
+          "value": 0.2666
+        },
+        {
+          "year": 2016,
+          "value": 0.7665
+        },
+        {
+          "year": 2017,
+          "value": 1.0474
+        },
+        {
+          "year": 2018,
+          "value": 0.6678
+        },
+        {
+          "year": 2019,
+          "value": 0.5502
+        },
+        {
+          "year": 2020,
+          "value": 0.5026
+        },
+        {
+          "year": 2021,
+          "value": 1.1358
+        },
+        {
+          "year": 2022,
+          "value": 1.3919
+        },
+        {
+          "year": 2023,
+          "value": 1.0322
+        },
+        {
+          "year": 2024,
+          "value": 0.6859
+        },
+        {
+          "year": 2025,
+          "value": 0.8441
+        }
+      ]
+    },
+    "reserve-cover": {
+      "countries": {
+        "KOR": {
+          "year": 2025,
+          "value": 6.4627,
+          "previous": {
+            "year": 2024,
+            "value": 6.1983
+          }
+        },
+        "WLD": {
+          "year": 2025,
+          "value": 8.8926,
+          "previous": {
+            "year": 2024,
+            "value": 8.7979
+          }
+        },
+        "USA": {
+          "year": 2025,
+          "value": 2.8363,
+          "previous": {
+            "year": 2024,
+            "value": 1.9403
+          }
+        },
+        "JPN": {
+          "year": 2025,
+          "value": 14.0094,
+          "previous": {
+            "year": 2024,
+            "value": 12.9547
+          }
+        },
+        "CHN": {
+          "year": 2025,
+          "value": 11.943,
+          "previous": {
+            "year": 2024,
+            "value": 11.0155
+          }
+        },
+        "DEU": {
+          "year": 2025,
+          "value": 3.1097,
+          "previous": {
+            "year": 2024,
+            "value": 2.1762
+          }
+        }
+      },
+      "koreaTrend": [
+        {
+          "year": 2015,
+          "value": 7.9205
+        },
+        {
+          "year": 2016,
+          "value": 8.3885
+        },
+        {
+          "year": 2017,
+          "value": 7.5583
+        },
+        {
+          "year": 2018,
+          "value": 7.1222
+        },
+        {
+          "year": 2019,
+          "value": 7.7129
+        },
+        {
+          "year": 2020,
+          "value": 9.3521
+        },
+        {
+          "year": 2021,
+          "value": 7.5043
+        },
+        {
+          "year": 2022,
+          "value": 5.9012
+        },
+        {
+          "year": 2023,
+          "value": 6.3177
+        },
+        {
+          "year": 2024,
+          "value": 6.1983
+        },
+        {
+          "year": 2025,
+          "value": 6.4627
+        }
+      ]
+    },
+    "capital-formation": {
+      "countries": {
+        "KOR": {
+          "year": 2025,
+          "value": 29.1311,
+          "previous": {
+            "year": 2024,
+            "value": 29.9738
+          }
+        },
+        "WLD": {
+          "year": 2024,
+          "value": 26.2877,
+          "previous": {
+            "year": 2023,
+            "value": 26.6577
+          }
+        },
+        "USA": {
+          "year": 2024,
+          "value": 21.5326,
+          "previous": {
+            "year": 2023,
+            "value": 21.5701
+          }
+        },
+        "JPN": {
+          "year": 2024,
+          "value": 27.6792,
+          "previous": {
+            "year": 2023,
+            "value": 27.7841
+          }
+        },
+        "CHN": {
+          "year": 2024,
+          "value": 40.4815,
+          "previous": {
+            "year": 2023,
+            "value": 41.1297
+          }
+        },
+        "DEU": {
+          "year": 2025,
+          "value": 21.9315,
+          "previous": {
+            "year": 2024,
+            "value": 21.4994
+          }
+        }
+      },
+      "koreaTrend": [
+        {
+          "year": 2015,
+          "value": 29.3122
+        },
+        {
+          "year": 2016,
+          "value": 29.9824
+        },
+        {
+          "year": 2017,
+          "value": 31.9653
+        },
+        {
+          "year": 2018,
+          "value": 31.2487
+        },
+        {
+          "year": 2019,
+          "value": 31.1956
+        },
+        {
+          "year": 2020,
+          "value": 31.5249
+        },
+        {
+          "year": 2021,
+          "value": 32.4929
+        },
+        {
+          "year": 2022,
+          "value": 33.3255
+        },
+        {
+          "year": 2023,
+          "value": 31.8912
+        },
+        {
+          "year": 2024,
+          "value": 29.9738
+        },
+        {
+          "year": 2025,
+          "value": 29.1311
+        }
+      ]
+    },
+    "domestic-savings": {
+      "countries": {
+        "KOR": {
+          "year": 2025,
+          "value": 34.3304,
+          "previous": {
+            "year": 2024,
+            "value": 34.0291
+          }
+        },
+        "WLD": {
+          "year": 2024,
+          "value": 26.872,
+          "previous": {
+            "year": 2023,
+            "value": 27.3152
+          }
+        },
+        "USA": {
+          "year": 2024,
+          "value": 18.466,
+          "previous": {
+            "year": 2023,
+            "value": 18.7422
+          }
+        },
+        "JPN": {
+          "year": 2024,
+          "value": 26.7861,
+          "previous": {
+            "year": 2023,
+            "value": 26.3076
+          }
+        },
+        "CHN": {
+          "year": 2024,
+          "value": 43.321,
+          "previous": {
+            "year": 2023,
+            "value": 43.2426
+          }
+        },
+        "DEU": {
+          "year": 2025,
+          "value": 24.2882,
+          "previous": {
+            "year": 2024,
+            "value": 25.2768
+          }
+        }
+      },
+      "koreaTrend": [
+        {
+          "year": 2015,
+          "value": 35.8603
+        },
+        {
+          "year": 2016,
+          "value": 36.3086
+        },
+        {
+          "year": 2017,
+          "value": 36.4709
+        },
+        {
+          "year": 2018,
+          "value": 35.4458
+        },
+        {
+          "year": 2019,
+          "value": 33.8312
+        },
+        {
+          "year": 2020,
+          "value": 35.2103
+        },
+        {
+          "year": 2021,
+          "value": 35.8643
+        },
+        {
+          "year": 2022,
+          "value": 33.3301
+        },
+        {
+          "year": 2023,
+          "value": 32.2762
+        },
+        {
+          "year": 2024,
+          "value": 34.0291
+        },
+        {
+          "year": 2025,
+          "value": 34.3304
         }
       ]
     }

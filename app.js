@@ -1,39 +1,49 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=66";
+} from "./glossary-data.js?v=67";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=66";
+} from "./glossary-extra-data.js?v=67";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=66";
+} from "./glossary-more-data.js?v=67";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=66";
-import { glossarySpecialTerms } from "./glossary-special-data.js?v=66";
-import { glossaryCoreExtraTerms } from "./glossary-core-extra-data.js?v=66";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=66";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=66";
-import { moreScenarioQuestions } from "./quiz-scenario-more-data.js?v=66";
-import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=66";
-import { historyDeepDives, historyEraDetails } from "./history-detail-data.js?v=66";
-import { historyEraProfiles, historyEventPerspectives } from "./history-reading-data.js?v=66";
-import { indicatorCategories, indicatorCountries, indicatorDefinitions } from "./indicator-data.js?v=66";
-import { indicatorSnapshot } from "./indicator-values.js?v=66";
-import { resourceProductionIndicators } from "./resource-production-data.js?v=66";
+} from "./glossary-pro-data.js?v=67";
+import { glossarySpecialTerms } from "./glossary-special-data.js?v=67";
+import { glossaryCoreExtraTerms } from "./glossary-core-extra-data.js?v=67";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=67";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=67";
+import { moreScenarioQuestions } from "./quiz-scenario-more-data.js?v=67";
+import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=67";
+import { historyDeepDives, historyEraDetails } from "./history-detail-data.js?v=67";
+import { historyEraProfiles, historyEventPerspectives } from "./history-reading-data.js?v=67";
+import {
+  indicatorCategories as baseIndicatorCategories,
+  indicatorCountries,
+  indicatorDefinitions as baseIndicatorDefinitions
+} from "./indicator-data.js?v=67";
+import {
+  financeIndicatorCategories,
+  financeIndicatorDefinitions
+} from "./indicator-finance-data.js?v=67";
+import { indicatorSnapshot } from "./indicator-values.js?v=67";
+import { resourceProductionIndicators } from "./resource-production-data.js?v=67";
 import {
   bindResourceProductionDetail,
   formatProductionExact,
   renderResourceProductionDetail
-} from "./resource-production-ui.js?v=66";
-import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=66";
-import { initFutureIndustryChapter } from "./future-industry-ui.js?v=66";
+} from "./resource-production-ui.js?v=67";
+import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=67";
+import { initFutureIndustryChapter } from "./future-industry-ui.js?v=67";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions, ...moreScenarioQuestions];
+const indicatorCategories = [...baseIndicatorCategories, ...financeIndicatorCategories];
+const indicatorDefinitions = [...baseIndicatorDefinitions, ...financeIndicatorDefinitions];
 const allIndicatorDefinitions = [...indicatorDefinitions, ...resourceProductionIndicators];
 const glossaryCategoryOrder = [
   ...coreGlossaryCategories,
@@ -783,7 +793,7 @@ if ("serviceWorker" in navigator) {
   const hadServiceWorkerController = Boolean(navigator.serviceWorker.controller);
   let reloadingForServiceWorker = false;
   navigator.serviceWorker
-    .register("/sw.js?v=66")
+    .register("/sw.js?v=67")
     .then((registration) => {
       registration.update().catch(() => {});
       setInterval(() => registration.update().catch(() => {}), 5 * 60_000);
@@ -1640,7 +1650,7 @@ function renderIndicators() {
     <div>
       <span>수록 범위</span>
       <strong>${allIndicatorDefinitions.length}개 지표 · ${indicatorCategories.length - 1}개 분야</strong>
-      <p>인구부터 기술, 환경과 세계 자원 생산까지 비교합니다.</p>
+      <p>인구부터 물가·금융, 대외투자, 기술과 세계 자원 생산까지 비교합니다.</p>
     </div>
     <div>
       <span>한국 합계출산율</span>
