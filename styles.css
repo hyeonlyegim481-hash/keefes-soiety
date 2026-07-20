@@ -2803,6 +2803,112 @@ main {
   padding: 12px 22px 22px;
 }
 
+.news-filter-bar {
+  display: grid;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.news-filter-tabs {
+  display: flex;
+  min-width: 0;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.news-filter-tabs button {
+  display: inline-flex;
+  min-height: 34px;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 820;
+  cursor: pointer;
+}
+
+.news-filter-tabs button em {
+  display: inline-grid;
+  min-width: 20px;
+  height: 20px;
+  place-items: center;
+  border-radius: 4px;
+  background: #f1f4f5;
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-style: normal;
+}
+
+.news-filter-tabs button[aria-selected="true"] {
+  border-color: var(--charcoal);
+  background: var(--charcoal);
+  color: #ffffff;
+}
+
+.news-filter-tabs button[aria-selected="true"] em {
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+}
+
+.news-filter-tabs button:focus-visible {
+  outline: 2px solid rgba(15, 118, 110, 0.35);
+  outline-offset: 2px;
+}
+
+.news-refresh-note {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.news-refresh-note time {
+  flex: 0 0 auto;
+  color: var(--teal);
+  font-weight: 820;
+}
+
+.news-sections-grid {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px 22px;
+}
+
+.news-section-group[data-news-section="korea"],
+.news-section-group[data-news-section="security-disasters"],
+.news-sections-grid[data-filtered="true"] .news-section-group {
+  grid-column: 1 / -1;
+}
+
+.news-section-group[data-news-section="korea"] .news-section-items,
+.news-section-group[data-news-section="security-disasters"] .news-section-items,
+.news-sections-grid[data-filtered="true"] .news-section-items {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 22px;
+}
+
+.news-item[data-news-kind="critical"] .news-index {
+  border-color: rgba(180, 83, 9, 0.3);
+  background: rgba(180, 83, 9, 0.08);
+  color: var(--amber);
+}
+
+.news-item[data-news-kind="critical"] .news-title {
+  color: #6f3510;
+}
+
 .news-section-group {
   min-width: 0;
   border-top: 2px solid var(--charcoal);
@@ -10365,5 +10471,30 @@ h1 {
   .resource-rank-row {
     grid-template-columns: 22px minmax(84px, 1fr) minmax(38px, 0.55fr) 34px;
     gap: 5px;
+  }
+}
+@media (max-width: 900px) {
+  .news-sections-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .news-section-group[data-news-section="korea"],
+  .news-section-group[data-news-section="security-disasters"],
+  .news-sections-grid[data-filtered="true"] .news-section-group {
+    grid-column: auto;
+  }
+
+  .news-section-group[data-news-section="korea"] .news-section-items,
+  .news-section-group[data-news-section="security-disasters"] .news-section-items,
+  .news-sections-grid[data-filtered="true"] .news-section-items {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .news-refresh-note {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
   }
 }

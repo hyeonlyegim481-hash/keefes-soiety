@@ -2,6 +2,7 @@ import {
   buildAutomatedNewsAnalysis,
   consumeNewsAnalysisQuota,
   enhanceNewsAnalysisWithAi,
+  findScheduledNewsAnalysis,
   findTrustedHeadline,
   getSnapshot,
   normalizeHeadlineInput
@@ -33,6 +34,12 @@ export default async function handler(request, response) {
     const trustedHeadline = findTrustedHeadline(snapshot, requestedHeadline);
     if (!trustedHeadline) {
       return response.status(404).json({ error: "Headline is not in the current news list" });
+    }
+
+    const scheduledAnalysis = await findScheduledNewsAnalysis(trustedHeadline);
+    if (scheduledAnalysis) {
+      response.setHeader("Cache-Control", "public, s-maxage=1800, stale-while-revalidate=3600");
+      return response.status(200).json(scheduledAnalysis);
     }
 
     const cacheKey = String(trustedHeadline.id || trustedHeadline.title);

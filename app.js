@@ -1,45 +1,45 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=67";
+} from "./glossary-data.js?v=68";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=67";
+} from "./glossary-extra-data.js?v=68";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=67";
+} from "./glossary-more-data.js?v=68";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=67";
-import { glossarySpecialTerms } from "./glossary-special-data.js?v=67";
-import { glossaryCoreExtraTerms } from "./glossary-core-extra-data.js?v=67";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=67";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=67";
-import { moreScenarioQuestions } from "./quiz-scenario-more-data.js?v=67";
-import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=67";
-import { historyDeepDives, historyEraDetails } from "./history-detail-data.js?v=67";
-import { historyEraProfiles, historyEventPerspectives } from "./history-reading-data.js?v=67";
+} from "./glossary-pro-data.js?v=68";
+import { glossarySpecialTerms } from "./glossary-special-data.js?v=68";
+import { glossaryCoreExtraTerms } from "./glossary-core-extra-data.js?v=68";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=68";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=68";
+import { moreScenarioQuestions } from "./quiz-scenario-more-data.js?v=68";
+import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=68";
+import { historyDeepDives, historyEraDetails } from "./history-detail-data.js?v=68";
+import { historyEraProfiles, historyEventPerspectives } from "./history-reading-data.js?v=68";
 import {
   indicatorCategories as baseIndicatorCategories,
   indicatorCountries,
   indicatorDefinitions as baseIndicatorDefinitions
-} from "./indicator-data.js?v=67";
+} from "./indicator-data.js?v=68";
 import {
   financeIndicatorCategories,
   financeIndicatorDefinitions
-} from "./indicator-finance-data.js?v=67";
-import { indicatorSnapshot } from "./indicator-values.js?v=67";
-import { resourceProductionIndicators } from "./resource-production-data.js?v=67";
+} from "./indicator-finance-data.js?v=68";
+import { indicatorSnapshot } from "./indicator-values.js?v=68";
+import { resourceProductionIndicators } from "./resource-production-data.js?v=68";
 import {
   bindResourceProductionDetail,
   formatProductionExact,
   renderResourceProductionDetail
-} from "./resource-production-ui.js?v=67";
-import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=67";
-import { initFutureIndustryChapter } from "./future-industry-ui.js?v=67";
+} from "./resource-production-ui.js?v=68";
+import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=68";
+import { initFutureIndustryChapter } from "./future-industry-ui.js?v=68";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions, ...moreScenarioQuestions];
 const indicatorCategories = [...baseIndicatorCategories, ...financeIndicatorCategories];
@@ -567,6 +567,7 @@ let state = {
   quizSelected: null,
   quizComplete: false,
   quizMistakes: [],
+  newsSection: "all",
   openNewsSummaryIds: new Set(),
   newsSummaryResults: new Map()
 };
@@ -793,7 +794,7 @@ if ("serviceWorker" in navigator) {
   const hadServiceWorkerController = Boolean(navigator.serviceWorker.controller);
   let reloadingForServiceWorker = false;
   navigator.serviceWorker
-    .register("/sw.js?v=67")
+    .register("/sw.js?v=68")
     .then((registration) => {
       registration.update().catch(() => {});
       setInterval(() => registration.update().catch(() => {}), 5 * 60_000);
@@ -817,11 +818,13 @@ queueMicrotask(() => {
     setConnection("stale", "저장 데이터");
   }
   refreshSnapshot();
-  setInterval(() => refreshSnapshot(), 60_000);
+  setInterval(() => {
+    if (document.visibilityState === "visible") refreshSnapshot();
+  }, 60_000);
 });
 
 async function refreshSnapshot({ force = false } = {}) {
-  if (state.isRefreshing && !force) return;
+  if (state.isRefreshing) return;
   state.isRefreshing = true;
   setConnection("loading", "업데이트");
 
@@ -3241,6 +3244,7 @@ function cacheNewsSummary(summaryKey, result) {
 
 const NEWS_SECTION_DEFINITIONS = [
   { id: "korea", label: "한국", description: "환율·정책·수출·가계 흐름" },
+  { id: "security-disasters", label: "전쟁·사고·재난", description: "안보·대형 사고·자연재해·인프라 충격" },
   { id: "us", label: "미국", description: "연준·물가·고용·미국 시장" },
   { id: "china-asia", label: "중국·아시아", description: "중국 수요·위안·일본은행·엔화" },
   { id: "europe-global", label: "유럽·글로벌", description: "ECB·유로존·세계 성장과 무역" },
@@ -3258,7 +3262,10 @@ function renderNews(headlines = [], analysis, dataQuality = {}) {
     .slice(0, 3);
   const firstTopic = topTopics[0]?.[0] || "선별 기사 없음";
   const koreaHeadlineCount = headlines.filter((headline) => headline.section === "korea").length;
-  const globalHeadlineCount = headlines.filter((headline) => headline.section !== "korea").length;
+  const criticalHeadlineCount = headlines.filter((headline) => headline.section === "security-disasters").length;
+  const globalHeadlineCount = headlines.filter(
+    (headline) => !["korea", "security-disasters"].includes(headline.section)
+  ).length;
   const riskText =
     headlines.length === 0
       ? `최근 ${lookbackDays}일 안에 경제 관련성과 최신성 기준을 통과한 새 기사가 없습니다.`
@@ -3271,7 +3278,7 @@ function renderNews(headlines = [], analysis, dataQuality = {}) {
   elements.newsBrief.innerHTML = `
     <article class="brief-card brief-card-main">
       <span>뉴스 초점</span>
-      <strong>한국 ${koreaHeadlineCount}건 · 해외 핵심 ${globalHeadlineCount}건</strong>
+      <strong>한국 ${koreaHeadlineCount}건 · 전쟁·재난 ${criticalHeadlineCount}건 · 해외 경제 ${globalHeadlineCount}건</strong>
       <p>${firstTopic} 중심 · ${riskText}</p>
     </article>
     ${topTopics
@@ -3295,8 +3302,52 @@ function renderNews(headlines = [], analysis, dataQuality = {}) {
       </article>
     `;
   } else {
+    const availableFilters = new Set(["all", ...NEWS_SECTION_DEFINITIONS.map((section) => section.id)]);
+    if (!availableFilters.has(state.newsSection)) state.newsSection = "all";
+    const filterDefinitions = [
+      { id: "all", label: "전체", count: headlines.length },
+      ...NEWS_SECTION_DEFINITIONS.map((section) => ({
+        ...section,
+        count: headlines.filter((headline) => headline.section === section.id).length
+      }))
+    ];
+    const controls = document.createElement("div");
+    controls.className = "news-filter-bar";
+    const fetchedAt = dataQuality?.newsFetchedAt ? new Date(dataQuality.newsFetchedAt) : null;
+    const scheduledAnalysisCount = Number(dataQuality?.scheduledNewsAnalysisCount) || 0;
+    const refreshLabel = dataQuality?.newsSourceMode === "scheduled"
+      ? `서버 예약 수집 · 1시간 간격 · 실제 AI 요약 ${scheduledAnalysisCount}건`
+      : `실시간 보완 수집 · ${Number(dataQuality?.newsRefreshMinutes) || 30}분 캐시`;
+    controls.innerHTML = `
+      <div class="news-filter-tabs" role="tablist" aria-label="뉴스 분야">
+        ${filterDefinitions.map((filter) => `
+          <button type="button" role="tab" data-news-filter="${escapeHtml(filter.id)}" aria-selected="${state.newsSection === filter.id}">
+            <span>${escapeHtml(filter.label)}</span>
+            <em>${filter.count}</em>
+          </button>
+        `).join("")}
+      </div>
+      <div class="news-refresh-note">
+        <span>${escapeHtml(refreshLabel)}</span>
+        <time>${fetchedAt && Number.isFinite(fetchedAt.getTime()) ? marketTimeFormatter.format(fetchedAt) : "갱신 시각 확인 중"}</time>
+      </div>
+    `;
+    controls.querySelectorAll("[data-news-filter]").forEach((button) => {
+      button.addEventListener("click", () => {
+        state.newsSection = button.dataset.newsFilter || "all";
+        renderNews(headlines, analysis, dataQuality);
+        requestAnimationFrame(updateChapterHeight);
+      });
+    });
+
+    const selectedDefinitions = state.newsSection === "all"
+      ? NEWS_SECTION_DEFINITIONS
+      : NEWS_SECTION_DEFINITIONS.filter((section) => section.id === state.newsSection);
+    const sectionsGrid = document.createElement("div");
+    sectionsGrid.className = "news-sections-grid";
+    sectionsGrid.dataset.filtered = String(state.newsSection !== "all");
     let visibleIndex = 0;
-    const sections = NEWS_SECTION_DEFINITIONS.map((section) => {
+    const sections = selectedDefinitions.map((section) => {
       const sectionHeadlines = headlines.filter((headline) => headline.section === section.id);
       const group = document.createElement("section");
       group.className = "news-section-group";
@@ -3328,7 +3379,8 @@ function renderNews(headlines = [], analysis, dataQuality = {}) {
       }
       return group;
     });
-    elements.newsList.replaceChildren(...sections);
+    sectionsGrid.replaceChildren(...sections);
+    elements.newsList.replaceChildren(controls, sectionsGrid);
   }
   renderNewsBoard(headlines, topTopics, analysis);
   renderNewsIntelligence(headlines, topTopics, analysis, dataQuality);
@@ -3341,6 +3393,7 @@ function createNewsItem(headline, index, analysis) {
   const sectionLabel = NEWS_SECTION_DEFINITIONS.find((section) => section.id === headline.section)?.label || headline.topic;
   const isGlobal = headline.section && headline.section !== "korea";
   item.className = "news-item";
+  if (headline.section === "security-disasters") item.dataset.newsKind = "critical";
   item.innerHTML = `
     <div class="news-item-head">
       <span class="news-index">${String(index).padStart(2, "0")}</span>
@@ -3399,7 +3452,10 @@ function createNewsItem(headline, index, analysis) {
 function renderNewsBoard(headlines, topTopics, analysis) {
   const newest = [...headlines].sort((a, b) => Date.parse(b.publishedAt) - Date.parse(a.publishedAt))[0];
   const koreaCount = headlines.filter((headline) => headline.section === "korea").length;
-  const globalCount = headlines.filter((headline) => headline.section !== "korea").length;
+  const criticalCount = headlines.filter((headline) => headline.section === "security-disasters").length;
+  const globalCount = headlines.filter(
+    (headline) => !["korea", "security-disasters"].includes(headline.section)
+  ).length;
   const readingMode = headlines.length === 0
     ? "새 기사 대기"
     : analysis?.riskScore >= 66
@@ -3428,6 +3484,11 @@ function renderNewsBoard(headlines, topTopics, analysis) {
         <p>환율, 수출, 외국인 수급으로 이어지는지 먼저 봅니다.</p>
       </article>
       <article class="board-card">
+        <span>전쟁·사고·재난</span>
+        <strong>${criticalCount}건</strong>
+        <p>안보·인명·인프라 충격과 함께 공급망, 유가, 환율로 번지는 경로를 봅니다.</p>
+      </article>
+      <article class="board-card">
         <span>해외 중요 뉴스</span>
         <strong>${globalCount}건</strong>
         <p>미국·중국·유럽·원자재 중 한국 시장으로 번질 기사만 선별합니다.</p>
@@ -3449,7 +3510,8 @@ function renderNewsIntelligence(headlines, topTopics, analysis, dataQuality = {}
     [/금리|연준|Fed|채권|물가|inflation|CPI/i, "금리·물가"],
     [/환율|달러|원화|위안|엔화|dollar/i, "환율·통화"],
     [/반도체|chip|AI|기술주|테크/i, "반도체·기술"],
-    [/유가|원유|OPEC|중동|전쟁|oil/i, "에너지·지정학"],
+    [/지진|홍수|산불|태풍|폭발|붕괴|정전|사이버|항만\s*마비/i, "재난·인프라"],
+    [/유가|원유|OPEC|중동|전쟁|공습|미사일|oil/i, "에너지·지정학"],
     [/중국|China|수출|무역|export/i, "중국·수출"]
   ]
     .filter(([pattern]) => pattern.test(combined))
@@ -4242,6 +4304,9 @@ function getTopicMeaning(topic) {
   }
   if (/부동산·가계/i.test(topic)) {
     return "대출 부담과 소비 여력, 금융 안정성의 변화를 확인합니다.";
+  }
+  if (/전쟁|지정학|사고|재난|인프라|사이버/i.test(topic)) {
+    return "인명·시설 피해와 함께 공급망, 유가, 환율, 보험 비용으로 번지는 경로를 봅니다.";
   }
   if (/한국|Korea|국내/i.test(topic)) {
     return "환율, 수출, 외국인 수급으로 이어지는지 봅니다.";

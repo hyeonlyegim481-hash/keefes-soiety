@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "updatedAt": null,
+  "availableNewsFeedCount": 0,
+  "headlines": [],
+  "analyses": {},
+  "seen": [],
+  "policy": {
+    "collectionIntervalMinutes": 60,
+    "reasoningEffort": "low",
+    "maxAiArticlesPerRun": 6,
+    "maxAiRequestsPerRun": 1,
+    "dedupeWindowDays": 7
+  }
+}

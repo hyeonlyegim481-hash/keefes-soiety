@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   fetchMarket,
+  rankAndDedupeHeadlines,
   resolveMarketPoint,
   resolveMarketStatus,
   resolvePreviousClose
@@ -128,4 +129,57 @@ test("retries the secondary Yahoo host when the primary host is unavailable", as
   } finally {
     globalThis.fetch = originalFetch;
   }
+});
+test("keeps high-impact war and disaster headlines in the critical section", () => {
+  const ranked = rankAndDedupeHeadlines([
+    {
+      id: "war-1",
+      topic: "전쟁·지정학",
+      section: "security-disasters",
+      title: "호르무즈 해협 군사충돌로 국제유가와 해상운임 급등",
+      source: "Reuters",
+      url: "https://example.com/war",
+      publishedAt: new Date(now - hour).toISOString()
+    },
+    {
+      id: "disaster-1",
+      topic: "사고·재난",
+      section: "security-disasters",
+      title: "일본 지진으로 항만 마비, 글로벌 공급망 차질 우려",
+      source: "AP",
+      url: "https://example.com/disaster",
+      publishedAt: new Date(now - 2 * hour).toISOString()
+    }
+  ], now);
+
+  assert.equal(ranked.length, 2);
+  assert.ok(ranked.every((headline) => headline.section === "security-disasters"));
+  assert.ok(ranked.every((headline) => /^h\d+$/.test(headline.eventKey)));
+});
+
+test("clusters duplicate reports of the same conflict across publishers", () => {
+  const ranked = rankAndDedupeHeadlines([
+    {
+      id: "conflict-1",
+      topic: "전쟁·지정학",
+      section: "security-disasters",
+      title: "러시아 우크라이나 미사일 공습에 국제유가 급등",
+      source: "Reuters",
+      url: "https://example.com/conflict-1",
+      publishedAt: new Date(now - hour).toISOString()
+    },
+    {
+      id: "conflict-2",
+      topic: "전쟁·지정학",
+      section: "security-disasters",
+      title: "우크라이나, 러시아 미사일 공습 지속 국제유가 상승",
+      source: "BBC",
+      url: "https://example.com/conflict-2",
+      publishedAt: new Date(now - 2 * hour).toISOString()
+    }
+  ], now);
+
+  assert.equal(ranked.length, 1);
+  assert.equal(ranked[0].relatedSourceCount, 2);
+  assert.equal(ranked[0].relatedHeadlineCount, 2);
 });

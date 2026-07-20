@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server.mjs",
     "test": "node --test",
-    "update:indicators": "node scripts/update-indicators.mjs"
+    "update:indicators": "node scripts/update-indicators.mjs",
+    "update:news": "node scripts/update-news-cache.mjs"
   },
   "engines": {
     "node": ">=18"
