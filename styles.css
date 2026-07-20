@@ -4299,6 +4299,39 @@ main {
   background: #f5f8f9;
 }
 
+.glossary-card-body article[data-detail="plain"] {
+  grid-column: 1 / -1;
+  border-left-color: #334155;
+  background: #f5f7f9;
+}
+
+.glossary-card-body article[data-detail="example"] {
+  border-left-color: #2563eb;
+  background: #f3f7ff;
+}
+
+.glossary-card-body article[data-detail="reading"] {
+  border-left-color: #15803d;
+  background: #f2f8f4;
+}
+
+.glossary-card-body article[data-detail="caution"] {
+  grid-column: 1 / -1;
+  border-left-color: #b45309;
+  background: #fff8ed;
+}
+
+.glossary-card-body article[data-detail="example"] > span {
+  color: #1d4ed8;
+}
+
+.glossary-card-body article[data-detail="reading"] > span {
+  color: #166534;
+}
+
+.glossary-card-body article[data-detail="caution"] > span {
+  color: #9a3412;
+}
 .glossary-card-body article > span,
 .glossary-related > strong {
   color: var(--teal);

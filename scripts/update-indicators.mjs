@@ -4,9 +4,14 @@ import { fileURLToPath } from "node:url";
 
 import { indicatorCountries, indicatorDefinitions as baseDefinitions } from "../indicator-data.js";
 import { financeIndicatorDefinitions } from "../indicator-finance-data.js";
+import { expandedIndicatorDefinitions } from "../indicator-expanded-data.js";
 import { indicatorSnapshot as existingSnapshot } from "../indicator-values.js";
 
-const definitions = [...baseDefinitions, ...financeIndicatorDefinitions];
+const definitions = [
+  ...baseDefinitions,
+  ...financeIndicatorDefinitions,
+  ...expandedIndicatorDefinitions
+];
 const requestedIds = new Set(process.argv.slice(2));
 const selectedDefinitions = requestedIds.size
   ? definitions.filter((indicator) => requestedIds.has(indicator.id))

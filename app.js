@@ -1,49 +1,55 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=68";
+} from "./glossary-data.js?v=69";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=68";
+} from "./glossary-extra-data.js?v=69";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=68";
+} from "./glossary-more-data.js?v=69";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=68";
-import { glossarySpecialTerms } from "./glossary-special-data.js?v=68";
-import { glossaryCoreExtraTerms } from "./glossary-core-extra-data.js?v=68";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=68";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=68";
-import { moreScenarioQuestions } from "./quiz-scenario-more-data.js?v=68";
-import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=68";
-import { historyDeepDives, historyEraDetails } from "./history-detail-data.js?v=68";
-import { historyEraProfiles, historyEventPerspectives } from "./history-reading-data.js?v=68";
+} from "./glossary-pro-data.js?v=69";
+import { glossarySpecialTerms } from "./glossary-special-data.js?v=69";
+import { glossaryCoreExtraTerms } from "./glossary-core-extra-data.js?v=69";
+import { glossaryExpandedTerms } from "./glossary-expanded-data.js?v=69";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=69";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=69";
+import { moreScenarioQuestions } from "./quiz-scenario-more-data.js?v=69";
+import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=69";
+import { historyDeepDives, historyEraDetails } from "./history-detail-data.js?v=69";
+import { historyEraProfiles, historyEventPerspectives } from "./history-reading-data.js?v=69";
 import {
   indicatorCategories as baseIndicatorCategories,
   indicatorCountries,
   indicatorDefinitions as baseIndicatorDefinitions
-} from "./indicator-data.js?v=68";
+} from "./indicator-data.js?v=69";
 import {
   financeIndicatorCategories,
   financeIndicatorDefinitions
-} from "./indicator-finance-data.js?v=68";
-import { indicatorSnapshot } from "./indicator-values.js?v=68";
-import { resourceProductionIndicators } from "./resource-production-data.js?v=68";
+} from "./indicator-finance-data.js?v=69";
+import { expandedIndicatorDefinitions } from "./indicator-expanded-data.js?v=69";
+import { indicatorSnapshot } from "./indicator-values.js?v=69";
+import { resourceProductionIndicators } from "./resource-production-data.js?v=69";
 import {
   bindResourceProductionDetail,
   formatProductionExact,
   renderResourceProductionDetail
-} from "./resource-production-ui.js?v=68";
-import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=68";
-import { initFutureIndustryChapter } from "./future-industry-ui.js?v=68";
+} from "./resource-production-ui.js?v=69";
+import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=69";
+import { initFutureIndustryChapter } from "./future-industry-ui.js?v=69";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions, ...moreScenarioQuestions];
 const indicatorCategories = [...baseIndicatorCategories, ...financeIndicatorCategories];
-const indicatorDefinitions = [...baseIndicatorDefinitions, ...financeIndicatorDefinitions];
+const indicatorDefinitions = [
+  ...baseIndicatorDefinitions,
+  ...financeIndicatorDefinitions,
+  ...expandedIndicatorDefinitions
+];
 const allIndicatorDefinitions = [...indicatorDefinitions, ...resourceProductionIndicators];
 const glossaryCategoryOrder = [
   ...coreGlossaryCategories,
@@ -57,7 +63,8 @@ const glossaryTerms = [
   ...glossaryExtraTerms.map((item) => ({ ...item, level: "advanced" })),
   ...glossaryMoreTerms.map((item) => ({ ...item, level: "advanced" })),
   ...glossaryProTerms.map((item) => ({ ...item, level: "advanced" })),
-  ...glossarySpecialTerms.map((item) => ({ ...item, level: "advanced" }))
+  ...glossarySpecialTerms.map((item) => ({ ...item, level: "advanced" })),
+  ...glossaryExpandedTerms.map((item) => ({ ...item, level: "advanced" }))
 ];
 
 const GLOSSARY_PAGE_SIZE = 24;
@@ -794,7 +801,7 @@ if ("serviceWorker" in navigator) {
   const hadServiceWorkerController = Boolean(navigator.serviceWorker.controller);
   let reloadingForServiceWorker = false;
   navigator.serviceWorker
-    .register("/sw.js?v=68")
+    .register("/sw.js?v=69")
     .then((registration) => {
       registration.update().catch(() => {});
       setInterval(() => registration.update().catch(() => {}), 5 * 60_000);
@@ -2732,7 +2739,7 @@ function renderGlossary() {
     if (category !== "전체" && item.category !== category) return false;
     if (!queryTokens.length) return true;
     const searchText = normalizeGlossaryText(
-      [item.term, item.english, item.category, item.definition, ...(item.related || [])].join(" ")
+      [item.term, item.english, item.category, item.definition, item.plain, item.why, item.example, item.caution, ...(item.related || [])].join(" ")
     );
     return queryTokens.every((token) => matchesGlossaryToken(item, searchText, token));
   });
@@ -2749,7 +2756,7 @@ function renderGlossary() {
     { id: "advanced", label: "심화", detail: "금융·정책·위기 확장어" }
   ];
 
-  elements.glossaryTotal.textContent = `전체 ${glossaryTerms.length} · 핵심 ${coreGlossaryTerms.length + glossaryCoreExtraTerms.length} · 심화 ${glossaryExtraTerms.length + glossaryMoreTerms.length + glossaryProTerms.length + glossarySpecialTerms.length}`;
+  elements.glossaryTotal.textContent = `전체 ${glossaryTerms.length} · 핵심 ${coreGlossaryTerms.length + glossaryCoreExtraTerms.length} · 심화 ${glossaryExtraTerms.length + glossaryMoreTerms.length + glossaryProTerms.length + glossarySpecialTerms.length + glossaryExpandedTerms.length}`;
   elements.glossaryLevels.replaceChildren(
     ...levels.map((item) => {
       const count = item.id === "all"
@@ -2809,6 +2816,7 @@ function renderGlossary() {
 }
 
 function createGlossaryCard(item) {
+  const detail = getGlossaryDetail(item);
   const card = document.createElement("details");
   card.className = "glossary-card";
   card.innerHTML = `
@@ -2827,13 +2835,25 @@ function createGlossaryCard(item) {
       </span>
     </summary>
     <div class="glossary-card-body">
-      <article>
-        <span>핵심 뜻</span>
-        <p>${escapeHtml(item.definition)}</p>
+      <article data-detail="plain">
+        <span>쉽게 풀면</span>
+        <p>${escapeHtml(detail.plain)}</p>
       </article>
-      <article>
-        <span>읽는 포인트</span>
-        <p>${escapeHtml(getGlossaryReadingPoint(item.category))}</p>
+      <article data-detail="importance">
+        <span>왜 중요한가</span>
+        <p>${escapeHtml(detail.why)}</p>
+      </article>
+      <article data-detail="example">
+        <span>실제 해석 예시</span>
+        <p>${escapeHtml(detail.example)}</p>
+      </article>
+      <article data-detail="reading">
+        <span>같이 보는 기준</span>
+        <p>${escapeHtml(detail.reading)}</p>
+      </article>
+      <article data-detail="caution">
+        <span>주의할 점</span>
+        <p>${escapeHtml(detail.caution)}</p>
       </article>
       <div class="glossary-related">
         <strong>관련 용어</strong>
@@ -2842,6 +2862,63 @@ function createGlossaryCard(item) {
     </div>
   `;
   return card;
+}
+
+function getGlossaryDetail(item) {
+  return {
+    plain: item.plain || `${item.term}은(는) ${item.definition} 기사나 지표에서 이 표현을 만나면 먼저 대상·기간·비교 기준을 확인하면 뜻이 선명해집니다.`,
+    why: item.why || getGlossaryImportance(item.category),
+    example: item.example || `${item.term}의 숫자가 변했다면 절대 수준만 보지 말고 직전 기간·전년 같은 기간·관련 지표가 같은 방향인지 비교합니다.`,
+    reading: getGlossaryReadingPoint(item.category),
+    caution: item.caution || getGlossaryCaution(item.category)
+  };
+}
+
+function getGlossaryImportance(category) {
+  if (["거시경제", "물가·고용", "정책·제도", "경제학파·이론", "경제위기·역사"].includes(category)) {
+    return "성장·물가·고용과 정책이 어떤 순서로 연결되는지 이해하게 해주며, 한 지표의 변화가 경제 전체에 미칠 경로를 판단하는 기준이 됩니다.";
+  }
+  if (["금리·통화", "채권·신용", "은행·금융"].includes(category)) {
+    return "돈의 조달비용과 신용위험을 통해 예금·대출·채권·주식의 가격이 어떻게 달라지는지 설명하는 핵심 연결고리입니다.";
+  }
+  if (["외환·국제", "무역·산업", "국제개발·무역제도"].includes(category)) {
+    return "환율·수출입·해외 자금이 한국의 기업이익과 물가, 성장률로 전달되는 과정을 읽는 데 중요합니다.";
+  }
+  if (["주식·투자", "시장심리·자금", "파생·위험"].includes(category)) {
+    return "가격 변화가 실제 가치 변화인지 수급과 심리의 일시적 움직임인지 구분하고 손실 가능성을 관리하는 데 쓰입니다.";
+  }
+  if (["기업·회계", "기업금융·M&A"].includes(category)) {
+    return "기업의 매출·이익·현금흐름과 자본배분을 분리해 사업의 질과 재무 체력을 판단하게 해줍니다.";
+  }
+  if (["부동산·가계", "세금·연금", "보험·위험관리"].includes(category)) {
+    return "가계의 현재 현금흐름과 장기 부채·노후·위험 부담이 어떻게 달라지는지 계산하는 데 직접 연결됩니다.";
+  }
+  if (["원자재·에너지", "ESG·기후경제"].includes(category)) {
+    return "에너지·원료 가격과 기후 규제가 기업 원가, 소비자물가와 장기 투자비용에 미치는 영향을 이해하게 합니다.";
+  }
+  if (["디지털경제", "지급결제·핀테크"].includes(category)) {
+    return "새 기술의 성장 가능성과 실제 수익구조·결제위험·규제비용을 분리해 평가하는 데 필요합니다.";
+  }
+  return "같은 숫자도 산식과 표본, 비교 기준에 따라 의미가 달라지므로 경제 자료를 정확하게 읽기 위한 기본 도구입니다.";
+}
+
+function getGlossaryCaution(category) {
+  if (["데이터·통계", "거시경제", "물가·고용"].includes(category)) {
+    return "전월비와 전년비, 명목과 실질, 속보치와 확정치를 섞지 말고 단위·계절조정·기저효과를 먼저 확인해야 합니다.";
+  }
+  if (["주식·투자", "채권·신용", "파생·위험", "시장심리·자금"].includes(category)) {
+    return "과거 관계와 평균은 미래 수익을 보장하지 않습니다. 가격 수준, 유동성, 만기와 손실 한도를 함께 확인해야 합니다.";
+  }
+  if (["기업·회계", "기업금융·M&A"].includes(category)) {
+    return "기업마다 계산 기준이 다를 수 있으므로 일회성 항목과 회계정책을 확인하고 현금흐름으로 교차 검증해야 합니다.";
+  }
+  if (["외환·국제", "무역·산업", "원자재·에너지", "국제개발·무역제도"].includes(category)) {
+    return "환율·가격·물량과 비교 기준의 영향을 분리하고, 한 국가나 한 달의 수치만으로 구조적 변화를 단정하지 않습니다.";
+  }
+  if (["정책·제도", "세금·연금"].includes(category)) {
+    return "발표 내용과 실제 시행 시점·대상·재원은 다를 수 있으므로 법령과 공식 공표 기준을 확인해야 합니다.";
+  }
+  return "용어 하나만으로 좋고 나쁨을 결정하지 말고 원자료의 범위와 시점, 관련 지표가 같은 방향인지 함께 확인합니다.";
 }
 
 function normalizeGlossaryText(value) {

@@ -1,10 +1,10 @@
-const CACHE_NAME = "keefes-soiety-v68";
+const CACHE_NAME = "keefes-soiety-v69";
 const CORE_SHELL = [
   "/",
   "/index.html",
-  "/styles.css?v=68",
-  "/app.js?v=68",
-  "/manifest.json?v=68",
+  "/styles.css?v=69",
+  "/app.js?v=69",
+  "/manifest.json?v=69",
   "/assets/econest-icon.png"
 ];
 
