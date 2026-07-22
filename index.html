@@ -8,9 +8,10 @@
       content="최신 시장 데이터와 한국 경제 흐름을 기준시각과 함께 정리하는 대시보드"
     />
     <meta name="theme-color" content="#f6f7f8" />
-    <link rel="manifest" href="/manifest.json?v=71" />
+    <link rel="manifest" href="/manifest.json?v=72" />
     <link rel="icon" href="/assets/econest-icon.png" type="image/png" />
-    <link rel="stylesheet" href="/styles.css?v=71" />
+    <link rel="stylesheet" href="/styles.css?v=72" />
+    <link rel="stylesheet" href="/resource-library.css?v=72" />
     <title>keefe's soiety</title>
   </head>
   <body>
@@ -46,6 +47,7 @@
         <button class="chapter-tab" type="button" data-chapter="news" aria-selected="false">뉴스</button>
         <button class="chapter-tab" type="button" data-chapter="glossary" aria-selected="false">용어</button>
         <button class="chapter-tab" type="button" data-chapter="quiz" aria-selected="false">퀴즈</button>
+        <button class="chapter-tab" type="button" data-chapter="resources" aria-selected="false">추가 정보</button>
       </nav>
 
       <main>
@@ -329,6 +331,20 @@
                 <div class="quiz-body" id="quizBody"></div>
               </article>
             </section>
+            <section class="chapter-pane chapter-single" id="resources" data-chapter-panel="resources" aria-label="경제책과 공식 자료">
+              <article class="panel resource-library-panel">
+                <div class="panel-heading resource-library-heading">
+                  <div>
+                    <p class="section-kicker">추가 정보</p>
+                    <h2>경제책과 공식 데이터 길잡이</h2>
+                  </div>
+                  <span class="resource-library-count" id="resourceLibraryCount"></span>
+                </div>
+                <div class="resource-library-summary" id="resourceLibrarySummary"></div>
+                <div class="resource-library-tabs" id="resourceLibraryTabs" role="tablist" aria-label="추가 정보 종류"></div>
+                <div class="resource-library-body" id="resourceLibraryBody"></div>
+              </article>
+            </section>
           </div>
         </section>
       </main>
@@ -339,7 +355,6 @@
       </footer>
     </div>
 
-    <script type="module" src="/app.js?v=71"></script>
+    <script type="module" src="/app.js?v=72"></script>
   </body>
 </html>
-
