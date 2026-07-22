@@ -1,4 +1,5 @@
-import { futureCompanies, futureIndustries, futureIndustryMethod } from "./future-industry-data.js?v=64";
+import { climateBusinessFramework } from "./climate-business-data.js?v=71";
+import { futureCompanies, futureIndustries, futureIndustryMethod } from "./future-industry-data.js?v=71";
 
 const numberFormatter = new Intl.NumberFormat("ko-KR", { maximumFractionDigits: 1 });
 const companyById = new Map(futureCompanies.map((company) => [company.id, company]));
@@ -6,6 +7,7 @@ const industryById = new Map(futureIndustries.map((industry) => [industry.id, in
 
 const viewState = {
   sector: "ai-chips",
+  climatePhase: "all",
   compareIds: ["nvidia", "sk-hynix", "microsoft"]
 };
 
@@ -14,6 +16,7 @@ let updateChapterHeight = () => {};
 const elements = {
   update: document.querySelector("#futureUpdate"),
   summary: document.querySelector("#futureSummary"),
+  climateLab: document.querySelector("#climateBusinessLab"),
   industryTabs: document.querySelector("#futureIndustryTabs"),
   story: document.querySelector("#futureStory"),
   companyCount: document.querySelector("#futureCompanyCount"),
@@ -25,6 +28,14 @@ const elements = {
 
 export function initFutureIndustryChapter({ updateHeight = () => {} } = {}) {
   updateChapterHeight = updateHeight;
+
+  elements.climateLab?.addEventListener("click", (event) => {
+    const button = event.target.closest?.("[data-climate-phase]");
+    if (!button) return;
+    viewState.climatePhase = button.dataset.climatePhase;
+    renderClimateBusinessLab();
+    requestAnimationFrame(updateChapterHeight);
+  });
 
   elements.industryTabs.addEventListener("click", (event) => {
     const button = event.target.closest?.("[data-future-sector]");
@@ -44,6 +55,91 @@ export function initFutureIndustryChapter({ updateHeight = () => {} } = {}) {
   });
 
   renderFutureIndustryChapter();
+}
+
+function renderClimateBusinessLab() {
+  if (!elements.climateLab) return;
+  const selectedPhase = climateBusinessFramework.phases.find((phase) => phase.id === viewState.climatePhase)
+    || climateBusinessFramework.phases[0];
+  const opportunities = climateBusinessFramework.opportunities.filter((item) => (
+    selectedPhase.id === "all" || item.phase === selectedPhase.id
+  ));
+  const phaseById = new Map(climateBusinessFramework.phases.map((phase) => [phase.id, phase]));
+
+  elements.climateLab.innerHTML = `
+    <header class="climate-business-head">
+      <div>
+        <span>기후 대응 미래사업</span>
+        <h3>${escapeHtml(climateBusinessFramework.title)}</h3>
+        <p>${escapeHtml(climateBusinessFramework.description)}</p>
+      </div>
+      <aside>
+        <strong>${climateBusinessFramework.opportunities.length}개</strong>
+        <span>사업 구조 분석</span>
+      </aside>
+    </header>
+    <div class="climate-phase-guide">
+      ${climateBusinessFramework.phases.filter((phase) => phase.id !== "all").map((phase, index) => `
+        <div data-phase="${escapeHtml(phase.id)}">
+          <i>${String(index + 1).padStart(2, "0")}</i>
+          <span>${escapeHtml(phase.label)}</span>
+          <strong>${escapeHtml(phase.short)}</strong>
+          <p>${escapeHtml(phase.description)}</p>
+        </div>
+      `).join("")}
+    </div>
+    <div class="climate-filter-row" role="tablist" aria-label="기후 대응 사업 단계">
+      ${climateBusinessFramework.phases.map((phase) => `
+        <button type="button" role="tab" data-climate-phase="${escapeHtml(phase.id)}" aria-selected="${phase.id === selectedPhase.id}">
+          ${escapeHtml(phase.label)}
+          <span>${phase.id === "all" ? climateBusinessFramework.opportunities.length : climateBusinessFramework.opportunities.filter((item) => item.phase === phase.id).length}</span>
+        </button>
+      `).join("")}
+    </div>
+    <div class="climate-filter-context">
+      <strong>${escapeHtml(selectedPhase.short)}</strong>
+      <p>${escapeHtml(selectedPhase.description)}</p>
+    </div>
+    <div class="climate-opportunity-grid">
+      ${opportunities.map((opportunity) => {
+        const phase = phaseById.get(opportunity.phase);
+        return `
+          <article class="climate-opportunity-card" data-phase="${escapeHtml(opportunity.phase)}">
+            <header>
+              <div>
+                <span>${escapeHtml(opportunity.category)}</span>
+                <h4>${escapeHtml(opportunity.title)}</h4>
+              </div>
+              <em>${escapeHtml(phase?.label || "")}</em>
+            </header>
+            <p class="climate-opportunity-plain">${escapeHtml(opportunity.plain)}</p>
+            <dl>
+              <div><dt>누가 사나</dt><dd>${escapeHtml(opportunity.buyers)}</dd></div>
+              <div><dt>어떻게 버나</dt><dd>${escapeHtml(opportunity.revenueModel)}</dd></div>
+              <div><dt>사업 시계</dt><dd>${escapeHtml(opportunity.horizon)} · 투자부담 ${escapeHtml(opportunity.capital)}</dd></div>
+            </dl>
+            <details>
+              <summary>수요·경쟁력·위험 자세히 보기</summary>
+              <div class="climate-opportunity-detail">
+                <section><span>수요가 커지는 신호</span><p>${escapeHtml(opportunity.demandTrigger)}</p></section>
+                <section><span>오래 버틸 경쟁력</span><p>${escapeHtml(opportunity.moat)}</p></section>
+                <section><span>한국의 기회</span><p>${escapeHtml(opportunity.korea)}</p></section>
+                <section class="climate-opportunity-lists">
+                  <div><span>확인할 숫자</span><ul>${opportunity.kpis.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div>
+                  <div><span>실패할 수 있는 지점</span><ul>${opportunity.risks.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div>
+                </section>
+                <aside><span>처음 볼 것</span><p>${escapeHtml(opportunity.firstStep)}</p></aside>
+              </div>
+            </details>
+          </article>
+        `;
+      }).join("")}
+    </div>
+    <footer class="climate-business-caution">
+      <strong>사업성을 볼 때 주의</strong>
+      <ul>${climateBusinessFramework.cautions.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+    </footer>
+  `;
 }
 
 function getHealthScore(company) {
@@ -76,8 +172,8 @@ function renderFutureIndustryChapter() {
   elements.summary.innerHTML = `
     <div>
       <span>분석 범위</span>
-      <strong>${futureIndustries.length}개 산업</strong>
-      <p>성장 이유와 병목을 가치사슬로 연결</p>
+      <strong>${futureIndustries.length}개 산업 + 기후사업 ${climateBusinessFramework.opportunities.length}개</strong>
+      <p>성장 이유·고객·매출 구조와 병목을 연결</p>
     </div>
     <div>
       <span>기업 스냅샷</span>
@@ -90,6 +186,8 @@ function renderFutureIndustryChapter() {
       <p>성장률·수익성·현금 신호를 분리</p>
     </div>
   `;
+
+  renderClimateBusinessLab();
 
   elements.industryTabs.replaceChildren(
     ...futureIndustries.map((item) => {

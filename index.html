@@ -8,9 +8,9 @@
       content="최신 시장 데이터와 한국 경제 흐름을 기준시각과 함께 정리하는 대시보드"
     />
     <meta name="theme-color" content="#f6f7f8" />
-    <link rel="manifest" href="/manifest.json?v=70" />
+    <link rel="manifest" href="/manifest.json?v=71" />
     <link rel="icon" href="/assets/econest-icon.png" type="image/png" />
-    <link rel="stylesheet" href="/styles.css?v=70" />
+    <link rel="stylesheet" href="/styles.css?v=71" />
     <title>keefe's soiety</title>
   </head>
   <body>
@@ -171,6 +171,7 @@
                       <div>
                         <p class="section-kicker">지표 목록</p>
                         <h3>분야별 기준값</h3>
+                        <small>목록 안에서 스크롤해 선택</small>
                       </div>
                       <span id="indicatorCount"></span>
                     </header>
@@ -191,6 +192,7 @@
                   <span class="future-update" id="futureUpdate"></span>
                 </div>
                 <div class="future-summary" id="futureSummary"></div>
+                <section class="climate-business-lab" id="climateBusinessLab" aria-label="지구 온난화 대응 사업"></section>
                 <div class="future-industry-tabs" id="futureIndustryTabs" role="tablist" aria-label="미래산업 분야"></div>
                 <section class="future-story" id="futureStory" aria-live="polite"></section>
                 <section class="future-company-section" aria-label="기업 체력 비교">
@@ -259,12 +261,12 @@
                   </div>
                   <span class="history-count" id="historyCount"></span>
                 </div>
-                <div class="history-brief" id="historyBrief"></div>
                 <div class="history-era-tabs" id="historyEraTabs" role="tablist" aria-label="경제사 시대 선택"></div>
+                <div class="history-brief" id="historyBrief"></div>
                 <div class="history-overview" id="historyOverview"></div>
                 <div class="history-layout">
-                  <section class="history-timeline" id="historyTimeline" aria-label="경제사 사건 타임라인"></section>
                   <aside class="history-patterns" id="historyPatterns" aria-label="반복되는 경제사 패턴"></aside>
+                  <section class="history-timeline" id="historyTimeline" aria-label="경제사 사건 타임라인"></section>
                 </div>
               </article>
             </section>
@@ -277,9 +279,9 @@
                   </div>
                 </div>
                 <div class="chapter-brief" id="newsBrief"></div>
+                <div class="news-list" id="newsList"></div>
                 <div class="chapter-board" id="newsBoard"></div>
                 <div class="chapter-expansion" id="newsIntelligence"></div>
-                <div class="news-list" id="newsList"></div>
               </article>
             </section>
 
@@ -337,7 +339,7 @@
       </footer>
     </div>
 
-    <script type="module" src="/app.js?v=70"></script>
+    <script type="module" src="/app.js?v=71"></script>
   </body>
 </html>
 

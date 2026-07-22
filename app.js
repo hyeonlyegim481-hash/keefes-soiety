@@ -1,48 +1,48 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=70";
+} from "./glossary-data.js?v=71";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=70";
+} from "./glossary-extra-data.js?v=71";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=70";
+} from "./glossary-more-data.js?v=71";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=70";
-import { glossarySpecialTerms } from "./glossary-special-data.js?v=70";
-import { glossaryCoreExtraTerms } from "./glossary-core-extra-data.js?v=70";
-import { glossaryExpandedTerms } from "./glossary-expanded-data.js?v=70";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=70";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=70";
-import { moreScenarioQuestions } from "./quiz-scenario-more-data.js?v=70";
-import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=70";
-import { historyDeepDives, historyEraDetails } from "./history-detail-data.js?v=70";
-import { historyEraProfiles, historyEventPerspectives } from "./history-reading-data.js?v=70";
+} from "./glossary-pro-data.js?v=71";
+import { glossarySpecialTerms } from "./glossary-special-data.js?v=71";
+import { glossaryCoreExtraTerms } from "./glossary-core-extra-data.js?v=71";
+import { glossaryExpandedTerms } from "./glossary-expanded-data.js?v=71";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=71";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=71";
+import { moreScenarioQuestions } from "./quiz-scenario-more-data.js?v=71";
+import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=71";
+import { historyDeepDives, historyEraDetails } from "./history-detail-data.js?v=71";
+import { historyEraProfiles, historyEventPerspectives } from "./history-reading-data.js?v=71";
 import {
   indicatorCategories as baseIndicatorCategories,
   indicatorCountries,
   indicatorDefinitions as baseIndicatorDefinitions
-} from "./indicator-data.js?v=70";
+} from "./indicator-data.js?v=71";
 import {
   financeIndicatorCategories,
   financeIndicatorDefinitions
-} from "./indicator-finance-data.js?v=70";
-import { expandedIndicatorDefinitions } from "./indicator-expanded-data.js?v=70";
-import { indicatorSnapshot } from "./indicator-values.js?v=70";
-import { resourceProductionIndicators } from "./resource-production-data.js?v=70";
+} from "./indicator-finance-data.js?v=71";
+import { expandedIndicatorDefinitions } from "./indicator-expanded-data.js?v=71";
+import { indicatorSnapshot } from "./indicator-values.js?v=71";
+import { resourceProductionIndicators } from "./resource-production-data.js?v=71";
 import {
   bindResourceProductionDetail,
   formatProductionExact,
   renderResourceProductionDetail
-} from "./resource-production-ui.js?v=70";
-import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=70";
-import { initFutureIndustryChapter } from "./future-industry-ui.js?v=70";
-import { economicRelationships } from "./relationship-data.js?v=70";
+} from "./resource-production-ui.js?v=71";
+import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=71";
+import { initFutureIndustryChapter } from "./future-industry-ui.js?v=71";
+import { economicRelationships } from "./relationship-data.js?v=71";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions, ...moreScenarioQuestions];
 const indicatorCategories = [...baseIndicatorCategories, ...financeIndicatorCategories];
@@ -663,7 +663,7 @@ if ("serviceWorker" in navigator) {
   const hadServiceWorkerController = Boolean(navigator.serviceWorker.controller);
   let reloadingForServiceWorker = false;
   navigator.serviceWorker
-    .register("/sw.js?v=70")
+    .register("/sw.js?v=71")
     .then((registration) => {
       registration.update().catch(() => {});
       setInterval(() => registration.update().catch(() => {}), 5 * 60_000);
