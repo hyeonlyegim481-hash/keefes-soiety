@@ -1,49 +1,50 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=72";
+} from "./glossary-data.js?v=73";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=72";
+} from "./glossary-extra-data.js?v=73";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=72";
+} from "./glossary-more-data.js?v=73";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=72";
-import { glossarySpecialTerms } from "./glossary-special-data.js?v=72";
-import { glossaryCoreExtraTerms } from "./glossary-core-extra-data.js?v=72";
-import { glossaryExpandedTerms } from "./glossary-expanded-data.js?v=72";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=72";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=72";
-import { moreScenarioQuestions } from "./quiz-scenario-more-data.js?v=72";
-import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=72";
-import { historyDeepDives, historyEraDetails } from "./history-detail-data.js?v=72";
-import { historyEraProfiles, historyEventPerspectives } from "./history-reading-data.js?v=72";
+} from "./glossary-pro-data.js?v=73";
+import { glossarySpecialTerms } from "./glossary-special-data.js?v=73";
+import { glossaryCoreExtraTerms } from "./glossary-core-extra-data.js?v=73";
+import { glossaryExpandedTerms } from "./glossary-expanded-data.js?v=73";
+import { buildMasterGlossary } from "./glossary-master-data.js?v=73";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=73";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=73";
+import { moreScenarioQuestions } from "./quiz-scenario-more-data.js?v=73";
+import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=73";
+import { historyDeepDives, historyEraDetails } from "./history-detail-data.js?v=73";
+import { historyEraProfiles, historyEventPerspectives } from "./history-reading-data.js?v=73";
 import {
   indicatorCategories as baseIndicatorCategories,
   indicatorCountries,
   indicatorDefinitions as baseIndicatorDefinitions
-} from "./indicator-data.js?v=72";
+} from "./indicator-data.js?v=73";
 import {
   financeIndicatorCategories,
   financeIndicatorDefinitions
-} from "./indicator-finance-data.js?v=72";
-import { expandedIndicatorDefinitions } from "./indicator-expanded-data.js?v=72";
-import { indicatorSnapshot } from "./indicator-values.js?v=72";
-import { resourceProductionIndicators } from "./resource-production-data.js?v=72";
+} from "./indicator-finance-data.js?v=73";
+import { expandedIndicatorDefinitions } from "./indicator-expanded-data.js?v=73";
+import { indicatorSnapshot } from "./indicator-values.js?v=73";
+import { resourceProductionIndicators } from "./resource-production-data.js?v=73";
 import {
   bindResourceProductionDetail,
   formatProductionExact,
   renderResourceProductionDetail
-} from "./resource-production-ui.js?v=72";
-import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=72";
-import { initFutureIndustryChapter } from "./future-industry-ui.js?v=72";
-import { initResourceLibraryChapter } from "./resource-library-ui.js?v=72";
-import { economicRelationships } from "./relationship-data.js?v=72";
+} from "./resource-production-ui.js?v=73";
+import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=73";
+import { initFutureIndustryChapter } from "./future-industry-ui.js?v=73";
+import { initResourceLibraryChapter } from "./resource-library-ui.js?v=73";
+import { economicRelationships } from "./relationship-data.js?v=73";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions, ...moreScenarioQuestions];
 const indicatorCategories = [...baseIndicatorCategories, ...financeIndicatorCategories];
@@ -59,15 +60,33 @@ const glossaryCategoryOrder = [
   ...glossaryMoreCategories,
   ...glossaryProCategories
 ];
+const glossarySeedTerms = [
+  ...coreGlossaryTerms,
+  ...glossaryCoreExtraTerms,
+  ...glossaryExtraTerms,
+  ...glossaryMoreTerms,
+  ...glossaryProTerms,
+  ...glossarySpecialTerms,
+  ...glossaryExpandedTerms
+];
+const masterGlossary = buildMasterGlossary(glossarySeedTerms);
 const glossaryTerms = [
   ...coreGlossaryTerms.map((item) => ({ ...item, level: "core" })),
   ...glossaryCoreExtraTerms.map((item) => ({ ...item, level: "core" })),
+  ...masterGlossary.core.map((item) => ({ ...item, level: "core" })),
   ...glossaryExtraTerms.map((item) => ({ ...item, level: "advanced" })),
   ...glossaryMoreTerms.map((item) => ({ ...item, level: "advanced" })),
   ...glossaryProTerms.map((item) => ({ ...item, level: "advanced" })),
   ...glossarySpecialTerms.map((item) => ({ ...item, level: "advanced" })),
-  ...glossaryExpandedTerms.map((item) => ({ ...item, level: "advanced" }))
+  ...glossaryExpandedTerms.map((item) => ({ ...item, level: "advanced" })),
+  ...masterGlossary.advanced.map((item) => ({ ...item, level: "advanced" }))
 ];
+const glossaryTermsByCategory = glossaryTerms.reduce((groups, item) => {
+  const categoryTerms = groups.get(item.category) || [];
+  categoryTerms.push(item);
+  groups.set(item.category, categoryTerms);
+  return groups;
+}, new Map());
 
 const GLOSSARY_PAGE_SIZE = 24;
 const SNAPSHOT_STORAGE_KEY = "keefes-soiety.snapshot.v1";
@@ -664,7 +683,7 @@ if ("serviceWorker" in navigator) {
   const hadServiceWorkerController = Boolean(navigator.serviceWorker.controller);
   let reloadingForServiceWorker = false;
   navigator.serviceWorker
-    .register("/sw.js?v=72")
+    .register("/sw.js?v=73")
     .then((registration) => {
       registration.update().catch(() => {});
       setInterval(() => registration.update().catch(() => {}), 5 * 60_000);
@@ -2728,12 +2747,14 @@ function renderGlossary() {
     )
   ];
   const levels = [
-    { id: "all", label: "통합", detail: "핵심·심화 전체 용어" },
-    { id: "core", label: "핵심", detail: "경제 흐름을 읽는 기본어" },
-    { id: "advanced", label: "심화", detail: "금융·정책·위기 확장어" }
+    { id: "all", label: "통합", detail: "핵심 700·심화 1,300 전체" },
+    { id: "core", label: "핵심", detail: "일상·은행·주식·거시 기본어" },
+    { id: "advanced", label: "심화", detail: "채권·파생·정책·계량 확장어" }
   ];
 
-  elements.glossaryTotal.textContent = `전체 ${glossaryTerms.length} · 핵심 ${coreGlossaryTerms.length + glossaryCoreExtraTerms.length} · 심화 ${glossaryExtraTerms.length + glossaryMoreTerms.length + glossaryProTerms.length + glossarySpecialTerms.length + glossaryExpandedTerms.length}`;
+  const coreCount = glossaryTerms.filter((item) => item.level === "core").length;
+  const advancedCount = glossaryTerms.length - coreCount;
+  elements.glossaryTotal.textContent = `전체 ${formatter.format(glossaryTerms.length)} · 핵심 ${formatter.format(coreCount)} · 심화 ${formatter.format(advancedCount)}`;
   elements.glossaryLevels.replaceChildren(
     ...levels.map((item) => {
       const count = item.id === "all"
@@ -2745,12 +2766,12 @@ function renderGlossary() {
       button.className = "glossary-level-button";
       button.dataset.glossaryLevel = item.id;
       button.setAttribute("aria-selected", String(item.id === level));
-      button.innerHTML = `<span><strong>${item.label}</strong><em>${item.detail}</em></span><b>${count}개</b>`;
+      button.innerHTML = `<span><strong>${item.label}</strong><em>${item.detail}</em></span><b>${formatter.format(count)}개</b>`;
       return button;
     })
   );
   elements.glossaryResultCount.innerHTML = `
-    <strong>${filtered.length}</strong>
+    <strong>${formatter.format(filtered.length)}</strong>
     <span>${query ? `"${escapeHtml(state.glossaryQuery.trim())}" 통합 검색 결과` : category === "전체" ? `${level === "all" ? "전체" : level === "core" ? "핵심" : "심화"} 용어` : category}</span>
   `;
 
@@ -2766,7 +2787,7 @@ function renderGlossary() {
       button.className = "glossary-category-button";
       button.dataset.glossaryCategory = name;
       button.setAttribute("aria-selected", String(name === category));
-      button.innerHTML = `<span>${name}</span><em>${count}</em>`;
+      button.innerHTML = `<span>${name}</span><em>${formatter.format(count)}</em>`;
       return button;
     })
   );
@@ -2787,7 +2808,7 @@ function renderGlossary() {
   const remaining = Math.max(0, filtered.length - visible.length);
   elements.glossaryLoadMore.hidden = remaining === 0;
   elements.glossaryLoadMore.textContent = remaining
-    ? `용어 더 보기 · ${remaining}개 남음`
+    ? `용어 더 보기 · ${formatter.format(remaining)}개 남음`
     : "모든 용어 표시 중";
   requestAnimationFrame(updateChapterHeight);
 }
@@ -2955,7 +2976,7 @@ function renderQuiz() {
     { id: "term", label: "용어", detail: "뜻 맞히기", count: glossaryTerms.length },
     { id: "scenario", label: "상황판단", detail: "경제 흐름 판단", count: scenarioQuestions.length }
   ];
-  elements.quizBankSize.textContent = `${glossaryTerms.length + scenarioQuestions.length}개 문제은행`;
+  elements.quizBankSize.textContent = `${formatter.format(glossaryTerms.length + scenarioQuestions.length)}개 문제은행`;
   elements.quizModes.replaceChildren(
     ...modes.map((mode) => {
       const button = document.createElement("button");
@@ -2964,7 +2985,7 @@ function renderQuiz() {
       button.className = "quiz-mode-button";
       button.dataset.quizMode = mode.id;
       button.setAttribute("aria-selected", String(state.quizMode === mode.id));
-      button.innerHTML = `<strong>${mode.label}</strong><b>${mode.count}개</b><span>${mode.detail}</span>`;
+      button.innerHTML = `<strong>${mode.label}</strong><b>${formatter.format(mode.count)}개</b><span>${mode.detail}</span>`;
       return button;
     })
   );
@@ -3060,11 +3081,16 @@ function resetQuizSession(mode = "mixed") {
 }
 
 function createQuizSession(mode) {
-  const termPool = shuffleQuizItems(buildTermQuizPool());
-  const scenarioPool = shuffleQuizItems(scenarioQuestions.map(shuffleScenarioChoices));
-  if (mode === "term") return termPool.slice(0, 10);
-  if (mode === "scenario") return scenarioPool.slice(0, 10);
-  return shuffleQuizItems([...termPool.slice(0, 5), ...scenarioPool.slice(0, 5)]);
+  const termCount = mode === "term" ? 10 : mode === "mixed" ? 5 : 0;
+  const scenarioCount = mode === "scenario" ? 10 : mode === "mixed" ? 5 : 0;
+  const selectedTerms = termCount ? shuffleQuizItems(glossaryTerms).slice(0, termCount) : [];
+  const selectedScenarios = scenarioCount
+    ? shuffleQuizItems(scenarioQuestions).slice(0, scenarioCount).map(shuffleScenarioChoices)
+    : [];
+  const termPool = buildTermQuizPool(selectedTerms);
+  if (mode === "term") return termPool;
+  if (mode === "scenario") return selectedScenarios;
+  return shuffleQuizItems([...termPool, ...selectedScenarios]);
 }
 
 function shuffleScenarioChoices(question) {
@@ -3081,17 +3107,17 @@ function shuffleScenarioChoices(question) {
   };
 }
 
-function buildTermQuizPool() {
-  return glossaryTerms.map((term, termIndex) => {
-    const sameCategory = glossaryTerms.filter(
-      (candidate) => candidate.category === term.category && candidate.term !== term.term
-    );
+function buildTermQuizPool(terms) {
+  return terms.map((term, termIndex) => {
+    const sameCategory = glossaryTermsByCategory.get(term.category) || [];
     const distractors = [];
     let cursor = Math.abs(quizHash(`${term.term}-${termIndex}`)) % sameCategory.length;
-    while (distractors.length < 3 && sameCategory.length) {
+    let attempts = 0;
+    while (distractors.length < 3 && attempts < sameCategory.length * 2) {
       const candidate = sameCategory[cursor % sameCategory.length].term;
-      if (!distractors.includes(candidate)) distractors.push(candidate);
+      if (candidate !== term.term && !distractors.includes(candidate)) distractors.push(candidate);
       cursor += 1;
+      attempts += 1;
     }
     const choices = [term.term, ...distractors].sort(
       (a, b) => quizHash(`${term.term}-${a}`) - quizHash(`${term.term}-${b}`)
