@@ -1,50 +1,50 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=73";
+} from "./glossary-data.js?v=74";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=73";
+} from "./glossary-extra-data.js?v=74";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=73";
+} from "./glossary-more-data.js?v=74";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=73";
-import { glossarySpecialTerms } from "./glossary-special-data.js?v=73";
-import { glossaryCoreExtraTerms } from "./glossary-core-extra-data.js?v=73";
-import { glossaryExpandedTerms } from "./glossary-expanded-data.js?v=73";
-import { buildMasterGlossary } from "./glossary-master-data.js?v=73";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=73";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=73";
-import { moreScenarioQuestions } from "./quiz-scenario-more-data.js?v=73";
-import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=73";
-import { historyDeepDives, historyEraDetails } from "./history-detail-data.js?v=73";
-import { historyEraProfiles, historyEventPerspectives } from "./history-reading-data.js?v=73";
+} from "./glossary-pro-data.js?v=74";
+import { glossarySpecialTerms } from "./glossary-special-data.js?v=74";
+import { glossaryCoreExtraTerms } from "./glossary-core-extra-data.js?v=74";
+import { glossaryExpandedTerms } from "./glossary-expanded-data.js?v=74";
+import { buildMasterGlossary } from "./glossary-master-data.js?v=74";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=74";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=74";
+import { moreScenarioQuestions } from "./quiz-scenario-more-data.js?v=74";
+import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=74";
+import { historyDeepDives, historyEraDetails } from "./history-detail-data.js?v=74";
+import { historyEraProfiles, historyEventPerspectives } from "./history-reading-data.js?v=74";
 import {
   indicatorCategories as baseIndicatorCategories,
   indicatorCountries,
   indicatorDefinitions as baseIndicatorDefinitions
-} from "./indicator-data.js?v=73";
+} from "./indicator-data.js?v=74";
 import {
   financeIndicatorCategories,
   financeIndicatorDefinitions
-} from "./indicator-finance-data.js?v=73";
-import { expandedIndicatorDefinitions } from "./indicator-expanded-data.js?v=73";
-import { indicatorSnapshot } from "./indicator-values.js?v=73";
-import { resourceProductionIndicators } from "./resource-production-data.js?v=73";
+} from "./indicator-finance-data.js?v=74";
+import { expandedIndicatorDefinitions } from "./indicator-expanded-data.js?v=74";
+import { indicatorSnapshot } from "./indicator-values.js?v=74";
+import { resourceProductionIndicators } from "./resource-production-data.js?v=74";
 import {
   bindResourceProductionDetail,
   formatProductionExact,
   renderResourceProductionDetail
-} from "./resource-production-ui.js?v=73";
-import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=73";
-import { initFutureIndustryChapter } from "./future-industry-ui.js?v=73";
-import { initResourceLibraryChapter } from "./resource-library-ui.js?v=73";
-import { economicRelationships } from "./relationship-data.js?v=73";
+} from "./resource-production-ui.js?v=74";
+import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=74";
+import { initFutureIndustryChapter } from "./future-industry-ui.js?v=74";
+import { initResourceLibraryChapter } from "./resource-library-ui.js?v=74";
+import { economicRelationships } from "./relationship-data.js?v=74";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions, ...moreScenarioQuestions];
 const indicatorCategories = [...baseIndicatorCategories, ...financeIndicatorCategories];
@@ -683,7 +683,7 @@ if ("serviceWorker" in navigator) {
   const hadServiceWorkerController = Boolean(navigator.serviceWorker.controller);
   let reloadingForServiceWorker = false;
   navigator.serviceWorker
-    .register("/sw.js?v=73")
+    .register("/sw.js?v=74")
     .then((registration) => {
       registration.update().catch(() => {});
       setInterval(() => registration.update().catch(() => {}), 5 * 60_000);
@@ -698,6 +698,8 @@ if ("serviceWorker" in navigator) {
 
 initFutureIndustryChapter({ updateHeight: updateChapterHeight });
 initResourceLibraryChapter({ updateHeight: updateChapterHeight });
+renderGlossary();
+renderQuiz();
 renderIndicators();
 setActiveChapter(state.activeChapter, { skipAnimation: true });
 queueMicrotask(() => {

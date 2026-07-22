@@ -7,7 +7,7 @@ import {
   resourceCategories,
   resourceGuides,
   resourceRegions
-} from "./resource-library-data.js?v=73";
+} from "./resource-library-data.js?v=74";
 
 const bookById = new Map(economicsBooks.map((book) => [book.id, book]));
 const resourceById = new Map(officialResources.map((resource) => [resource.id, resource]));
