@@ -3,7 +3,7 @@ import { decodeGoogleNewsUrl } from "./news-content.js";
 const REQUEST_TIMEOUT_MS = 8_000;
 const MACRO_CACHE_TTL_MS = 6 * 60 * 60 * 1000;
 const MACRO_RETRY_TTL_MS = 5 * 60 * 1000;
-const MACRO_LOADER_TIMEOUT_MS = 10_000;
+const MACRO_LOADER_TIMEOUT_MS = 18_000;
 const OFFICIAL_DATA_HOSTS = new Set([
   "www.bok.or.kr",
   "mods.go.kr",
