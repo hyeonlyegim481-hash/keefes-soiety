@@ -1,50 +1,50 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=74";
+} from "./glossary-data.js?v=76";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=74";
+} from "./glossary-extra-data.js?v=76";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=74";
+} from "./glossary-more-data.js?v=76";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=74";
-import { glossarySpecialTerms } from "./glossary-special-data.js?v=74";
-import { glossaryCoreExtraTerms } from "./glossary-core-extra-data.js?v=74";
-import { glossaryExpandedTerms } from "./glossary-expanded-data.js?v=74";
-import { buildMasterGlossary } from "./glossary-master-data.js?v=74";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=74";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=74";
-import { moreScenarioQuestions } from "./quiz-scenario-more-data.js?v=74";
-import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=74";
-import { historyDeepDives, historyEraDetails } from "./history-detail-data.js?v=74";
-import { historyEraProfiles, historyEventPerspectives } from "./history-reading-data.js?v=74";
+} from "./glossary-pro-data.js?v=76";
+import { glossarySpecialTerms } from "./glossary-special-data.js?v=76";
+import { glossaryCoreExtraTerms } from "./glossary-core-extra-data.js?v=76";
+import { glossaryExpandedTerms } from "./glossary-expanded-data.js?v=76";
+import { buildMasterGlossary } from "./glossary-master-data.js?v=76";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=76";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=76";
+import { moreScenarioQuestions } from "./quiz-scenario-more-data.js?v=76";
+import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=76";
+import { historyDeepDives, historyEraDetails } from "./history-detail-data.js?v=76";
+import { historyEraProfiles, historyEventPerspectives } from "./history-reading-data.js?v=76";
 import {
   indicatorCategories as baseIndicatorCategories,
   indicatorCountries,
   indicatorDefinitions as baseIndicatorDefinitions
-} from "./indicator-data.js?v=74";
+} from "./indicator-data.js?v=76";
 import {
   financeIndicatorCategories,
   financeIndicatorDefinitions
-} from "./indicator-finance-data.js?v=74";
-import { expandedIndicatorDefinitions } from "./indicator-expanded-data.js?v=74";
-import { indicatorSnapshot } from "./indicator-values.js?v=74";
-import { resourceProductionIndicators } from "./resource-production-data.js?v=74";
+} from "./indicator-finance-data.js?v=76";
+import { expandedIndicatorDefinitions } from "./indicator-expanded-data.js?v=76";
+import { indicatorSnapshot } from "./indicator-values.js?v=76";
+import { resourceProductionIndicators } from "./resource-production-data.js?v=76";
 import {
   bindResourceProductionDetail,
   formatProductionExact,
   renderResourceProductionDetail
-} from "./resource-production-ui.js?v=74";
-import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=74";
-import { initFutureIndustryChapter } from "./future-industry-ui.js?v=74";
-import { initResourceLibraryChapter } from "./resource-library-ui.js?v=74";
-import { economicRelationships } from "./relationship-data.js?v=74";
+} from "./resource-production-ui.js?v=76";
+import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=76";
+import { initFutureIndustryChapter } from "./future-industry-ui.js?v=76";
+import { initResourceLibraryChapter } from "./resource-library-ui.js?v=76";
+import { economicRelationships } from "./relationship-data.js?v=76";
 
 const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions, ...moreScenarioQuestions];
 const indicatorCategories = [...baseIndicatorCategories, ...financeIndicatorCategories];
@@ -71,17 +71,18 @@ const glossarySeedTerms = [
 ];
 const masterGlossary = buildMasterGlossary(glossarySeedTerms);
 const glossaryTerms = [
-  ...coreGlossaryTerms.map((item) => ({ ...item, level: "core" })),
-  ...glossaryCoreExtraTerms.map((item) => ({ ...item, level: "core" })),
-  ...masterGlossary.core.map((item) => ({ ...item, level: "core" })),
-  ...glossaryExtraTerms.map((item) => ({ ...item, level: "advanced" })),
-  ...glossaryMoreTerms.map((item) => ({ ...item, level: "advanced" })),
-  ...glossaryProTerms.map((item) => ({ ...item, level: "advanced" })),
-  ...glossarySpecialTerms.map((item) => ({ ...item, level: "advanced" })),
-  ...glossaryExpandedTerms.map((item) => ({ ...item, level: "advanced" })),
-  ...masterGlossary.advanced.map((item) => ({ ...item, level: "advanced" }))
+  ...coreGlossaryTerms.map((item) => ({ ...item, level: "core", kind: "standard" })),
+  ...glossaryCoreExtraTerms.map((item) => ({ ...item, level: "core", kind: "standard" })),
+  ...masterGlossary.core.map((item) => ({ ...item, level: "core", kind: "applied" })),
+  ...glossaryExtraTerms.map((item) => ({ ...item, level: "advanced", kind: "standard" })),
+  ...glossaryMoreTerms.map((item) => ({ ...item, level: "advanced", kind: "standard" })),
+  ...glossaryProTerms.map((item) => ({ ...item, level: "advanced", kind: "standard" })),
+  ...glossarySpecialTerms.map((item) => ({ ...item, level: "advanced", kind: "standard" })),
+  ...glossaryExpandedTerms.map((item) => ({ ...item, level: "advanced", kind: "standard" })),
+  ...masterGlossary.advanced.map((item) => ({ ...item, level: "advanced", kind: "applied" }))
 ];
-const glossaryTermsByCategory = glossaryTerms.reduce((groups, item) => {
+const quizGlossaryTerms = glossaryTerms.filter((item) => item.kind === "standard");
+const glossaryTermsByCategory = quizGlossaryTerms.reduce((groups, item) => {
   const categoryTerms = groups.get(item.category) || [];
   categoryTerms.push(item);
   groups.set(item.category, categoryTerms);
@@ -89,8 +90,6 @@ const glossaryTermsByCategory = glossaryTerms.reduce((groups, item) => {
 }, new Map());
 
 const GLOSSARY_PAGE_SIZE = 24;
-const SNAPSHOT_STORAGE_KEY = "keefes-soiety.snapshot.v1";
-const SNAPSHOT_STORAGE_MAX_AGE_MS = 3 * 24 * 60 * 60 * 1000;
 
 const ECONOMIC_QUOTES = [
   {
@@ -683,7 +682,7 @@ if ("serviceWorker" in navigator) {
   const hadServiceWorkerController = Boolean(navigator.serviceWorker.controller);
   let reloadingForServiceWorker = false;
   navigator.serviceWorker
-    .register("/sw.js?v=74")
+    .register("/sw.js?v=76")
     .then((registration) => {
       registration.update().catch(() => {});
       setInterval(() => registration.update().catch(() => {}), 5 * 60_000);
@@ -703,12 +702,6 @@ renderQuiz();
 renderIndicators();
 setActiveChapter(state.activeChapter, { skipAnimation: true });
 queueMicrotask(() => {
-  const restoredSnapshot = restoreStoredSnapshot();
-  if (restoredSnapshot) {
-    state.snapshot = restoredSnapshot;
-    render(restoredSnapshot);
-    setConnection("stale", "저장 데이터");
-  }
   refreshSnapshot();
   setInterval(() => {
     if (document.visibilityState === "visible") refreshSnapshot();
@@ -723,29 +716,15 @@ async function refreshSnapshot({ force = false } = {}) {
   try {
     const snapshot = await fetchSnapshot();
     state.snapshot = snapshot;
-    storeSnapshot(snapshot);
     if (!snapshot.markets.some((market) => market.id === state.selectedMarket)) {
       state.selectedMarket = snapshot.markets[0]?.id || "kospi";
     }
     render(snapshot);
     updateConnectionStatus(snapshot);
   } catch {
-    if (state.snapshot) {
-      const snapshot = {
-        ...state.snapshot,
-        markets: state.snapshot.markets.map((market) => ({
-          ...market,
-          live: false,
-          status: "stale"
-        }))
-      };
-      state.snapshot = snapshot;
-      render(snapshot);
-      setConnection("stale", "이전 데이터");
-    } else {
-      renderDataUnavailable();
-      setConnection("error", "데이터 없음");
-    }
+    state.snapshot = null;
+    renderDataUnavailable();
+    setConnection("error", "자료 수집 실패");
   } finally {
     state.isRefreshing = false;
   }
@@ -763,47 +742,6 @@ async function fetchSnapshot() {
     throw new Error("Snapshot has no market data");
   }
   return snapshot;
-}
-
-function restoreStoredSnapshot() {
-  try {
-    const stored = JSON.parse(localStorage.getItem(SNAPSHOT_STORAGE_KEY) || "null");
-    if (
-      !stored?.savedAt ||
-      Date.now() - stored.savedAt > SNAPSHOT_STORAGE_MAX_AGE_MS ||
-      !Array.isArray(stored.snapshot?.markets) ||
-      !stored.snapshot.markets.length
-    ) {
-      localStorage.removeItem(SNAPSHOT_STORAGE_KEY);
-      return null;
-    }
-    return {
-      ...stored.snapshot,
-      markets: stored.snapshot.markets.map((market) => ({
-        ...market,
-        live: false,
-        status: "stale"
-      }))
-    };
-  } catch {
-    try {
-      localStorage.removeItem(SNAPSHOT_STORAGE_KEY);
-    } catch {
-      // Ignore storage access errors.
-    }
-    return null;
-  }
-}
-
-function storeSnapshot(snapshot) {
-  try {
-    localStorage.setItem(
-      SNAPSHOT_STORAGE_KEY,
-      JSON.stringify({ savedAt: Date.now(), snapshot })
-    );
-  } catch {
-    // Storage can be unavailable in private browsing or when the quota is full.
-  }
 }
 
 function render(snapshot) {
@@ -2756,7 +2694,9 @@ function renderGlossary() {
 
   const coreCount = glossaryTerms.filter((item) => item.level === "core").length;
   const advancedCount = glossaryTerms.length - coreCount;
-  elements.glossaryTotal.textContent = `전체 ${formatter.format(glossaryTerms.length)} · 핵심 ${formatter.format(coreCount)} · 심화 ${formatter.format(advancedCount)}`;
+  const standardCount = glossaryTerms.filter((item) => item.kind === "standard").length;
+  const appliedCount = glossaryTerms.length - standardCount;
+  elements.glossaryTotal.textContent = `전체 ${formatter.format(glossaryTerms.length)} · 표준 용어 ${formatter.format(standardCount)} · 응용 개념 ${formatter.format(appliedCount)}`;
   elements.glossaryLevels.replaceChildren(
     ...levels.map((item) => {
       const count = item.id === "all"
@@ -2774,7 +2714,7 @@ function renderGlossary() {
   );
   elements.glossaryResultCount.innerHTML = `
     <strong>${formatter.format(filtered.length)}</strong>
-    <span>${query ? `"${escapeHtml(state.glossaryQuery.trim())}" 통합 검색 결과` : category === "전체" ? `${level === "all" ? "전체" : level === "core" ? "핵심" : "심화"} 용어` : category}</span>
+    <span>${query ? `"${escapeHtml(state.glossaryQuery.trim())}" 통합 검색 결과` : category === "전체" ? `${level === "all" ? "전체" : level === "core" ? "핵심" : "심화"} 용어·응용 개념` : category}</span>
   `;
 
   elements.glossaryCategories.replaceChildren(
@@ -2825,7 +2765,7 @@ function createGlossaryCard(item) {
         <span class="glossary-card-topline">
           <strong>${escapeHtml(item.term)}</strong>
           <em>${escapeHtml(item.english)}</em>
-          <b class="glossary-level-badge" data-level="${item.level}">${item.level === "core" ? "핵심" : "심화"}</b>
+          <b class="glossary-level-badge" data-level="${item.level}" data-kind="${item.kind}">${item.level === "core" ? "핵심" : "심화"} · ${item.kind === "applied" ? "응용 개념" : "표준 용어"}</b>
         </span>
         <span class="glossary-card-definition">${escapeHtml(item.definition)}</span>
       </span>
@@ -2974,11 +2914,11 @@ function getGlossaryReadingPoint(category) {
 
 function renderQuiz() {
   const modes = [
-    { id: "mixed", label: "혼합", detail: "용어 5 + 상황 5", count: glossaryTerms.length + scenarioQuestions.length },
-    { id: "term", label: "용어", detail: "뜻 맞히기", count: glossaryTerms.length },
+    { id: "mixed", label: "혼합", detail: "표준 용어 5 + 상황 5", count: quizGlossaryTerms.length + scenarioQuestions.length },
+    { id: "term", label: "용어", detail: "표준 용어 뜻 맞히기", count: quizGlossaryTerms.length },
     { id: "scenario", label: "상황판단", detail: "경제 흐름 판단", count: scenarioQuestions.length }
   ];
-  elements.quizBankSize.textContent = `${formatter.format(glossaryTerms.length + scenarioQuestions.length)}개 문제은행`;
+  elements.quizBankSize.textContent = `${formatter.format(quizGlossaryTerms.length + scenarioQuestions.length)}개 문제은행`;
   elements.quizModes.replaceChildren(
     ...modes.map((mode) => {
       const button = document.createElement("button");
@@ -3085,7 +3025,7 @@ function resetQuizSession(mode = "mixed") {
 function createQuizSession(mode) {
   const termCount = mode === "term" ? 10 : mode === "mixed" ? 5 : 0;
   const scenarioCount = mode === "scenario" ? 10 : mode === "mixed" ? 5 : 0;
-  const selectedTerms = termCount ? shuffleQuizItems(glossaryTerms).slice(0, termCount) : [];
+  const selectedTerms = termCount ? shuffleQuizItems(quizGlossaryTerms).slice(0, termCount) : [];
   const selectedScenarios = scenarioCount
     ? shuffleQuizItems(scenarioQuestions).slice(0, scenarioCount).map(shuffleScenarioChoices)
     : [];
@@ -3696,7 +3636,11 @@ function renderNewsAnalysisResult(output, result) {
   const contentBasis = isArticleBased ? "원문 내용 기반" : "제목 기반";
   const summaryLabel = isArticleBased ? "한 줄 요약" : "제목 기반 해석";
   const pointsLabel = isArticleBased ? "핵심 사실" : "읽는 포인트";
-  const marketBasis = result.marketContextBasis === "article-time" ? "기사 시점 가격" : "현재 가격";
+  const marketBasis = result.marketContextBasis === "post-article"
+    ? "기사 이후 가격"
+    : result.marketContextBasis === "article-time"
+      ? "기사 시점 참고 가격"
+      : "현재 가격";
   const sourceBasis = Number(result.relatedSourceCount) > 1
     ? `교차 ${result.relatedSourceCount}곳`
     : "단일 출처";
@@ -4127,27 +4071,78 @@ function getLatestMarketTimestamp(snapshot) {
 }
 
 function renderDataUnavailable() {
+  state.narrative = null;
   elements.regimeTitle.textContent = "데이터 연결 확인 필요";
-  elements.pulseText.textContent = "실제 시장 시세를 불러오지 못했습니다. 임의의 대체 숫자는 표시하지 않습니다.";
+  elements.pulseText.textContent = "실제 자료를 불러오지 못했습니다. 이전 값이나 추정값은 대신 표시하지 않습니다.";
   elements.updatedAt.textContent = "기준시각 없음";
   elements.updatedAt.removeAttribute("datetime");
-  elements.sourceLine.textContent = "잠시 후 새로고침하면 다시 확인합니다.";
+  elements.sourceLine.textContent = "잠시 후 새로고침하면 공식 자료를 다시 확인합니다.";
   elements.riskScore.textContent = "--";
   elements.riskMeter.style.strokeDashoffset = 314;
   elements.riskMeter.style.stroke = "#cbd5db";
+  elements.regimeTitle.closest(".signal-panel")?.removeAttribute("data-tone");
+  elements.riskScore.closest(".risk-panel")?.removeAttribute("data-tone");
   elements.watchChips.replaceChildren();
   elements.riskDrivers.replaceChildren();
   elements.riskLegend.replaceChildren();
-  elements.marketStrip.innerHTML = `
-    <div class="market-unavailable">
-      <strong>시장 데이터를 가져오지 못했습니다.</strong>
-      <span>실제 시세 연결이 복구되면 자동으로 다시 표시됩니다.</span>
-    </div>
-  `;
-  elements.briefBoard.innerHTML = `
-    <div class="data-unavailable-panel">
-      <strong>분석을 잠시 멈췄습니다.</strong>
-      <p>신뢰할 수 있는 시장 데이터가 없는 상태에서는 위험 온도와 시장 해석을 만들지 않습니다.</p>
+  elements.marketStrip.innerHTML = unavailablePanel(
+    "시장 데이터를 가져오지 못했습니다.",
+    "실제 시세 연결이 복구되면 자동으로 다시 표시됩니다.",
+    "market-unavailable"
+  );
+  elements.briefBoard.innerHTML = unavailablePanel(
+    "분석을 잠시 멈췄습니다.",
+    "신뢰할 수 있는 시장 데이터가 없으므로 위험 온도와 시장 해석을 만들지 않습니다."
+  );
+
+  const unavailableSections = [
+    [elements.marketBrief, "시장 핵심을 표시할 수 없습니다.", "현재 시세 수집에 실패했습니다."],
+    [elements.marketBoard, "시장 해석을 표시할 수 없습니다.", "확인된 가격 없이 원인이나 방향을 추정하지 않습니다."],
+    [elements.marketConnections, "시장 연결 관계를 표시할 수 없습니다.", "모든 필수 시장값을 다시 확인한 뒤 분석합니다."],
+    [elements.analysisBoard, "심층 분석을 표시할 수 없습니다.", "자료가 복구될 때까지 시나리오와 결론을 만들지 않습니다."],
+    [elements.analysisQuote, "오늘의 경제 명언을 표시할 수 없습니다.", "현재 상황과 연결한 해석에 필요한 자료가 없습니다."],
+    [elements.scenarioMatrix, "시나리오를 표시할 수 없습니다.", "확인된 데이터 없이 확률이나 방향을 추정하지 않습니다."],
+    [elements.koreaBrief, "한국 경제 요약을 표시할 수 없습니다.", "시장과 공식 거시지표를 모두 확인하지 못했습니다."],
+    [elements.macroGrid, "공식 지표를 가져오지 못했습니다.", "대체 숫자를 사용하지 않고 다음 수집 때 다시 확인합니다."],
+    [elements.koreaBoard, "한국 경제 전달 경로를 표시할 수 없습니다.", "확인되지 않은 수치로 영향을 추정하지 않습니다."],
+    [elements.koreaImpact, "생활·산업 영향을 표시할 수 없습니다.", "실제 자료가 복구된 뒤 다시 분석합니다."],
+    [elements.newsBrief, "뉴스 현황을 가져오지 못했습니다.", "오래된 기사나 임의의 내용을 대신 채우지 않습니다."],
+    [elements.newsBoard, "뉴스 분석을 표시할 수 없습니다.", "기사 원문과 시장 자료를 확인하지 못했습니다."],
+    [elements.newsIntelligence, "뉴스 신호를 표시할 수 없습니다.", "자료가 복구될 때까지 자동 판단을 중단합니다."],
+    [elements.newsList, "뉴스 자료를 가져오지 못했습니다.", "잠시 후 새로고침해 다시 수집합니다."],
+    [elements.studyBrief, "오늘의 시장 학습을 표시할 수 없습니다.", "현재 자료에 기반한 예시는 수집 복구 후 제공합니다."],
+    [elements.thinkingLab, "오늘의 사고 훈련을 표시할 수 없습니다.", "확인된 가격 없이 원인과 파급을 만들지 않습니다."],
+    [elements.relationshipLab, "오늘의 경제 연결 지도를 표시할 수 없습니다.", "실시간 값이 필요한 부분만 잠시 멈췄습니다."]
+  ];
+  unavailableSections.forEach(([element, title, detail]) => {
+    if (element) element.innerHTML = unavailablePanel(title, detail);
+  });
+  if (elements.analysisList) {
+    elements.analysisList.innerHTML = `<li>${unavailablePanel(
+      "심층 근거를 표시할 수 없습니다.",
+      "실제 수치가 없으므로 사실과 해석을 생성하지 않습니다."
+    )}</li>`;
+  }
+
+  elements.chartTabs?.replaceChildren();
+  elements.chartTitle.textContent = "시장 데이터 없음";
+  elements.chartMeta.textContent = "기준기간 없음";
+  elements.chartCurrentValue.textContent = "--";
+  elements.chartStatusText.textContent = "자료 수집 실패";
+  elements.chartPeriodBadge.textContent = "확인 불가";
+  elements.chartTooltip?.classList.remove("is-visible");
+  const context = elements.marketChart?.getContext("2d");
+  if (context && elements.marketChart) {
+    context.clearRect(0, 0, elements.marketChart.width, elements.marketChart.height);
+  }
+  requestAnimationFrame(updateChapterHeight);
+}
+
+function unavailablePanel(title, detail, className = "data-unavailable-panel") {
+  return `
+    <div class="${className}">
+      <strong>${escapeHtml(title)}</strong>
+      <p>${escapeHtml(detail)}</p>
     </div>
   `;
 }

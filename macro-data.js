@@ -3,7 +3,7 @@ import { decodeGoogleNewsUrl } from "./news-content.js";
 const REQUEST_TIMEOUT_MS = 8_000;
 const MACRO_CACHE_TTL_MS = 6 * 60 * 60 * 1000;
 const MACRO_RETRY_TTL_MS = 5 * 60 * 1000;
-const MACRO_LOADER_TIMEOUT_MS = 4_500;
+const MACRO_LOADER_TIMEOUT_MS = 10_000;
 const OFFICIAL_DATA_HOSTS = new Set([
   "www.bok.or.kr",
   "mods.go.kr",
@@ -17,9 +17,7 @@ const BOK_BASE_RATE_URL =
 const CPI_LIST_URL = "https://mods.go.kr/board.es?bid=213&mid=a10301040100";
 const CUSTOMS_LIST_URL =
   "https://www.customs.go.kr/kcs/na/ntt/selectNttList.do?bbsId=1362&mi=2891&searchType=sj&searchValue=%EC%88%98%EC%B6%9C%EC%9E%85%20%ED%98%84%ED%99%A9&aditCol1=%EC%A0%95%EB%B3%B4%EB%8D%B0%EC%9D%B4%ED%84%B0&listCo=50";
-const CUSTOMS_LATEST_FALLBACK_URL =
-  "https://www.customs.go.kr/kcs/na/ntt/selectNttInfo.do?nttSn=10168488&nttSnUrl=17797181bd6178913682c340f7b8b5c2";
-const CUSTOMS_LATEST_FALLBACK_TITLE = "2026년 6월 수출입 현황 [잠정치]";
+
 const BOK_STATS_RSS_URL =
   "https://www.bok.or.kr/portal/bbs/B0000501/news.rss?menuNo=201264";
 
@@ -229,71 +227,65 @@ function buildCpiIndicator({ title, text, detailUrl, publishedAt }) {
 }
 
 async function fetchExports() {
-  try {
-    const listHtml = await fetchOfficialTextWithRetry(CUSTOMS_LIST_URL, "text/html");
-    const entry = extractAnchors(listHtml).find((anchor) =>
-      /^\d{4}년\s+\d{1,2}월\s+수출입\s+현황\s*\[잠정치\]$/.test(anchor.text)
+  const listHtml = await fetchOfficialTextWithRetry(CUSTOMS_LIST_URL, "text/html");
+  const entries = extractAnchors(listHtml)
+    .map((anchor) => ({
+      ...anchor,
+      period: anchor.text.match(/^(\d{4})년\s+(\d{1,2})월(?:\s+월간)?\s+수출입\s+현황\s*\[(잠정치|확정치)\]$/)
+    }))
+    .filter((anchor) => anchor.period)
+    .sort((left, right) =>
+      Number(right.period[1]) - Number(left.period[1]) ||
+      Number(right.period[2]) - Number(left.period[2]) ||
+      Number(right.period[3] === "확정치") - Number(left.period[3] === "확정치")
     );
-    const itemId = readAttribute(entry?.attributes || "", "data-id");
-    const itemUrlKey = readAttribute(entry?.attributes || "", "data-url");
-    if (!entry || !itemId || !itemUrlKey) throw new Error("Latest export release was not found");
+  const entry = entries[0];
+  const itemId = readAttribute(entry?.attributes || "", "data-id");
+  const itemUrlKey = readAttribute(entry?.attributes || "", "data-url");
+  if (!entry || !itemId || !itemUrlKey) throw new Error("Latest export release was not found");
 
-    const detailUrl = `https://www.customs.go.kr/kcs/na/ntt/selectNttInfo.do?nttSn=${encodeURIComponent(
-      itemId
-    )}&nttSnUrl=${encodeURIComponent(itemUrlKey)}`;
-    return await fetchExportDetail(detailUrl, entry.text, false);
-  } catch {
-    return fetchExportsFromKnownRelease();
-  }
+  const detailUrl = `https://www.customs.go.kr/kcs/na/ntt/selectNttInfo.do?nttSn=${encodeURIComponent(
+    itemId
+  )}&nttSnUrl=${encodeURIComponent(itemUrlKey)}`;
+  return fetchExportDetail(detailUrl, entry.text, entry.period[3] === "잠정치");
 }
 
-async function fetchExportsFromKnownRelease() {
-  try {
-    return await fetchExportDetail(
-      CUSTOMS_LATEST_FALLBACK_URL,
-      CUSTOMS_LATEST_FALLBACK_TITLE,
-      true
-    );
-  } catch {
-    return buildVerifiedExportSnapshot();
-  }
-}
-
-async function fetchExportDetail(detailUrl, title, stale) {
+async function fetchExportDetail(detailUrl, title, preliminary) {
   const detailHtml = await fetchOfficialTextWithRetry(detailUrl, "text/html");
   const text = htmlToText(detailHtml);
-  const period = `${title} ${text}`.match(/(\d{4})년\s+(\d{1,2})월\s+수출입\s+현황/);
-  const values = text.match(
-    /수출은\s*([\d,.]+)\s*억\s*달러\s*(?:로)?\s*전년동기대비\s*수출?\s*([\d.]+)%\s*(증가|감소)/
-  ) || text.match(
-    /수출은\s*([\d,.]+)\s*억\s*달러\s*(?:로)?\s*전년동기대비\s*([\d.]+)%\s*(증가|감소)/
-  );
-  if (!period || !values) throw new Error("Export values were not found");
+  const period = `${title} ${text}`.match(/(\d{4})년\s+(\d{1,2})월(?:\s+월간)?\s+수출입\s+현황/);
+  if (!period) throw new Error("Export period was not found");
+  const { exportAmount, annualChange } = parseExportValues(text);
 
   return buildExportIndicator({
     detailUrl,
     year: Number(period[1]),
     month: Number(period[2]),
-    exportAmount: parseNumber(values[1]),
-    annualChange: applyDirection(Number(values[2]), values[3]),
+    exportAmount,
+    annualChange,
     publishedAt: readPublishedDate(text, /등록일\s*(\d{4})\.(\d{2})\.(\d{2})/),
-    stale
+    preliminary
   });
 }
 
-function buildVerifiedExportSnapshot() {
-  return buildExportIndicator({
-    detailUrl: CUSTOMS_LATEST_FALLBACK_URL,
-    year: 2026,
-    month: 6,
-    exportAmount: 1023,
-    annualChange: 70.9,
-    publishedAt: null,
-    stale: true
-  });
+function parseExportValues(text) {
+  const amountFirst = String(text || "").match(
+    /수출\s*은\s*([\d,.]+)\s*억\s*달러\s*(?:로)?\s*전년\s*(?:동기|동월)\s*대비\s*(?:수출\s*)?([\d.]+)%\s*(증가|감소)/
+  );
+  const changeFirst = String(text || "").match(
+    /전년\s*(?:동월|동기)\s*대비\s*수출\s*은\s*([\d.]+)%\s*(증가|감소)\s*한\s*([\d,.]+)\s*억\s*달러/
+  );
+  if (!amountFirst && !changeFirst) throw new Error("Export values were not found");
+
+  return {
+    exportAmount: amountFirst ? parseNumber(amountFirst[1]) : parseNumber(changeFirst[3]),
+    annualChange: amountFirst
+      ? applyDirection(Number(amountFirst[2]), amountFirst[3])
+      : applyDirection(Number(changeFirst[1]), changeFirst[2])
+  };
 }
 
-function buildExportIndicator({ detailUrl, year, month, exportAmount, annualChange, publishedAt, stale }) {
+function buildExportIndicator({ detailUrl, year, month, exportAmount, annualChange, publishedAt, preliminary }) {
   assertRange(exportAmount, 0, 10_000, "Export amount");
   assertRange(annualChange, -100, 500, "Export growth");
   return {
@@ -305,10 +297,11 @@ function buildExportIndicator({ detailUrl, year, month, exportAmount, annualChan
     exportAmount,
     mood: annualChange >= 0 ? "positive" : "negative",
     status: "official",
-    stale,
+    stale: false,
+    preliminary,
     asOf: monthEndIso(year, month),
     publishedAt,
-    periodLabel: `${year}년 ${month}월 잠정${stale ? " · 마지막 확인" : ""}`
+    periodLabel: `${year}년 ${month}월 ${preliminary ? "잠정" : "확정"}`
   };
 }
 
@@ -489,8 +482,7 @@ export {
   BOK_STATS_RSS_URL,
   CPI_LIST_URL,
   CUSTOMS_LIST_URL,
-  CUSTOMS_LATEST_FALLBACK_URL,
   fetchConsumerPricesFromPolicyBriefing,
-  fetchExportsFromKnownRelease,
-  htmlToText
+  htmlToText,
+  parseExportValues
 };

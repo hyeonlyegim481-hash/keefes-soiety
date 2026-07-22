@@ -86,3 +86,17 @@ test("covers household, markets, banking, macroeconomics, companies, and data an
     "GDP시계열 단위근검정"
   ].forEach((term) => assert.ok(termNames.has(term), `missing representative term: ${term}`));
 });
+
+test("labels generated entries as applied concepts and excludes invalid combinations", () => {
+  const generated = [...master.core, ...master.advanced];
+  const names = new Set(generated.map((item) => item.term));
+
+  assert.ok(generated.every((item) => item.kind === "applied"));
+  [
+    "MMF 우대금리",
+    "MMF 만기수령액",
+    "리볼빙 중도상환수수료",
+    "공동인증 취소절차",
+    "확정급여형퇴직연금 중도인출"
+  ].forEach((term) => assert.equal(names.has(term), false, `invalid generated concept: ${term}`));
+});

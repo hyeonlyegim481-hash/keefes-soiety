@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
+  buildArticleMarketContext,
   fetchMarket,
   rankAndDedupeHeadlines,
   resolveMarketPoint,
@@ -182,4 +183,41 @@ test("clusters duplicate reports of the same conflict across publishers", () => 
   assert.equal(ranked.length, 1);
   assert.equal(ranked[0].relatedSourceCount, 2);
   assert.equal(ranked[0].relatedHeadlineCount, 2);
+});
+
+test("uses only prices after publication as article reaction", () => {
+  const publishedAt = new Date(now).toISOString();
+  const context = buildArticleMarketContext(
+    { publishedAt },
+    [{
+      id: "kospi",
+      value: 130,
+      changePercent: 30,
+      series: [
+        { value: 100, time: new Date(now - hour).toISOString() },
+        { value: 110, time: new Date(now + hour).toISOString() }
+      ]
+    }]
+  );
+
+  assert.equal(context.basis, "post-article");
+  assert.equal(context.markets[0].value, 110);
+  assert.equal(context.markets[0].changePercent, 10);
+  assert.equal(context.markets[0].asOf, new Date(now + hour).toISOString());
+});
+
+test("keeps current context when no post-publication price exists", () => {
+  const markets = [{
+    id: "kospi",
+    value: 100,
+    changePercent: -2,
+    series: [
+      { value: 90, time: new Date(now - 2 * hour).toISOString() },
+      { value: 100, time: new Date(now - hour).toISOString() }
+    ]
+  }];
+  const context = buildArticleMarketContext({ publishedAt: new Date(now).toISOString() }, markets);
+
+  assert.equal(context.basis, "current");
+  assert.equal(context.markets[0].changePercent, -2);
 });

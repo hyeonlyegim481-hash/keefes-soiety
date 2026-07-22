@@ -4,18 +4,31 @@ export const MASTER_ADVANCED_TARGET = 855;
 const subject = (name, english, description) => ({ name, english, description });
 const lens = (name, english, description, use) => ({ name, english, description, use });
 
+function isCompatiblePair(item, point) {
+  if (["CMA", "MMF"].includes(item.name)) return point.name === "예금자보호";
+  if (["보통예금", "파킹통장"].includes(item.name) && ["만기수령액", "중도해지이율"].includes(point.name)) return false;
+  if (item.name === "리볼빙" && point.name === "중도상환수수료") return false;
+  if (["공동인증", "금융인증"].includes(item.name)) return point.name === "보안위험";
+  if (item.name === "확정급여형퇴직연금") return point.name === "운용수익률";
+  if (["증권종합계좌", "위탁매매계좌"].includes(item.name)) return point.name === "운용수익률";
+  return true;
+}
+
 function buildFamily({ category, subjects, lenses, why, caution, anchor }) {
-  return lenses.flatMap((point) => subjects.map((item) => ({
-    term: `${item.name} ${point.name}`,
-    english: `${item.english} ${point.english}`,
-    category,
-    definition: `${item.description} 여기에 ${point.name} 기준을 적용해 수치와 조건을 해석하는 세부 용어입니다. ${point.description}`,
-    plain: `쉽게 말해 ${item.name}을 볼 때 ${point.name}을 따로 떼어 확인하는 것입니다. 상품 이름이나 큰 숫자만 보지 않고 실제 부담과 결과를 비교하게 해줍니다.`,
-    why: `${why} ${point.use}`,
-    example: `예를 들어 ${item.name} 관련 수치가 변했다면 ${point.name}도 같은 방향으로 움직였는지, 직전 기간과 비교해 변화가 일시적인지 확인합니다.`,
-    caution,
-    related: [item.name, point.name, anchor]
-  })));
+  return lenses.flatMap((point) => subjects
+    .filter((item) => isCompatiblePair(item, point))
+    .map((item) => ({
+      term: `${item.name} ${point.name}`,
+      english: `${item.english} ${point.english}`,
+      category,
+      kind: "applied",
+      definition: `${item.description} 여기에 ${point.name} 기준을 적용해 수치와 조건을 해석하는 응용 개념입니다. ${point.description}`,
+      plain: `쉽게 말해 ${item.name}을 볼 때 ${point.name}을 따로 떼어 확인하는 것입니다. 상품 이름이나 큰 숫자만 보지 않고 실제 부담과 결과를 비교하게 해줍니다.`,
+      why: `${why} ${point.use}`,
+      example: `예를 들어 ${item.name} 관련 수치가 변했다면 ${point.name}도 같은 방향으로 움직였는지, 직전 기간과 비교해 변화가 일시적인지 확인합니다.`,
+      caution,
+      related: [item.name, point.name, anchor]
+    })));
 }
 
 function roundRobin(groups) {

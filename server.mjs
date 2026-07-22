@@ -227,8 +227,12 @@ async function getSnapshot({ forceNews = false, preferScheduledNews = true } = {
   const markets = marketResults.flatMap((result) =>
     result.status === "fulfilled" ? [result.value] : []
   );
-  if (!markets.length) {
-    throw new Error("All market data is unavailable");
+  const availableMarketIds = new Set(markets.map((market) => market.id));
+  const missingMarketIds = marketConfig
+    .map((market) => market.id)
+    .filter((id) => !availableMarketIds.has(id));
+  if (missingMarketIds.length) {
+    throw new Error(`Market data is incomplete: ${missingMarketIds.join(", ")}`);
   }
 
   const { rawHeadlines, headlines, availableNewsFeedCount } = newsBundle;
@@ -813,6 +817,9 @@ function buildArticleMarketContext(headline, markets = []) {
     return { markets, basis: "current", referenceAt: null };
   }
 
+  const reactionDelayMs = 30 * 60 * 1000;
+  const maximumGapMs = 72 * 60 * 60 * 1000;
+  const responseTimes = [];
   let alignedCount = 0;
   const alignedMarkets = markets.map((market) => {
     const series = (market.series || [])
@@ -821,41 +828,33 @@ function buildArticleMarketContext(headline, markets = []) {
       .sort((a, b) => a.timestamp - b.timestamp);
     if (series.length < 2) return market;
 
-    let closestIndex = 0;
-    for (let index = 1; index < series.length; index += 1) {
-      if (
-        Math.abs(series[index].timestamp - publishedAt) <
-        Math.abs(series[closestIndex].timestamp - publishedAt)
-      ) {
-        closestIndex = index;
-      }
-    }
-    const closest = series[closestIndex];
-    if (Math.abs(closest.timestamp - publishedAt) > 72 * 60 * 60 * 1000) return market;
+    const before = series.filter((point) => point.timestamp <= publishedAt).at(-1);
+    const after = series.find((point) => point.timestamp >= publishedAt + reactionDelayMs);
+    if (!before || !after || !before.value) return market;
+    if (publishedAt - before.timestamp > maximumGapMs || after.timestamp - publishedAt > maximumGapMs) return market;
 
-    const baseline = series[Math.max(0, closestIndex - 6)];
-    if (!baseline || !baseline.value) return market;
-    const change = closest.value - baseline.value;
-    const changePercent = (change / baseline.value) * 100;
+    const change = after.value - before.value;
+    const changePercent = (change / before.value) * 100;
     alignedCount += 1;
+    responseTimes.push(after.timestamp);
     return {
       ...market,
-      value: roundByMagnitude(closest.value),
+      value: roundByMagnitude(after.value),
       change: roundByMagnitude(change),
       changePercent: round(changePercent, 2),
       direction: changePercent >= 0 ? "up" : "down",
-      asOf: closest.time,
+      asOf: after.time,
       contextAligned: true
     };
   });
 
-  if (alignedCount < Math.max(1, Math.ceil(markets.length / 2))) {
+  if (alignedCount !== markets.length) {
     return { markets, basis: "current", referenceAt: null };
   }
   return {
     markets: alignedMarkets,
-    basis: "article-time",
-    referenceAt: new Date(publishedAt).toISOString()
+    basis: "post-article",
+    referenceAt: new Date(Math.max(...responseTimes)).toISOString()
   };
 }
 
@@ -999,22 +998,25 @@ function buildAutomatedNewsAnalysis(headline, snapshot) {
   const gold = byId.gold;
   const baseRate = macroById["base-rate"];
   const householdCredit = macroById["household-credit"];
+  const contextLabel = marketContext.basis === "post-article" ? "기사 이후" : "현재";
   const marketImpactByTheme = {
-    rates: `S&P 500 ${signed(sp500?.changePercent || 0)}%, NASDAQ ${signed(nasdaq?.changePercent || 0)}%와 장기금리를 함께 봐야 합니다. 금리 상승인데 기술주가 버티면 이익 기대가 할인율 부담을 상쇄하는지 확인합니다.`,
-    fx: `원/달러 ${formatNumber(usdkrw?.value || 0)}원과 VIX ${formatNumber(vix?.value || 0)}의 조합이 핵심입니다. 환율 상승과 변동성 확대가 겹치면 한국 위험자산의 부담이 커집니다.`,
-    chips: `NASDAQ ${signed(nasdaq?.changePercent || 0)}%와 KOSPI ${signed(kospi?.changePercent || 0)}%의 차이를 봅니다. 미국 기술주 강세가 한국 반도체 수급으로 전달되지 않으면 국내 고유 부담이 있다는 뜻입니다.`,
-    energy: `WTI ${formatNumber(wti?.value || 0)}달러, ${signed(wti?.changePercent || 0)}% 움직임을 확인합니다. 유가 상승은 에너지 업종에는 호재일 수 있지만 운송·화학·소비에는 비용 부담입니다.`,
-    china: `KOSPI ${signed(kospi?.changePercent || 0)}%와 원/달러 ${formatNumber(usdkrw?.value || 0)}원이 중국 관련 소식에 같은 방향으로 반응하는지 봅니다.`,
-    growth: `S&P 500 ${signed(sp500?.changePercent || 0)}%, KOSPI ${signed(kospi?.changePercent || 0)}%의 반응이 경기 기대를 확인하는지 봅니다. 지표 개선에도 주가가 약하면 이미 반영됐거나 세부 내용이 약할 수 있습니다.`,
+    rates: `${contextLabel} S&P 500 ${signed(sp500?.changePercent || 0)}%, NASDAQ ${signed(nasdaq?.changePercent || 0)}%와 장기금리를 함께 봅니다. 금리 상승인데 기술주가 버티면 이익 기대가 할인율 부담을 상쇄하는지 확인합니다.`,
+    fx: `${contextLabel} 원/달러 ${formatNumber(usdkrw?.value || 0)}원과 VIX ${formatNumber(vix?.value || 0)}의 조합이 핵심입니다. 환율 상승과 변동성 확대가 겹치면 한국 위험자산의 부담이 커집니다.`,
+    chips: `${contextLabel} NASDAQ ${signed(nasdaq?.changePercent || 0)}%와 KOSPI ${signed(kospi?.changePercent || 0)}%의 차이를 봅니다. 미국 기술주 강세가 한국 반도체 수급으로 전달되지 않으면 국내 고유 부담이 있다는 뜻입니다.`,
+    energy: `${contextLabel} WTI ${formatNumber(wti?.value || 0)}달러, ${signed(wti?.changePercent || 0)}% 움직임을 확인합니다. 유가 상승은 에너지 업종에는 호재일 수 있지만 운송·화학·소비에는 비용 부담입니다.`,
+    china: `${contextLabel} KOSPI ${signed(kospi?.changePercent || 0)}%와 원/달러 ${formatNumber(usdkrw?.value || 0)}원이 같은 방향인지 봅니다.`,
+    growth: `${contextLabel} S&P 500 ${signed(sp500?.changePercent || 0)}%, KOSPI ${signed(kospi?.changePercent || 0)}% 흐름이 경기 기대와 일치하는지 봅니다.`,
     housing: `한국 기준금리 ${macroValue(baseRate, "%")}와 가계신용 ${macroValue(householdCredit, "조원")}을 함께 봅니다. 금리보다 대출 증가와 연체 위험의 조합이 중요합니다.`,
-    earnings: `KOSPI ${signed(kospi?.changePercent || 0)}%와 거래 집중 업종을 비교합니다. 실적 숫자보다 시장 예상과의 차이, 다음 분기 전망이 주가 지속성을 좌우합니다.`,
-    policy: `정책 발표 뒤 국채금리, 원/달러와 수혜 업종이 실제로 움직이는지 확인합니다. 발표만 있고 가격 반응이 없으면 규모가 작거나 이미 반영됐을 수 있습니다.`,
-    geopolitics: `VIX ${formatNumber(vix?.value || 0)}, WTI ${signed(wti?.changePercent || 0)}%, 금 ${signed(gold?.changePercent || 0)}%가 동시에 반응하는지 봅니다. 하나만 움직이면 충격의 범위가 제한적일 수 있습니다.`,
-    sentiment: `KOSPI ${signed(kospi?.changePercent || 0)}%, S&P 500 ${signed(sp500?.changePercent || 0)}%, VIX ${formatNumber(vix?.value || 0)}를 함께 봐야 헤드라인과 실제 시장 방향이 일치하는지 알 수 있습니다.`
+    earnings: `${contextLabel} KOSPI ${signed(kospi?.changePercent || 0)}%와 거래 집중 업종을 비교합니다. 실적 숫자보다 시장 예상과의 차이, 다음 분기 전망이 주가 지속성을 좌우합니다.`,
+    policy: marketContext.basis === "post-article"
+      ? "정책 발표 이후 국채금리, 원/달러와 관련 업종이 실제로 움직였는지 확인합니다."
+      : "정책 발표 이후 가격이 아직 확인되지 않아 현재 시장값만 참고합니다.",
+    geopolitics: `${contextLabel} VIX ${formatNumber(vix?.value || 0)}, WTI ${signed(wti?.changePercent || 0)}%, 금 ${signed(gold?.changePercent || 0)}%가 같은 방향인지 봅니다.`,
+    sentiment: `${contextLabel} KOSPI ${signed(kospi?.changePercent || 0)}%, S&P 500 ${signed(sp500?.changePercent || 0)}%, VIX ${formatNumber(vix?.value || 0)}를 함께 봅니다.`
   };
 
-  const priceBasisText = marketContext.basis === "article-time"
-    ? "기사 발표 시점과 가까운 가격"
+  const priceBasisText = marketContext.basis === "post-article"
+    ? "기사 발표 직전과 이후 가격"
     : "현재 확인 가능한 가격";
   const headlineAnalysis = `「${title}」은 ${focusText}입니다. ${priceBasisText}과 현재 위험 온도 ${riskScore}/100을 구분해 보고, 기사 표현과 실제 가격 방향이 일치하는지 확인해야 합니다.`;
   const hasArticleContent = headline.contentBasis === "article" && headline.articleContent;
@@ -1739,6 +1741,7 @@ function formatNumber(value) {
 }
 
 export {
+  buildArticleMarketContext,
   buildAutomatedNewsAnalysis,
   consumeNewsAnalysisQuota,
   enhanceNewsAnalysisWithAi,

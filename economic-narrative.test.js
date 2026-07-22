@@ -73,3 +73,33 @@ test("separates the USDKRW daily direction from its absolute level", () => {
   assert.equal(read.tone, "positive");
   assert.equal(read.checks.length, 3);
 });
+
+test("does not invent missing market values", () => {
+  const partial = {
+    ...snapshot,
+    markets: snapshot.markets.filter((item) => item.id !== "usdkrw")
+  };
+  const narrative = buildEconomicNarrative(partial);
+
+  assert.equal(narrative.dataComplete, false);
+  assert.deepEqual(narrative.missingMarketIds, ["usdkrw"]);
+  assert.equal(narrative.riskScore, null);
+  assert.match(narrative.plainSummary, /원\/달러 자료를 가져오지 못했습니다/);
+  assert.doesNotMatch(narrative.plainSummary, /1,360/);
+});
+
+test("does not call unavailable exports positive", () => {
+  const unavailableExports = {
+    ...snapshot,
+    macro: snapshot.macro.map((item) =>
+      /수출/.test(item.label)
+        ? { ...item, value: null, status: "unavailable", periodLabel: "기준일 확인 불가" }
+        : item
+    )
+  };
+  const narrative = buildEconomicNarrative(unavailableExports);
+
+  assert.match(narrative.korea.title, /판단을 보류/);
+  assert.match(narrative.korea.summary, /자료를 가져오지 못했습니다/);
+  assert.doesNotMatch(narrative.korea.summary, /긍정적/);
+});

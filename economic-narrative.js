@@ -112,10 +112,73 @@ function formatMarket(market) {
 }
 
 function macroValue(item) {
-  if (!item || item.status !== "official") return "공식값 확인 필요";
+  if (!item || item.status !== "official") return "자료를 가져오지 못했습니다";
   const unit = item.unit ? ` ${item.unit}` : "";
   const period = item.periodLabel ? ` · ${item.periodLabel}` : "";
   return `${formatNumber(item.value)}${unit}${period}`;
+}
+
+function hasOfficialMacro(item) {
+  return item?.status === "official" && Number.isFinite(Number(item.value));
+}
+
+function buildUnavailableNarrative(snapshot, missingIds) {
+  const markets = snapshot?.markets || [];
+  const names = {
+    kospi: "KOSPI",
+    kosdaq: "KOSDAQ",
+    usdkrw: "원/달러",
+    sp500: "S&P 500",
+    nasdaq: "NASDAQ",
+    vix: "VIX",
+    wti: "WTI",
+    gold: "금"
+  };
+  const missingLabel = missingIds.map((id) => names[id] || id).join(", ");
+  const notice = `${missingLabel} 자료를 가져오지 못했습니다.`;
+  return {
+    dataComplete: false,
+    missingMarketIds: missingIds,
+    heroTitle: "일부 시장 자료를 가져오지 못했습니다",
+    title: "불완전한 숫자로 경제 방향을 예측하지 않습니다.",
+    plainSummary: `${notice} 연결이 복구될 때까지 위험 온도와 시장 방향 분석을 표시하지 않습니다.`,
+    meaning: "확인되지 않은 값을 임의 숫자로 바꾸면 반대 결론이 나올 수 있어 분석을 보류했습니다.",
+    globalRead: notice,
+    costRead: notice,
+    riskScore: null,
+    riskBand: "계산 보류",
+    riskComponents: [],
+    rebuiltRisk: null,
+    breadth: {
+      rising: markets.filter((market) => Number(market.changePercent) > 0).length,
+      falling: markets.filter((market) => Number(market.changePercent) < 0).length,
+      total: markets.length
+    },
+    coreReasons: [{
+      label: "자료 연결 상태",
+      fact: notice,
+      meaning: "자료가 다시 수집된 뒤 분석을 제공합니다.",
+      confidence: "분석 보류",
+      tone: "negative"
+    }],
+    nextChecks: ["자료 연결 복구 여부"],
+    korea: {
+      title: "시장 자료가 부족해 한국 경제 방향을 판단하지 않습니다.",
+      summary: notice,
+      good: "판단 보류",
+      burden: "판단 보류",
+      household: notice,
+      business: notice,
+      policy: notice,
+      chains: [],
+      values: {}
+    },
+    facts: [{ label: "미수집 자료", value: missingLabel, note: "임의 대체값을 사용하지 않음" }],
+    inferences: [],
+    tensions: [],
+    scenarios: [],
+    limitations: [notice, "자료가 복구되기 전에는 가격 간 관계와 위험 점수를 계산하지 않습니다."]
+  };
 }
 
 function magnitudeLabel(change) {
@@ -191,6 +254,10 @@ export function buildEconomicNarrative(snapshot) {
   const inflation = findMacro(/소비자|물가/);
   const exports = findMacro(/수출/);
   const credit = findMacro(/신용/);
+
+  const requiredMarketIds = ["kospi", "kosdaq", "usdkrw", "sp500", "nasdaq", "vix", "wti", "gold"];
+  const missingMarketIds = requiredMarketIds.filter((id) => !byId[id] || !Number.isFinite(Number(byId[id].value)));
+  if (missingMarketIds.length) return buildUnavailableNarrative(snapshot, missingMarketIds);
 
   const kospiChange = asNumber(kospi?.changePercent);
   const kosdaqChange = asNumber(kosdaq?.changePercent);
@@ -281,17 +348,27 @@ export function buildEconomicNarrative(snapshot) {
   const riskScore = asNumber(analysis.riskScore, rebuiltRisk);
   const riskBand = riskScore >= 81 ? "매우 높음" : riskScore >= 66 ? "높음" : riskScore >= 45 ? "주의" : riskScore >= 31 ? "낮음" : "안정";
 
-  const exportValue = asNumber(exports?.value);
-  const inflationValue = asNumber(inflation?.value);
-  const rateValue = asNumber(policyRate?.value);
-  const creditValue = asNumber(credit?.value);
+  const hasExports = hasOfficialMacro(exports);
+  const hasInflation = hasOfficialMacro(inflation);
+  const hasPolicyRate = hasOfficialMacro(policyRate);
+  const hasCredit = hasOfficialMacro(credit);
+  const exportValue = hasExports ? Number(exports.value) : null;
+  const inflationValue = hasInflation ? Number(inflation.value) : null;
+  const rateValue = hasPolicyRate ? Number(policyRate.value) : null;
+  const creditValue = hasCredit ? Number(credit.value) : null;
   const koreaTitle =
-    exportValue > 0 && (inflationValue > 2.5 || usdkrwValue > 1380)
-      ? "수출 숫자는 강하지만 환율·물가 부담 때문에 체감경기는 덜 좋아질 수 있습니다."
-      : exportValue > 0
-        ? "수출 개선이 성장의 버팀목이지만 내수 회복 여부를 따로 확인해야 합니다."
-        : "수출과 내수 모두에서 회복 근거를 더 확인해야 합니다.";
-  const koreaSummary = `수출 증가율 ${macroValue(exports)}은 긍정적이지만, 소비자물가 ${macroValue(inflation)}, 원/달러 ${formatNumber(usdkrwValue)}원, WTI ${signed(wtiChange)}%를 같이 보면 가계와 기업의 비용 부담은 남아 있습니다.`;
+    !hasExports
+      ? "수출 공식자료를 가져오지 못해 경기 방향 판단을 보류합니다."
+      : exportValue > 0 && (inflationValue > 2.5 || usdkrwValue > 1380)
+        ? "수출 숫자는 강하지만 환율·물가 부담 때문에 체감경기는 덜 좋아질 수 있습니다."
+        : exportValue > 0
+          ? "수출 개선이 성장의 버팀목이지만 내수 회복 여부를 따로 확인해야 합니다."
+          : "수출과 내수 모두에서 회복 근거를 더 확인해야 합니다.";
+  const koreaSummary = !hasExports
+    ? `수출 증가율 자료를 가져오지 못했습니다. 확인되지 않은 값으로 긍정·부정 판단을 만들지 않습니다. 소비자물가 ${macroValue(inflation)}, 원/달러 ${formatNumber(usdkrwValue)}원과 WTI ${signed(wtiChange)}%는 별도로 확인할 수 있습니다.`
+    : exportValue > 0
+      ? `수출 증가율 ${macroValue(exports)}은 개선 신호입니다. 다만 소비자물가 ${macroValue(inflation)}, 원/달러 ${formatNumber(usdkrwValue)}원, WTI ${signed(wtiChange)}%를 같이 보면 가계와 기업의 비용 부담은 남아 있습니다.`
+      : `수출 증가율 ${macroValue(exports)}은 성장의 버팀목이 약해질 가능성을 보여줍니다. 물가와 환율을 함께 확인해야 합니다.`;
 
   const koreaChains = [
     {
@@ -307,18 +384,20 @@ export function buildEconomicNarrative(snapshot) {
       label: "수출 → 기업이익·고용",
       start: `수출 증가율 ${macroValue(exports)}`,
       steps: ["해외 주문", "공장 가동·매출", "기업이익", "설비투자·고용"],
-      result: exportValue > 0
-        ? "수출 개선은 제조업과 대형 수출기업 이익에 도움이 될 수 있습니다."
-        : "수출 모멘텀이 약하면 한국 성장과 제조업 고용의 버팀목이 약해질 수 있습니다.",
+      result: !hasExports
+        ? "수출 공식자료를 가져오지 못해 기업이익과 고용으로 이어지는 영향을 판단하지 않습니다."
+        : exportValue > 0
+          ? "수출 개선은 제조업과 대형 수출기업 이익에 도움이 될 수 있습니다."
+          : "수출 모멘텀이 약하면 한국 성장과 제조업 고용의 버팀목이 약해질 수 있습니다.",
       caution: "전년 대비 증가율은 기저효과가 섞입니다. 수출액·물량·단가·기업 이익률이 모두 같은 폭으로 늘었다는 뜻은 아닙니다."
     },
     {
       label: "금리·가계신용 → 소비",
       start: `기준금리 ${macroValue(policyRate)} + 가계신용 ${macroValue(credit)}`,
       steps: ["대출 이자", "가처분소득", "소비·주택거래", "내수기업 매출"],
-      result: creditValue > 0
+      result: hasCredit && creditValue > 0
         ? "가계 빚의 규모가 큰 상태에서는 금리가 조금만 오래 높아도 소비 회복이 느려질 수 있습니다."
-        : "가계신용 공식값을 확인해야 내수 부담을 정확히 판단할 수 있습니다.",
+        : "가계신용 자료를 가져오지 못해 내수 부담을 판단하지 않습니다.",
       caution: "기준금리와 실제 가계 대출금리는 같은 날 같은 폭으로 움직이지 않습니다."
     }
   ];
@@ -333,9 +412,11 @@ export function buildEconomicNarrative(snapshot) {
     usdkrwChange < 0 && usdkrwValue > 1380
       ? `원/달러는 오늘 ${signed(usdkrwChange)}% 내렸지만 수준은 ${formatNumber(usdkrwValue)}원으로 높습니다. 방향과 수준이 다른 신호입니다.`
       : `원/달러의 당일 방향 ${signed(usdkrwChange)}%와 절대 수준 ${formatNumber(usdkrwValue)}원을 함께 봐야 합니다.`,
-    exportValue > 20
-      ? `수출 증가율 ${formatNumber(exportValue)}%는 매우 크지만 기저효과와 잠정치 여부 때문에 곧바로 체감경기 호황으로 해석하면 안 됩니다.`
-      : "수출 증가율만으로 내수와 고용까지 좋아졌다고 단정할 수 없습니다."
+    !hasExports
+      ? "수출 증가율 자료를 가져오지 못해 수출과 내수의 연결을 판단하지 않습니다."
+      : exportValue > 20
+        ? `수출 증가율 ${formatNumber(exportValue)}%는 매우 크지만 기저효과와 잠정치 여부 때문에 곧바로 체감경기 호황으로 해석하면 안 됩니다.`
+        : "수출 증가율만으로 내수와 고용까지 좋아졌다고 단정할 수 없습니다."
   ];
 
   const facts = [
@@ -431,13 +512,19 @@ export function buildEconomicNarrative(snapshot) {
     korea: {
       title: koreaTitle,
       summary: koreaSummary,
-      good: exportValue > 0 ? `수출 증가율 ${macroValue(exports)}` : "뚜렷한 수출 개선 근거 부족",
+      good: !hasExports ? "수출 자료를 가져오지 못했습니다" : exportValue > 0 ? `수출 증가율 ${macroValue(exports)}` : "뚜렷한 수출 개선 근거 부족",
       burden: `소비자물가 ${macroValue(inflation)} · 원/달러 ${formatNumber(usdkrwValue)}원`,
-      household: `기준금리 ${macroValue(policyRate)}와 가계신용 ${macroValue(credit)}이 이자 부담과 소비 여력을 좌우합니다.`,
-      business: `수출은 기업 매출에 도움이 될 수 있지만 원/달러 ${formatNumber(usdkrwValue)}원과 WTI ${signed(wtiChange)}%는 원가를 높일 수 있습니다.`,
-      policy: inflationValue > 2.5 || usdkrwValue > 1380
-        ? "물가와 환율 부담이 남아 있으면 기준금리를 빠르게 내리기 어려울 수 있습니다."
-        : "물가와 환율이 안정되면 통화정책이 경기와 가계 부담을 더 고려할 여지가 생깁니다.",
+      household: hasPolicyRate && hasCredit
+        ? `기준금리 ${macroValue(policyRate)}와 가계신용 ${macroValue(credit)}이 이자 부담과 소비 여력을 좌우합니다.`
+        : "기준금리 또는 가계신용 자료를 가져오지 못해 가계 부담 판단을 보류합니다.",
+      business: hasExports
+        ? `수출은 기업 매출에 도움이 될 수 있지만 원/달러 ${formatNumber(usdkrwValue)}원과 WTI ${signed(wtiChange)}%는 원가를 높일 수 있습니다.`
+        : "수출 자료를 가져오지 못해 기업 매출 영향을 판단하지 않습니다.",
+      policy: !hasInflation
+        ? "소비자물가 자료를 가져오지 못해 통화정책 여력을 판단하지 않습니다."
+        : inflationValue > 2.5 || usdkrwValue > 1380
+          ? "물가와 환율 부담이 남아 있으면 기준금리를 빠르게 내리기 어려울 수 있습니다."
+          : "물가와 환율이 안정되면 통화정책이 경기와 가계 부담을 더 고려할 여지가 생깁니다.",
       chains: koreaChains,
       values: { policyRate, inflation, exports, credit }
     },

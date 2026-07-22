@@ -139,7 +139,7 @@ function decodeLegacyArticleUrl(bytes) {
 
 function extractArticleContent(html) {
   const jsonBody = html.match(/"articleBody"\s*:\s*"((?:\\.|[^"\\])*)"/i)?.[1];
-  const jsonText = stripBoilerplatePhrases(jsonBody ? decodeJsonString(jsonBody) : "");
+  const jsonText = stripBoilerplatePhrases(cleanPlainText(jsonBody ? decodeJsonString(jsonBody) : ""));
   const metaDescription = stripBoilerplatePhrases(readMetaDescription(html));
   const paragraphTexts = [...html.matchAll(/<p\b[^>]*>([\s\S]*?)<\/p>/gi)]
     .map((match) => stripBoilerplatePhrases(cleanHtmlText(match[1])))
@@ -280,7 +280,11 @@ function decodeJsonString(value) {
 }
 
 function decodeHtmlEntities(value) {
-  const named = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " " };
+  const named = {
+    amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " ",
+    lsquo: "‘", rsquo: "’", ldquo: "“", rdquo: "”", middot: "·",
+    ndash: "–", mdash: "—", hellip: "…", laquo: "«", raquo: "»"
+  };
   return String(value || "")
     .replace(/&([a-z]+);/gi, (match, name) => named[name.toLowerCase()] ?? match)
     .replace(/&#(\d+);/g, (_, code) => String.fromCodePoint(Number(code)))
