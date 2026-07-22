@@ -4,12 +4,14 @@ const REQUEST_TIMEOUT_MS = 8_000;
 const MACRO_CACHE_TTL_MS = 6 * 60 * 60 * 1000;
 const MACRO_RETRY_TTL_MS = 5 * 60 * 1000;
 const MACRO_LOADER_TIMEOUT_MS = 18_000;
+const CUSTOMS_FAST_TIMEOUT_MS = 3_500;
 const OFFICIAL_DATA_HOSTS = new Set([
   "www.bok.or.kr",
   "mods.go.kr",
   "www.customs.go.kr",
   "news.google.com",
-  "www.korea.kr"
+  "www.korea.kr",
+  "admin.korea.kr"
 ]);
 
 const BOK_BASE_RATE_URL =
@@ -227,7 +229,26 @@ function buildCpiIndicator({ title, text, detailUrl, publishedAt }) {
 }
 
 async function fetchExports() {
-  const listHtml = await fetchOfficialTextWithRetry(CUSTOMS_LIST_URL, "text/html");
+  try {
+    return await fetchExportsFromCustoms();
+  } catch (customsError) {
+    try {
+      return await fetchExportsFromPolicyBriefing();
+    } catch (policyError) {
+      throw new AggregateError(
+        [customsError, policyError],
+        "Official export releases were not available"
+      );
+    }
+  }
+}
+
+async function fetchExportsFromCustoms() {
+  const listHtml = await fetchOfficialText(
+    CUSTOMS_LIST_URL,
+    "text/html",
+    CUSTOMS_FAST_TIMEOUT_MS
+  );
   const entries = extractAnchors(listHtml)
     .map((anchor) => ({
       ...anchor,
@@ -247,11 +268,16 @@ async function fetchExports() {
   const detailUrl = `https://www.customs.go.kr/kcs/na/ntt/selectNttInfo.do?nttSn=${encodeURIComponent(
     itemId
   )}&nttSnUrl=${encodeURIComponent(itemUrlKey)}`;
-  return fetchExportDetail(detailUrl, entry.text, entry.period[3] === "잠정치");
+  return fetchExportDetail(
+    detailUrl,
+    entry.text,
+    entry.period[3] === "잠정치",
+    CUSTOMS_FAST_TIMEOUT_MS
+  );
 }
 
-async function fetchExportDetail(detailUrl, title, preliminary) {
-  const detailHtml = await fetchOfficialTextWithRetry(detailUrl, "text/html");
+async function fetchExportDetail(detailUrl, title, preliminary, timeoutMs = REQUEST_TIMEOUT_MS) {
+  const detailHtml = await fetchOfficialText(detailUrl, "text/html", timeoutMs);
   const text = htmlToText(detailHtml);
   const period = `${title} ${text}`.match(/(\d{4})년\s+(\d{1,2})월(?:\s+월간)?\s+수출입\s+현황/);
   if (!period) throw new Error("Export period was not found");
@@ -268,28 +294,99 @@ async function fetchExportDetail(detailUrl, title, preliminary) {
   });
 }
 
+async function fetchExportsFromPolicyBriefing() {
+  const query = encodeURIComponent("site:korea.kr 수출입동향 when:45d");
+  const rssUrl = `https://news.google.com/rss/search?q=${query}&hl=ko&gl=KR&ceid=KR:ko`;
+  const rss = await fetchOfficialText(rssUrl, "application/rss+xml,text/xml");
+  const releases = readRssItems(rss).filter((item) => {
+    const title = item.title.replace(/\s+-\s+대한민국 정책브리핑$/, "");
+    return /^\d{1,2}월\s+수출(?:,|\s)/.test(title) &&
+      !/ICT|요약|문서뷰어|운송비용/.test(title);
+  });
+  if (!releases.length) throw new Error("Latest export policy briefing was not found");
+
+  let lastError;
+  for (const release of releases.slice(0, 4)) {
+    try {
+      const detailUrl = await decodeGoogleNewsUrl(release.link);
+      const detailHtml = await fetchOfficialText(detailUrl, "text/html");
+      const text = htmlToText(detailHtml);
+      const period = parseExportPeriod(release.title, text);
+      const { exportAmount, annualChange } = parseExportValues(text);
+      const timestamp = Date.parse(release.publishedAt);
+      return buildExportIndicator({
+        detailUrl,
+        source: "산업통상부",
+        year: period.year,
+        month: period.month,
+        exportAmount,
+        annualChange,
+        publishedAt: Number.isFinite(timestamp) ? new Date(timestamp).toISOString() : null,
+        preliminary: true
+      });
+    } catch (error) {
+      lastError = error;
+    }
+  }
+  throw lastError || new Error("Export policy briefing values were not found");
+}
+
+function parseExportPeriod(title, text) {
+  const period = `${title || ""} ${text || ""}`.match(
+    /(\d{4})년\s*(\d{1,2})월(?:\s+및\s+상반기)?\s*수출입\s*동향/
+  ) || `${title || ""} ${text || ""}`.match(/(\d{4})년\s*(\d{1,2})월\s*수출/);
+  if (!period) throw new Error("Export policy briefing period was not found");
+  return { year: Number(period[1]), month: Number(period[2]) };
+}
+
 function parseExportValues(text) {
-  const amountFirst = String(text || "").match(
+  const sourceText = String(text || "");
+  const amountFirst = sourceText.match(
     /수출\s*은\s*([\d,.]+)\s*억\s*달러\s*(?:로)?\s*전년\s*(?:동기|동월)\s*대비\s*(?:수출\s*)?([\d.]+)%\s*(증가|감소)/
   );
-  const changeFirst = String(text || "").match(
+  const changeFirst = sourceText.match(
     /전년\s*(?:동월|동기)\s*대비\s*수출\s*은\s*([\d.]+)%\s*(증가|감소)\s*한\s*([\d,.]+)\s*억\s*달러/
   );
-  if (!amountFirst && !changeFirst) throw new Error("Export values were not found");
+  const policyChangeFirst = sourceText.match(
+    /수출(?:액)?\s*은\s*(?:전년\s*동월\s*대비|지난해\s*같은\s*기간보다)\s*([\d.]+)%\s*(증가|감소)\s*한\s*([\d,.]+)\s*억(?:\s*([\d,.]+)\s*만)?\s*달러/
+  );
+  if (!amountFirst && !changeFirst && !policyChangeFirst) {
+    throw new Error("Export values were not found");
+  }
 
+  if (amountFirst) {
+    return {
+      exportAmount: parseNumber(amountFirst[1]),
+      annualChange: applyDirection(Number(amountFirst[2]), amountFirst[3])
+    };
+  }
+  if (changeFirst) {
+    return {
+      exportAmount: parseNumber(changeFirst[3]),
+      annualChange: applyDirection(Number(changeFirst[1]), changeFirst[2])
+    };
+  }
   return {
-    exportAmount: amountFirst ? parseNumber(amountFirst[1]) : parseNumber(changeFirst[3]),
-    annualChange: amountFirst
-      ? applyDirection(Number(amountFirst[2]), amountFirst[3])
-      : applyDirection(Number(changeFirst[1]), changeFirst[2])
+    exportAmount: parseNumber(policyChangeFirst[3]) + parseNumber(policyChangeFirst[4]) / 10_000,
+    annualChange: applyDirection(Number(policyChangeFirst[1]), policyChangeFirst[2])
   };
 }
 
-function buildExportIndicator({ detailUrl, year, month, exportAmount, annualChange, publishedAt, preliminary }) {
+function buildExportIndicator({
+  detailUrl,
+  source = macroDefinitions[2].source,
+  year,
+  month,
+  exportAmount,
+  annualChange,
+  publishedAt,
+  preliminary
+}) {
   assertRange(exportAmount, 0, 10_000, "Export amount");
   assertRange(annualChange, -100, 500, "Export growth");
   return {
     ...macroDefinitions[2],
+    source,
     sourceUrl: detailUrl,
     value: annualChange,
     delta: annualChange,
@@ -343,19 +440,7 @@ async function fetchHouseholdCredit() {
   };
 }
 
-async function fetchOfficialTextWithRetry(url, accept, attempts = 2) {
-  let lastError;
-  for (let attempt = 0; attempt < attempts; attempt += 1) {
-    try {
-      return await fetchOfficialText(url, accept);
-    } catch (error) {
-      lastError = error;
-    }
-  }
-  throw lastError || new Error("Official data request failed");
-}
-
-async function fetchOfficialText(url, accept) {
+async function fetchOfficialText(url, accept, timeoutMs = REQUEST_TIMEOUT_MS) {
   const parsedUrl = new URL(url);
   if (!OFFICIAL_DATA_HOSTS.has(parsedUrl.hostname)) {
     throw new Error("Official data URL is not allowed");
@@ -367,7 +452,7 @@ async function fetchOfficialText(url, accept) {
         "Mozilla/5.0 (compatible; KeefesSoiety/1.0; +https://keefes-soiety.vercel.app)"
     },
     redirect: "follow",
-    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS)
+    signal: AbortSignal.timeout(timeoutMs)
   });
   if (!response.ok) throw new Error(`Official data request failed: ${response.status}`);
   return (await response.text()).slice(0, 1_500_000);
@@ -483,6 +568,8 @@ export {
   CPI_LIST_URL,
   CUSTOMS_LIST_URL,
   fetchConsumerPricesFromPolicyBriefing,
+  fetchExportsFromPolicyBriefing,
   htmlToText,
+  parseExportPeriod,
   parseExportValues
 };
