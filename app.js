@@ -1,52 +1,58 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=78";
+} from "./glossary-data.js?v=79";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=78";
+} from "./glossary-extra-data.js?v=79";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=78";
+} from "./glossary-more-data.js?v=79";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=78";
-import { glossarySpecialTerms } from "./glossary-special-data.js?v=78";
-import { glossaryCoreExtraTerms } from "./glossary-core-extra-data.js?v=78";
-import { glossaryExpandedTerms } from "./glossary-expanded-data.js?v=78";
-import { buildMasterGlossary } from "./glossary-master-data.js?v=78";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=78";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=78";
-import { moreScenarioQuestions } from "./quiz-scenario-more-data.js?v=78";
-import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=78";
-import { historyDeepDives, historyEraDetails } from "./history-detail-data.js?v=78";
-import { historyEraProfiles, historyEventPerspectives } from "./history-reading-data.js?v=78";
+} from "./glossary-pro-data.js?v=79";
+import { glossarySpecialTerms } from "./glossary-special-data.js?v=79";
+import { glossaryCoreExtraTerms } from "./glossary-core-extra-data.js?v=79";
+import { glossaryExpandedTerms } from "./glossary-expanded-data.js?v=79";
+import { buildMasterGlossary } from "./glossary-master-data.js?v=79";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=79";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=79";
+import { moreScenarioQuestions } from "./quiz-scenario-more-data.js?v=79";
+import { expandedScenarioQuestions } from "./quiz-scenario-expanded-data.js?v=79";
+import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=79";
+import { historyDeepDives, historyEraDetails } from "./history-detail-data.js?v=79";
+import { historyEraProfiles, historyEventPerspectives } from "./history-reading-data.js?v=79";
 import {
   indicatorCategories as baseIndicatorCategories,
   indicatorCountries,
   indicatorDefinitions as baseIndicatorDefinitions
-} from "./indicator-data.js?v=78";
+} from "./indicator-data.js?v=79";
 import {
   financeIndicatorCategories,
   financeIndicatorDefinitions
-} from "./indicator-finance-data.js?v=78";
-import { expandedIndicatorDefinitions } from "./indicator-expanded-data.js?v=78";
-import { indicatorSnapshot } from "./indicator-values.js?v=78";
-import { resourceProductionIndicators } from "./resource-production-data.js?v=78";
+} from "./indicator-finance-data.js?v=79";
+import { expandedIndicatorDefinitions } from "./indicator-expanded-data.js?v=79";
+import { indicatorSnapshot } from "./indicator-values.js?v=79";
+import { resourceProductionIndicators } from "./resource-production-data.js?v=79";
 import {
   bindResourceProductionDetail,
   formatProductionExact,
   renderResourceProductionDetail
-} from "./resource-production-ui.js?v=78";
-import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=78";
-import { initFutureIndustryChapter } from "./future-industry-ui.js?v=78";
-import { initResourceLibraryChapter } from "./resource-library-ui.js?v=78";
-import { economicRelationships } from "./relationship-data.js?v=78";
+} from "./resource-production-ui.js?v=79";
+import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=79";
+import { initFutureIndustryChapter } from "./future-industry-ui.js?v=79";
+import { initResourceLibraryChapter } from "./resource-library-ui.js?v=79";
+import { economicRelationships } from "./relationship-data.js?v=79";
 
-const scenarioQuestions = [...baseScenarioQuestions, ...extraScenarioQuestions, ...moreScenarioQuestions];
+const scenarioQuestions = [
+  ...baseScenarioQuestions,
+  ...extraScenarioQuestions,
+  ...moreScenarioQuestions,
+  ...expandedScenarioQuestions
+];
 const indicatorCategories = [...baseIndicatorCategories, ...financeIndicatorCategories];
 const indicatorDefinitions = [
   ...baseIndicatorDefinitions,
@@ -682,7 +688,7 @@ if ("serviceWorker" in navigator) {
   const hadServiceWorkerController = Boolean(navigator.serviceWorker.controller);
   let reloadingForServiceWorker = false;
   navigator.serviceWorker
-    .register("/sw.js?v=78")
+    .register("/sw.js?v=79")
     .then((registration) => {
       registration.update().catch(() => {});
       setInterval(() => registration.update().catch(() => {}), 5 * 60_000);
