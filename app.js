@@ -1,52 +1,52 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=80";
+} from "./glossary-data.js?v=81";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=80";
+} from "./glossary-extra-data.js?v=81";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=80";
+} from "./glossary-more-data.js?v=81";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=80";
-import { glossarySpecialTerms } from "./glossary-special-data.js?v=80";
-import { glossaryCoreExtraTerms } from "./glossary-core-extra-data.js?v=80";
-import { glossaryExpandedTerms } from "./glossary-expanded-data.js?v=80";
-import { buildMasterGlossary } from "./glossary-master-data.js?v=80";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=80";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=80";
-import { moreScenarioQuestions } from "./quiz-scenario-more-data.js?v=80";
-import { expandedScenarioQuestions } from "./quiz-scenario-expanded-data.js?v=80";
-import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=80";
-import { historyDeepDives, historyEraDetails } from "./history-detail-data.js?v=80";
-import { historyEraProfiles, historyEventPerspectives } from "./history-reading-data.js?v=80";
+} from "./glossary-pro-data.js?v=81";
+import { glossarySpecialTerms } from "./glossary-special-data.js?v=81";
+import { glossaryCoreExtraTerms } from "./glossary-core-extra-data.js?v=81";
+import { glossaryExpandedTerms } from "./glossary-expanded-data.js?v=81";
+import { buildMasterGlossary } from "./glossary-master-data.js?v=81";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=81";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=81";
+import { moreScenarioQuestions } from "./quiz-scenario-more-data.js?v=81";
+import { expandedScenarioQuestions } from "./quiz-scenario-expanded-data.js?v=81";
+import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=81";
+import { historyDeepDives, historyEraDetails } from "./history-detail-data.js?v=81";
+import { historyEraProfiles, historyEventPerspectives } from "./history-reading-data.js?v=81";
 import {
   indicatorCategories as baseIndicatorCategories,
   indicatorCountries,
   indicatorDefinitions as baseIndicatorDefinitions
-} from "./indicator-data.js?v=80";
+} from "./indicator-data.js?v=81";
 import {
   financeIndicatorCategories,
   financeIndicatorDefinitions
-} from "./indicator-finance-data.js?v=80";
-import { expandedIndicatorDefinitions } from "./indicator-expanded-data.js?v=80";
-import { indicatorSnapshot } from "./indicator-values.js?v=80";
-import { resourceProductionIndicators } from "./resource-production-data.js?v=80";
+} from "./indicator-finance-data.js?v=81";
+import { expandedIndicatorDefinitions } from "./indicator-expanded-data.js?v=81";
+import { indicatorSnapshot } from "./indicator-values.js?v=81";
+import { resourceProductionIndicators } from "./resource-production-data.js?v=81";
 import {
   bindResourceProductionDetail,
   formatProductionExact,
   renderResourceProductionDetail
-} from "./resource-production-ui.js?v=80";
-import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=80";
-import { initFutureIndustryChapter } from "./future-industry-ui.js?v=80";
-import { initResourceLibraryChapter } from "./resource-library-ui.js?v=80";
-import { economicRelationships } from "./relationship-data.js?v=80";
-import { initLearningTools } from "./learning-tools-ui.js?v=80";
+} from "./resource-production-ui.js?v=81";
+import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=81";
+import { initFutureIndustryChapter } from "./future-industry-ui.js?v=81";
+import { initResourceLibraryChapter } from "./resource-library-ui.js?v=81";
+import { economicRelationships } from "./relationship-data.js?v=81";
+import { initLearningTools } from "./learning-tools-ui.js?v=81";
 
 const scenarioQuestions = [
   ...baseScenarioQuestions,
@@ -146,8 +146,10 @@ const elements = {
   riskScore: document.querySelector("#riskScore"),
   riskDrivers: document.querySelector("#riskDrivers"),
   riskLegend: document.querySelector("#riskLegend"),
+  riskMethodology: document.querySelector("#riskMethodology"),
   updatedAt: document.querySelector("#updatedAt"),
   sourceLine: document.querySelector("#sourceLine"),
+  dataProvenance: document.querySelector("#dataProvenance"),
   briefBoard: document.querySelector("#briefBoard"),
   marketStrip: document.querySelector("#marketStrip"),
   marketBrief: document.querySelector("#marketBrief"),
@@ -226,6 +228,13 @@ const timeFormatter = new Intl.DateTimeFormat("ko-KR", {
 const marketTimeFormatter = new Intl.DateTimeFormat("ko-KR", {
   month: "numeric",
   day: "numeric",
+  hour: "2-digit",
+  minute: "2-digit"
+});
+const exactDateTimeFormatter = new Intl.DateTimeFormat("ko-KR", {
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
   hour: "2-digit",
   minute: "2-digit"
 });
@@ -690,7 +699,7 @@ if ("serviceWorker" in navigator) {
   const hadServiceWorkerController = Boolean(navigator.serviceWorker.controller);
   let reloadingForServiceWorker = false;
   navigator.serviceWorker
-    .register("/sw.js?v=80")
+    .register("/sw.js?v=81")
     .then((registration) => {
       registration.update().catch(() => {});
       setInterval(() => registration.update().catch(() => {}), 5 * 60_000);
@@ -788,7 +797,7 @@ function renderSummary(snapshot, narrative = state.narrative) {
   const marketCount = quality
     ? `${quality.availableMarketCount}/${quality.requestedMarketCount}개 시장지표`
     : `${snapshot.markets.length}개 시장지표`;
-  elements.sourceLine.textContent = `${marketCount} 기준 · 확인 ${timeFormatter.format(new Date(snapshot.generatedAt))}`;
+  elements.sourceLine.textContent = `${marketCount} · 원자료·기준·계산식 확인`;
   elements.riskScore.textContent = analysis.riskScore;
   const summaryTone = analysis.riskScore >= 66 ? "negative" : analysis.riskScore >= 45 ? "watch" : "positive";
   elements.regimeTitle.closest(".signal-panel").dataset.tone = summaryTone;
@@ -848,6 +857,99 @@ function renderSummary(snapshot, narrative = state.narrative) {
       return item;
     })
   );
+  renderRiskMethodology(analysis);
+  renderDataProvenance(snapshot);
+}
+
+function formatExactDate(value, fallback = "확인되지 않음") {
+  const timestamp = Date.parse(String(value || ""));
+  return Number.isFinite(timestamp)
+    ? exactDateTimeFormatter.format(new Date(timestamp))
+    : fallback;
+}
+
+function renderRiskMethodology(analysis) {
+  if (!elements.riskMethodology) return;
+  const wasOpen = elements.riskMethodology.open;
+  const method = analysis?.riskMethodology;
+  const components = Array.isArray(method?.components)
+    ? method.components
+    : [];
+  elements.riskMethodology.innerHTML = `
+    <summary>
+      <span>위험 온도 계산법 자세히 보기</span>
+      <strong>${components.length ? `${components.length - 1}개 시장지표 + 기본값` : "계산 기준"}</strong>
+    </summary>
+    <div class="risk-method-body">
+      <p class="risk-method-lead">
+        이 점수는 위기 발생확률이 아니라 VIX·환율·주가·유가의 단기 스트레스를 한 화면에서 비교하기 위한 규칙값입니다.
+      </p>
+      <ol>
+        ${components
+          .map(
+            (component) => `
+              <li>
+                <span>${escapeHtml(component.label)}</span>
+                <strong>${component.points > 0 ? "+" : ""}${component.points}점</strong>
+                <p>${escapeHtml(component.rule)}</p>
+              </li>
+            `
+          )
+          .join("")}
+      </ol>
+      <div class="risk-method-total">
+        <span>원점수 ${escapeHtml(method?.rawScore ?? "--")}점</span>
+        <strong>표시 범위 ${escapeHtml(method?.floor ?? 12)}~${escapeHtml(method?.ceiling ?? 88)}점</strong>
+        <em>현재 ${escapeHtml(analysis?.riskScore ?? "--")}점</em>
+      </div>
+      <div class="risk-method-cautions">
+        <p><b>포함 지표</b> ${escapeHtml(method?.scope || "VIX·원/달러·KOSPI·S&P 500·WTI")}</p>
+        <p><b>예측 검증</b> ${escapeHtml(method?.validation || "설명용 규칙이며 과거 예측력을 검증하지 않음")}</p>
+        <p><b>점수 차이</b> ${escapeHtml(method?.significance || "점수 차이는 통계적 유의성이나 발생확률을 뜻하지 않음")}</p>
+        <p><b>구분 한계</b> 경기침체·유동성·지정학 위험을 따로 추정하지 않으며, 신용스프레드와 실업률은 현재 식에 포함하지 않습니다.</p>
+      </div>
+    </div>
+  `;
+  elements.riskMethodology.open = wasOpen;
+}
+
+function renderDataProvenance(snapshot) {
+  if (!elements.dataProvenance) return;
+  const wasOpen = elements.dataProvenance.open;
+  const details = snapshot?.sourceDetails || {};
+  const sections = [
+    ["시장", details.markets],
+    ["한국 거시지표", details.macro],
+    ["뉴스", details.news]
+  ];
+  elements.dataProvenance.innerHTML = `
+    <summary>
+      <span>원자료·기준일·계산식 자세히 보기</span>
+      <strong>출처 3종</strong>
+    </summary>
+    <div class="data-provenance-body">
+      ${sections
+        .map(([label, detail]) => `
+          <section>
+            <header>
+              <span>${escapeHtml(label)}</span>
+              <strong>${escapeHtml(detail?.provider || "제공기관 확인 중")}</strong>
+            </header>
+            <dl>
+              <div><dt>데이터 기준</dt><dd>${Array.isArray(detail?.basisAt) ? detail.basisAt.map(escapeHtml).join("<br>") : escapeHtml(formatExactDate(detail?.basisAt))}</dd></div>
+              <div><dt>업데이트</dt><dd>${escapeHtml(formatExactDate(detail?.updatedAt))}</dd></div>
+              <div><dt>수정 여부</dt><dd>${escapeHtml(detail?.revision || "제공기관 갱신 시 수정 가능")}</dd></div>
+              <div><dt>계산식</dt><dd>${escapeHtml(detail?.calculation || "원자료 표시")}</dd></div>
+              <div><dt>명목·실질</dt><dd>${escapeHtml(detail?.valueType || "지표별 정의에 따름")}</dd></div>
+              <div><dt>계절조정</dt><dd>${escapeHtml(detail?.seasonalAdjustment || "원자료 확인 필요")}</dd></div>
+              <div><dt>잠정·확정</dt><dd>${escapeHtml(detail?.status || "제공기관 원자료 확인 필요")}</dd></div>
+            </dl>
+          </section>
+        `)
+        .join("")}
+    </div>
+  `;
+  elements.dataProvenance.open = wasOpen;
 }
 
 function renderBriefBoard(snapshot, narrative = state.narrative) {
@@ -1608,6 +1710,14 @@ function renderIndicatorListItem(indicator) {
   `;
 }
 
+function getIndicatorValueBasis(indicator) {
+  const code = String(indicator?.code || "");
+  if (/\.CD$/.test(code)) return "명목 현재가격 미 달러";
+  if (/\.KD(?:\.ZG)?$/.test(code)) return "물가 영향을 제거한 실질 기준";
+  if (/PPP|PP\.|\.PA\./i.test(code)) return "구매력평가(PPP) 기준";
+  if (indicator?.unit === "%") return "비율 지표 · 명목/실질 구분은 원자료 정의에 따름";
+  return "지표 정의에 따름";
+}
 function renderIndicatorDetail(indicator) {
   const data = indicatorSnapshot.indicators[indicator.id];
   const countryData = indicatorCountries
@@ -1692,14 +1802,22 @@ function renderIndicatorDetail(indicator) {
         <p>${escapeHtml(indicator.caution)}</p>
       </section>
     </div>
-    <footer class="indicator-source-row">
-      <div>
-        <span>출처</span>
+    <details class="indicator-source-details">
+      <summary>
+        <span>출처·기준·계산식 자세히 보기</span>
         <strong>${escapeHtml(indicator.source)}</strong>
-        <em>데이터셋 갱신 ${indicatorSnapshot.dataUpdatedAt.replaceAll("-", ".")}</em>
+      </summary>
+      <div>
+        <p><b>원자료 제공기관</b> ${escapeHtml(indicator.source)}</p>
+        <p><b>데이터 기준일</b> 국가별 값 옆의 공표연도</p>
+        <p><b>사이트 갱신일</b> ${indicatorSnapshot.dataUpdatedAt.replaceAll("-", ".")}</p>
+        <p><b>계산식</b> WDI API 값을 변환하지 않고 ${escapeHtml(String(indicator.precision))}자리 정밀도로 표시</p>
+        <p><b>명목·실질</b> ${escapeHtml(getIndicatorValueBasis(indicator))}</p>
+        <p><b>계절조정</b> 연간 WDI 값이며 화면에 별도 계절조정 상태가 없음</p>
+        <p><b>잠정·수정 여부</b> WDI 공통 응답에 잠정/확정 필드가 없어 확정치로 단정하지 않으며 이후 갱신될 수 있음</p>
+        <a href="${safeNewsUrl(indicator.sourceUrl)}" target="_blank" rel="noopener noreferrer">원자료 보기 <span aria-hidden="true">↗</span></a>
       </div>
-      <a href="${safeNewsUrl(indicator.sourceUrl)}" target="_blank" rel="noopener noreferrer">원자료 보기 <span aria-hidden="true">↗</span></a>
-    </footer>
+    </details>
   `;
 }
 
@@ -2525,9 +2643,36 @@ function macroDeltaClass(item) {
 }
 
 function macroBasisText(item) {
-  if (item?.status !== "official") return "공식 자료를 불러오지 못했습니다.";
+  if (item?.status !== "official") return "원자료를 불러오지 못했습니다.";
   const basis = item.periodLabel || "최근 공표";
-  return item.stale ? `${basis} 기준 · 마지막 정상 공식값` : `${basis} 기준 · 공식 최신 발표`;
+  return item.stale ? `${basis} 기준 · 마지막 정상 공표값` : `${basis} 기준 · 최근 공표값`;
+}
+function getMacroMethodology(item) {
+  const id = String(item?.id || "");
+  const calculation = {
+    "base-rate": "한국은행이 공표한 기준금리 수준이며 별도 계산을 하지 않습니다.",
+    cpi: "표시값은 소비자물가지수 전년동월비, 옆 증감은 전월비입니다.",
+    exports: "표시값은 명목 달러 수출액의 전년동월비, 옆 값은 해당 월 수출액입니다.",
+    "household-credit": "표시값은 분기말 명목 잔액, 옆 증감은 직전 분기 대비입니다."
+  }[id] || "제공기관 공표값을 표시합니다.";
+  const valueType = {
+    "base-rate": "명목 정책금리",
+    cpi: "명목 소비자가격의 전년동월 변화율",
+    exports: "명목 달러 수출액과 전년동월 변화율",
+    "household-credit": "명목 원화 잔액"
+  }[id] || "지표 정의에 따름";
+  const seasonalAdjustment = {
+    "base-rate": "해당 없음",
+    cpi: "화면은 전년동월비·전월비 공표값이며 별도 계절조정 표시는 없음",
+    exports: "월간 전년동월비이며 화면에 계절조정 상태를 따로 표시하지 않음",
+    "household-credit": "분기말 잔액이며 화면에 계절조정 상태를 따로 표시하지 않음"
+  }[id] || "원자료 확인 필요";
+  const revision = item?.preliminary
+    ? "잠정치 · 후속 확정 발표에서 수정될 수 있음"
+    : item?.stale
+      ? "마지막 정상 공표값 · 최신 여부 재확인 필요"
+      : "공표값 · 제공기관의 후속 수정 가능";
+  return { calculation, valueType, seasonalAdjustment, revision };
 }
 function renderMacro(macro, analysis, narrative = state.narrative) {
   const korea = narrative?.korea || {};
@@ -2556,7 +2701,7 @@ function renderMacro(macro, analysis, narrative = state.narrative) {
         </article>
       </div>
       <footer>
-        <span>같이 봐야 할 공식값</span>
+        <span>같이 봐야 할 원자료</span>
         <p>기준금리 ${escapeHtml(macroValueText(policyRate))} · 소비자물가 ${escapeHtml(macroValueText(inflation))} · 가계신용 ${escapeHtml(macroValueText(credit))}</p>
       </footer>
     </section>
@@ -2580,8 +2725,22 @@ function renderMacro(macro, analysis, narrative = state.narrative) {
         </div>
         <p class="macro-basis">${escapeHtml(macroBasisText(item))}</p>
         <details class="macro-detail">
-          <summary>무슨 뜻인가</summary>
-          <p>${escapeHtml(getMacroReason(item))}</p>
+          <summary>출처·기준 자세히 보기</summary>
+          ${(() => {
+            const method = getMacroMethodology(item);
+            return `
+              <div class="macro-source-grid">
+                <div><span>원자료 제공기관</span><strong><a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noreferrer">${escapeHtml(item.source)}</a></strong></div>
+                <div><span>데이터 기준일</span><strong>${escapeHtml(item.periodLabel || formatExactDate(item.asOf))}</strong></div>
+                <div><span>업데이트 시간</span><strong>${escapeHtml(formatExactDate(item.fetchedAt))}</strong></div>
+                <div><span>잠정·수정 여부</span><strong>${escapeHtml(method.revision)}</strong></div>
+                <div><span>계산식</span><strong>${escapeHtml(method.calculation)}</strong></div>
+                <div><span>명목·실질</span><strong>${escapeHtml(method.valueType)}</strong></div>
+                <div><span>계절조정</span><strong>${escapeHtml(method.seasonalAdjustment)}</strong></div>
+              </div>
+              <p class="macro-meaning"><b>쉽게 읽기</b> ${escapeHtml(getMacroReason(item))}</p>
+            `;
+          })()}
         </details>
       `;
       return node;
@@ -3417,35 +3576,45 @@ function renderNews(headlines = [], analysis, dataQuality = {}) {
   renderNewsIntelligence(headlines, topTopics, analysis, dataQuality);
 }
 
+function newsAnalysisStatusLabel(status) {
+  if (status === "scheduled-ai") return "AI 요약 완료";
+  if (status === "on-demand-ai") return "AI 요약 가능";
+  return "규칙 기반 요약";
+}
+
 function createNewsItem(headline, index, analysis) {
   const item = document.createElement("article");
   const newsUrl = safeNewsUrl(headline.url);
   const summaryKey = getNewsSummaryKey(headline);
   const sectionLabel = NEWS_SECTION_DEFINITIONS.find((section) => section.id === headline.section)?.label || headline.topic;
   const isGlobal = headline.section && headline.section !== "korea";
+  const analysisStatus = headline.analysisStatus || "rules";
   item.className = "news-item";
   if (headline.section === "security-disasters") item.dataset.newsKind = "critical";
   item.innerHTML = `
     <div class="news-item-head">
       <span class="news-index">${String(index).padStart(2, "0")}</span>
-      <a class="news-link" href="${escapeHtml(newsUrl)}" target="${newsUrl.startsWith("http") ? "_blank" : "_self"}" rel="noreferrer">
-        <span class="news-title">${escapeHtml(headline.title)}</span>
+      <div class="news-link">
+        <a class="news-title" href="${escapeHtml(newsUrl)}" target="${newsUrl.startsWith("http") ? "_blank" : "_self"}" rel="noopener noreferrer">${escapeHtml(headline.title)}</a>
         <span class="news-meta">
           <span>${escapeHtml(sectionLabel)}</span>
           <span>${escapeHtml(headline.impactArea || headline.topic)}</span>
           <span class="news-importance" data-importance="${escapeHtml(headline.importanceLabel || "선별")}">${escapeHtml(headline.importanceLabel || "선별")}</span>
           ${isGlobal ? `<span class="news-korea-impact">한국 영향 · ${escapeHtml(headline.koreaImpactLabel || "경기 심리")}</span>` : ""}
           <span data-source-tier="${escapeHtml(headline.sourceTier || "other")}">${escapeHtml(headline.source)}</span>
+          <span class="news-author">${escapeHtml(headline.author || "기자 미확인")}</span>
           ${headline.relatedSourceCount > 1 ? `<span class="news-corroboration">교차 ${headline.relatedSourceCount}곳</span>` : ""}
-          <span>${relativeTime(headline.publishedAt)}</span>
+          <span class="news-exact-date" title="${escapeHtml(relativeTime(headline.publishedAt))}">${escapeHtml(formatExactDate(headline.publishedAt, "게시일 미확인"))}</span>
+          <span class="news-analysis-mode" data-mode="${escapeHtml(analysisStatus)}">${escapeHtml(newsAnalysisStatusLabel(analysisStatus))}</span>
+          <a class="news-original-link" href="${escapeHtml(newsUrl)}" target="${newsUrl.startsWith("http") ? "_blank" : "_self"}" rel="noopener noreferrer">원문 보기 <span aria-hidden="true">↗</span></a>
         </span>
-      </a>
+      </div>
     </div>
     <details class="news-ai-detail">
       <summary>
-        <span class="ai-label">요약</span>
+        <span class="ai-label">${analysisStatus.includes("ai") ? "AI" : "요약"}</span>
         <strong>기사 요약 보기</strong>
-        <em>핵심 사실 · 시장 영향 · 한국 영향 · 다음 확인</em>
+        <em>요약 방식 · 출처 · 핵심 사실 · 시장 영향 · 한국 영향</em>
       </summary>
       <div class="news-ai-output" data-news-analysis>
         <p>분석을 준비하고 있습니다.</p>
@@ -3642,8 +3811,9 @@ function renderNewsAnalysisResult(output, result) {
   const checkpoints = Array.isArray(result.checkpoints) ? result.checkpoints.slice(0, 3) : [];
   const keyPoints = Array.isArray(result.keyPoints) ? result.keyPoints.slice(0, 3) : [];
   const isArticleBased = result.contentBasis === "article";
-  const contentBasis = isArticleBased ? "원문 내용 기반" : "제목 기반";
-  const summaryLabel = isArticleBased ? "한 줄 요약" : "제목 기반 해석";
+  const isAiGenerated = result.aiGenerated === true;
+  const contentBasis = isArticleBased ? "원문 확인 기반" : "제목 기반";
+  const summaryLabel = isAiGenerated ? "AI 재작성 요약" : "규칙 기반 재작성";
   const pointsLabel = isArticleBased ? "핵심 사실" : "읽는 포인트";
   const marketBasis = result.marketContextBasis === "post-article"
     ? "기사 이후 가격"
@@ -3653,11 +3823,29 @@ function renderNewsAnalysisResult(output, result) {
   const sourceBasis = Number(result.relatedSourceCount) > 1
     ? `교차 ${result.relatedSourceCount}곳`
     : "단일 출처";
+  const sourceInfo = result.sourceInfo || {};
+  const originalUrl = safeNewsUrl(sourceInfo.originalUrl);
   output.innerHTML = `
     <div class="ai-result-head">
-      <span data-tone="${escapeHtml(result.tone || "watch")}">${escapeHtml(result.signal || "혼합 신호")}</span>
-      <em>${escapeHtml(result.engineLabel || "데이터 기반 자동 요약")} · ${contentBasis} · ${marketBasis} · ${sourceBasis} · 신뢰도 ${escapeHtml(result.confidence || "중간")}</em>
+      <div class="ai-result-tags">
+        <span data-tone="${escapeHtml(result.tone || "watch")}">${escapeHtml(result.signal || "혼합 신호")}</span>
+        <strong class="ai-summary-badge" data-ai="${isAiGenerated}">${isAiGenerated ? "AI 요약" : "AI 미사용 · 규칙 재작성"}</strong>
+      </div>
+      <em>${escapeHtml(result.engineLabel || "규칙 기반 재작성")} · ${contentBasis} · ${marketBasis} · ${sourceBasis} · 신뢰도 ${escapeHtml(result.confidence || "중간")}</em>
     </div>
+    <section class="news-source-panel">
+      <header>
+        <strong>기사 출처 정보</strong>
+        ${originalUrl !== "#" ? `<a href="${escapeHtml(originalUrl)}" target="_blank" rel="noopener noreferrer">원문 보기 <span aria-hidden="true">↗</span></a>` : "<span>원문 주소 미확인</span>"}
+      </header>
+      <dl>
+        <div><dt>언론사</dt><dd>${escapeHtml(sourceInfo.publisher || "확인되지 않음")}</dd></div>
+        <div><dt>기자·작성자</dt><dd>${escapeHtml(sourceInfo.author || "원문 메타데이터에서 확인되지 않음")}</dd></div>
+        <div><dt>정확한 게시일</dt><dd>${escapeHtml(formatExactDate(sourceInfo.publishedAt, "확인되지 않음"))}</dd></div>
+        <div><dt>수정일</dt><dd>${escapeHtml(formatExactDate(sourceInfo.modifiedAt, "수정 정보 없음"))}</dd></div>
+        <div><dt>요약 방식</dt><dd>${isAiGenerated ? "생성형 AI가 원문을 새 문장으로 요약" : "생성형 AI 미사용 · 원문 문장을 싣지 않고 규칙으로 재작성"}</dd></div>
+      </dl>
+    </section>
     <section class="ai-article-summary">
       <span>${summaryLabel}</span>
       <p>${escapeHtml(result.summary || "현재 시장과의 연결을 확인하고 있습니다.")}</p>
@@ -4085,7 +4273,7 @@ function renderDataUnavailable() {
   elements.pulseText.textContent = "실제 자료를 불러오지 못했습니다. 이전 값이나 추정값은 대신 표시하지 않습니다.";
   elements.updatedAt.textContent = "기준시각 없음";
   elements.updatedAt.removeAttribute("datetime");
-  elements.sourceLine.textContent = "잠시 후 새로고침하면 공식 자료를 다시 확인합니다.";
+  elements.sourceLine.textContent = "잠시 후 새로고침하면 원자료 제공기관을 다시 확인합니다.";
   elements.riskScore.textContent = "--";
   elements.riskMeter.style.strokeDashoffset = 314;
   elements.riskMeter.style.stroke = "#cbd5db";
@@ -4094,6 +4282,20 @@ function renderDataUnavailable() {
   elements.watchChips.replaceChildren();
   elements.riskDrivers.replaceChildren();
   elements.riskLegend.replaceChildren();
+  if (elements.riskMethodology) {
+    elements.riskMethodology.open = false;
+    elements.riskMethodology.innerHTML = `
+      <summary><span>위험 온도 계산법</span><strong>자료 없음</strong></summary>
+      <div class="risk-method-body"><p class="risk-method-lead">필수 시장값을 가져오지 못해 점수를 계산하지 않았습니다.</p></div>
+    `;
+  }
+  if (elements.dataProvenance) {
+    elements.dataProvenance.open = false;
+    elements.dataProvenance.innerHTML = `
+      <summary><span>원자료·기준일·계산식</span><strong>연결 실패</strong></summary>
+      <div class="data-provenance-body"><p class="risk-method-lead">원자료 연결이 복구될 때까지 이전 출처 정보도 표시하지 않습니다.</p></div>
+    `;
+  }
   elements.marketStrip.innerHTML = unavailablePanel(
     "시장 데이터를 가져오지 못했습니다.",
     "실제 시세 연결이 복구되면 자동으로 다시 표시됩니다.",
@@ -4111,8 +4313,8 @@ function renderDataUnavailable() {
     [elements.analysisBoard, "심층 분석을 표시할 수 없습니다.", "자료가 복구될 때까지 시나리오와 결론을 만들지 않습니다."],
     [elements.analysisQuote, "오늘의 경제 명언을 표시할 수 없습니다.", "현재 상황과 연결한 해석에 필요한 자료가 없습니다."],
     [elements.scenarioMatrix, "시나리오를 표시할 수 없습니다.", "확인된 데이터 없이 확률이나 방향을 추정하지 않습니다."],
-    [elements.koreaBrief, "한국 경제 요약을 표시할 수 없습니다.", "시장과 공식 거시지표를 모두 확인하지 못했습니다."],
-    [elements.macroGrid, "공식 지표를 가져오지 못했습니다.", "대체 숫자를 사용하지 않고 다음 수집 때 다시 확인합니다."],
+    [elements.koreaBrief, "한국 경제 요약을 표시할 수 없습니다.", "시장과 거시 원자료를 모두 확인하지 못했습니다."],
+    [elements.macroGrid, "원자료 지표를 가져오지 못했습니다.", "대체 숫자를 사용하지 않고 다음 수집 때 다시 확인합니다."],
     [elements.koreaBoard, "한국 경제 전달 경로를 표시할 수 없습니다.", "확인되지 않은 수치로 영향을 추정하지 않습니다."],
     [elements.koreaImpact, "생활·산업 영향을 표시할 수 없습니다.", "실제 자료가 복구된 뒤 다시 분석합니다."],
     [elements.newsBrief, "뉴스 현황을 가져오지 못했습니다.", "오래된 기사나 임의의 내용을 대신 채우지 않습니다."],
@@ -4220,11 +4422,20 @@ function buildLocalNewsAnalysis(headline, marketAnalysis = {}) {
     signal,
     tone,
     confidence: "낮음",
-    engineLabel: "헤드라인 기반 자동 요약",
+    aiGenerated: false,
+    analysisMode: "rules",
+    engineLabel: "헤드라인 규칙 기반 재작성",
     contentBasis: "headline",
     marketContextBasis: "current",
     marketContextAt: null,
     relatedSourceCount: Number(headline.relatedSourceCount) || 1,
+    sourceInfo: {
+      publisher: String(headline.source || ""),
+      author: String(headline.author || ""),
+      publishedAt: headline.publishedAt || null,
+      modifiedAt: null,
+      originalUrl: headline.url || ""
+    },
     summary: `이 헤드라인은 ${themeText} 변수가 현재 ${marketAnalysis.regime || "시장"} 흐름에 어떤 영향을 주는지 확인해야 하는 기사입니다. 제목의 방향보다 실제 환율·금리·주가 반응이 더 중요합니다.`,
     whyItMatters: hasRates
       ? "금리와 물가는 기업 가치평가, 채권금리, 달러를 동시에 움직여 여러 자산에 파급될 수 있습니다."
@@ -4246,7 +4457,7 @@ function buildLocalNewsAnalysis(headline, marketAnalysis = {}) {
         ? "한국은 대외금리와 환율 변화에 민감합니다. 원화 약세가 길어지면 외국인 수급과 수입물가, 금리 인하 여력에 부담이 됩니다."
         : "한국 시장에서는 대형 수출주와 원/달러, 외국인 순매수 반응을 통해 영향이 실제로 전달되는지 확인합니다.",
     checkpoints,
-    limitation: "원문을 가져오지 못해 헤드라인과 현재 가격을 연결한 낮은 신뢰도의 1차 요약입니다. 기사 원문, 발표 시점, 기저효과와 이미 가격에 반영됐는지를 반드시 함께 확인하세요."
+    limitation: "원문과 생성형 AI를 사용하지 않고 헤드라인을 규칙으로 재작성한 낮은 신뢰도의 요약입니다. 기사 원문, 발표 시점, 기저효과와 이미 가격에 반영됐는지를 반드시 함께 확인하세요."
   };
 }
 

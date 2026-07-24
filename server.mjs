@@ -209,7 +209,7 @@ const server = http.createServer(async (req, res) => {
 
 if (process.argv[1] && path.resolve(process.argv[1]) === __filename) {
   server.listen(PORT, "127.0.0.1", () => {
-    console.log(`keefe's soiety is running at http://127.0.0.1:${PORT}`);
+    console.log(`keefe's society is running at http://127.0.0.1:${PORT}`);
   });
 }
 
@@ -243,8 +243,14 @@ async function getSnapshot({ forceNews = false, preferScheduledNews = true } = {
     newsSourceMode: newsBundle.sourceMode,
     scheduledNewsAnalysisCount: newsBundle.scheduledAnalysisCount || 0
   };
+  const generatedAt = new Date().toISOString();
+  const latestMarketTimestamp = Math.max(
+    ...markets
+      .map((market) => Date.parse(market.asOf))
+      .filter(Number.isFinite)
+  );
   const payload = {
-    generatedAt: new Date().toISOString(),
+    generatedAt,
     markets,
     dataQuality,
     macro,
@@ -255,7 +261,47 @@ async function getSnapshot({ forceNews = false, preferScheduledNews = true } = {
       news: newsBundle.sourceMode === "scheduled"
         ? `예약 뉴스 캐시 (1시간 수집·최근 ${NEWS_LOOKBACK_DAYS}일·중복 제거)`
         : `Google News RSS (30분 캐시·최근 ${NEWS_LOOKBACK_DAYS}일·관련도 선별·중복 제거)`,
-      macro: "한국은행·국가데이터처·관세청 공식 최신 발표"
+      macro: "한국은행·국가데이터처·관세청 최신 공표"
+    },
+    sourceDetails: {
+      markets: {
+        provider: "Yahoo Finance chart endpoint",
+        basisAt: Number.isFinite(latestMarketTimestamp)
+          ? new Date(latestMarketTimestamp).toISOString()
+          : null,
+        updatedAt: generatedAt,
+        revision: "장중 값은 거래가 이어지면서 바뀌며 종가도 제공처 정정에 따라 수정될 수 있음",
+        calculation: "등락률 = (최근값 ÷ 비교기준 종가 - 1) × 100",
+        valueType: "명목 시장가격",
+        seasonalAdjustment: "해당 없음",
+        status: "실시간·장중 잠정값 또는 확정 종가 · 시장 상태를 카드에서 구분"
+      },
+      macro: {
+        provider: "한국은행·국가데이터처·관세청",
+        basisAt: macro.map((item) => `${item.label}: ${item.periodLabel || "기준 미확인"}`),
+        updatedAt: macro.map((item) => item.fetchedAt).filter(Boolean).sort().at(-1) || generatedAt,
+        revision: macro.some((item) => item.preliminary)
+          ? "잠정치 포함 · 후속 확정 발표에서 수정될 수 있음"
+          : "공표값 · 제공기관의 후속 수정 가능",
+        calculation: "각 기관 공표 단위와 증감률을 사용하며 대체 추정값을 만들지 않음",
+        valueType: "지표별 상이 · 카드의 출처·기준에서 구분",
+        seasonalAdjustment: "화면 공통 필드 없음 · 원자료 표에서 확인",
+        status: macro.some((item) => item.preliminary)
+          ? "잠정치 포함 · 각 카드에서 공표 상태 확인"
+          : "잠정 여부 공통 판별 불가 · 각 제공기관 원자료 확인"
+      },
+      news: {
+        provider: newsBundle.sourceMode === "scheduled"
+          ? "예약 뉴스 캐시·원 언론사"
+          : "Google News RSS·원 언론사",
+        basisAt: newsBundle.fetchedAt,
+        updatedAt: generatedAt,
+        revision: "언론사 기사 수정·삭제에 따라 제목과 본문이 바뀔 수 있음",
+        calculation: "최근성·경제 관련성·출처 등급으로 선별하고 유사 사건은 중복 제거",
+        valueType: "기사 메타데이터와 요약",
+        seasonalAdjustment: "해당 없음",
+        status: "잠정·확정 구분 대상 아님 · 언론사 수정 가능"
+      }
     }
   };
 
@@ -273,13 +319,22 @@ async function getNewsBundle({ now = Date.now(), force = false, preferScheduled 
       Array.isArray(scheduled?.headlines) &&
       scheduled.headlines.length
     ) {
+      const scheduledAnalyses = scheduled.analyses || {};
       return {
         rawHeadlines: scheduled.headlines,
-        headlines: scheduled.headlines.slice(0, 24),
+        headlines: scheduled.headlines.slice(0, 24).map((headline) => ({
+          ...headline,
+          analysisStatus:
+            scheduledAnalyses[getHeadlineEventKey(headline)]?.aiGenerated === true
+              ? "scheduled-ai"
+              : "rules"
+        })),
         availableNewsFeedCount: Number(scheduled.availableNewsFeedCount) || headlineFeeds.length,
         fetchedAt: scheduled.updatedAt,
         sourceMode: "scheduled",
-        scheduledAnalysisCount: Object.keys(scheduled.analyses || {}).length
+        scheduledAnalysisCount: Object.values(scheduledAnalyses).filter(
+          (analysis) => analysis?.aiGenerated === true
+        ).length
       };
     }
   }
@@ -297,7 +352,15 @@ async function getNewsBundle({ now = Date.now(), force = false, preferScheduled 
     const rankedHeadlines = rankAndDedupeHeadlines(rawHeadlines, now);
     const value = {
       rawHeadlines,
-      headlines: selectSectionedHeadlines(rankedHeadlines, 24),
+      headlines: selectSectionedHeadlines(rankedHeadlines, 24).map(
+        (headline) => ({
+          ...headline,
+          analysisStatus:
+            AI_ON_DEMAND_ENABLED && isAiConfigured()
+              ? "on-demand-ai"
+              : "rules"
+        })
+      ),
       availableNewsFeedCount: headlineResults.filter((result) => result.status === "fulfilled").length,
       fetchedAt: new Date(now).toISOString(),
       sourceMode: "live",
@@ -329,7 +392,20 @@ async function findScheduledNewsAnalysis(headline) {
   const scheduled = await readScheduledNewsCache();
   if (!scheduled?.analyses || typeof scheduled.analyses !== "object") return null;
   const eventKey = headline.eventKey || getHeadlineEventKey(headline);
-  return scheduled.analyses[eventKey] || null;
+  const analysis = scheduled.analyses[eventKey] || null;
+  if (analysis?.aiGenerated !== true) return null;
+  return {
+    ...analysis,
+    sourceInfo: {
+      publisher: String(analysis.sourceInfo?.publisher || headline.source || ""),
+      author: String(analysis.sourceInfo?.author || headline.author || ""),
+      publishedAt:
+        analysis.sourceInfo?.publishedAt || headline.publishedAt || null,
+      modifiedAt: analysis.sourceInfo?.modifiedAt || null,
+      originalUrl:
+        analysis.sourceInfo?.originalUrl || headline.url || ""
+    }
+  };
 }
 function normalizeMarketSeries(timestamps = [], closes = []) {
   return timestamps
@@ -449,7 +525,7 @@ async function fetchMarketFromHost(item, hostname) {
   const response = await fetch(endpoint, {
     headers: {
       accept: "application/json",
-      "user-agent": "Mozilla/5.0 keefes-soiety/0.1"
+      "user-agent": "Mozilla/5.0 keefes-society/0.1"
     },
     signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS)
   });
@@ -507,7 +583,7 @@ async function fetchHeadlines(feed) {
   const response = await fetch(endpoint, {
     headers: {
       accept: "application/rss+xml,text/xml",
-      "user-agent": "Mozilla/5.0 keefes-soiety/0.1"
+      "user-agent": "Mozilla/5.0 keefes-society/0.1"
     },
     signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS)
   });
@@ -1020,9 +1096,14 @@ function buildAutomatedNewsAnalysis(headline, snapshot) {
     : "현재 확인 가능한 가격";
   const headlineAnalysis = `「${title}」은 ${focusText}입니다. ${priceBasisText}과 현재 위험 온도 ${riskScore}/100을 구분해 보고, 기사 표현과 실제 가격 방향이 일치하는지 확인해야 합니다.`;
   const hasArticleContent = headline.contentBasis === "article" && headline.articleContent;
-  const keyPoints = hasArticleContent && Array.isArray(headline.articleKeyPoints) && headline.articleKeyPoints.length
-    ? headline.articleKeyPoints.slice(0, 3)
-    : [primary.why, primary.korea, primary.checkpoints[0]];
+  const rewrittenSummary = hasArticleContent
+    ? `원문에서 확인한 핵심 주제는 ${primary.label}${secondary ? `${hasFinalConsonant ? "과" : "와"} ${secondary.label}` : ""}입니다. 기사 문장을 복사하지 않고 경제 전달 경로로 다시 쓰면, ${primary.why} 실제 영향은 발표 뒤 가격과 후속 원자료로 확인해야 합니다.`
+    : headlineAnalysis;
+  const keyPoints = [
+    `${primary.label}: ${primary.why}`,
+    `한국 연결: ${primary.korea}`,
+    `검증 기준: ${primary.checkpoints[0]}`
+  ];
 
   const relatedSourceCount = Number(headline.relatedSourceCount) || 1;
   const corroborationText = relatedSourceCount > 1
@@ -1033,21 +1114,32 @@ function buildAutomatedNewsAnalysis(headline, snapshot) {
     signal,
     tone,
     confidence: calculateNewsConfidence(headline, hasArticleContent),
-    engineLabel: hasArticleContent ? "원문 기반 자동 요약" : "헤드라인 기반 자동 요약",
+    aiGenerated: false,
+    analysisMode: "rules",
+    engineLabel: hasArticleContent
+      ? "원문 확인 후 규칙 기반 재작성"
+      : "헤드라인 규칙 기반 재작성",
     contentBasis: hasArticleContent ? "article" : "headline",
     marketContextBasis: marketContext.basis,
     marketContextAt: marketContext.referenceAt,
     relatedSourceCount,
     relatedSources: headline.relatedSources || [headline.source].filter(Boolean),
-    summary: hasArticleContent && headline.articleSummary ? headline.articleSummary : headlineAnalysis,
+    sourceInfo: {
+      publisher: String(headline.source || ""),
+      author: String(headline.articleAuthor || headline.author || ""),
+      publishedAt: headline.articlePublishedAt || headline.publishedAt || null,
+      modifiedAt: headline.articleModifiedAt || null,
+      originalUrl: headline.articleUrl || headline.url || ""
+    },
+    summary: rewrittenSummary,
     keyPoints,
     whyItMatters: `${primary.why}${secondary ? ` 동시에 ${secondary.label} 경로도 영향을 줄 수 있습니다.` : ""}`,
     marketImpact: marketImpactByTheme[primary.id] || marketImpactByTheme.sentiment,
     koreaImpact: primary.korea,
     checkpoints: primary.checkpoints,
     limitation: hasArticleContent
-      ? `기사 원문에서 핵심 내용을 추리고 ${priceBasisText}과 연결했습니다. ${corroborationText} 수치와 인용의 맥락은 원문에서 다시 확인해야 합니다.`
-      : `언론사 원문을 불러오지 못해 제목과 ${priceBasisText}을 연결했습니다. ${corroborationText} 원문 확인 전에는 결론을 낮은 강도로 봐야 합니다.`
+      ? `생성형 AI가 사용되지 않아 원문 문장을 직접 싣지 않고 규칙 기반 문장으로 재작성했습니다. ${corroborationText} 수치와 인용의 맥락은 원문에서 다시 확인해야 합니다.`
+      : `언론사 원문을 불러오지 못했고 생성형 AI도 사용되지 않아 제목과 ${priceBasisText}만 규칙으로 연결했습니다. ${corroborationText} 결론을 낮은 강도로 봐야 합니다.`
   };
 }
 
@@ -1276,12 +1368,15 @@ function normalizeAiAnalysis(value, fallback, engineLabel = "") {
     signal: clean(value?.signal, 40, fallback.signal),
     tone,
     confidence: clean(value?.confidence, 20, fallback.confidence),
+    aiGenerated: true,
+    analysisMode: "ai",
     engineLabel: engineLabel || (fallback.contentBasis === "article" ? "생성형 AI 원문 요약" : "생성형 AI 헤드라인 요약"),
     contentBasis: fallback.contentBasis,
     marketContextBasis: fallback.marketContextBasis,
     marketContextAt: fallback.marketContextAt,
     relatedSourceCount: fallback.relatedSourceCount,
     relatedSources: fallback.relatedSources,
+    sourceInfo: fallback.sourceInfo,
     summary: clean(value?.summary, 900, fallback.summary),
     keyPoints,
     whyItMatters: clean(value?.whyItMatters, 600, fallback.whyItMatters),
@@ -1322,13 +1417,55 @@ function buildAnalysis(markets, headlines) {
   const spChange = byId.sp500?.changePercent ?? 0;
   const wtiChange = byId.wti?.changePercent ?? 0;
 
-  let riskScore = 42;
-  riskScore += vix > 20 ? 18 : vix < 14 ? -8 : 3;
-  riskScore += usdkrw > 1380 ? 14 : usdkrw < 1320 ? -6 : 4;
-  riskScore += kospiChange < -1 ? 9 : kospiChange > 1 ? -5 : 0;
-  riskScore += spChange < -1 ? 8 : spChange > 1 ? -4 : 0;
-  riskScore += Math.abs(wtiChange) > 2 ? 5 : 0;
-  riskScore = Math.max(12, Math.min(88, Math.round(riskScore)));
+  const riskComponents = [
+    {
+      id: "base",
+      label: "기본값",
+      value: null,
+      points: 42,
+      rule: "특별한 충격이 없을 때 42점에서 시작"
+    },
+    {
+      id: "vix",
+      label: "VIX",
+      value: vix,
+      points: vix > 20 ? 18 : vix < 14 ? -8 : 3,
+      rule: "20 초과 +18점 · 14 미만 -8점 · 그 외 +3점"
+    },
+    {
+      id: "usdkrw",
+      label: "원/달러",
+      value: usdkrw,
+      points: usdkrw > 1380 ? 14 : usdkrw < 1320 ? -6 : 4,
+      rule: "1,380원 초과 +14점 · 1,320원 미만 -6점 · 그 외 +4점"
+    },
+    {
+      id: "kospi",
+      label: "KOSPI 당일 등락",
+      value: kospiChange,
+      points: kospiChange < -1 ? 9 : kospiChange > 1 ? -5 : 0,
+      rule: "-1% 미만 +9점 · +1% 초과 -5점 · 그 외 0점"
+    },
+    {
+      id: "sp500",
+      label: "S&P 500 당일 등락",
+      value: spChange,
+      points: spChange < -1 ? 8 : spChange > 1 ? -4 : 0,
+      rule: "-1% 미만 +8점 · +1% 초과 -4점 · 그 외 0점"
+    },
+    {
+      id: "wti",
+      label: "WTI 당일 변동폭",
+      value: wtiChange,
+      points: Math.abs(wtiChange) > 2 ? 5 : 0,
+      rule: "등락 방향과 무관하게 절댓값 2% 초과 +5점"
+    }
+  ];
+  const riskRawScore = riskComponents.reduce(
+    (total, component) => total + component.points,
+    0
+  );
+  const riskScore = Math.max(12, Math.min(88, Math.round(riskRawScore)));
 
   const regime =
     riskScore >= 66 ? "방어 우위" : riskScore >= 45 ? "균형 탐색" : "위험선호 회복";
@@ -1566,6 +1703,16 @@ function buildAnalysis(markets, headlines) {
 
   return {
     riskScore,
+    riskMethodology: {
+      version: "1.0",
+      rawScore: riskRawScore,
+      floor: 12,
+      ceiling: 88,
+      components: riskComponents,
+      validation: "과거 위험 사건에 대한 예측력을 백테스트하지 않은 설명용 규칙",
+      significance: "78점과 65점의 차이는 통계적 유의성이나 발생확률을 뜻하지 않음",
+      scope: "VIX·환율·한국 및 미국 주가·유가의 단기 시장 스트레스"
+    },
     regime,
     pulse,
     bullets: [

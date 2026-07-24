@@ -61,3 +61,38 @@ test("every output is bounded and explains its drivers, timing, and indicators",
     });
   });
 });
+
+test("small effects contribute to the score even when their labels stay hidden", () => {
+  const evaluation = evaluateEconomicScenario({
+    rate: 0.1,
+    fx: 1,
+    oil: 1,
+    exports: 0.5,
+    fiscal: 0.1,
+    productivity: 0.1
+  });
+  const growth = evaluation.results.find((result) => result.id === "growth");
+
+  assert.equal(growth.score, 1);
+  assert.equal(growth.rawScore, 1);
+  assert.equal(growth.contributions.length, 0);
+});
+
+test("economic lab discloses score bounds and whether a result was capped", () => {
+  const evaluation = evaluateEconomicScenario({
+    rate: -2,
+    fx: -15,
+    oil: -40,
+    exports: 20,
+    fiscal: 2,
+    productivity: 4
+  });
+
+  assert.equal(evaluation.methodology.scoreMinimum, -100);
+  assert.equal(evaluation.methodology.scoreMaximum, 100);
+  assert.ok(
+    evaluation.results.some(
+      (result) => result.wasCapped && Math.abs(result.score) === 100
+    )
+  );
+});

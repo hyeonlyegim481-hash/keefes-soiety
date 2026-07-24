@@ -1,5 +1,5 @@
 export const indicatorSnapshot = {
-  "dataUpdatedAt": "2026-07-20",
+  "dataUpdatedAt": "2026-07-24",
   "indicators": {
     "fertility": {
       "countries": {
@@ -49,6 +49,78 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 1.39
+          }
+        },
+        "GBR": {
+          "year": 2024,
+          "value": 1.551,
+          "previous": {
+            "year": 2023,
+            "value": 1.56
+          }
+        },
+        "FRA": {
+          "year": 2024,
+          "value": 1.61,
+          "previous": {
+            "year": 2023,
+            "value": 1.66
+          }
+        },
+        "CAN": {
+          "year": 2024,
+          "value": 1.25,
+          "previous": {
+            "year": 2023,
+            "value": 1.27
+          }
+        },
+        "AUS": {
+          "year": 2024,
+          "value": 1.481,
+          "previous": {
+            "year": 2023,
+            "value": 1.499
+          }
+        },
+        "IND": {
+          "year": 2024,
+          "value": 1.962,
+          "previous": {
+            "year": 2023,
+            "value": 1.975
+          }
+        },
+        "BRA": {
+          "year": 2024,
+          "value": 1.614,
+          "previous": {
+            "year": 2023,
+            "value": 1.619
+          }
+        },
+        "SGP": {
+          "year": 2024,
+          "value": 0.97,
+          "previous": {
+            "year": 2023,
+            "value": 0.97
+          }
+        },
+        "IDN": {
+          "year": 2024,
+          "value": 2.115,
+          "previous": {
+            "year": 2023,
+            "value": 2.127
+          }
+        },
+        "VNM": {
+          "year": 2024,
+          "value": 1.895,
+          "previous": {
+            "year": 2023,
+            "value": 1.913
           }
         }
       },
@@ -242,6 +314,78 @@ export const indicatorSnapshot = {
             "year": 2024,
             "value": 23.1956
           }
+        },
+        "GBR": {
+          "year": 2025,
+          "value": 19.7027,
+          "previous": {
+            "year": 2024,
+            "value": 19.4998
+          }
+        },
+        "FRA": {
+          "year": 2025,
+          "value": 22.5419,
+          "previous": {
+            "year": 2024,
+            "value": 22.1466
+          }
+        },
+        "CAN": {
+          "year": 2025,
+          "value": 20.2604,
+          "previous": {
+            "year": 2024,
+            "value": 19.7996
+          }
+        },
+        "AUS": {
+          "year": 2025,
+          "value": 18.093,
+          "previous": {
+            "year": 2024,
+            "value": 17.73
+          }
+        },
+        "IND": {
+          "year": 2025,
+          "value": 7.3766,
+          "previous": {
+            "year": 2024,
+            "value": 7.1465
+          }
+        },
+        "BRA": {
+          "year": 2025,
+          "value": 11.4803,
+          "previous": {
+            "year": 2024,
+            "value": 11.0492
+          }
+        },
+        "SGP": {
+          "year": 2025,
+          "value": 14.211,
+          "previous": {
+            "year": 2024,
+            "value": 13.6562
+          }
+        },
+        "IDN": {
+          "year": 2025,
+          "value": 7.5428,
+          "previous": {
+            "year": 2024,
+            "value": 7.2886
+          }
+        },
+        "VNM": {
+          "year": 2025,
+          "value": 9.4945,
+          "previous": {
+            "year": 2024,
+            "value": 9.0472
+          }
         }
       },
       "koreaTrend": [
@@ -340,6 +484,78 @@ export const indicatorSnapshot = {
             "year": 2023,
             "value": 81.0415
           }
+        },
+        "GBR": {
+          "year": 2024,
+          "value": 81.3869,
+          "previous": {
+            "year": 2023,
+            "value": 81.2381
+          }
+        },
+        "FRA": {
+          "year": 2024,
+          "value": 82.9805,
+          "previous": {
+            "year": 2023,
+            "value": 82.8317
+          }
+        },
+        "CAN": {
+          "year": 2024,
+          "value": 82.108,
+          "previous": {
+            "year": 2023,
+            "value": 81.6263
+          }
+        },
+        "AUS": {
+          "year": 2024,
+          "value": 83.0512,
+          "previous": {
+            "year": 2023,
+            "value": 83.0512
+          }
+        },
+        "IND": {
+          "year": 2024,
+          "value": 72.235,
+          "previous": {
+            "year": 2023,
+            "value": 72.003
+          }
+        },
+        "BRA": {
+          "year": 2024,
+          "value": 76.023,
+          "previous": {
+            "year": 2023,
+            "value": 75.848
+          }
+        },
+        "SGP": {
+          "year": 2024,
+          "value": 83.3463,
+          "previous": {
+            "year": 2023,
+            "value": 83.0976
+          }
+        },
+        "IDN": {
+          "year": 2024,
+          "value": 71.288,
+          "previous": {
+            "year": 2023,
+            "value": 71.146
+          }
+        },
+        "VNM": {
+          "year": 2024,
+          "value": 74.736,
+          "previous": {
+            "year": 2023,
+            "value": 74.588
+          }
         }
       },
       "koreaTrend": [
@@ -433,6 +649,78 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 56103.7323
+          }
+        },
+        "GBR": {
+          "year": 2025,
+          "value": 57601.9621,
+          "previous": {
+            "year": 2024,
+            "value": 53341.3131
+          }
+        },
+        "FRA": {
+          "year": 2025,
+          "value": 48985.7308,
+          "previous": {
+            "year": 2024,
+            "value": 46103.0841
+          }
+        },
+        "CAN": {
+          "year": 2025,
+          "value": 55697.664,
+          "previous": {
+            "year": 2024,
+            "value": 55015.7067
+          }
+        },
+        "AUS": {
+          "year": 2025,
+          "value": 65129.7228,
+          "previous": {
+            "year": 2024,
+            "value": 64609.9865
+          }
+        },
+        "IND": {
+          "year": 2025,
+          "value": 2702.4799,
+          "previous": {
+            "year": 2024,
+            "value": 2591.9917
+          }
+        },
+        "BRA": {
+          "year": 2025,
+          "value": 10713.2857,
+          "previous": {
+            "year": 2024,
+            "value": 10310.5487
+          }
+        },
+        "SGP": {
+          "year": 2025,
+          "value": 98813.9788,
+          "previous": {
+            "year": 2024,
+            "value": 94896.5621
+          }
+        },
+        "IDN": {
+          "year": 2025,
+          "value": 5059.626,
+          "previous": {
+            "year": 2024,
+            "value": 4925.4364
+          }
+        },
+        "VNM": {
+          "year": 2025,
+          "value": 5065.9909,
+          "previous": {
+            "year": 2024,
+            "value": 4716.6599
           }
         }
       },
@@ -532,6 +820,78 @@ export const indicatorSnapshot = {
             "year": 2024,
             "value": -0.4959
           }
+        },
+        "GBR": {
+          "year": 2025,
+          "value": 1.3884,
+          "previous": {
+            "year": 2024,
+            "value": 1.0803
+          }
+        },
+        "FRA": {
+          "year": 2025,
+          "value": 0.8409,
+          "previous": {
+            "year": 2024,
+            "value": 1.1905
+          }
+        },
+        "CAN": {
+          "year": 2025,
+          "value": 1.7427,
+          "previous": {
+            "year": 2024,
+            "value": 2.0463
+          }
+        },
+        "AUS": {
+          "year": 2025,
+          "value": 1.3504,
+          "previous": {
+            "year": 2024,
+            "value": 1.3734
+          }
+        },
+        "IND": {
+          "year": 2025,
+          "value": 7.5667,
+          "previous": {
+            "year": 2024,
+            "value": 7.0993
+          }
+        },
+        "BRA": {
+          "year": 2025,
+          "value": 2.2857,
+          "previous": {
+            "year": 2024,
+            "value": 3.4193
+          }
+        },
+        "SGP": {
+          "year": 2025,
+          "value": 5.0259,
+          "previous": {
+            "year": 2024,
+            "value": 5.3435
+          }
+        },
+        "IDN": {
+          "year": 2025,
+          "value": 5.1081,
+          "previous": {
+            "year": 2024,
+            "value": 5.0326
+          }
+        },
+        "VNM": {
+          "year": 2025,
+          "value": 8.0188,
+          "previous": {
+            "year": 2024,
+            "value": 7.0396
+          }
         }
       },
       "koreaTrend": [
@@ -630,6 +990,78 @@ export const indicatorSnapshot = {
             "year": 2024,
             "value": 18.0067
           }
+        },
+        "GBR": {
+          "year": 2025,
+          "value": 7.6776,
+          "previous": {
+            "year": 2024,
+            "value": 7.9735
+          }
+        },
+        "FRA": {
+          "year": 2025,
+          "value": 9.4862,
+          "previous": {
+            "year": 2024,
+            "value": 9.5665
+          }
+        },
+        "CAN": {
+          "year": 2022,
+          "value": 9.3245,
+          "previous": {
+            "year": 2021,
+            "value": 9.5291
+          }
+        },
+        "AUS": {
+          "year": 2025,
+          "value": 5.3171,
+          "previous": {
+            "year": 2024,
+            "value": 5.3763
+          }
+        },
+        "IND": {
+          "year": 2025,
+          "value": 13.4711,
+          "previous": {
+            "year": 2024,
+            "value": 13.1392
+          }
+        },
+        "BRA": {
+          "year": 2025,
+          "value": 11.7723,
+          "previous": {
+            "year": 2024,
+            "value": 12.1108
+          }
+        },
+        "SGP": {
+          "year": 2025,
+          "value": 17.4296,
+          "previous": {
+            "year": 2024,
+            "value": 16.2581
+          }
+        },
+        "IDN": {
+          "year": 2025,
+          "value": 19.0651,
+          "previous": {
+            "year": 2024,
+            "value": 18.984
+          }
+        },
+        "VNM": {
+          "year": 2025,
+          "value": 24.528,
+          "previous": {
+            "year": 2024,
+            "value": 24.3331
+          }
         }
       },
       "koreaTrend": [
@@ -727,6 +1159,78 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 79.0907
+          }
+        },
+        "GBR": {
+          "year": 2025,
+          "value": 62.4573,
+          "previous": {
+            "year": 2024,
+            "value": 62.8391
+          }
+        },
+        "FRA": {
+          "year": 2025,
+          "value": 67.1924,
+          "previous": {
+            "year": 2024,
+            "value": 68.1082
+          }
+        },
+        "CAN": {
+          "year": 2025,
+          "value": 63.5105,
+          "previous": {
+            "year": 2024,
+            "value": 65.1215
+          }
+        },
+        "AUS": {
+          "year": 2025,
+          "value": 45.9014,
+          "previous": {
+            "year": 2024,
+            "value": 47.1454
+          }
+        },
+        "IND": {
+          "year": 2025,
+          "value": 46.2682,
+          "previous": {
+            "year": 2024,
+            "value": 45.9167
+          }
+        },
+        "BRA": {
+          "year": 2025,
+          "value": 35.2915,
+          "previous": {
+            "year": 2024,
+            "value": 35.5845
+          }
+        },
+        "SGP": {
+          "year": 2025,
+          "value": 320.306,
+          "previous": {
+            "year": 2024,
+            "value": 313.2994
+          }
+        },
+        "IDN": {
+          "year": 2025,
+          "value": 43.3912,
+          "previous": {
+            "year": 2024,
+            "value": 42.8099
+          }
+        },
+        "VNM": {
+          "year": 2025,
+          "value": 190.3368,
+          "previous": {
+            "year": 2024,
+            "value": 173.8853
           }
         }
       },
@@ -1676,6 +2180,78 @@ export const indicatorSnapshot = {
             "year": 2022,
             "value": 3.071
           }
+        },
+        "GBR": {
+          "year": 2023,
+          "value": 2.6761,
+          "previous": {
+            "year": 2022,
+            "value": 2.7522
+          }
+        },
+        "FRA": {
+          "year": 2023,
+          "value": 2.1783,
+          "previous": {
+            "year": 2022,
+            "value": 2.2194
+          }
+        },
+        "CAN": {
+          "year": 2024,
+          "value": 1.7908,
+          "previous": {
+            "year": 2023,
+            "value": 1.8105
+          }
+        },
+        "AUS": {
+          "year": 2021,
+          "value": 1.8578,
+          "previous": {
+            "year": 2019,
+            "value": 1.8283
+          }
+        },
+        "IND": {
+          "year": 2020,
+          "value": 0.6456,
+          "previous": {
+            "year": 2019,
+            "value": 0.6594
+          }
+        },
+        "BRA": {
+          "year": 2023,
+          "value": 1.1938,
+          "previous": {
+            "year": 2022,
+            "value": 1.1887
+          }
+        },
+        "SGP": {
+          "year": 2022,
+          "value": 1.8082,
+          "previous": {
+            "year": 2021,
+            "value": 1.9376
+          }
+        },
+        "IDN": {
+          "year": 2020,
+          "value": 0.2807,
+          "previous": {
+            "year": 2019,
+            "value": 0.2713
+          }
+        },
+        "VNM": {
+          "year": 2023,
+          "value": 0.4146,
+          "previous": {
+            "year": 2021,
+            "value": 0.4249
+          }
         }
       },
       "koreaTrend": [
@@ -1765,6 +2341,78 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 92.4764
+          }
+        },
+        "GBR": {
+          "year": 2024,
+          "value": 95.4721,
+          "previous": {
+            "year": 2023,
+            "value": 95.4472
+          }
+        },
+        "FRA": {
+          "year": 2024,
+          "value": 88.6538,
+          "previous": {
+            "year": 2023,
+            "value": 86.8364
+          }
+        },
+        "CAN": {
+          "year": 2024,
+          "value": 94.3533,
+          "previous": {
+            "year": 2023,
+            "value": 94.1453
+          }
+        },
+        "AUS": {
+          "year": 2024,
+          "value": 96.1314,
+          "previous": {
+            "year": 2023,
+            "value": 96.1161
+          }
+        },
+        "IND": {
+          "year": 2025,
+          "value": 70,
+          "previous": {
+            "year": 2024,
+            "value": 64.9435
+          }
+        },
+        "BRA": {
+          "year": 2024,
+          "value": 84.4635,
+          "previous": {
+            "year": 2023,
+            "value": 84.1506
+          }
+        },
+        "SGP": {
+          "year": 2024,
+          "value": 94.3776,
+          "previous": {
+            "year": 2023,
+            "value": 94.2852
+          }
+        },
+        "IDN": {
+          "year": 2024,
+          "value": 72.7808,
+          "previous": {
+            "year": 2023,
+            "value": 69.2084
+          }
+        },
+        "VNM": {
+          "year": 2024,
+          "value": 84.15,
+          "previous": {
+            "year": 2023,
+            "value": 78.08
           }
         }
       },
@@ -1860,6 +2508,78 @@ export const indicatorSnapshot = {
             "year": 2023,
             "value": 17.7818
           }
+        },
+        "GBR": {
+          "year": 2024,
+          "value": 29.2333,
+          "previous": {
+            "year": 2023,
+            "value": 28.8917
+          }
+        },
+        "FRA": {
+          "year": 2024,
+          "value": 23.1371,
+          "previous": {
+            "year": 2023,
+            "value": 22.3835
+          }
+        },
+        "CAN": {
+          "year": 2024,
+          "value": 16.7779,
+          "previous": {
+            "year": 2023,
+            "value": 16.3718
+          }
+        },
+        "AUS": {
+          "year": 2024,
+          "value": 25.1586,
+          "previous": {
+            "year": 2023,
+            "value": 25.2583
+          }
+        },
+        "IND": {
+          "year": 2024,
+          "value": 18.5724,
+          "previous": {
+            "year": 2023,
+            "value": 14.9343
+          }
+        },
+        "BRA": {
+          "year": 2024,
+          "value": 11.1104,
+          "previous": {
+            "year": 2023,
+            "value": 9.8491
+          }
+        },
+        "SGP": {
+          "year": 2024,
+          "value": 59.4298,
+          "previous": {
+            "year": 2023,
+            "value": 56.1384
+          }
+        },
+        "IDN": {
+          "year": 2024,
+          "value": 8.711,
+          "previous": {
+            "year": 2023,
+            "value": 9.0831
+          }
+        },
+        "VNM": {
+          "year": 2023,
+          "value": 44.2569,
+          "previous": {
+            "year": 2022,
+            "value": 42.6892
+          }
         }
       },
       "koreaTrend": [
@@ -1954,6 +2674,78 @@ export const indicatorSnapshot = {
             "year": 2023,
             "value": 7.0798
           }
+        },
+        "GBR": {
+          "year": 2024,
+          "value": 4.2208,
+          "previous": {
+            "year": 2023,
+            "value": 4.4478
+          }
+        },
+        "FRA": {
+          "year": 2024,
+          "value": 4.0036,
+          "previous": {
+            "year": 2023,
+            "value": 4.156
+          }
+        },
+        "CAN": {
+          "year": 2024,
+          "value": 14.0073,
+          "previous": {
+            "year": 2023,
+            "value": 14.16
+          }
+        },
+        "AUS": {
+          "year": 2024,
+          "value": 14.0987,
+          "previous": {
+            "year": 2023,
+            "value": 14.1597
+          }
+        },
+        "IND": {
+          "year": 2024,
+          "value": 2.1737,
+          "previous": {
+            "year": 2023,
+            "value": 2.0962
+          }
+        },
+        "BRA": {
+          "year": 2024,
+          "value": 2.3183,
+          "previous": {
+            "year": 2023,
+            "value": 2.2745
+          }
+        },
+        "SGP": {
+          "year": 2024,
+          "value": 9.7514,
+          "previous": {
+            "year": 2023,
+            "value": 9.4803
+          }
+        },
+        "IDN": {
+          "year": 2024,
+          "value": 2.865,
+          "previous": {
+            "year": 2023,
+            "value": 2.7475
+          }
+        },
+        "VNM": {
+          "year": 2024,
+          "value": 4.2661,
+          "previous": {
+            "year": 2023,
+            "value": 3.8935
+          }
         }
       },
       "koreaTrend": [
@@ -2047,6 +2839,78 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 18.5
+          }
+        },
+        "GBR": {
+          "year": 2021,
+          "value": 12.2,
+          "previous": {
+            "year": 2020,
+            "value": 13.6
+          }
+        },
+        "FRA": {
+          "year": 2021,
+          "value": 16.2,
+          "previous": {
+            "year": 2020,
+            "value": 16.8
+          }
+        },
+        "CAN": {
+          "year": 2021,
+          "value": 23.8,
+          "previous": {
+            "year": 2020,
+            "value": 23.9
+          }
+        },
+        "AUS": {
+          "year": 2021,
+          "value": 12.3,
+          "previous": {
+            "year": 2020,
+            "value": 11.2
+          }
+        },
+        "IND": {
+          "year": 2021,
+          "value": 34.9,
+          "previous": {
+            "year": 2020,
+            "value": 36.1
+          }
+        },
+        "BRA": {
+          "year": 2021,
+          "value": 46.5,
+          "previous": {
+            "year": 2020,
+            "value": 50
+          }
+        },
+        "SGP": {
+          "year": 2021,
+          "value": 1.1,
+          "previous": {
+            "year": 2020,
+            "value": 0.9
+          }
+        },
+        "IDN": {
+          "year": 2021,
+          "value": 20.2,
+          "previous": {
+            "year": 2020,
+            "value": 21.9
+          }
+        },
+        "VNM": {
+          "year": 2021,
+          "value": 24.2,
+          "previous": {
+            "year": 2020,
+            "value": 18.9
           }
         }
       },
@@ -2223,6 +3087,78 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 9.6488
+          }
+        },
+        "GBR": {
+          "year": 2023,
+          "value": 9.4628,
+          "previous": {
+            "year": 2022,
+            "value": 10.0166
+          }
+        },
+        "FRA": {
+          "year": 2023,
+          "value": 8.2274,
+          "previous": {
+            "year": 2022,
+            "value": 10.3837
+          }
+        },
+        "CAN": {
+          "year": 2023,
+          "value": 6.5504,
+          "previous": {
+            "year": 2022,
+            "value": 6.3895
+          }
+        },
+        "AUS": {
+          "year": 2023,
+          "value": 6.4147,
+          "previous": {
+            "year": 2022,
+            "value": 5.3027
+          }
+        },
+        "IND": {
+          "year": 2023,
+          "value": 54.0522,
+          "previous": {
+            "year": 2022,
+            "value": 50.6577
+          }
+        },
+        "BRA": {
+          "year": 2023,
+          "value": 13.3827,
+          "previous": {
+            "year": 2022,
+            "value": 14.9461
+          }
+        },
+        "SGP": {
+          "year": 2023,
+          "value": 15.1427,
+          "previous": {
+            "year": 2022,
+            "value": 15.0925
+          }
+        },
+        "IDN": {
+          "year": 2023,
+          "value": 20.8445,
+          "previous": {
+            "year": 2022,
+            "value": 19.7659
+          }
+        },
+        "VNM": {
+          "year": 2023,
+          "value": 24.7845,
+          "previous": {
+            "year": 2022,
+            "value": 25.5235
           }
         }
       },
@@ -2482,6 +3418,78 @@ export const indicatorSnapshot = {
             "year": 2023,
             "value": 45.3805
           }
+        },
+        "GBR": {
+          "year": 2024,
+          "value": 42.1648,
+          "previous": {
+            "year": 2023,
+            "value": 41.4368
+          }
+        },
+        "FRA": {
+          "year": 2024,
+          "value": 48.9252,
+          "previous": {
+            "year": 2023,
+            "value": 48.6688
+          }
+        },
+        "CAN": {
+          "year": 2024,
+          "value": 42.5238,
+          "previous": {
+            "year": 2023,
+            "value": 42.5242
+          }
+        },
+        "AUS": {
+          "year": 2024,
+          "value": 36.4788,
+          "previous": {
+            "year": 2023,
+            "value": 36.6274
+          }
+        },
+        "IND": {
+          "year": 2024,
+          "value": 3.1505,
+          "previous": {
+            "year": 2023,
+            "value": 2.7453
+          }
+        },
+        "BRA": {
+          "year": 2024,
+          "value": 24.0792,
+          "previous": {
+            "year": 2023,
+            "value": 22.4192
+          }
+        },
+        "SGP": {
+          "year": 2024,
+          "value": 27.8137,
+          "previous": {
+            "year": 2023,
+            "value": 27.4344
+          }
+        },
+        "IDN": {
+          "year": 2024,
+          "value": 4.922,
+          "previous": {
+            "year": 2023,
+            "value": 4.8166
+          }
+        },
+        "VNM": {
+          "year": 2024,
+          "value": 23.7113,
+          "previous": {
+            "year": 2023,
+            "value": 22.6807
+          }
         }
       },
       "koreaTrend": [
@@ -2673,6 +3681,78 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 2.2565
+          }
+        },
+        "GBR": {
+          "year": 2025,
+          "value": 3.8831,
+          "previous": {
+            "year": 2024,
+            "value": 3.2716
+          }
+        },
+        "FRA": {
+          "year": 2025,
+          "value": 0.9438,
+          "previous": {
+            "year": 2024,
+            "value": 1.999
+          }
+        },
+        "CAN": {
+          "year": 2025,
+          "value": 2.0723,
+          "previous": {
+            "year": 2024,
+            "value": 2.3816
+          }
+        },
+        "AUS": {
+          "year": 2025,
+          "value": 2.874,
+          "previous": {
+            "year": 2024,
+            "value": 3.1666
+          }
+        },
+        "IND": {
+          "year": 2025,
+          "value": 2.3988,
+          "previous": {
+            "year": 2024,
+            "value": 4.953
+          }
+        },
+        "BRA": {
+          "year": 2025,
+          "value": 5.0168,
+          "previous": {
+            "year": 2024,
+            "value": 4.3675
+          }
+        },
+        "SGP": {
+          "year": 2025,
+          "value": 0.903,
+          "previous": {
+            "year": 2024,
+            "value": 2.3895
+          }
+        },
+        "IDN": {
+          "year": 2025,
+          "value": 1.9133,
+          "previous": {
+            "year": 2024,
+            "value": 2.1815
+          }
+        },
+        "VNM": {
+          "year": 2025,
+          "value": 3.31,
+          "previous": {
+            "year": 2024,
+            "value": 3.6211
           }
         }
       },
@@ -3123,6 +4203,78 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 5.8938
+          }
+        },
+        "GBR": {
+          "year": 2025,
+          "value": -2.4269,
+          "previous": {
+            "year": 2024,
+            "value": -2.9596
+          }
+        },
+        "FRA": {
+          "year": 2025,
+          "value": -0.2743,
+          "previous": {
+            "year": 2024,
+            "value": 0.0851
+          }
+        },
+        "CAN": {
+          "year": 2025,
+          "value": -0.9486,
+          "previous": {
+            "year": 2024,
+            "value": -0.4879
+          }
+        },
+        "AUS": {
+          "year": 2025,
+          "value": -2.6812,
+          "previous": {
+            "year": 2024,
+            "value": -2.3075
+          }
+        },
+        "IND": {
+          "year": 2025,
+          "value": -0.4169,
+          "previous": {
+            "year": 2024,
+            "value": -0.8513
+          }
+        },
+        "BRA": {
+          "year": 2025,
+          "value": -2.9263,
+          "previous": {
+            "year": 2024,
+            "value": -2.988
+          }
+        },
+        "SGP": {
+          "year": 2025,
+          "value": 16.7132,
+          "previous": {
+            "year": 2024,
+            "value": 17.2011
+          }
+        },
+        "IDN": {
+          "year": 2025,
+          "value": -0.1053,
+          "previous": {
+            "year": 2024,
+            "value": -0.6147
+          }
+        },
+        "VNM": {
+          "year": 2024,
+          "value": 6.335,
+          "previous": {
+            "year": 2023,
+            "value": 5.9458
           }
         }
       },
@@ -3614,6 +4766,78 @@ export const indicatorSnapshot = {
             "year": 2024,
             "value": 58.997
           }
+        },
+        "GBR": {
+          "year": 2025,
+          "value": 57.8967,
+          "previous": {
+            "year": 2024,
+            "value": 57.94
+          }
+        },
+        "FRA": {
+          "year": 2025,
+          "value": 63.31,
+          "previous": {
+            "year": 2024,
+            "value": 63.0037
+          }
+        },
+        "CAN": {
+          "year": 2025,
+          "value": 54.4179,
+          "previous": {
+            "year": 2024,
+            "value": 53.6356
+          }
+        },
+        "AUS": {
+          "year": 2025,
+          "value": 55.6968,
+          "previous": {
+            "year": 2024,
+            "value": 55.2117
+          }
+        },
+        "IND": {
+          "year": 2025,
+          "value": 46.1387,
+          "previous": {
+            "year": 2024,
+            "value": 46.564
+          }
+        },
+        "BRA": {
+          "year": 2025,
+          "value": 44.6486,
+          "previous": {
+            "year": 2024,
+            "value": 44.33
+          }
+        },
+        "SGP": {
+          "year": 2025,
+          "value": 34.9531,
+          "previous": {
+            "year": 2024,
+            "value": 33.9448
+          }
+        },
+        "IDN": {
+          "year": 2025,
+          "value": 46.6061,
+          "previous": {
+            "year": 2024,
+            "value": 46.8136
+          }
+        },
+        "VNM": {
+          "year": 2025,
+          "value": 47.8209,
+          "previous": {
+            "year": 2024,
+            "value": 47.6477
+          }
         }
       },
       "koreaTrend": [
@@ -3809,6 +5033,78 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 62654.6023
+          }
+        },
+        "GBR": {
+          "year": 2025,
+          "value": 53993.1173,
+          "previous": {
+            "year": 2024,
+            "value": 53412.0647
+          }
+        },
+        "FRA": {
+          "year": 2025,
+          "value": 55124.5393,
+          "previous": {
+            "year": 2024,
+            "value": 54799.3483
+          }
+        },
+        "CAN": {
+          "year": 2025,
+          "value": 57989.5785,
+          "previous": {
+            "year": 2024,
+            "value": 57534.0915
+          }
+        },
+        "AUS": {
+          "year": 2025,
+          "value": 60194.0634,
+          "previous": {
+            "year": 2024,
+            "value": 60309.5832
+          }
+        },
+        "IND": {
+          "year": 2025,
+          "value": 10039.0709,
+          "previous": {
+            "year": 2024,
+            "value": 9416.0514
+          }
+        },
+        "BRA": {
+          "year": 2025,
+          "value": 20024.6968,
+          "previous": {
+            "year": 2024,
+            "value": 19652.3655
+          }
+        },
+        "SGP": {
+          "year": 2025,
+          "value": 139592.6122,
+          "previous": {
+            "year": 2024,
+            "value": 134548.7641
+          }
+        },
+        "IDN": {
+          "year": 2025,
+          "value": 15091.0089,
+          "previous": {
+            "year": 2024,
+            "value": 14470.718
+          }
+        },
+        "VNM": {
+          "year": 2025,
+          "value": 15457.3499,
+          "previous": {
+            "year": 2024,
+            "value": 14396.4217
           }
         }
       },
@@ -4006,6 +5302,78 @@ export const indicatorSnapshot = {
             "year": 2024,
             "value": 58.849
           }
+        },
+        "GBR": {
+          "year": 2025,
+          "value": 58.457,
+          "previous": {
+            "year": 2024,
+            "value": 58.871
+          }
+        },
+        "FRA": {
+          "year": 2025,
+          "value": 51.172,
+          "previous": {
+            "year": 2024,
+            "value": 51.544
+          }
+        },
+        "CAN": {
+          "year": 2025,
+          "value": 60.061,
+          "previous": {
+            "year": 2024,
+            "value": 60.627
+          }
+        },
+        "AUS": {
+          "year": 2025,
+          "value": 63.816,
+          "previous": {
+            "year": 2024,
+            "value": 64.089
+          }
+        },
+        "IND": {
+          "year": 2025,
+          "value": 53.31,
+          "previous": {
+            "year": 2024,
+            "value": 53.317
+          }
+        },
+        "BRA": {
+          "year": 2025,
+          "value": 59.37,
+          "previous": {
+            "year": 2024,
+            "value": 59.031
+          }
+        },
+        "SGP": {
+          "year": 2025,
+          "value": 67.709,
+          "previous": {
+            "year": 2024,
+            "value": 67.308
+          }
+        },
+        "IDN": {
+          "year": 2025,
+          "value": 65.765,
+          "previous": {
+            "year": 2024,
+            "value": 65.685
+          }
+        },
+        "VNM": {
+          "year": 2025,
+          "value": 71.67,
+          "previous": {
+            "year": 2024,
+            "value": 71.963
+          }
         }
       },
       "koreaTrend": [
@@ -4104,6 +5472,78 @@ export const indicatorSnapshot = {
             "year": 2024,
             "value": 53.881
           }
+        },
+        "GBR": {
+          "year": 2025,
+          "value": 54.807,
+          "previous": {
+            "year": 2024,
+            "value": 55.112
+          }
+        },
+        "FRA": {
+          "year": 2025,
+          "value": 47.6,
+          "previous": {
+            "year": 2024,
+            "value": 48.022
+          }
+        },
+        "CAN": {
+          "year": 2025,
+          "value": 56.255,
+          "previous": {
+            "year": 2024,
+            "value": 56.784
+          }
+        },
+        "AUS": {
+          "year": 2025,
+          "value": 59.982,
+          "previous": {
+            "year": 2024,
+            "value": 60.249
+          }
+        },
+        "IND": {
+          "year": 2025,
+          "value": 31.083,
+          "previous": {
+            "year": 2024,
+            "value": 31.09
+          }
+        },
+        "BRA": {
+          "year": 2025,
+          "value": 49.497,
+          "previous": {
+            "year": 2024,
+            "value": 49.089
+          }
+        },
+        "SGP": {
+          "year": 2025,
+          "value": 61.745,
+          "previous": {
+            "year": 2024,
+            "value": 61.434
+          }
+        },
+        "IDN": {
+          "year": 2025,
+          "value": 52.1,
+          "previous": {
+            "year": 2024,
+            "value": 51.94
+          }
+        },
+        "VNM": {
+          "year": 2025,
+          "value": 67.617,
+          "previous": {
+            "year": 2024,
+            "value": 67.89
+          }
         }
       },
       "koreaTrend": [
@@ -4201,6 +5641,78 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 123669.3242
+          }
+        },
+        "GBR": {
+          "year": 2025,
+          "value": 111234.499,
+          "previous": {
+            "year": 2024,
+            "value": 109554.2392
+          }
+        },
+        "FRA": {
+          "year": 2025,
+          "value": 128587.1278,
+          "previous": {
+            "year": 2024,
+            "value": 127331.9633
+          }
+        },
+        "CAN": {
+          "year": 2025,
+          "value": 113563.2619,
+          "previous": {
+            "year": 2024,
+            "value": 111791.6612
+          }
+        },
+        "AUS": {
+          "year": 2025,
+          "value": 114582.0675,
+          "previous": {
+            "year": 2024,
+            "value": 114538.6811
+          }
+        },
+        "IND": {
+          "year": 2025,
+          "value": 24842.1119,
+          "previous": {
+            "year": 2024,
+            "value": 23429.8477
+          }
+        },
+        "BRA": {
+          "year": 2025,
+          "value": 41840.0096,
+          "previous": {
+            "year": 2024,
+            "value": 41441.0406
+          }
+        },
+        "SGP": {
+          "year": 2025,
+          "value": 233454.4148,
+          "previous": {
+            "year": 2024,
+            "value": 226351.9713
+          }
+        },
+        "IDN": {
+          "year": 2025,
+          "value": 30291.7978,
+          "previous": {
+            "year": 2024,
+            "value": 29217.2839
+          }
+        },
+        "VNM": {
+          "year": 2025,
+          "value": 27957.3224,
+          "previous": {
+            "year": 2024,
+            "value": 26056.726
           }
         }
       },
@@ -4480,6 +5992,78 @@ export const indicatorSnapshot = {
             "year": 2020,
             "value": 42260
           }
+        },
+        "GBR": {
+          "year": 2021,
+          "value": 11592,
+          "previous": {
+            "year": 2020,
+            "value": 11990
+          }
+        },
+        "FRA": {
+          "year": 2021,
+          "value": 13386,
+          "previous": {
+            "year": 2020,
+            "value": 12771
+          }
+        },
+        "CAN": {
+          "year": 2021,
+          "value": 4710,
+          "previous": {
+            "year": 2020,
+            "value": 4452
+          }
+        },
+        "AUS": {
+          "year": 2021,
+          "value": 2966,
+          "previous": {
+            "year": 2020,
+            "value": 2368
+          }
+        },
+        "IND": {
+          "year": 2021,
+          "value": 26267,
+          "previous": {
+            "year": 2020,
+            "value": 23141
+          }
+        },
+        "BRA": {
+          "year": 2021,
+          "value": 4666,
+          "previous": {
+            "year": 2020,
+            "value": 5280
+          }
+        },
+        "SGP": {
+          "year": 2021,
+          "value": 2024,
+          "previous": {
+            "year": 2020,
+            "value": 1778
+          }
+        },
+        "IDN": {
+          "year": 2021,
+          "value": 1397,
+          "previous": {
+            "year": 2020,
+            "value": 1309
+          }
+        },
+        "VNM": {
+          "year": 2021,
+          "value": 1066,
+          "previous": {
+            "year": 2020,
+            "value": 1021
+          }
         }
       },
       "koreaTrend": [
@@ -4562,6 +6146,78 @@ export const indicatorSnapshot = {
             "year": 2020,
             "value": 44.8396
           }
+        },
+        "GBR": {
+          "year": 2021,
+          "value": 40.2,
+          "previous": {
+            "year": 2020,
+            "value": 43.8837
+          }
+        },
+        "FRA": {
+          "year": 2021,
+          "value": 22.8039,
+          "previous": {
+            "year": 2020,
+            "value": 24.3566
+          }
+        },
+        "CAN": {
+          "year": 2021,
+          "value": 67.0164,
+          "previous": {
+            "year": 2020,
+            "value": 67.0565
+          }
+        },
+        "AUS": {
+          "year": 2021,
+          "value": 26.6609,
+          "previous": {
+            "year": 2020,
+            "value": 22.6003
+          }
+        },
+        "IND": {
+          "year": 2021,
+          "value": 19.1313,
+          "previous": {
+            "year": 2020,
+            "value": 19.7557
+          }
+        },
+        "BRA": {
+          "year": 2021,
+          "value": 77.3753,
+          "previous": {
+            "year": 2020,
+            "value": 83.1761
+          }
+        },
+        "SGP": {
+          "year": 2021,
+          "value": 4.0222,
+          "previous": {
+            "year": 2020,
+            "value": 4.0813
+          }
+        },
+        "IDN": {
+          "year": 2021,
+          "value": 15.53,
+          "previous": {
+            "year": 2020,
+            "value": 15.8207
+          }
+        },
+        "VNM": {
+          "year": 2021,
+          "value": 41.1697,
+          "previous": {
+            "year": 2020,
+            "value": 35.7345
+          }
         }
       },
       "koreaTrend": [
@@ -4643,6 +6299,78 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2021,
             "value": 2.7
+          }
+        },
+        "GBR": {
+          "year": 2022,
+          "value": 2.04,
+          "previous": {
+            "year": 2021,
+            "value": 2.2
+          }
+        },
+        "FRA": {
+          "year": 2022,
+          "value": 2.83,
+          "previous": {
+            "year": 2021,
+            "value": 3.23
+          }
+        },
+        "CAN": {
+          "year": 2022,
+          "value": 6.44,
+          "previous": {
+            "year": 2021,
+            "value": 6.55
+          }
+        },
+        "AUS": {
+          "year": 2022,
+          "value": 4.12,
+          "previous": {
+            "year": 2021,
+            "value": 4.1
+          }
+        },
+        "IND": {
+          "year": 2021,
+          "value": 4.21,
+          "previous": {
+            "year": 2020,
+            "value": 4.25
+          }
+        },
+        "BRA": {
+          "year": 2022,
+          "value": 3.87,
+          "previous": {
+            "year": 2021,
+            "value": 3.96
+          }
+        },
+        "SGP": {
+          "year": 2021,
+          "value": 2.51,
+          "previous": {
+            "year": 2020,
+            "value": 2.71
+          }
+        },
+        "IDN": {
+          "year": 2021,
+          "value": 3.04,
+          "previous": {
+            "year": 2020,
+            "value": 3.11
+          }
+        },
+        "VNM": {
+          "year": 2021,
+          "value": 3.85,
+          "previous": {
+            "year": 2020,
+            "value": 4.03
           }
         }
       },
@@ -4729,6 +6457,78 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 32.6855
+          }
+        },
+        "GBR": {
+          "year": 2023,
+          "value": 13.2907,
+          "previous": {
+            "year": 2022,
+            "value": 13.2555
+          }
+        },
+        "FRA": {
+          "year": 2023,
+          "value": 32.4765,
+          "previous": {
+            "year": 2022,
+            "value": 32.3217
+          }
+        },
+        "CAN": {
+          "year": 2023,
+          "value": 39.4617,
+          "previous": {
+            "year": 2022,
+            "value": 39.4659
+          }
+        },
+        "AUS": {
+          "year": 2023,
+          "value": 17.4213,
+          "previous": {
+            "year": 2022,
+            "value": 17.4213
+          }
+        },
+        "IND": {
+          "year": 2023,
+          "value": 24.539,
+          "previous": {
+            "year": 2022,
+            "value": 24.4495
+          }
+        },
+        "BRA": {
+          "year": 2023,
+          "value": 58.9819,
+          "previous": {
+            "year": 2022,
+            "value": 59.1275
+          }
+        },
+        "SGP": {
+          "year": 2023,
+          "value": 20.9331,
+          "previous": {
+            "year": 2022,
+            "value": 21.1838
+          }
+        },
+        "IDN": {
+          "year": 2023,
+          "value": 47.722,
+          "previous": {
+            "year": 2022,
+            "value": 48.042
+          }
+        },
+        "VNM": {
+          "year": 2023,
+          "value": 47.4455,
+          "previous": {
+            "year": 2022,
+            "value": 47.2033
           }
         }
       },

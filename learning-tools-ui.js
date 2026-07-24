@@ -2,20 +2,23 @@ import {
   economicLabControls,
   economicLabPresets,
   evaluateEconomicScenario
-} from "./economic-lab-data.js?v=80";
+} from "./economic-lab-data.js?v=81";
 import {
   indicatorCountries,
   indicatorDefinitions as baseIndicatorDefinitions
-} from "./indicator-data.js?v=80";
-import { financeIndicatorDefinitions } from "./indicator-finance-data.js?v=80";
-import { expandedIndicatorDefinitions } from "./indicator-expanded-data.js?v=80";
-import { indicatorSnapshot } from "./indicator-values.js?v=80";
+} from "./indicator-data.js?v=81";
+import { financeIndicatorDefinitions } from "./indicator-finance-data.js?v=81";
+import { expandedIndicatorDefinitions } from "./indicator-expanded-data.js?v=81";
+import { indicatorSnapshot } from "./indicator-values.js?v=81";
 
 const comparableIndicators = [
   ...baseIndicatorDefinitions,
   ...financeIndicatorDefinitions,
   ...expandedIndicatorDefinitions
 ];
+
+const MIN_COMPARISON_COUNTRIES = 2;
+const MAX_COMPARISON_COUNTRIES = 5;
 
 export const countryComparisonGroups = [
   {
@@ -114,13 +117,18 @@ export function buildCountryComparisonModel(groupId, requestedCountryIds) {
   const group =
     countryComparisonGroups.find((item) => item.id === groupId) ||
     countryComparisonGroups[0];
-  const validIds = [...new Set(requestedCountryIds)]
+  const requestedIds = Array.isArray(requestedCountryIds)
+    ? requestedCountryIds
+    : [];
+  const validIds = [...new Set(requestedIds)]
     .filter((id) => indicatorCountries.some((country) => country.id === id))
-    .slice(0, 4);
-  const countryIds = validIds.length >= 2 ? validIds : ["KOR", "USA", "JPN", "CHN"];
-  const countries = countryIds.map((id) =>
-    indicatorCountries.find((country) => country.id === id)
-  );
+    .slice(0, MAX_COMPARISON_COUNTRIES);
+  const countryIds = validIds.length >= MIN_COMPARISON_COUNTRIES
+    ? validIds
+    : ["KOR", "USA", "JPN", "CHN"];
+  const countries = countryIds
+    .map((id) => indicatorCountries.find((country) => country.id === id))
+    .filter(Boolean);
   const metrics = group.indicatorIds
     .map((indicatorId) => {
       const indicator = comparableIndicators.find((item) => item.id === indicatorId);
@@ -147,9 +155,9 @@ export function buildCountryComparisonModel(groupId, requestedCountryIds) {
         indicator,
         observations: observations.map((item) => ({
           ...item,
-          position: item.observation
+          position: Number.isFinite(item.observation?.value)
             ? clamp(((item.observation.value - min) / range) * 100, 4, 100)
-            : 0
+            : null
         })),
         highest: ranked[0] || null,
         lowest: ranked.at(-1) || null,
@@ -255,6 +263,53 @@ function buildCounterSignals(evaluation) {
     : ["입력한 변화가 없으므로 현재 경제의 구조와 다른 외부 충격이 결과를 결정합니다."];
 }
 
+function signedPoints(value) {
+  const numeric = Number(value) || 0;
+  return `${numeric > 0 ? "+" : ""}${numeric}점`;
+}
+
+function renderEconomicMethodology(evaluation) {
+  return `
+    <details class="economic-method-details">
+      <summary>
+        <span>계산식·가중치 자세히 보기</span>
+        <strong>입력 표준화 × 영향계수 × 18점</strong>
+      </summary>
+      <div class="economic-method-overview">
+        <p><b>점수 뜻</b> -100은 하방 압력, +100은 상방 압력입니다. 예측 확률이나 실제 성장률·수익률이 아닙니다.</p>
+        <p><b>중립 구간</b> 절댓값 12점 미만은 방향이 뚜렷하지 않은 것으로 표시합니다.</p>
+        <p><b>상한 처리</b> 여러 충격을 합친 원점수가 범위를 넘으면 -100 또는 +100에서 잘라 표시합니다.</p>
+      </div>
+      <div class="economic-weight-list">
+        ${evaluation.results
+          .map(
+            (result) => `
+              <article>
+                <header>
+                  <strong>${escapeHtml(result.label)}</strong>
+                  <span>원점수 ${signedPoints(result.rawScore)} → 표시 ${signedPoints(result.score)}</span>
+                </header>
+                <div>
+                  ${Object.entries(result.coefficients)
+                    .map(([controlId, coefficient]) => {
+                      const control = economicLabControls.find(
+                        (item) => item.id === controlId
+                      );
+                      return `<span>${escapeHtml(control?.label || controlId)} <b>${coefficient > 0 ? "+" : ""}${coefficient}</b></span>`;
+                    })
+                    .join("")}
+                </div>
+              </article>
+            `
+          )
+          .join("")}
+      </div>
+      <p class="economic-method-warning">
+        계수는 공개적으로 알려진 전달 방향을 일관되게 비교하기 위한 교육용 규칙이며, 과거 예측력을 통계적으로 검증한 모형이 아닙니다.
+      </p>
+    </details>
+  `;
+}
 function renderEconomicResults(evaluation) {
   const summary = evaluation.isNeutral
     ? {
@@ -308,13 +363,21 @@ function renderEconomicResults(evaluation) {
             <article class="economic-impact-card" data-tone="${result.tone}">
               <header>
                 <span>${escapeHtml(result.label)}</span>
-                <strong>${escapeHtml(result.labelText)}</strong>
+                <div>
+                  <strong>${escapeHtml(result.labelText)}</strong>
+                  <em>${signedPoints(result.score)}/100${result.wasCapped ? " · 상한 적용" : ""}</em>
+                </div>
               </header>
               <div class="economic-impact-scale" aria-label="${escapeHtml(
                 result.label
               )} 상대 압력 ${result.score}">
                 <i style="--impact-score:${result.score}"></i>
                 <b></b>
+              </div>
+              <div class="economic-impact-scale-labels" aria-hidden="true">
+                <small>-100 하방</small>
+                <small>0 중립</small>
+                <small>+100 상방</small>
               </div>
               <p>${escapeHtml(result.explanation)}</p>
               <dl>
@@ -334,9 +397,9 @@ function renderEconomicResults(evaluation) {
                             (item) =>
                               `<i data-direction="${
                                 item.contribution > 0 ? "up" : "down"
-                              }">${escapeHtml(item.label)} ${
+                              }" title="영향계수 ${item.coefficient > 0 ? "+" : ""}${item.coefficient}">${escapeHtml(item.label)} ${
                                 item.contribution > 0 ? "↑" : "↓"
-                              }</i>`
+                              } <b>${signedPoints(item.contribution)}</b></i>`
                           )
                           .join("")
                       : "<i>활성 입력 없음</i>"
@@ -359,6 +422,7 @@ function renderEconomicResults(evaluation) {
         <li><b>2~8분기</b><strong>투자·고용·주택 수요·실질성장</strong><p>사업계획과 채용, 대출 만기가 조정되며 실물 지표에 나타납니다.</p></li>
       </ol>
     </section>
+    ${renderEconomicMethodology(evaluation)}
     <section class="economic-countercheck">
       <header>
         <span>결론을 바꿀 조건</span>
@@ -427,8 +491,9 @@ function updateEconomicLab(root, values) {
   }
 }
 
-function renderCountryComparison(root, groupId, countryIds) {
+function renderCountryComparison(root, groupId, countryIds, selectionMessage = "") {
   const model = buildCountryComparisonModel(groupId, countryIds);
+  const selectionFull = model.countries.length >= MAX_COMPARISON_COUNTRIES;
   root.innerHTML = `
     <section class="country-comparison-section">
       <header class="country-comparison-heading">
@@ -437,28 +502,35 @@ function renderCountryComparison(root, groupId, countryIds) {
           <h3>같은 지표를 같은 줄에서 비교하기</h3>
           <p>국가별 최신 공표연도를 따로 표시하고, 높고 낮음이 곧 좋고 나쁨이라는 판단은 하지 않습니다.</p>
         </div>
-        <span>${model.countries.length}개 기준 · ${model.metrics.length}개 지표</span>
+        <span>${model.countries.length}개 선택 · ${model.metrics.length}개 지표</span>
       </header>
       <section class="country-selector" aria-label="비교 국가 선택">
         <div>
-          <span>비교 국가</span>
-          <strong>2~4개 선택</strong>
+          <span>비교 국가·지역</span>
+          <strong>${MIN_COMPARISON_COUNTRIES}~${MAX_COMPARISON_COUNTRIES}개 선택 · 전체 ${indicatorCountries.length}개</strong>
         </div>
         <div>
           ${indicatorCountries
-            .map(
-              (country) => `
+            .map((country) => {
+              const selected = model.countries.some(
+                (item) => item.id === country.id
+              );
+              const blocked = selectionFull && !selected;
+              return `
                 <button
                   type="button"
                   data-comparison-country="${country.id}"
-                  aria-pressed="${model.countries.some(
-                    (selected) => selected.id === country.id
-                  )}"
+                  aria-pressed="${selected}"
+                  aria-disabled="${blocked}"
+                  title="${blocked ? `최대 ${MAX_COMPARISON_COUNTRIES}개까지 비교할 수 있습니다.` : `${country.label} ${selected ? "제외" : "추가"}`}"
                 >${escapeHtml(country.label)}</button>
-              `
-            )
+              `;
+            })
             .join("")}
         </div>
+        <p class="country-selection-status" data-comparison-status aria-live="polite">
+          ${escapeHtml(selectionMessage || `현재 ${model.countries.map((country) => country.label).join(", ")} 비교 중`)}
+        </p>
       </section>
       <div class="country-group-tabs" role="tablist" aria-label="국가 비교 주제">
         ${countryComparisonGroups
@@ -494,11 +566,14 @@ function renderCountryComparison(root, groupId, countryIds) {
                   model.countries.length
                 }">
                   ${metric.observations
-                    .map(
-                      (item) => `
-                        <section data-country="${item.country.id}">
+                    .map((item) => {
+                      const available = Number.isFinite(
+                        item.observation?.value
+                      );
+                      return `
+                        <section data-country="${item.country.id}" data-available="${available}">
                           <span>${escapeHtml(item.country.label)} <em>${
-                            item.observation?.year || "자료 없음"
+                            item.observation?.year || "연도 없음"
                           }</em></span>
                           <strong>${escapeHtml(
                             formatIndicatorValue(
@@ -506,12 +581,14 @@ function renderCountryComparison(root, groupId, countryIds) {
                               item.observation
                             )
                           )}</strong>
-                          <div class="country-value-track">
-                            <i style="width:${item.position}%"></i>
-                          </div>
+                          ${
+                            available
+                              ? `<div class="country-value-track"><i style="width:${item.position}%"></i></div>`
+                              : '<div class="country-value-track" data-missing><span>비교 자료 없음</span></div>'
+                          }
                         </section>
-                      `
-                    )
+                      `;
+                    })
                     .join("")}
                 </div>
                 <footer>
@@ -539,7 +616,7 @@ function renderCountryComparison(root, groupId, countryIds) {
                   <span>${
                     metric.koreaRank
                       ? `한국 ${metric.koreaRank}/${metric.availableCount}번째`
-                      : "한국 미선택"
+                      : `비교 가능 ${metric.availableCount}/${model.countries.length}개`
                   }</span>
                 </footer>
                 <div class="country-metric-reading">
@@ -547,17 +624,29 @@ function renderCountryComparison(root, groupId, countryIds) {
                   <p>${escapeHtml(metric.indicator.reading)}</p>
                   <span>주의</span>
                   <p>${escapeHtml(metric.indicator.caution)}</p>
+                  <span>출처·기준</span>
+                  <p>
+                    ${escapeHtml(metric.indicator.source)} · 국가별 표시연도 기준 · 단위 ${escapeHtml(metric.indicator.unit)} · 연간 WDI 값
+                    <a href="${escapeHtml(metric.indicator.sourceUrl)}" target="_blank" rel="noopener noreferrer">원자료 보기</a>
+                  </p>
                 </div>
               </article>
             `
           )
           .join("")}
       </div>
-      <p class="country-comparison-note">
-        출처는 지표 탐색과 동일한 세계은행 WDI 기준이며 데이터셋 갱신일은 ${escapeHtml(
-          indicatorSnapshot.dataUpdatedAt.replaceAll("-", ".")
-        )}입니다. 국가별 최신 공표연도가 다를 수 있으므로 각 값 옆의 연도를 먼저 확인하세요.
-      </p>
+      <details class="country-comparison-method">
+        <summary>출처·기준·수정 가능성 자세히 보기</summary>
+        <div>
+          <p><b>원자료 제공기관</b> 세계은행 World Development Indicators</p>
+          <p><b>데이터 기준일</b> 각 값 옆의 국가별 공표연도</p>
+          <p><b>사이트 갱신일</b> ${escapeHtml(indicatorSnapshot.dataUpdatedAt.replaceAll("-", "."))}</p>
+          <p><b>계산식</b> 원자료 값을 변환하지 않고 표시하며, 막대는 현재 선택 국가 안의 최솟값~최댓값 상대 위치입니다.</p>
+          <p><b>명목·실질</b> 지표 코드별 정의가 다르므로 각 카드의 원자료 링크에서 확인합니다.</p>
+          <p><b>계절조정·수정</b> 연간 WDI 값으로 별도 계절조정 표시는 없으며, 제공기관 갱신 때 과거 값이 수정될 수 있습니다.</p>
+          <p><b>잠정·확정</b> WDI 응답에 공통 상태 필드가 없어 확정치로 단정하지 않습니다.</p>
+        </div>
+      </details>
     </section>
   `;
 }
@@ -604,9 +693,15 @@ export function initLearningTools({ updateHeight }) {
   );
   let comparisonGroup = "overview";
   let comparisonCountries = ["KOR", "USA", "JPN", "CHN"];
+  let comparisonMessage = "";
 
   renderEconomicLab(economicRoot, economicValues);
-  renderCountryComparison(countryRoot, comparisonGroup, comparisonCountries);
+  renderCountryComparison(
+    countryRoot,
+    comparisonGroup,
+    comparisonCountries,
+    comparisonMessage
+  );
 
   setNestedView({
     tabs: studyTabs,
@@ -708,10 +803,12 @@ export function initLearningTools({ updateHeight }) {
     const groupButton = event.target.closest?.("[data-comparison-group]");
     if (groupButton) {
       comparisonGroup = groupButton.dataset.comparisonGroup;
+      comparisonMessage = "";
       renderCountryComparison(
         countryRoot,
         comparisonGroup,
-        comparisonCountries
+        comparisonCountries,
+        comparisonMessage
       );
       requestAnimationFrame(updateHeight);
       return;
@@ -720,13 +817,26 @@ export function initLearningTools({ updateHeight }) {
     if (!countryButton) return;
     const countryId = countryButton.dataset.comparisonCountry;
     if (comparisonCountries.includes(countryId)) {
-      if (comparisonCountries.length <= 2) return;
-      comparisonCountries = comparisonCountries.filter((id) => id !== countryId);
+      if (comparisonCountries.length <= MIN_COMPARISON_COUNTRIES) {
+        comparisonMessage = `비교 기준을 유지하려면 최소 ${MIN_COMPARISON_COUNTRIES}개가 필요합니다.`;
+      } else {
+        comparisonCountries = comparisonCountries.filter(
+          (id) => id !== countryId
+        );
+        comparisonMessage = "";
+      }
+    } else if (comparisonCountries.length >= MAX_COMPARISON_COUNTRIES) {
+      comparisonMessage = `최대 ${MAX_COMPARISON_COUNTRIES}개까지 비교할 수 있습니다. 한 국가를 먼저 제외하세요.`;
     } else {
-      if (comparisonCountries.length >= 4) return;
       comparisonCountries = [...comparisonCountries, countryId];
+      comparisonMessage = "";
     }
-    renderCountryComparison(countryRoot, comparisonGroup, comparisonCountries);
+    renderCountryComparison(
+      countryRoot,
+      comparisonGroup,
+      comparisonCountries,
+      comparisonMessage
+    );
     requestAnimationFrame(updateHeight);
   });
 }

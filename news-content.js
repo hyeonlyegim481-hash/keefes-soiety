@@ -15,19 +15,22 @@ export async function enrichHeadlineWithArticle(headline) {
     articleContent: "",
     articleSummary: "",
     articleKeyPoints: [],
+    articleAuthor: String(headline?.articleAuthor || headline?.author || ""),
+    articlePublishedAt: headline?.articlePublishedAt || headline?.publishedAt || null,
+    articleModifiedAt: headline?.articleModifiedAt || null,
     contentBasis: "headline"
   };
 
   try {
     const signal = AbortSignal.timeout(ARTICLE_TOTAL_TIMEOUT_MS);
     const articleUrl = await decodeGoogleNewsUrl(base.articleUrl, signal);
-    const fallback = { ...base, articleUrl };
+    let fallback = { ...base, articleUrl };
     if (!isSafePublicUrl(articleUrl)) return rememberArticleResult(cacheKey, fallback);
 
     const response = await fetch(articleUrl, {
       headers: {
         accept: "text/html,application/xhtml+xml",
-        "user-agent": "Mozilla/5.0 (compatible; KeefesSoiety/1.0; +https://keefes-soiety.vercel.app)"
+        "user-agent": "Mozilla/5.0 (compatible; KeefesSociety/1.0; +https://keefes-soiety.vercel.app)"
       },
       redirect: "follow",
       signal
@@ -37,6 +40,13 @@ export async function enrichHeadlineWithArticle(headline) {
     const contentType = response.headers.get("content-type") || "";
     if (!contentType.includes("text/html")) return rememberArticleResult(cacheKey, fallback);
     const html = (await response.text()).slice(0, 1_500_000);
+    fallback = {
+      ...fallback,
+      ...extractArticleMetadata(html, {
+        fallbackPublishedAt: base.articlePublishedAt,
+        fallbackUrl: articleUrl
+      })
+    };
     const articleContent = extractArticleContent(html);
     if (
       articleContent.length < 240 ||
@@ -51,8 +61,7 @@ export async function enrichHeadlineWithArticle(headline) {
       return rememberArticleResult(cacheKey, fallback);
     }
     return rememberArticleResult(cacheKey, {
-      ...base,
-      articleUrl,
+      ...fallback,
       articleContent: articleContent.slice(0, 7_000),
       articleSummary: articleDigest.summary,
       articleKeyPoints: articleDigest.keyPoints,
@@ -175,6 +184,133 @@ function readAttribute(tag, name) {
   return match?.[2] || "";
 }
 
+function extractArticleMetadata(
+  html,
+  { fallbackPublishedAt = "", fallbackUrl = "" } = {}
+) {
+  const jsonObjects = readJsonLdObjects(html);
+  const articleObject =
+    jsonObjects.find((item) => {
+      const types = Array.isArray(item?.["@type"])
+        ? item["@type"]
+        : [item?.["@type"]];
+      return types.some((type) =>
+        /^(?:NewsArticle|Article|ReportageNewsArticle|AnalysisNewsArticle)$/i.test(
+          String(type || "")
+        )
+      );
+    }) ||
+    jsonObjects.find(
+      (item) => item?.datePublished || item?.author || item?.headline
+    ) ||
+    {};
+
+  const author =
+    readMetaValue(html, ["author", "article:author", "byl"]) ||
+    readAuthorName(articleObject.author);
+  const publishedAt = normalizeArticleDate(
+    readMetaValue(html, [
+      "article:published_time",
+      "datepublished",
+      "date",
+      "pubdate"
+    ]) ||
+      articleObject.datePublished ||
+      fallbackPublishedAt
+  );
+  const modifiedAt = normalizeArticleDate(
+    readMetaValue(html, [
+      "article:modified_time",
+      "datemodified",
+      "lastmod"
+    ]) || articleObject.dateModified
+  );
+  const canonicalUrl =
+    readCanonicalUrl(html) ||
+    readMetaValue(html, ["og:url"]) ||
+    String(articleObject.url || fallbackUrl || "");
+
+  return {
+    articleAuthor: cleanPlainText(author).slice(0, 120),
+    articlePublishedAt: publishedAt || null,
+    articleModifiedAt: modifiedAt || null,
+    articleUrl: isSafePublicUrl(canonicalUrl) ? canonicalUrl : fallbackUrl
+  };
+}
+
+function readMetaValue(html, keys) {
+  const wanted = new Set(keys.map((key) => key.toLowerCase()));
+  const tags = html.match(/<meta\b[^>]*>/gi) || [];
+  for (const tag of tags) {
+    const key =
+      readAttribute(tag, "property") ||
+      readAttribute(tag, "name") ||
+      readAttribute(tag, "itemprop");
+    if (!wanted.has(String(key || "").toLowerCase())) continue;
+    const content = readAttribute(tag, "content");
+    if (content) return cleanPlainText(content);
+  }
+  return "";
+}
+
+function readCanonicalUrl(html) {
+  const tags = html.match(/<link\b[^>]*>/gi) || [];
+  for (const tag of tags) {
+    const rel = readAttribute(tag, "rel").toLowerCase();
+    if (!rel.split(/\s+/).includes("canonical")) continue;
+    const href = readAttribute(tag, "href");
+    if (href) return href;
+  }
+  return "";
+}
+
+function readJsonLdObjects(html) {
+  const blocks = [
+    ...html.matchAll(
+      /<script\b[^>]*type\s*=\s*(["'])application\/ld\+json\1[^>]*>([\s\S]*?)<\/script>/gi
+    )
+  ];
+  const objects = [];
+  for (const block of blocks) {
+    try {
+      const value = JSON.parse(decodeHtmlEntities(block[2]).trim());
+      collectJsonLdObjects(value, objects);
+    } catch {
+      // Invalid publisher metadata is ignored instead of guessed.
+    }
+  }
+  return objects;
+}
+
+function collectJsonLdObjects(value, output) {
+  if (Array.isArray(value)) {
+    value.forEach((item) => collectJsonLdObjects(item, output));
+    return;
+  }
+  if (!value || typeof value !== "object") return;
+  output.push(value);
+  if (Array.isArray(value["@graph"])) {
+    value["@graph"].forEach((item) => collectJsonLdObjects(item, output));
+  }
+}
+
+function readAuthorName(author) {
+  const authors = Array.isArray(author) ? author : [author];
+  return authors
+    .map((item) =>
+      typeof item === "string"
+        ? item
+        : String(item?.name || item?.alternateName || "")
+    )
+    .map((item) => cleanPlainText(item))
+    .filter(Boolean)
+    .join(", ");
+}
+
+function normalizeArticleDate(value) {
+  const timestamp = Date.parse(String(value || ""));
+  return Number.isFinite(timestamp) ? new Date(timestamp).toISOString() : "";
+}
 const articleKeywordStopWords = new Set([
   "관련", "대한", "통해", "위해", "오늘", "이번", "종합", "속보", "단독", "전망", "한국", "경제", "시장", "뉴스"
 ]);
@@ -322,4 +458,4 @@ function isSafePublicUrl(value) {
   }
 }
 
-export { buildArticleDigest, buildExtractiveSummary, decodeGoogleNewsUrl, extractArticleContent, hasArticleEvidence, isBlockedArticleContent };
+export { buildArticleDigest, buildExtractiveSummary, decodeGoogleNewsUrl, extractArticleContent, extractArticleMetadata, hasArticleEvidence, isBlockedArticleContent };

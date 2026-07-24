@@ -178,7 +178,7 @@ function renderFutureIndustryChapter() {
     <div>
       <span>기업 스냅샷</span>
       <strong>${futureCompanies.length}개 기업</strong>
-      <p>공식 FY2025·FY2026 실적 기준</p>
+      <p>기업별 원자료 제공기관·회계연도 표시</p>
     </div>
     <div>
       <span>비교 원칙</span>

@@ -248,27 +248,37 @@ export function evaluateEconomicScenario(input = {}) {
     .sort((a, b) => b.strength - a.strength);
 
   const results = impactDefinitions.map((definition) => {
-    const contributions = Object.entries(definition.coefficients)
+    const allContributions = Object.entries(definition.coefficients)
       .map(([controlId, coefficient]) => {
         const control = controlById[controlId];
-        const contribution = (values[controlId] / control.scale) * coefficient * 18;
+        const normalizedInput = values[controlId] / control.scale;
+        const contribution = normalizedInput * coefficient * 18;
         return {
           id: controlId,
           label: control.label,
-          contribution: Math.round(contribution)
+          coefficient,
+          normalizedInput,
+          contribution
         };
-      })
+      });
+    const rawScore = allContributions.reduce(
+      (total, item) => total + item.contribution,
+      0
+    );
+    const score = clamp(Math.round(rawScore), -100, 100);
+    const contributions = allContributions
+      .map((item) => ({
+        ...item,
+        contribution: Math.round(item.contribution)
+      }))
       .filter((item) => Math.abs(item.contribution) >= 2)
       .sort((a, b) => Math.abs(b.contribution) - Math.abs(a.contribution));
-    const score = clamp(
-      Math.round(contributions.reduce((total, item) => total + item.contribution, 0)),
-      -100,
-      100
-    );
 
     return {
       ...definition,
       score,
+      rawScore: Math.round(rawScore),
+      wasCapped: Math.round(rawScore) !== score,
       labelText: intensityLabel(score, definition),
       tone: resultTone(score, definition),
       contributions
@@ -284,6 +294,13 @@ export function evaluateEconomicScenario(input = {}) {
     activeDrivers,
     results,
     strongestResults,
-    isNeutral: activeDrivers.length === 0
+    isNeutral: activeDrivers.length === 0,
+    methodology: {
+      version: "1.1",
+      scoreMinimum: -100,
+      scoreMaximum: 100,
+      neutralBand: 12,
+      pointsPerStandardizedUnit: 18
+    }
   };
 }

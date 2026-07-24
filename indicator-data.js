@@ -4,7 +4,16 @@ export const indicatorCountries = [
   { id: "USA", label: "미국", shortLabel: "미국" },
   { id: "JPN", label: "일본", shortLabel: "일본" },
   { id: "CHN", label: "중국", shortLabel: "중국" },
-  { id: "DEU", label: "독일", shortLabel: "독일" }
+  { id: "DEU", label: "독일", shortLabel: "독일" },
+  { id: "GBR", label: "영국", shortLabel: "영국" },
+  { id: "FRA", label: "프랑스", shortLabel: "프랑스" },
+  { id: "CAN", label: "캐나다", shortLabel: "캐나다" },
+  { id: "AUS", label: "호주", shortLabel: "호주" },
+  { id: "IND", label: "인도", shortLabel: "인도" },
+  { id: "BRA", label: "브라질", shortLabel: "브라질" },
+  { id: "SGP", label: "싱가포르", shortLabel: "싱가포르" },
+  { id: "IDN", label: "인도네시아", shortLabel: "인도네시아" },
+  { id: "VNM", label: "베트남", shortLabel: "베트남" }
 ];
 
 export const indicatorCategories = [

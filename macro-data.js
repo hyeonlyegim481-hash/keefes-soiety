@@ -432,6 +432,7 @@ async function fetchHouseholdCredit() {
     deltaLabel: `전분기 ${signed(delta)}조원`,
     mood: delta > 0 ? "watch" : "positive",
     status: "official",
+    preliminary: true,
     asOf: quarterEndIso(year, quarter),
     publishedAt: Number.isFinite(publishedTimestamp)
       ? new Date(publishedTimestamp).toISOString()
@@ -449,7 +450,7 @@ async function fetchOfficialText(url, accept, timeoutMs = REQUEST_TIMEOUT_MS) {
     headers: {
       accept,
       "user-agent":
-        "Mozilla/5.0 (compatible; KeefesSoiety/1.0; +https://keefes-soiety.vercel.app)"
+        "Mozilla/5.0 (compatible; KeefesSociety/1.0; +https://keefes-soiety.vercel.app)"
     },
     redirect: "follow",
     signal: AbortSignal.timeout(timeoutMs)

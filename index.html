@@ -8,11 +8,11 @@
       content="최신 시장 데이터와 한국 경제 흐름을 기준시각과 함께 정리하는 대시보드"
     />
     <meta name="theme-color" content="#f6f7f8" />
-    <link rel="manifest" href="/manifest.json?v=80" />
+    <link rel="manifest" href="/manifest.json?v=81" />
     <link rel="icon" href="/assets/econest-icon.png" type="image/png" />
-    <link rel="stylesheet" href="/styles.css?v=80" />
-    <link rel="stylesheet" href="/resource-library.css?v=80" />
-    <title>keefe's soiety</title>
+    <link rel="stylesheet" href="/styles.css?v=81" />
+    <link rel="stylesheet" href="/resource-library.css?v=81" />
+    <title>keefe's society</title>
   </head>
   <body>
     <div class="app-shell">
@@ -20,7 +20,7 @@
         <div class="brand-block">
           <img class="brand-mark" src="/assets/econest-icon.png" alt="경제 흐름 로고" />
           <div>
-            <p class="eyebrow">keefe's soiety</p>
+            <p class="eyebrow">keefe's society</p>
             <h1>세계와 한국의 경제 흐름</h1>
           </div>
         </div>
@@ -80,12 +80,22 @@
                 </div>
                 <div class="risk-driver-list" id="riskDrivers"></div>
                 <div class="risk-legend" id="riskLegend" aria-label="위험 온도 기준"></div>
+                <details class="risk-methodology" id="riskMethodology">
+                  <summary>
+                    <span>위험 온도 계산법 자세히 보기</span>
+                  </summary>
+                </details>
               </article>
 
               <article class="panel time-panel">
-                <p class="section-kicker">시장 기준 시각</p>
+                <p class="section-kicker">데이터 출처·기준</p>
                 <time id="updatedAt">--:--</time>
-                <span id="sourceLine">시장 · 뉴스 · 거시지표</span>
+                <span id="sourceLine">원자료와 기준시각 확인 중</span>
+                <details class="data-provenance" id="dataProvenance">
+                  <summary>
+                    <span>원자료·기준일·계산식 자세히 보기</span>
+                  </summary>
+                </details>
               </article>
 
               <article class="panel brief-board-panel">
@@ -216,7 +226,7 @@
                 <section class="future-company-section" aria-label="기업 체력 비교">
                   <header class="future-section-heading">
                     <div>
-                      <p class="section-kicker">공식 실적 스냅샷</p>
+                      <p class="section-kicker">기업 실적·기준일</p>
                       <h3>기업의 단단한 정도와 매출</h3>
                     </div>
                     <span id="futureCompanyCount"></span>
@@ -372,12 +382,12 @@
                 <div class="quiz-body" id="quizBody"></div>
               </article>
             </section>
-            <section class="chapter-pane chapter-single" id="resources" data-chapter-panel="resources" aria-label="경제책과 공식 자료">
+            <section class="chapter-pane chapter-single" id="resources" data-chapter-panel="resources" aria-label="경제책과 원자료">
               <article class="panel resource-library-panel">
                 <div class="panel-heading resource-library-heading">
                   <div>
                     <p class="section-kicker">추가 정보</p>
-                    <h2>경제책과 공식 데이터 길잡이</h2>
+                    <h2>경제책과 원자료 길잡이</h2>
                   </div>
                   <span class="resource-library-count" id="resourceLibraryCount"></span>
                 </div>
@@ -396,6 +406,6 @@
       </footer>
     </div>
 
-    <script type="module" src="/app.js?v=80"></script>
+    <script type="module" src="/app.js?v=81"></script>
   </body>
 </html>

@@ -1,4 +1,4 @@
-# keefe's soiety
+# keefe's society
 
 세계 경제와 한국 경제 흐름을 한 화면에서 정리하는 PWA형 경제 대시보드입니다.
 

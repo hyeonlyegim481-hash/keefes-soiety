@@ -135,18 +135,18 @@ function renderLibrary() {
       경제책 추천 <span>${economicsBooks.length}</span>
     </button>
     <button type="button" role="tab" data-library-view="resources" aria-selected="${state.view === "resources"}">
-      공식 자료실 <span>${officialResources.length}</span>
+      원자료실 <span>${officialResources.length}</span>
     </button>
   `;
 
   elements.count.textContent = state.view === "books"
     ? `${economicsBooks.length}권 선별`
-    : `${officialResources.length}개 공식 출처`;
+    : `${officialResources.length}개 원자료 출처`;
 
   elements.summary.innerHTML = state.view === "books"
     ? `
       <div><span>읽는 기준</span><strong>난이도보다 목적부터</strong><p>처음에는 생활 사례, 다음은 개념과 통계, 마지막은 위기·제도 순서로 읽습니다.</p></div>
-      <div><span>활용 방법</span><strong>책의 주장과 현재 자료 연결</strong><p>책에서 얻은 질문을 공식 자료실의 최신 통계로 다시 확인하세요.</p></div>
+      <div><span>활용 방법</span><strong>책의 주장과 현재 자료 연결</strong><p>책에서 얻은 질문을 원자료 제공기관의 최신 통계로 다시 확인하세요.</p></div>
     `
     : `
       <div><span>자료 선택</span><strong>기관보다 질문부터</strong><p>한국 물가는 KOSIS, 금리·환율은 ECOS처럼 질문에 맞는 원출처를 선택합니다.</p></div>
@@ -272,7 +272,7 @@ function renderResourcesView({ guideIds = null } = {}) {
   elements.body.innerHTML = `
     <section class="resource-guides" aria-labelledby="resourceGuidesTitle">
       <div class="library-section-heading">
-        <div><span>빠른 길잡이</span><h3 id="resourceGuidesTitle">질문에서 공식 원자료까지</h3></div>
+        <div><span>빠른 길잡이</span><h3 id="resourceGuidesTitle">질문에서 원자료 제공기관까지</h3></div>
         <p>하나의 수치로 결론내리지 말고 서로 다른 기관의 정의와 시점을 비교하세요.</p>
       </div>
       <div class="resource-guide-grid">
@@ -281,7 +281,7 @@ function renderResourcesView({ guideIds = null } = {}) {
     </section>
     <section class="official-directory" aria-labelledby="officialDirectoryTitle">
       <div class="library-section-heading library-directory-heading">
-        <div><span>공식 자료 목록</span><h3 id="officialDirectoryTitle">한국과 세계의 원자료 찾기</h3></div>
+        <div><span>원자료 제공기관 목록</span><h3 id="officialDirectoryTitle">한국과 세계의 원자료 찾기</h3></div>
         <p>기관이 직접 운영하는 사이트만 모았습니다. 링크는 새 창에서 열립니다.</p>
       </div>
       <div class="library-toolbar official-toolbar">
@@ -309,7 +309,7 @@ function renderResourcesView({ guideIds = null } = {}) {
     const resultElement = elements.body.querySelector("#officialResourceResults");
     const countElement = elements.body.querySelector("#officialResourceResultCount");
     const resources = guideIds.map((id) => resourceById.get(id)).filter(Boolean);
-    countElement.textContent = `길잡이에서 선택한 공식 자료 · ${resources.length}개`;
+    countElement.textContent = `길잡이에서 선택한 원자료 · ${resources.length}개`;
     resultElement.innerHTML = resources.map(renderOfficialResource).join("");
     requestAnimationFrame(updateChapterHeight);
     return;
@@ -350,10 +350,10 @@ function renderResourceResults() {
     return matchesRegion && matchesCategory && (!normalizedQuery || searchable.includes(normalizedQuery));
   });
 
-  countElement.textContent = `선택 조건 · ${resources.length}개 공식 자료`;
+  countElement.textContent = `선택 조건 · ${resources.length}개 원자료`;
   resultElement.innerHTML = resources.length
     ? resources.map(renderOfficialResource).join("")
-    : renderEmptyState("조건에 맞는 공식 자료가 없습니다.", "검색어를 줄이거나 지역·분야 필터를 초기화해 보세요.");
+    : renderEmptyState("조건에 맞는 원자료가 없습니다.", "검색어를 줄이거나 지역·분야 필터를 초기화해 보세요.");
   requestAnimationFrame(updateChapterHeight);
 }
 
@@ -363,7 +363,7 @@ function renderOfficialResource(resource) {
       <header>
         <div>
           <span>${escapeHtml(resource.category)}</span>
-          <em>${escapeHtml(resource.region)} 공식</em>
+          <em>${escapeHtml(resource.region)} 원자료</em>
         </div>
         ${resource.featured ? "<b>추천</b>" : ""}
       </header>
@@ -385,7 +385,7 @@ function renderOfficialResource(resource) {
         <p>${escapeHtml(resource.caution)}</p>
       </details>
       <a href="${escapeAttribute(resource.url)}" target="_blank" rel="noopener noreferrer">
-        공식 사이트 열기 <span aria-hidden="true">↗</span>
+        원자료 제공기관 열기 <span aria-hidden="true">↗</span>
       </a>
     </article>
   `;
