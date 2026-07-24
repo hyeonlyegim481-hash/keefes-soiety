@@ -8,10 +8,10 @@
       content="최신 시장 데이터와 한국 경제 흐름을 기준시각과 함께 정리하는 대시보드"
     />
     <meta name="theme-color" content="#f6f7f8" />
-    <link rel="manifest" href="/manifest.json?v=79" />
+    <link rel="manifest" href="/manifest.json?v=80" />
     <link rel="icon" href="/assets/econest-icon.png" type="image/png" />
-    <link rel="stylesheet" href="/styles.css?v=79" />
-    <link rel="stylesheet" href="/resource-library.css?v=79" />
+    <link rel="stylesheet" href="/styles.css?v=80" />
+    <link rel="stylesheet" href="/resource-library.css?v=80" />
     <title>keefe's soiety</title>
   </head>
   <body>
@@ -43,7 +43,6 @@
         <button class="chapter-tab" type="button" data-chapter="future" aria-selected="false">미래산업</button>
         <button class="chapter-tab" type="button" data-chapter="analysis" aria-selected="false">심층</button>
         <button class="chapter-tab" type="button" data-chapter="study" aria-selected="false">공부</button>
-        <button class="chapter-tab" type="button" data-chapter="history" aria-selected="false">역사</button>
         <button class="chapter-tab" type="button" data-chapter="news" aria-selected="false">뉴스</button>
         <button class="chapter-tab" type="button" data-chapter="glossary" aria-selected="false">용어</button>
         <button class="chapter-tab" type="button" data-chapter="quiz" aria-selected="false">퀴즈</button>
@@ -159,27 +158,44 @@
                   </div>
                   <span class="indicator-update" id="indicatorUpdate"></span>
                 </div>
-                <div class="indicator-summary" id="indicatorSummary"></div>
-                <div class="indicator-toolbar">
-                  <div class="indicator-category-tabs" id="indicatorCategoryTabs" role="tablist" aria-label="지표 분야"></div>
-                  <label class="indicator-search" for="indicatorSearch">
-                    <span>지표 검색</span>
-                    <input id="indicatorSearch" type="search" placeholder="출산율, 물가, 경상수지, 리튬 등" autocomplete="off" />
-                  </label>
+                <div class="nested-chapter-tabs" id="indicatorViewTabs" role="tablist" aria-label="지표 하위 챕터">
+                  <button type="button" role="tab" data-indicator-view="explorer" aria-selected="true">
+                    <strong>지표 탐색</strong>
+                    <span>한 지표를 깊게 읽기</span>
+                  </button>
+                  <button type="button" role="tab" data-indicator-view="compare" aria-selected="false">
+                    <strong>국가 비교실</strong>
+                    <span>같은 기준으로 여러 나라 비교</span>
+                  </button>
                 </div>
-                <div class="indicator-layout">
-                  <section class="indicator-directory" aria-label="지표 목록">
-                    <header>
-                      <div>
-                        <p class="section-kicker">지표 목록</p>
-                        <h3>분야별 기준값</h3>
-                        <small>목록 안에서 스크롤해 선택</small>
-                      </div>
-                      <span id="indicatorCount"></span>
-                    </header>
-                    <div class="indicator-list" id="indicatorList"></div>
+                <div class="nested-chapter-panels">
+                  <section class="nested-chapter-panel" data-indicator-view-panel="explorer" aria-hidden="false">
+                    <div class="indicator-summary" id="indicatorSummary"></div>
+                    <div class="indicator-toolbar">
+                      <div class="indicator-category-tabs" id="indicatorCategoryTabs" role="tablist" aria-label="지표 분야"></div>
+                      <label class="indicator-search" for="indicatorSearch">
+                        <span>지표 검색</span>
+                        <input id="indicatorSearch" type="search" placeholder="출산율, 물가, 경상수지, 리튬 등" autocomplete="off" />
+                      </label>
+                    </div>
+                    <div class="indicator-layout">
+                      <section class="indicator-directory" aria-label="지표 목록">
+                        <header>
+                          <div>
+                            <p class="section-kicker">지표 목록</p>
+                            <h3>분야별 기준값</h3>
+                            <small>목록 안에서 스크롤해 선택</small>
+                          </div>
+                          <span id="indicatorCount"></span>
+                        </header>
+                        <div class="indicator-list" id="indicatorList"></div>
+                      </section>
+                      <aside class="indicator-detail" id="indicatorDetail" aria-live="polite"></aside>
+                    </div>
                   </section>
-                  <aside class="indicator-detail" id="indicatorDetail" aria-live="polite"></aside>
+                  <section class="nested-chapter-panel" data-indicator-view-panel="compare" aria-hidden="true" inert>
+                    <div id="countryComparison"></div>
+                  </section>
                 </div>
               </article>
             </section>
@@ -239,39 +255,64 @@
 
             <section class="chapter-pane chapter-single" id="study" data-chapter-panel="study" aria-label="경제 공부">
               <article class="panel study-panel">
-                <div class="panel-heading">
+                <div class="panel-heading study-heading">
                   <div>
                     <p class="section-kicker">경제 공부</p>
-                    <h2>오늘의 사고 훈련</h2>
+                    <h2>연결하고 실험하고 역사로 검증하기</h2>
                   </div>
                 </div>
-                <div class="chapter-brief" id="studyBrief"></div>
-                <div class="chapter-expansion" id="thinkingLab"></div>
-                <div class="chapter-expansion" id="relationshipLab"></div>
-                <div class="chapter-expansion" id="dailyTerm"></div>
-                <div class="chapter-expansion" id="studyQuiz"></div>
+                <div class="nested-chapter-tabs" id="studyViewTabs" role="tablist" aria-label="공부 하위 챕터">
+                  <button type="button" role="tab" data-study-view="today" aria-selected="true">
+                    <strong>오늘의 공부</strong>
+                    <span>숫자를 읽는 사고 훈련</span>
+                  </button>
+                  <button type="button" role="tab" data-study-view="connections" aria-selected="false">
+                    <strong>경제 연결</strong>
+                    <span>충격이 전달되는 순서</span>
+                  </button>
+                  <button type="button" role="tab" data-study-view="lab" aria-selected="false">
+                    <strong>경제 실험실</strong>
+                    <span>조건을 바꿔 영향 비교</span>
+                  </button>
+                  <button type="button" role="tab" data-study-view="history" aria-selected="false">
+                    <strong>경제 역사</strong>
+                    <span>과거 사건으로 현재 검증</span>
+                  </button>
+                </div>
+                <div class="nested-chapter-panels">
+                  <section class="nested-chapter-panel" data-study-view-panel="today" aria-hidden="false">
+                    <div class="chapter-brief" id="studyBrief"></div>
+                    <div class="chapter-expansion" id="thinkingLab"></div>
+                    <div class="chapter-expansion" id="dailyTerm"></div>
+                    <div class="chapter-expansion" id="studyQuiz"></div>
+                  </section>
+                  <section class="nested-chapter-panel" data-study-view-panel="connections" aria-hidden="true" inert>
+                    <div class="chapter-expansion" id="relationshipLab"></div>
+                  </section>
+                  <section class="nested-chapter-panel" data-study-view-panel="lab" aria-hidden="true" inert>
+                    <div class="chapter-expansion" id="economicLab"></div>
+                  </section>
+                  <section class="nested-chapter-panel study-history-panel" data-study-view-panel="history" aria-hidden="true" inert>
+                    <header class="nested-feature-heading">
+                      <div>
+                        <p class="section-kicker">경제 역사</p>
+                        <h3>경제사의 큰 흐름</h3>
+                        <p>충격이 신용·고용·물가·환율로 번진 순서와 정책 대응을 현재와 비교합니다.</p>
+                      </div>
+                      <span class="history-count" id="historyCount"></span>
+                    </header>
+                    <div class="history-era-tabs" id="historyEraTabs" role="tablist" aria-label="경제사 시대 선택"></div>
+                    <div class="history-brief" id="historyBrief"></div>
+                    <div class="history-overview" id="historyOverview"></div>
+                    <div class="history-layout">
+                      <aside class="history-patterns" id="historyPatterns" aria-label="반복되는 경제사 패턴"></aside>
+                      <section class="history-timeline" id="historyTimeline" aria-label="경제사 사건 타임라인"></section>
+                    </div>
+                  </section>
+                </div>
               </article>
             </section>
 
-
-            <section class="chapter-pane chapter-single" id="history" data-chapter-panel="history" aria-label="경제 역사">
-              <article class="panel history-panel">
-                <div class="panel-heading history-heading">
-                  <div>
-                    <p class="section-kicker">경제 역사</p>
-                    <h2>경제사의 큰 흐름</h2>
-                  </div>
-                  <span class="history-count" id="historyCount"></span>
-                </div>
-                <div class="history-era-tabs" id="historyEraTabs" role="tablist" aria-label="경제사 시대 선택"></div>
-                <div class="history-brief" id="historyBrief"></div>
-                <div class="history-overview" id="historyOverview"></div>
-                <div class="history-layout">
-                  <aside class="history-patterns" id="historyPatterns" aria-label="반복되는 경제사 패턴"></aside>
-                  <section class="history-timeline" id="historyTimeline" aria-label="경제사 사건 타임라인"></section>
-                </div>
-              </article>
-            </section>
             <section class="chapter-pane chapter-single" id="news" data-chapter-panel="news" aria-label="뉴스 전문">
               <article class="panel news-panel">
                 <div class="panel-heading">
@@ -355,6 +396,6 @@
       </footer>
     </div>
 
-    <script type="module" src="/app.js?v=79"></script>
+    <script type="module" src="/app.js?v=80"></script>
   </body>
 </html>

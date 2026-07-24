@@ -1,51 +1,52 @@
 import {
   glossaryCategoryOrder as coreGlossaryCategories,
   glossaryTerms as coreGlossaryTerms
-} from "./glossary-data.js?v=79";
+} from "./glossary-data.js?v=80";
 import {
   glossaryExtraCategories,
   glossaryExtraTerms
-} from "./glossary-extra-data.js?v=79";
+} from "./glossary-extra-data.js?v=80";
 import {
   glossaryMoreCategories,
   glossaryMoreTerms
-} from "./glossary-more-data.js?v=79";
+} from "./glossary-more-data.js?v=80";
 import {
   glossaryProCategories,
   glossaryProTerms
-} from "./glossary-pro-data.js?v=79";
-import { glossarySpecialTerms } from "./glossary-special-data.js?v=79";
-import { glossaryCoreExtraTerms } from "./glossary-core-extra-data.js?v=79";
-import { glossaryExpandedTerms } from "./glossary-expanded-data.js?v=79";
-import { buildMasterGlossary } from "./glossary-master-data.js?v=79";
-import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=79";
-import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=79";
-import { moreScenarioQuestions } from "./quiz-scenario-more-data.js?v=79";
-import { expandedScenarioQuestions } from "./quiz-scenario-expanded-data.js?v=79";
-import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=79";
-import { historyDeepDives, historyEraDetails } from "./history-detail-data.js?v=79";
-import { historyEraProfiles, historyEventPerspectives } from "./history-reading-data.js?v=79";
+} from "./glossary-pro-data.js?v=80";
+import { glossarySpecialTerms } from "./glossary-special-data.js?v=80";
+import { glossaryCoreExtraTerms } from "./glossary-core-extra-data.js?v=80";
+import { glossaryExpandedTerms } from "./glossary-expanded-data.js?v=80";
+import { buildMasterGlossary } from "./glossary-master-data.js?v=80";
+import { scenarioQuestions as baseScenarioQuestions } from "./quiz-data.js?v=80";
+import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js?v=80";
+import { moreScenarioQuestions } from "./quiz-scenario-more-data.js?v=80";
+import { expandedScenarioQuestions } from "./quiz-scenario-expanded-data.js?v=80";
+import { historyEras, historyEvents, historyPatterns } from "./history-data.js?v=80";
+import { historyDeepDives, historyEraDetails } from "./history-detail-data.js?v=80";
+import { historyEraProfiles, historyEventPerspectives } from "./history-reading-data.js?v=80";
 import {
   indicatorCategories as baseIndicatorCategories,
   indicatorCountries,
   indicatorDefinitions as baseIndicatorDefinitions
-} from "./indicator-data.js?v=79";
+} from "./indicator-data.js?v=80";
 import {
   financeIndicatorCategories,
   financeIndicatorDefinitions
-} from "./indicator-finance-data.js?v=79";
-import { expandedIndicatorDefinitions } from "./indicator-expanded-data.js?v=79";
-import { indicatorSnapshot } from "./indicator-values.js?v=79";
-import { resourceProductionIndicators } from "./resource-production-data.js?v=79";
+} from "./indicator-finance-data.js?v=80";
+import { expandedIndicatorDefinitions } from "./indicator-expanded-data.js?v=80";
+import { indicatorSnapshot } from "./indicator-values.js?v=80";
+import { resourceProductionIndicators } from "./resource-production-data.js?v=80";
 import {
   bindResourceProductionDetail,
   formatProductionExact,
   renderResourceProductionDetail
-} from "./resource-production-ui.js?v=79";
-import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=79";
-import { initFutureIndustryChapter } from "./future-industry-ui.js?v=79";
-import { initResourceLibraryChapter } from "./resource-library-ui.js?v=79";
-import { economicRelationships } from "./relationship-data.js?v=79";
+} from "./resource-production-ui.js?v=80";
+import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=80";
+import { initFutureIndustryChapter } from "./future-industry-ui.js?v=80";
+import { initResourceLibraryChapter } from "./resource-library-ui.js?v=80";
+import { economicRelationships } from "./relationship-data.js?v=80";
+import { initLearningTools } from "./learning-tools-ui.js?v=80";
 
 const scenarioQuestions = [
   ...baseScenarioQuestions,
@@ -429,7 +430,8 @@ const economicTerms = [
   }
 ];
 const initialParameters = new URLSearchParams(window.location.search);
-const initialChapter = initialParameters.get("chapter") || "brief";
+const requestedInitialChapter = initialParameters.get("chapter") || "brief";
+const initialChapter = requestedInitialChapter === "history" ? "study" : requestedInitialChapter;
 const requestedIndicator = initialParameters.get("indicator");
 const initialIndicator = allIndicatorDefinitions.some((indicator) => indicator.id === requestedIndicator)
   ? requestedIndicator
@@ -688,7 +690,7 @@ if ("serviceWorker" in navigator) {
   const hadServiceWorkerController = Boolean(navigator.serviceWorker.controller);
   let reloadingForServiceWorker = false;
   navigator.serviceWorker
-    .register("/sw.js?v=79")
+    .register("/sw.js?v=80")
     .then((registration) => {
       registration.update().catch(() => {});
       setInterval(() => registration.update().catch(() => {}), 5 * 60_000);
@@ -703,6 +705,7 @@ if ("serviceWorker" in navigator) {
 
 initFutureIndustryChapter({ updateHeight: updateChapterHeight });
 initResourceLibraryChapter({ updateHeight: updateChapterHeight });
+initLearningTools({ updateHeight: updateChapterHeight });
 renderGlossary();
 renderQuiz();
 renderIndicators();

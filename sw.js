@@ -1,19 +1,21 @@
-const CACHE_NAME = "keefes-soiety-v79";
+const CACHE_NAME = "keefes-soiety-v80";
 const CORE_SHELL = [
   "/",
   "/index.html",
-  "/styles.css?v=79",
-  "/resource-library.css?v=79",
-  "/app.js?v=79",
-  "/relationship-data.js?v=79",
-  "/future-industry-ui.js?v=79",
-  "/future-industry-data.js?v=79",
-  "/climate-business-data.js?v=79",
-  "/resource-library-ui.js?v=79",
-  "/resource-library-data.js?v=79",
-  "/glossary-master-data.js?v=79",
-  "/quiz-scenario-expanded-data.js?v=79",
-  "/manifest.json?v=79",
+  "/styles.css?v=80",
+  "/resource-library.css?v=80",
+  "/app.js?v=80",
+  "/relationship-data.js?v=80",
+  "/learning-tools-ui.js?v=80",
+  "/economic-lab-data.js?v=80",
+  "/future-industry-ui.js?v=80",
+  "/future-industry-data.js?v=80",
+  "/climate-business-data.js?v=80",
+  "/resource-library-ui.js?v=80",
+  "/resource-library-data.js?v=80",
+  "/glossary-master-data.js?v=80",
+  "/quiz-scenario-expanded-data.js?v=80",
+  "/manifest.json?v=80",
   "/assets/econest-icon.png"
 ];
 
