@@ -1,5 +1,5 @@
-import { climateBusinessFramework } from "./climate-business-data.js?v=74";
-import { futureCompanies, futureIndustries, futureIndustryMethod } from "./future-industry-data.js?v=74";
+import { climateBusinessFramework } from "./climate-business-data.js?v=82";
+import { futureCompanies, futureIndustries, futureIndustryMethod } from "./future-industry-data.js?v=82";
 
 const numberFormatter = new Intl.NumberFormat("ko-KR", { maximumFractionDigits: 1 });
 const companyById = new Map(futureCompanies.map((company) => [company.id, company]));
@@ -202,8 +202,10 @@ function renderFutureIndustryChapter() {
   );
 
   elements.story.innerHTML = renderIndustryStory(industry);
-  elements.companyCount.textContent = `${companies.length}개 기업 · 자세히 펼쳐보기`;
-  elements.companyList.replaceChildren(...companies.map((company) => renderCompanyCard(company)));
+  elements.companyCount.textContent = `관련 기업 사례 ${companies.length}개 · 다각화 기업 포함 · 자세히 펼쳐보기`;
+  elements.companyList.replaceChildren(
+    ...companies.map((company) => renderCompanyCard(company, industry))
+  );
   renderComparison();
   renderMethod();
   requestAnimationFrame(updateChapterHeight);
@@ -267,8 +269,11 @@ function renderIndustryStory(industry) {
   `;
 }
 
-function renderCompanyCard(company) {
+function renderCompanyCard(company, contextIndustry = null) {
   const industry = industryById.get(company.sectorId);
+  const contextLabel = contextIndustry?.shortLabel || industry?.shortLabel || "";
+  const contextSuffix =
+    contextIndustry && contextIndustry.id !== company.sectorId ? " 관련 사례" : "";
   const score = getHealthScore(company);
   const selected = viewState.compareIds.includes(company.id);
   const card = document.createElement("article");
@@ -277,7 +282,7 @@ function renderCompanyCard(company) {
   card.innerHTML = `
     <header>
       <div class="future-company-name">
-        <span>${escapeHtml(company.country)} · ${escapeHtml(industry?.shortLabel || "")}</span>
+        <span>${escapeHtml(company.country)} · ${escapeHtml(contextLabel + contextSuffix)}</span>
         <strong>${escapeHtml(company.name)}</strong>
         <em>${escapeHtml(company.ticker)} · ${escapeHtml(company.fiscal)}</em>
       </div>

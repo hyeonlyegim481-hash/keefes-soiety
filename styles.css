@@ -13407,3 +13407,123 @@ h1 {
     overflow-wrap: anywhere;
   }
 }
+
+
+/* v82: clearer economic lab controls and broader future-industry navigation */
+.economic-heading-actions {
+  display: grid;
+  flex: 0 0 auto;
+  justify-items: end;
+  gap: 5px;
+}
+
+.economic-reset-button {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 8px 13px;
+  border-color: #0f766e;
+  background: #0f766e;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(15, 118, 110, 0.16);
+}
+
+.economic-reset-button > span:first-child {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.economic-reset-button:hover,
+.economic-reset-button:focus-visible {
+  border-color: #0b5f59;
+  background: #0b5f59;
+  color: #ffffff;
+  outline: 3px solid rgba(15, 118, 110, 0.16);
+  outline-offset: 2px;
+}
+
+.economic-reset-status {
+  min-height: 1em;
+  color: #6a777e;
+  font-size: 0.6rem;
+  font-weight: 700;
+}
+
+.economic-preset-tabs {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1px;
+  overflow: visible;
+  border: 0;
+  background: var(--line);
+}
+
+.economic-preset-tabs button:nth-child(n) {
+  min-height: 82px;
+  border: 0;
+  background: #ffffff;
+}
+
+.economic-preset-tabs button[aria-pressed="true"] {
+  background: #eaf5f2;
+}
+
+.future-industry-tabs {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.future-industry-tabs button {
+  min-height: 64px;
+}
+
+.future-industry-tabs button span,
+.future-industry-tabs button strong {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+  word-break: keep-all;
+}
+
+@media (max-width: 1100px) {
+  .economic-preset-tabs,
+  .future-industry-tabs {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .economic-preset-tabs,
+  .future-industry-tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .economic-lab-heading {
+    gap: 12px;
+  }
+
+  .economic-heading-actions {
+    width: 100%;
+    justify-items: stretch;
+  }
+
+  .economic-reset-button {
+    width: 100%;
+  }
+
+  .economic-reset-status {
+    text-align: center;
+  }
+
+  .economic-preset-tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 420px) {
+  .economic-preset-tabs {
+    grid-template-columns: 1fr;
+  }
+}

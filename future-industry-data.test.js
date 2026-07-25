@@ -2,8 +2,8 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { futureCompanies, futureIndustries, futureIndustryMethod } from "./future-industry-data.js";
 
-test("defines six complete future industries with valid company links", () => {
-  assert.equal(futureIndustries.length, 6);
+test("defines ten complete future industries with valid company links", () => {
+  assert.equal(futureIndustries.length, 10);
   const companyIds = new Set(futureCompanies.map((company) => company.id));
   const industryIds = new Set();
 
@@ -51,7 +51,7 @@ test("provides twelve sourced company snapshots and transparent health parts", (
 });
 
 test("keeps the financial snapshot basis explicit", () => {
-  assert.equal(futureIndustryMethod.updatedAt, "2026-07-15");
+  assert.equal(futureIndustryMethod.updatedAt, "2026-07-25");
   assert.equal(futureIndustryMethod.parts.length, 4);
   assert.match(futureIndustryMethod.caution, /통화와 연결·별도 기준/);
 

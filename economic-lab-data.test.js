@@ -6,9 +6,9 @@ import {
   evaluateEconomicScenario
 } from "./economic-lab-data.js";
 
-test("economic lab exposes six bounded controls and four complete presets", () => {
+test("economic lab exposes six bounded controls and ten complete presets", () => {
   assert.equal(economicLabControls.length, 6);
-  assert.equal(economicLabPresets.length, 4);
+  assert.equal(economicLabPresets.length, 10);
   economicLabControls.forEach((control) => {
     assert.ok(control.min < 0);
     assert.ok(control.max > 0);

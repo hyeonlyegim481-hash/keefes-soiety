@@ -444,7 +444,13 @@ function renderEconomicLab(root, values) {
           <h3>여러 충격이 겹칠 때 무엇이 먼저 움직일까</h3>
           <p>금리 하나만 바꾸는 예시가 아니라 환율·유가·수출·재정·생산성을 함께 조절해 상쇄와 증폭을 비교합니다.</p>
         </div>
-        <button type="button" class="economic-reset-button" data-economic-reset>초기화</button>
+        <div class="economic-heading-actions">
+          <button type="button" class="economic-reset-button" data-economic-reset>
+            <span aria-hidden="true">↺</span>
+            <span>모든 값 0으로 초기화</span>
+          </button>
+          <small class="economic-reset-status" data-economic-reset-status aria-live="polite">현재 기본값입니다.</small>
+        </div>
       </div>
       <div class="economic-preset-tabs" role="group" aria-label="경제 실험 시나리오">
         ${economicLabPresets
@@ -763,6 +769,8 @@ export function initLearningTools({ updateHeight }) {
     economicRoot
       .querySelectorAll("[data-economic-preset]")
       .forEach((button) => button.setAttribute("aria-pressed", "false"));
+    const status = economicRoot.querySelector("[data-economic-reset-status]");
+    if (status) status.textContent = "직접 조절한 조건을 계산 중입니다.";
     updateEconomicLab(economicRoot, economicValues);
     requestAnimationFrame(updateHeight);
   });
@@ -783,6 +791,8 @@ export function initLearningTools({ updateHeight }) {
             String(button.dataset.economicPreset === preset.id)
           )
         );
+      const status = economicRoot.querySelector("[data-economic-reset-status]");
+      if (status) status.textContent = `"${preset.label}" 시나리오를 적용했습니다.`;
       updateEconomicLab(economicRoot, economicValues);
       requestAnimationFrame(updateHeight);
       return;
@@ -794,6 +804,8 @@ export function initLearningTools({ updateHeight }) {
       economicRoot
         .querySelectorAll("[data-economic-preset]")
         .forEach((button) => button.setAttribute("aria-pressed", "false"));
+      const status = economicRoot.querySelector("[data-economic-reset-status]");
+      if (status) status.textContent = "모든 입력을 기본값 0으로 되돌렸습니다.";
       updateEconomicLab(economicRoot, economicValues);
       requestAnimationFrame(updateHeight);
     }

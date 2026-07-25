@@ -99,6 +99,42 @@ export const economicLabPresets = [
     label: "정책 완충",
     description: "대외 수요는 약하지만 금리 인하와 재정 지원이 충격을 줄이는 경우",
     values: { rate: -0.75, fx: 3, oil: 10, exports: -4, fiscal: 1.5, productivity: 0.5 }
+  },
+  {
+    id: "won-oil-relief",
+    label: "원화 강세·유가 안정",
+    description: "환율과 에너지 가격이 함께 내려 수입물가와 가계 부담이 완화되는 경우",
+    values: { rate: -0.25, fx: -10, oil: -25, exports: 3, fiscal: 0, productivity: 1 }
+  },
+  {
+    id: "stagflation",
+    label: "스태그플레이션",
+    description: "경기는 약한데 원화 약세와 유가 상승으로 물가 부담은 커지는 경우",
+    values: { rate: 1, fx: 12, oil: 45, exports: -8, fiscal: -0.5, productivity: -1 }
+  },
+  {
+    id: "chip-supercycle",
+    label: "수출 슈퍼사이클",
+    description: "반도체 중심 해외 주문과 생산성이 동시에 개선되어 성장을 끌어가는 경우",
+    values: { rate: 0.5, fx: 3, oil: 0, exports: 18, fiscal: 0, productivity: 3 }
+  },
+  {
+    id: "global-recession",
+    label: "세계 경기침체",
+    description: "해외 수요가 크게 줄고 유가는 하락하며 정책이 뒤늦게 완충하는 경우",
+    values: { rate: -1.25, fx: 10, oil: -30, exports: -12, fiscal: 1, productivity: -0.5 }
+  },
+  {
+    id: "fiscal-expansion",
+    label: "재정 확대",
+    description: "정부 지출이 내수를 지지하지만 물가와 채권시장 부담도 함께 생기는 경우",
+    values: { rate: 0, fx: 0, oil: 5, exports: 0, fiscal: 2, productivity: 0.5 }
+  },
+  {
+    id: "productivity-breakthrough",
+    label: "생산성 혁신",
+    description: "기술과 공정 개선으로 생산능력과 수출 경쟁력이 함께 높아지는 경우",
+    values: { rate: 0, fx: -2, oil: 0, exports: 8, fiscal: 0, productivity: 4 }
   }
 ];
 
