@@ -2,14 +2,14 @@ import {
   economicLabControls,
   economicLabPresets,
   evaluateEconomicScenario
-} from "./economic-lab-data.js?v=84";
+} from "./economic-lab-data.js?v=85";
 import {
   indicatorCountries,
   indicatorDefinitions as baseIndicatorDefinitions
-} from "./indicator-data.js?v=84";
-import { financeIndicatorDefinitions } from "./indicator-finance-data.js?v=84";
-import { expandedIndicatorDefinitions } from "./indicator-expanded-data.js?v=84";
-import { indicatorSnapshot } from "./indicator-values.js?v=84";
+} from "./indicator-data.js?v=85";
+import { financeIndicatorDefinitions } from "./indicator-finance-data.js?v=85";
+import { expandedIndicatorDefinitions } from "./indicator-expanded-data.js?v=85";
+import { indicatorSnapshot } from "./indicator-values.js?v=85";
 
 const comparableIndicators = [
   ...baseIndicatorDefinitions,

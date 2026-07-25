@@ -8,9 +8,9 @@
       content="최신 시장 데이터와 한국 경제 흐름을 기준시각과 함께 정리하는 대시보드"
     />
     <meta name="theme-color" content="#f6f7f8" />
-    <link rel="manifest" href="/manifest.json?v=84" />
+    <link rel="manifest" href="/manifest.json?v=85" />
     <link rel="icon" href="/assets/econest-icon.png" type="image/png" />
-    <link rel="stylesheet" href="/styles.css?v=84" />
+    <link rel="stylesheet" href="/styles.css?v=85" />
     <title>keefe's society</title>
   </head>
   <body>
@@ -213,35 +213,56 @@
               <article class="panel future-panel">
                 <div class="panel-heading future-heading">
                   <div>
-                    <p class="section-kicker">산업과 기업</p>
-                    <h2>미래산업을 돈의 흐름으로 읽기</h2>
+                    <p class="section-kicker">산업 인텔리전스</p>
+                    <h2>미래산업과 기업을 한 화면에서 비교</h2>
                   </div>
                   <span class="future-update" id="futureUpdate"></span>
                 </div>
                 <div class="future-summary" id="futureSummary"></div>
-                <section class="climate-business-lab" id="climateBusinessLab" aria-label="지구 온난화 대응 사업"></section>
-                <div class="future-industry-tabs" id="futureIndustryTabs" role="tablist" aria-label="미래산업 분야"></div>
+                <nav class="future-industry-tabs" id="futureIndustryTabs" role="tablist" aria-label="미래산업 분야"></nav>
                 <section class="future-story" id="futureStory" aria-live="polite"></section>
                 <section class="future-company-section" aria-label="기업 체력 비교">
                   <header class="future-section-heading">
                     <div>
-                      <p class="section-kicker">기업 실적·기준일</p>
-                      <h3>기업의 단단한 정도와 매출</h3>
+                      <p class="section-kicker">기업 신호판</p>
+                      <h3>실적과 사업체력 비교</h3>
                     </div>
                     <span id="futureCompanyCount"></span>
                   </header>
+                  <div class="future-company-tools" id="futureCompanyTools">
+                    <label class="future-company-search">
+                      <span>기업 검색</span>
+                      <input id="futureCompanySearch" type="search" autocomplete="off" placeholder="기업명·티커 검색" />
+                    </label>
+                    <div class="future-region-control" id="futureRegionControl" role="group" aria-label="기업 지역">
+                      <button type="button" data-future-region="all" aria-pressed="true">전체</button>
+                      <button type="button" data-future-region="korea" aria-pressed="false">한국</button>
+                      <button type="button" data-future-region="global" aria-pressed="false">해외</button>
+                    </div>
+                    <label class="future-company-sort">
+                      <span>정렬</span>
+                      <select id="futureCompanySort">
+                        <option value="health">사업체력 높은 순</option>
+                        <option value="growth">매출 성장 높은 순</option>
+                        <option value="margin">수익성 높은 순</option>
+                        <option value="name">기업명 순</option>
+                      </select>
+                    </label>
+                  </div>
+                  <div class="future-company-radar" id="futureCompanyRadar"></div>
                   <div class="future-company-list" id="futureCompanyList"></div>
                 </section>
                 <section class="future-compare-section" id="futureCompareSection" aria-label="선택 기업 비교">
                   <header class="future-section-heading">
                     <div>
-                      <p class="section-kicker">최대 3개</p>
+                      <p class="section-kicker">최대 4개</p>
                       <h3>직접 비교</h3>
                     </div>
                     <span id="futureCompareCount"></span>
                   </header>
                   <div class="future-compare" id="futureCompare"></div>
                 </section>
+                <section class="climate-business-lab" id="climateBusinessLab" aria-label="지구 온난화 대응 사업"></section>
                 <details class="future-method">
                   <summary>사업체력 점수와 숫자 기준 보기</summary>
                   <div id="futureMethod"></div>
@@ -405,6 +426,6 @@
       </footer>
     </div>
 
-    <script type="module" src="/app.js?v=84"></script>
+    <script type="module" src="/app.js?v=85"></script>
   </body>
 </html>

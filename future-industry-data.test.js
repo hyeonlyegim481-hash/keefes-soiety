@@ -18,15 +18,15 @@ test("defines ten complete future industries with valid company links", () => {
     assert.equal(industry.valueChain.length, 5);
     assert.equal(industry.deepDive.length, 3);
     assert.equal(industry.signals.length, 3);
-    assert.ok(industry.companyIds.length >= 1);
+    assert.ok(industry.companyIds.length >= 2);
     for (const companyId of industry.companyIds) {
       assert.ok(companyIds.has(companyId), companyId + " must reference a company");
     }
   }
 });
 
-test("provides twelve sourced company snapshots and transparent health parts", () => {
-  assert.equal(futureCompanies.length, 12);
+test("provides twenty-four sourced company snapshots and transparent health parts", () => {
+  assert.equal(futureCompanies.length, 24);
   const ids = new Set();
   const partIds = futureIndustryMethod.parts.map((part) => part.id).sort();
 
@@ -60,4 +60,9 @@ test("keeps the financial snapshot basis explicit", () => {
   assert.equal(byId["sk-hynix"].revenueGrowth, 47);
   assert.equal(byId["samsung-biologics"].margin, 45.4);
   assert.match(byId["doosan-enerbility"].fiscal, /별도재무제표/);
+  assert.equal(byId.amd.revenueGrowth, 34);
+  assert.equal(byId.meta.margin, 41);
+  assert.equal(byId.catl.cashSignal, "영업현금흐름 RMB 133.2B");
+  assert.match(byId["palo-alto"].profitability, /GAAP 영업이익률/);
+  assert.match(byId.xylem.source.url, /xylem\.com/);
 });

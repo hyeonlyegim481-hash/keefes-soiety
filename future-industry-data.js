@@ -18,7 +18,7 @@ export const futureIndustries = [
       { title: "틀릴 수 있는 조건", body: "고객의 투자수익이 낮아 데이터센터 투자가 줄거나, 자체 ASIC 전환이 빨라지거나, 공급이 급증해 칩과 메모리 가격이 하락하면 매출 성장보다 이익이 먼저 둔화할 수 있습니다." }
     ],
     signals: ["클라우드 3사의 설비투자", "HBM 출하량·평균판매가격", "첨단 패키징 가동률"],
-    companyIds: ["nvidia", "tsmc", "samsung-electronics", "sk-hynix"]
+    companyIds: ["nvidia", "tsmc", "samsung-electronics", "sk-hynix", "amd", "asml"]
   },
   {
     id: "ai-platforms",
@@ -39,7 +39,7 @@ export const futureIndustries = [
       { title: "투자비를 확인하는 이유", body: "매출이 늘어도 GPU와 데이터센터 지출이 더 빠르면 잉여현금흐름이 약해질 수 있습니다. 설비투자 증가와 클라우드 수주잔고를 나란히 봐야 합니다." }
     ],
     signals: ["클라우드 매출 성장률", "AI 유료 좌석·수주잔고", "설비투자 대비 잉여현금흐름"],
-    companyIds: ["microsoft", "alphabet"]
+    companyIds: ["microsoft", "alphabet", "amazon", "meta"]
   },
   {
     id: "battery-mobility",
@@ -60,7 +60,7 @@ export const futureIndustries = [
       { title: "물리 AI와의 연결", body: "자율주행차와 휴머노이드 로봇은 AI 칩뿐 아니라 안전하고 가벼운 배터리, 모터와 제어기를 필요로 합니다. 배터리 에너지밀도와 충전속도가 사용시간을 결정합니다." }
     ],
     signals: ["EV·ESS 출하량 구분", "보조금 제외 영업이익", "공장 가동률과 수주잔고"],
-    companyIds: ["tesla", "lg-energy-solution"]
+    companyIds: ["tesla", "lg-energy-solution", "catl", "hyundai-motor"]
   },
   {
     id: "bio-health",
@@ -81,7 +81,7 @@ export const futureIndustries = [
       { title: "숫자가 늦게 움직이는 이유", body: "임상, 허가, 보험 등재와 공장 검증에 수년이 걸립니다. 현재 매출보다 임상 단계와 규제 승인, 신규 공장 가동 시점이 미래 매출의 선행신호가 됩니다." }
     ],
     signals: ["임상 3상·허가 일정", "핵심 제품 매출 집중도", "CDMO 수주·공장 가동률"],
-    companyIds: ["eli-lilly", "samsung-biologics"]
+    companyIds: ["eli-lilly", "samsung-biologics", "novo-nordisk"]
   },
   {
     id: "automation",
@@ -102,7 +102,7 @@ export const futureIndustries = [
       { title: "AI와 전력의 연결", body: "로봇이 복잡한 환경을 인식할수록 엣지 AI 칩과 배터리, 고효율 모터가 필요합니다. 로봇 산업은 반도체·배터리·자동화의 교차점입니다." }
     ],
     signals: ["주문 증가와 수주잔고", "소프트웨어·서비스 비중", "고객 투자회수기간"],
-    companyIds: ["abb"]
+    companyIds: ["abb", "siemens"]
   },
   {
     id: "energy-infra",
@@ -123,7 +123,7 @@ export const futureIndustries = [
       { title: "기업 체력을 보는 기준", body: "매출 성장뿐 아니라 수주 마진, 선수금, 운전자본, 보증 의무와 순차입금을 봐야 합니다. 장기 프로젝트는 회계상 이익과 실제 현금 유입 시점이 다를 수 있습니다." }
     ],
     signals: ["수주잔고와 신규수주", "프로젝트 영업이익률", "영업현금흐름·순차입금"],
-    companyIds: ["abb", "doosan-enerbility"]
+    companyIds: ["abb", "doosan-enerbility", "ge-vernova", "siemens"]
   },
   {
     id: "cybersecurity",
@@ -144,7 +144,7 @@ export const futureIndustries = [
       { title: "관련 기업을 볼 때 주의", body: "대형 클라우드 기업은 보안을 별도 사업으로만 공시하지 않을 수 있습니다. 아래 기업 사례는 보안 순수기업의 직접 비교가 아니라 유통망, 현금흐름과 기술 투자를 보는 참고 사례입니다." }
     ],
     signals: ["보안 매출·수주잔고", "고객 갱신률과 제품 수", "침해사고·서비스 중단 건수"],
-    companyIds: ["microsoft", "alphabet"]
+    companyIds: ["microsoft", "alphabet", "palo-alto", "ibm"]
   },
   {
     id: "quantum-computing",
@@ -165,7 +165,7 @@ export const futureIndustries = [
       { title: "과열을 구분하는 기준", body: "큐비트 수 하나보다 오류율, 논리 큐비트, 계산 정확도와 반복 가능한 고객 실증이 중요합니다. 긴 개발기간과 증자 가능성 때문에 기술 성과가 곧 기업 수익으로 이어지지는 않습니다." }
     ],
     signals: ["논리 큐비트와 오류율", "유료 실증 고객 수", "연구개발비와 현금 소진"],
-    companyIds: ["alphabet", "microsoft", "nvidia"]
+    companyIds: ["alphabet", "microsoft", "nvidia", "ibm"]
   },
   {
     id: "autonomous-logistics",
@@ -186,7 +186,7 @@ export const futureIndustries = [
       { title: "관련 기업 사례의 한계", body: "차량, AI 칩과 자동화 기업은 물류 외 사업 비중이 큽니다. 아래 수치는 자율물류 부문만의 실적이 아니라 기술 투자 여력과 기존 사업체력을 보는 참고 자료입니다." }
     ],
     signals: ["유료 자율운행 거리", "원격 개입·사고 빈도", "물류 단위당 처리비용"],
-    companyIds: ["tesla", "nvidia", "abb"]
+    companyIds: ["tesla", "nvidia", "abb", "hyundai-motor"]
   },
   {
     id: "climate-resilience",
@@ -207,7 +207,7 @@ export const futureIndustries = [
       { title: "관련 기업을 해석하는 법", body: "전력·자동화·플랜트 기업의 전체 실적에는 기후적응 외 사업이 포함됩니다. 아래 기업은 순수 기후적응 기업 순위가 아니라 인프라 수행 능력과 재무 여력을 살펴보는 사례입니다." }
     ],
     signals: ["물 재이용·방재 수주", "운영·유지관리 매출 비중", "보험손실과 극한기후 피해액"],
-    companyIds: ["abb", "doosan-enerbility"]
+    companyIds: ["abb", "doosan-enerbility", "xylem", "siemens", "ge-vernova"]
   }
 ];
 
@@ -439,15 +439,255 @@ export const futureCompanies = [
     risk: "장기 프로젝트 원가 초과, 수주에서 현금 회수까지의 시간, 차입 부담과 정책 변화가 핵심입니다.",
     watch: ["신규수주와 수주잔고", "프로젝트별 영업이익률", "영업현금흐름과 순차입금"],
     source: { label: "두산에너빌리티 FY2025 주총 재무자료", url: "https://www.doosanenerbility.com/heavy_file/Notice%20of%202026%20Annual%20General%20Meeting%20Shareholders_vff.pdf" }
+  },
+  {
+    id: "amd",
+    name: "AMD",
+    ticker: "AMD",
+    country: "미국",
+    sectorId: "ai-chips",
+    role: "AI 가속기·서버 CPU 설계",
+    fiscal: "FY2025 · 2025.12.27 종료",
+    revenue: "US$34.6B",
+    revenueGrowth: 34,
+    margin: 11,
+    profitability: "GAAP 영업이익률 11.0%",
+    cashSignal: "현금·단기투자 US$10.6B · 총부채 US$3.3B",
+    healthParts: { profitability: 15, growth: 22, cash: 22, position: 21 },
+    business: "데이터센터용 EPYC CPU와 Instinct AI 가속기, PC용 Ryzen 프로세서를 팹리스 방식으로 설계해 판매합니다.",
+    moat: "CPU와 GPU를 함께 공급하고 대형 클라우드 고객과 소프트웨어 생태계를 넓혀 단일 공급자 의존을 줄이려는 수요를 흡수합니다.",
+    risk: "AI 가속기 소프트웨어 호환성, 선두 업체와의 성능 격차, 첨단 공정 위탁생산과 수출규제 의존이 핵심 위험입니다.",
+    watch: ["데이터센터 부문 성장률", "Instinct 매출과 고객 확대", "GAAP 영업이익률"],
+    source: { label: "AMD FY2025 공식 실적", url: "https://ir.amd.com/news-events/press-releases/detail/1276/amd-reports-fourth-quarter-and-full-year-2025-financial-results" }
+  },
+  {
+    id: "asml",
+    name: "ASML",
+    ticker: "ASML",
+    country: "네덜란드",
+    sectorId: "ai-chips",
+    role: "첨단 노광장비",
+    fiscal: "FY2025 · 연결",
+    revenue: "€32.7B",
+    revenueGrowth: 15.6,
+    margin: 34.6,
+    profitability: "영업이익률 약 34.6% · 영업이익 €11.3B",
+    cashSignal: "연말 수주잔고 €38.8B · 순이익 €9.6B",
+    healthParts: { profitability: 24, growth: 20, cash: 23, position: 25 },
+    business: "첨단 반도체 회로를 웨이퍼에 그리는 EUV·DUV 노광장비와 설치 장비의 유지보수 서비스를 판매합니다.",
+    moat: "EUV 광원·광학·정밀제어를 통합한 기술과 장기간 축적된 고객 공정 데이터 때문에 대체 공급자를 만들기 매우 어렵습니다.",
+    risk: "중국 수출규제, 소수 반도체 고객의 설비투자 주기, 고가 장비의 인도와 매출 인식 시점 변동을 확인해야 합니다.",
+    watch: ["EUV·High-NA 출하량", "신규 수주와 수주잔고", "중국 매출 비중과 수출규제"],
+    source: { label: "ASML FY2025 공식 실적", url: "https://www.asml.com/en/news/press-releases/2026/q4-2025-financial-results" }
+  },
+  {
+    id: "amazon",
+    name: "Amazon",
+    ticker: "AMZN",
+    country: "미국",
+    sectorId: "ai-platforms",
+    role: "클라우드·AI 인프라",
+    fiscal: "FY2025 · 연결",
+    revenue: "US$716.9B",
+    revenueGrowth: 12,
+    margin: 11.2,
+    profitability: "GAAP 영업이익률 약 11.2% · 영업이익 US$80.0B",
+    cashSignal: "영업현금흐름 US$139.5B · 잉여현금흐름 US$11.2B",
+    healthParts: { profitability: 17, growth: 18, cash: 24, position: 25 },
+    business: "AWS 클라우드와 AI 모델·칩, 전자상거래, 광고와 물류망을 사용량·구독·거래 수수료 방식으로 운영합니다.",
+    moat: "클라우드의 방대한 서비스 범위와 전 세계 물류·판매자 생태계가 데이터를 만들고 고객 전환비용을 높입니다.",
+    risk: "AI 데이터센터 투자 급증으로 잉여현금흐름이 줄 수 있고, 유통 마진·반독점 규제와 클라우드 경쟁도 부담입니다.",
+    watch: ["AWS 매출 성장과 영업이익", "설비투자와 잉여현금흐름", "자체 AI 칩·Bedrock 사용량"],
+    source: { label: "Amazon FY2025 공식 실적", url: "https://ir.aboutamazon.com/news-release/news-release-details/2026/Amazon-com-Announces-Fourth-Quarter-Results/" }
+  },
+  {
+    id: "meta",
+    name: "Meta Platforms",
+    ticker: "META",
+    country: "미국",
+    sectorId: "ai-platforms",
+    role: "광고·개인화 AI 플랫폼",
+    fiscal: "FY2025 · 연결",
+    revenue: "US$201.0B",
+    revenueGrowth: 22,
+    margin: 41,
+    profitability: "GAAP 영업이익률 41.0%",
+    cashSignal: "현금·유가증권 US$81.6B · 잉여현금흐름 US$43.6B",
+    healthParts: { profitability: 23, growth: 21, cash: 24, position: 23 },
+    business: "Facebook·Instagram·WhatsApp의 광고와 추천 시스템에 AI를 적용하고 모델·스마트기기 생태계에 재투자합니다.",
+    moat: "수십억 명의 사용자 관계망과 광고 측정 데이터가 추천 정확도와 광고주의 반복 집행을 동시에 강화합니다.",
+    risk: "광고 매출 집중, 개인정보·청소년 보호 규제, AI 인프라 지출과 Reality Labs의 장기 손실을 함께 봐야 합니다.",
+    watch: ["광고 노출·단가 성장", "AI 설비투자 규모", "Family of Apps 영업이익"],
+    source: { label: "Meta FY2025 공식 실적", url: "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Fourth-Quarter-and-Full-Year-2025-Results/" }
+  },
+  {
+    id: "catl",
+    name: "CATL",
+    ticker: "300750·3750",
+    country: "중국",
+    sectorId: "battery-mobility",
+    role: "전기차·ESS 배터리",
+    fiscal: "FY2025 · 연결",
+    revenue: "RMB 423.7B",
+    revenueGrowth: 17,
+    margin: 17,
+    profitability: "지배주주 순이익률 약 17.0% · 순이익 RMB 72.2B",
+    cashSignal: "영업현금흐름 RMB 133.2B",
+    healthParts: { profitability: 22, growth: 20, cash: 25, position: 25 },
+    business: "전기차용 배터리와 에너지저장장치, 배터리 소재·재활용 기술을 완성차와 전력 고객에게 공급합니다.",
+    moat: "대규모 생산과 고객 공동개발, 배터리 관리 데이터, 원재료부터 재활용까지 이어지는 공급망이 원가 경쟁력을 만듭니다.",
+    risk: "중국 내 가격 경쟁, 원재료 가격, 해외 규제와 현지 공장 투자, 완성차 고객의 자체 배터리 전환을 확인해야 합니다.",
+    watch: ["배터리 판매량과 평균단가", "해외 매출·현지 생산 비중", "영업현금흐름과 증설"],
+    source: { label: "CATL 2025 연차보고 공식 요약", url: "https://www.catl.com/en/news/6773.html" }
+  },
+  {
+    id: "hyundai-motor",
+    name: "현대자동차",
+    ticker: "005380",
+    country: "한국",
+    sectorId: "battery-mobility",
+    role: "전기차·하이브리드·SDV",
+    fiscal: "FY2025 · 연결 잠정",
+    revenue: "186.3조원",
+    revenueGrowth: 6.3,
+    margin: 6.2,
+    profitability: "영업이익률 6.2% · 영업이익 11.47조원",
+    cashSignal: "순이익 10.36조원 · 2026년 투자계획 17.8조원",
+    healthParts: { profitability: 13, growth: 14, cash: 19, position: 22 },
+    business: "내연기관·하이브리드·전기차와 금융·서비스를 판매하고 소프트웨어 정의 차량과 자율주행 기술에 투자합니다.",
+    moat: "글로벌 생산기지와 판매망, 하이브리드부터 전기차까지 넓은 제품군이 지역별 수요 변화에 대응할 여지를 줍니다.",
+    risk: "관세와 인센티브, 전기차 가격 경쟁, 품질 비용, 자율주행·소프트웨어 전환 속도가 수익성을 흔들 수 있습니다.",
+    watch: ["전동화 차량 판매 비중", "자동차 부문 영업이익률", "북미 관세와 인센티브 영향"],
+    source: { label: "현대자동차 FY2025 공식 실적", url: "https://www.hyundai.com/worldwide/en/newsroom/detail/0000001116" }
+  },
+  {
+    id: "novo-nordisk",
+    name: "Novo Nordisk",
+    ticker: "NVO",
+    country: "덴마크",
+    sectorId: "bio-health",
+    role: "비만·당뇨 치료제",
+    fiscal: "FY2025 · 연결",
+    revenue: "DKK 309.1B",
+    revenueGrowth: 6.4,
+    margin: 41.3,
+    profitability: "영업이익률 41.3% · 영업이익 DKK 127.7B",
+    cashSignal: "순이익 DKK 102.4B · 생산설비 투자 확대",
+    healthParts: { profitability: 25, growth: 14, cash: 22, position: 24 },
+    business: "당뇨와 비만, 희귀질환 치료제를 연구·생산해 병원과 약국에 공급하고 주사·경구 제형을 확장합니다.",
+    moat: "장기간 축적한 대사질환 임상 데이터와 브랜드, 생산기술, 의료진·보험 유통망이 높은 진입장벽을 만듭니다.",
+    risk: "비만약 경쟁 심화, 미국 약가 정책, 생산능력과 차세대 임상 결과, 핵심 제품 특허 만료를 함께 봐야 합니다.",
+    watch: ["비만 치료제 매출 성장", "미국 처방·보험 접근성", "차세대 후보 임상과 생산능력"],
+    source: { label: "Novo Nordisk 2025 연차보고", url: "https://annualreport.novonordisk.com/2025/strategic-aspirations/financial-performance.html" }
+  },
+  {
+    id: "siemens",
+    name: "Siemens",
+    ticker: "SIE",
+    country: "독일",
+    sectorId: "automation",
+    role: "산업 자동화·전기화",
+    fiscal: "FY2025 · 2025.09.30 종료",
+    revenue: "€78.9B",
+    revenueGrowth: 4,
+    margin: 15,
+    profitability: "Industrial Business 이익률 약 15.0%",
+    cashSignal: "잉여현금흐름 €10.8B · 순이익 €10.4B",
+    healthParts: { profitability: 20, growth: 12, cash: 23, position: 23 },
+    business: "공장 자동화, 산업 소프트웨어, 스마트 인프라와 철도 시스템을 장비·소프트웨어·서비스로 공급합니다.",
+    moat: "산업 현장에 설치된 장비와 제어 소프트웨어, 엔지니어링 표준이 고객의 장기 교체·업그레이드 수요를 만듭니다.",
+    risk: "중국 제조업 투자, 자동차·기계 고객의 경기 민감도, 대형 인수 통합과 사업 포트폴리오 변경을 살펴야 합니다.",
+    watch: ["Digital Industries 주문", "소프트웨어 반복매출", "산업사업 이익률과 잉여현금"],
+    source: { label: "Siemens FY2025 공식 실적", url: "https://press.siemens.com/global/en/pressrelease/earnings-release-and-financial-results-q4-fy-2025" }
+  },
+  {
+    id: "ge-vernova",
+    name: "GE Vernova",
+    ticker: "GEV",
+    country: "미국",
+    sectorId: "energy-infra",
+    role: "발전·송배전·전력망",
+    fiscal: "FY2025 · 연결",
+    revenue: "US$38.1B",
+    revenueGrowth: 9,
+    margin: 8.4,
+    profitability: "조정 EBITDA 마진 8.4%",
+    cashSignal: "잉여현금흐름 US$3.7B · 현금 US$8.8B",
+    healthParts: { profitability: 15, growth: 16, cash: 22, position: 22 },
+    business: "가스터빈·풍력발전과 송배전 장비, 전력망 소프트웨어를 전력회사와 대형 산업 고객에게 공급합니다.",
+    moat: "전 세계 발전·전력망 설치기반과 장기 서비스 계약, 대형 장비 인증 경험이 수주와 반복 서비스 매출을 지탱합니다.",
+    risk: "풍력 부문 손실, 장기 프로젝트 원가, 공급망과 가스터빈 증설, 정책별 발전원 선호 변화가 핵심 위험입니다.",
+    watch: ["Power·Electrification 수주", "조정 EBITDA 마진", "풍력 손실과 서비스 수주잔고"],
+    source: { label: "GE Vernova FY2025 공식 실적", url: "https://www.gevernova.com/news/articles/ge-vernova-releases-fourth-quarter-full-year-2025-financial-results" }
+  },
+  {
+    id: "palo-alto",
+    name: "Palo Alto Networks",
+    ticker: "PANW",
+    country: "미국",
+    sectorId: "cybersecurity",
+    role: "클라우드·네트워크 보안",
+    fiscal: "FY2025 · 2025.07.31 종료",
+    revenue: "US$9.22B",
+    revenueGrowth: 14.9,
+    margin: 13.5,
+    profitability: "GAAP 영업이익률 약 13.5%",
+    cashSignal: "현금·단기투자 US$2.90B · 잔여계약 US$15.8B",
+    healthParts: { profitability: 19, growth: 19, cash: 23, position: 24 },
+    business: "네트워크·클라우드·보안운영 제품을 구독형 플랫폼으로 묶어 기업과 공공기관의 위협 탐지·대응을 지원합니다.",
+    moat: "다수 보안 도구를 하나의 데이터·정책 플랫폼으로 통합하고 높은 반복매출과 위협 데이터를 축적합니다.",
+    risk: "대형 인수 통합, 주식보상 비용, 경쟁사의 번들 가격, 보안 사고가 신뢰와 갱신률을 훼손할 수 있습니다.",
+    watch: ["차세대 보안 ARR", "잔여계약의 매출 전환", "GAAP 영업이익률과 현금흐름"],
+    source: { label: "Palo Alto Networks FY2025 공식 실적", url: "https://investors.paloaltonetworks.com/news-releases/news-release-details/palo-alto-networks-reports-fiscal-fourth-quarter-and-fiscal-9" }
+  },
+  {
+    id: "ibm",
+    name: "IBM",
+    ticker: "IBM",
+    country: "미국",
+    sectorId: "quantum-computing",
+    role: "기업 AI·양자컴퓨팅",
+    fiscal: "FY2025 · 계속사업",
+    revenue: "US$67.5B",
+    revenueGrowth: 8,
+    margin: 15.3,
+    profitability: "GAAP 세전이익률 15.3%",
+    cashSignal: "잉여현금흐름 US$14.7B · 현금성자산 US$14.5B",
+    healthParts: { profitability: 20, growth: 15, cash: 21, position: 24 },
+    business: "기업용 소프트웨어·컨설팅·메인프레임과 양자컴퓨팅 시스템을 장기 계약과 구독·서비스 방식으로 제공합니다.",
+    moat: "대기업 핵심 업무에 깊게 설치된 시스템과 Red Hat 생태계, 연구개발·특허, 장기 고객관계가 전환비용을 만듭니다.",
+    risk: "총부채 부담, 컨설팅 성장 둔화, 양자컴퓨팅의 상용화 시점과 인수 사업 통합이 장기 수익성을 좌우합니다.",
+    watch: ["소프트웨어 성장률", "생성형 AI 계약 규모", "양자 시스템 오류율·유료 사용"],
+    source: { label: "IBM FY2025 공식 실적", url: "https://newsroom.ibm.com/2026-01-28-IBM-RELEASES-FOURTH-QUARTER-RESULTS?lnk=hpls4au" }
+  },
+  {
+    id: "xylem",
+    name: "Xylem",
+    ticker: "XYL",
+    country: "미국",
+    sectorId: "climate-resilience",
+    role: "물 처리·계측·재이용",
+    fiscal: "FY2025 · 연결",
+    revenue: "US$9.04B",
+    revenueGrowth: 5.5,
+    margin: 22.2,
+    profitability: "조정 EBITDA 마진 22.2%",
+    cashSignal: "조정 EBITDA US$2.01B · 순이익 US$957M",
+    healthParts: { profitability: 20, growth: 14, cash: 20, position: 23 },
+    business: "상하수도·산업용 펌프, 수질 분석과 스마트 계측, 물 처리 서비스를 공공기관과 산업 고객에게 판매합니다.",
+    moat: "현장에 설치된 장비와 계측 데이터, 규제 인증, 장기 유지관리 관계가 물 인프라 교체와 운영 매출을 만듭니다.",
+    risk: "지방정부 예산, 긴 발주 주기, 원재료·관세, 인수한 사업의 통합과 공공 프로젝트 지연을 확인해야 합니다.",
+    watch: ["공공 물 인프라 주문", "조정 EBITDA 마진", "디지털 계측·서비스 매출"],
+    source: { label: "Xylem FY2025 공식 실적", url: "https://www.xylem.com/en-150/resources/press-releases/xylem-reports-fourth-quarter-and-full-year-2025-results/" }
   }
 ];
 
 export const futureIndustryMethod = {
   updatedAt: "2026-07-25",
   title: "사업체력 100점 계산",
-  description: "주가와 적정가치를 제외하고 최근 공식 실적의 수익성·성장·현금 및 재무·경쟁 위치를 각각 25점으로 점검한 교육용 지표입니다.",
+  description: "주가와 적정가치를 제외하고 최근 공식 실적의 수익성·성장·현금 및 재무·경쟁 위치를 각각 25점으로 점검한 교육용 지표입니다. 회사가 공개한 기준이 다를 때는 영업이익률, 조정 EBITDA 마진, 세전이익률 또는 순이익률을 이름과 함께 구분합니다.",
   parts: [
-    { id: "profitability", label: "수익성", detail: "영업이익률과 이익의 질" },
+    { id: "profitability", label: "수익성", detail: "공시된 수익성 지표와 이익의 질" },
     { id: "growth", label: "성장", detail: "최근 연간 매출 성장과 방향" },
     { id: "cash", label: "현금·재무", detail: "영업현금, 잉여현금, 부채 부담" },
     { id: "position", label: "경쟁위치", detail: "진입장벽, 고객·제품 집중 위험" }

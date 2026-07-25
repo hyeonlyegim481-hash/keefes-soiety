@@ -1,11 +1,12 @@
-const CACHE_NAME = "keefes-society-v84";
+const CACHE_NAME = "keefes-society-v85";
 const CORE_SHELL = [
   "/",
   "/index.html",
-  "/styles.css?v=84",
-  "/app.js?v=84",
-  "/economic-narrative.js?v=84",
-  "/manifest.json?v=84",
+  "/styles.css?v=85",
+  "/future-industry.css?v=85",
+  "/app.js?v=85",
+  "/economic-narrative.js?v=85",
+  "/manifest.json?v=85",
   "/assets/econest-icon.png"
 ];
 

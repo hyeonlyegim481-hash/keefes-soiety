@@ -1,6 +1,7 @@
-import { climateBusinessFramework } from "./climate-business-data.js?v=84";
-import { futureCompanies, futureIndustries, futureIndustryMethod } from "./future-industry-data.js?v=84";
+import { climateBusinessFramework } from "./climate-business-data.js?v=85";
+import { futureCompanies, futureIndustries, futureIndustryMethod } from "./future-industry-data.js?v=85";
 
+const MAX_COMPARE = 4;
 const numberFormatter = new Intl.NumberFormat("ko-KR", { maximumFractionDigits: 1 });
 const companyById = new Map(futureCompanies.map((company) => [company.id, company]));
 const industryById = new Map(futureIndustries.map((industry) => [industry.id, industry]));
@@ -8,7 +9,10 @@ const industryById = new Map(futureIndustries.map((industry) => [industry.id, in
 const viewState = {
   sector: "ai-chips",
   climatePhase: "all",
-  compareIds: ["nvidia", "sk-hynix", "microsoft"]
+  compareIds: ["nvidia", "sk-hynix", "microsoft"],
+  region: "all",
+  sort: "health",
+  query: ""
 };
 
 let updateChapterHeight = () => {};
@@ -20,6 +24,11 @@ const elements = {
   industryTabs: document.querySelector("#futureIndustryTabs"),
   story: document.querySelector("#futureStory"),
   companyCount: document.querySelector("#futureCompanyCount"),
+  companyTools: document.querySelector("#futureCompanyTools"),
+  companySearch: document.querySelector("#futureCompanySearch"),
+  regionControl: document.querySelector("#futureRegionControl"),
+  companySort: document.querySelector("#futureCompanySort"),
+  companyRadar: document.querySelector("#futureCompanyRadar"),
   companyList: document.querySelector("#futureCompanyList"),
   compareCount: document.querySelector("#futureCompareCount"),
   compare: document.querySelector("#futureCompare"),
@@ -37,24 +46,422 @@ export function initFutureIndustryChapter({ updateHeight = () => {} } = {}) {
     requestAnimationFrame(updateChapterHeight);
   });
 
-  elements.industryTabs.addEventListener("click", (event) => {
+  elements.industryTabs?.addEventListener("click", (event) => {
     const button = event.target.closest?.("[data-future-sector]");
     if (!button) return;
     viewState.sector = button.dataset.futureSector;
+    viewState.query = "";
+    if (elements.companySearch) elements.companySearch.value = "";
     renderFutureIndustryChapter();
   });
 
-  elements.companyList.addEventListener("click", (event) => {
+  elements.companyList?.addEventListener("click", (event) => {
     const button = event.target.closest?.("[data-future-compare]");
+    if (!button || button.disabled) return;
+    toggleComparison(button.dataset.futureCompare);
+  });
+
+  elements.compare?.addEventListener("click", (event) => {
+    const button = event.target.closest?.("[data-future-remove]");
     if (!button) return;
-    const companyId = button.dataset.futureCompare;
-    viewState.compareIds = viewState.compareIds.includes(companyId)
-      ? viewState.compareIds.filter((id) => id !== companyId)
-      : [...viewState.compareIds.slice(-2), companyId];
+    viewState.compareIds = viewState.compareIds.filter((id) => id !== button.dataset.futureRemove);
     renderFutureIndustryChapter();
+  });
+
+  elements.regionControl?.addEventListener("click", (event) => {
+    const button = event.target.closest?.("[data-future-region]");
+    if (!button) return;
+    viewState.region = button.dataset.futureRegion;
+    renderCompanyWorkspace(getSelectedIndustry());
+  });
+
+  elements.companySearch?.addEventListener("input", (event) => {
+    viewState.query = event.currentTarget.value.trim();
+    renderCompanyWorkspace(getSelectedIndustry());
+  });
+
+  elements.companySort?.addEventListener("change", (event) => {
+    viewState.sort = event.currentTarget.value;
+    renderCompanyWorkspace(getSelectedIndustry());
   });
 
   renderFutureIndustryChapter();
+}
+
+function getSelectedIndustry() {
+  return industryById.get(viewState.sector) || futureIndustries[0];
+}
+
+function getIndustryCompanies(industry) {
+  return industry.companyIds.map((id) => companyById.get(id)).filter(Boolean);
+}
+
+function toggleComparison(companyId) {
+  if (viewState.compareIds.includes(companyId)) {
+    viewState.compareIds = viewState.compareIds.filter((id) => id !== companyId);
+  } else if (viewState.compareIds.length < MAX_COMPARE) {
+    viewState.compareIds = [...viewState.compareIds, companyId];
+  }
+  renderFutureIndustryChapter();
+}
+
+function renderFutureIndustryChapter() {
+  const industry = getSelectedIndustry();
+  const companies = getIndustryCompanies(industry);
+
+  if (elements.update) {
+    elements.update.textContent = `${futureIndustryMethod.updatedAt.replaceAll("-", ".")} 기준`;
+  }
+
+  renderSummary(industry, companies);
+  renderIndustryTabs(industry);
+  if (elements.story) elements.story.innerHTML = renderIndustryStory(industry, companies);
+  renderCompanyWorkspace(industry);
+  renderComparison();
+  renderClimateBusinessLab();
+  renderMethod();
+  requestAnimationFrame(updateChapterHeight);
+}
+
+function renderSummary(industry, companies) {
+  if (!elements.summary) return;
+  const averageScore = Math.round(companies.reduce((sum, company) => sum + getHealthScore(company), 0) / companies.length);
+  const strongest = [...companies].sort((a, b) => getHealthScore(b) - getHealthScore(a))[0];
+  const fastest = [...companies].sort((a, b) => b.revenueGrowth - a.revenueGrowth)[0];
+
+  elements.summary.innerHTML = `
+    <div class="future-summary-current">
+      <span>선택 산업</span>
+      <strong>${escapeHtml(industry.shortLabel)}</strong>
+      <p>${companies.length}개 기업 사례 · ${escapeHtml(industry.horizon)}</p>
+    </div>
+    <div>
+      <span>산업 평균 체력</span>
+      <strong>${averageScore}<small>/100</small></strong>
+      <p>현재 연결 기업의 교육용 점수 평균</p>
+    </div>
+    <div>
+      <span>사업체력 선두</span>
+      <strong>${escapeHtml(strongest.name)}</strong>
+      <p>${getHealthScore(strongest)}점 · ${escapeHtml(getCompanyRole(strongest))}</p>
+    </div>
+    <div>
+      <span>매출 성장 선두</span>
+      <strong>${escapeHtml(fastest.name)}</strong>
+      <p>${formatGrowth(fastest.revenueGrowth)} · ${escapeHtml(fastest.fiscal)}</p>
+    </div>
+  `;
+}
+
+function renderIndustryTabs(activeIndustry) {
+  if (!elements.industryTabs) return;
+  elements.industryTabs.replaceChildren(
+    ...futureIndustries.map((industry, index) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.role = "tab";
+      button.dataset.futureSector = industry.id;
+      button.setAttribute("aria-selected", String(industry.id === activeIndustry.id));
+      button.innerHTML = `
+        <i>${String(index + 1).padStart(2, "0")}</i>
+        <span>${escapeHtml(industry.eyebrow)}</span>
+        <strong>${escapeHtml(industry.shortLabel)}</strong>
+        <em>${industry.companyIds.length}</em>
+      `;
+      return button;
+    })
+  );
+}
+
+function renderIndustryStory(industry, companies) {
+  const strongest = [...companies].sort((a, b) => getHealthScore(b) - getHealthScore(a))[0];
+  const fastest = [...companies].sort((a, b) => b.revenueGrowth - a.revenueGrowth)[0];
+  const koreaCount = companies.filter((company) => company.country === "한국").length;
+  const industryIndex = futureIndustries.findIndex((item) => item.id === industry.id) + 1;
+
+  return `
+    <header class="future-story-head">
+      <div>
+        <span>INDUSTRY ${String(industryIndex).padStart(2, "0")} · ${escapeHtml(industry.eyebrow)}</span>
+        <h3>${escapeHtml(industry.label)}</h3>
+        <p>${escapeHtml(industry.thesis)}</p>
+      </div>
+      <aside>
+        <span>현재 단계</span>
+        <strong>${escapeHtml(industry.stage)}</strong>
+        <em>관찰 기간 · ${escapeHtml(industry.horizon)}</em>
+      </aside>
+    </header>
+    <div class="future-plain">
+      <span>한 문장으로 쉽게</span>
+      <strong>${escapeHtml(industry.plain)}</strong>
+    </div>
+    <div class="future-intel-rail">
+      <div>
+        <span>연결 기업</span>
+        <strong>${companies.length}개</strong>
+        <p>한국 ${koreaCount} · 해외 ${companies.length - koreaCount}</p>
+      </div>
+      <div>
+        <span>체력 선두</span>
+        <strong>${escapeHtml(strongest.name)}</strong>
+        <p>${getHealthScore(strongest)}점 · ${getHealthGrade(getHealthScore(strongest))}</p>
+      </div>
+      <div>
+        <span>성장 선두</span>
+        <strong>${escapeHtml(fastest.name)}</strong>
+        <p>최근 연간 매출 ${formatGrowth(fastest.revenueGrowth)}</p>
+      </div>
+      <div>
+        <span>먼저 볼 숫자</span>
+        <strong>${escapeHtml(industry.signals[0])}</strong>
+        <p>${escapeHtml(industry.signals[1])}</p>
+      </div>
+    </div>
+    <div class="future-forces">
+      <section>
+        <span>성장을 만드는 힘</span>
+        <ul>${industry.drivers.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+      </section>
+      <section>
+        <span>성장을 막을 수 있는 병목</span>
+        <ul>${industry.bottlenecks.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+      </section>
+    </div>
+    <section class="future-value-chain">
+      <div><span>돈이 이동하는 순서</span><strong>가치사슬</strong></div>
+      <ol>
+        ${industry.valueChain.map((item, index) => `
+          <li><i>${String(index + 1).padStart(2, "0")}</i><strong>${escapeHtml(item)}</strong></li>
+        `).join("")}
+      </ol>
+    </section>
+    <div class="future-korea">
+      <span>한국의 자리</span>
+      <p>${escapeHtml(industry.korea)}</p>
+    </div>
+    <details class="future-deep-read">
+      <summary>${escapeHtml(industry.label)} 전체 해설 펼치기</summary>
+      <div>
+        ${industry.deepDive.map((section) => `
+          <article>
+            <strong>${escapeHtml(section.title)}</strong>
+            <p>${escapeHtml(section.body)}</p>
+          </article>
+        `).join("")}
+      </div>
+      <footer>
+        <span>앞으로 확인할 숫자</span>
+        ${industry.signals.map((signal) => `<em>${escapeHtml(signal)}</em>`).join("")}
+      </footer>
+    </details>
+  `;
+}
+
+function getFilteredCompanies(industry) {
+  const query = viewState.query.toLocaleLowerCase("ko");
+  const companies = getIndustryCompanies(industry).filter((company) => {
+    const regionMatches =
+      viewState.region === "all"
+      || (viewState.region === "korea" && company.country === "한국")
+      || (viewState.region === "global" && company.country !== "한국");
+    if (!regionMatches) return false;
+    if (!query) return true;
+    const searchable = [
+      company.name,
+      company.ticker,
+      company.country,
+      company.role,
+      company.business
+    ].join(" ").toLocaleLowerCase("ko");
+    return searchable.includes(query);
+  });
+
+  return companies.sort((a, b) => {
+    if (viewState.sort === "growth") return b.revenueGrowth - a.revenueGrowth;
+    if (viewState.sort === "margin") return b.margin - a.margin;
+    if (viewState.sort === "name") return a.name.localeCompare(b.name, "ko");
+    return getHealthScore(b) - getHealthScore(a);
+  });
+}
+
+function renderCompanyWorkspace(industry) {
+  if (!industry || !elements.companyList) return;
+  const allCompanies = getIndustryCompanies(industry);
+  const companies = getFilteredCompanies(industry);
+
+  if (elements.companyCount) {
+    elements.companyCount.textContent = `${companies.length}/${allCompanies.length}개 표시 · 공식 실적 기준`;
+  }
+
+  elements.regionControl?.querySelectorAll("[data-future-region]").forEach((button) => {
+    button.setAttribute("aria-pressed", String(button.dataset.futureRegion === viewState.region));
+  });
+  if (elements.companySort) elements.companySort.value = viewState.sort;
+
+  renderCompanyRadar(companies);
+  if (!companies.length) {
+    elements.companyList.innerHTML = `
+      <div class="future-company-empty">
+        <strong>조건에 맞는 기업이 없습니다.</strong>
+        <p>검색어 또는 지역 필터를 바꿔보세요.</p>
+      </div>
+    `;
+  } else {
+    elements.companyList.replaceChildren(
+      ...companies.map((company) => renderCompanyCard(company, industry))
+    );
+  }
+  requestAnimationFrame(updateChapterHeight);
+}
+
+function renderCompanyRadar(companies) {
+  if (!elements.companyRadar) return;
+  if (!companies.length) {
+    elements.companyRadar.innerHTML = "";
+    elements.companyRadar.hidden = true;
+    return;
+  }
+
+  elements.companyRadar.hidden = false;
+  elements.companyRadar.innerHTML = `
+    <header>
+      <div>
+        <span>COMPANY SIGNAL BOARD</span>
+        <h4>사업체력·성장 신호</h4>
+      </div>
+      <p>점수는 기업가치나 주가가 아니라 최근 실적과 경쟁 위치를 비교합니다.</p>
+    </header>
+    <div class="future-radar-labels" aria-hidden="true">
+      <span>기업</span><span>사업체력</span><span>매출 변화</span><span>수익성 지표</span>
+    </div>
+    <div class="future-radar-rows">
+      ${companies.map((company) => {
+        const score = getHealthScore(company);
+        return `
+          <div class="future-radar-row" data-tone="${getHealthTone(score)}">
+            <div>
+              <strong>${escapeHtml(company.name)}</strong>
+              <span>${escapeHtml(company.ticker)} · ${escapeHtml(company.country)}</span>
+            </div>
+            <div class="future-radar-score">
+              <i><b style="width:${score}%"></b></i>
+              <strong>${score}</strong>
+            </div>
+            <strong data-direction="${company.revenueGrowth >= 0 ? "up" : "down"}">${formatGrowth(company.revenueGrowth)}</strong>
+            <span>${numberFormatter.format(company.margin)}%</span>
+          </div>
+        `;
+      }).join("")}
+    </div>
+  `;
+}
+
+function renderCompanyCard(company, contextIndustry) {
+  const score = getHealthScore(company);
+  const selected = viewState.compareIds.includes(company.id);
+  const compareFull = viewState.compareIds.length >= MAX_COMPARE && !selected;
+  const card = document.createElement("article");
+  card.className = "future-company-card";
+  card.dataset.tone = getHealthTone(score);
+  card.dataset.companyId = company.id;
+  card.innerHTML = `
+    <header>
+      <div class="future-company-name">
+        <span>${escapeHtml(company.country)} · ${escapeHtml(getCompanyRole(company, contextIndustry))}</span>
+        <strong>${escapeHtml(company.name)}</strong>
+        <em>${escapeHtml(company.ticker)}</em>
+      </div>
+      <button type="button" data-future-compare="${escapeHtml(company.id)}" aria-pressed="${selected}" ${compareFull ? "disabled" : ""} title="${compareFull ? "비교는 최대 4개까지 가능합니다" : ""}">
+        <i aria-hidden="true">${selected ? "✓" : "+"}</i>
+        <span>${selected ? "담김" : "비교"}</span>
+      </button>
+    </header>
+    <div class="future-company-metrics">
+      <div><span>연간 매출</span><strong>${escapeHtml(company.revenue)}</strong></div>
+      <div data-direction="${company.revenueGrowth >= 0 ? "up" : "down"}"><span>매출 변화</span><strong>${formatGrowth(company.revenueGrowth)}</strong></div>
+      <div><span>수익성 지표</span><strong>${numberFormatter.format(company.margin)}%</strong></div>
+      <div class="future-score-cell"><span>사업체력</span><strong>${score}<em>/100 · ${getHealthGrade(score)}</em></strong></div>
+    </div>
+    <div class="future-company-scoreline" data-tone="${getHealthTone(score)}"><i><b style="width:${score}%"></b></i></div>
+    <p class="future-company-business">${escapeHtml(company.business)}</p>
+    <details>
+      <summary>사업구조·강점·위험 자세히 보기</summary>
+      <div class="future-company-detail">
+        <section><span>현금·재무 신호</span><p>${escapeHtml(company.cashSignal)}</p></section>
+        <section><span>단단한 이유</span><p>${escapeHtml(company.moat)}</p></section>
+        <section><span>약해질 수 있는 지점</span><p>${escapeHtml(company.risk)}</p></section>
+      </div>
+      <div class="future-score-parts">
+        ${futureIndustryMethod.parts.map((part) => `
+          <div>
+            <span>${escapeHtml(part.label)}</span>
+            <i><b style="width: ${company.healthParts[part.id] * 4}%"></b></i>
+            <strong>${company.healthParts[part.id]}/25</strong>
+          </div>
+        `).join("")}
+      </div>
+      <div class="future-company-watch">
+        <span>다음 실적에서 확인</span>
+        <ul>${company.watch.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+      </div>
+    </details>
+    <footer class="future-company-source">
+      <span>${escapeHtml(company.fiscal)}</span>
+      <a href="${escapeHtml(company.source.url)}" target="_blank" rel="noopener noreferrer">
+        공식 원문 <i aria-hidden="true">↗</i>
+      </a>
+    </footer>
+  `;
+  return card;
+}
+
+function renderComparison() {
+  if (!elements.compare || !elements.compareCount) return;
+  const selected = viewState.compareIds.map((id) => companyById.get(id)).filter(Boolean);
+  elements.compareCount.textContent = `${selected.length}/${MAX_COMPARE}개 선택`;
+
+  if (!selected.length) {
+    elements.compare.innerHTML = `
+      <div class="future-compare-empty">
+        <strong>비교할 기업을 담아보세요.</strong>
+        <p>산업별 기업 카드에서 최대 4개를 선택할 수 있습니다.</p>
+      </div>
+    `;
+    return;
+  }
+
+  elements.compare.innerHTML = `
+    <div class="future-compare-note">
+      매출은 통화와 회계연도가 달라 금액 순위를 매기지 않습니다. 성장률·수익성 기준·현금 신호를 함께 보세요.
+    </div>
+    <div class="future-compare-grid" style="--future-compare-columns: ${selected.length}">
+      ${selected.map((company) => renderComparisonCard(company)).join("")}
+    </div>
+  `;
+}
+
+function renderComparisonCard(company) {
+  const score = getHealthScore(company);
+  return `
+    <article data-tone="${getHealthTone(score)}">
+      <header>
+        <div>
+          <span>${escapeHtml(getCompanyRole(company))}</span>
+          <strong>${escapeHtml(company.name)}</strong>
+          <em>${escapeHtml(company.fiscal)}</em>
+        </div>
+        <button type="button" data-future-remove="${escapeHtml(company.id)}" aria-label="${escapeHtml(company.name)} 비교에서 제거" title="비교에서 제거">×</button>
+      </header>
+      <dl>
+        <div><dt>연간 매출</dt><dd>${escapeHtml(company.revenue)}</dd></div>
+        <div><dt>매출 변화</dt><dd data-direction="${company.revenueGrowth >= 0 ? "up" : "down"}">${formatGrowth(company.revenueGrowth)}</dd></div>
+        <div><dt>수익성 기준</dt><dd>${escapeHtml(company.profitability)}</dd></div>
+        <div><dt>현금·재무</dt><dd>${escapeHtml(company.cashSignal)}</dd></div>
+        <div><dt>사업체력</dt><dd><b>${score}</b>/100 · ${getHealthGrade(score)}</dd></div>
+      </dl>
+    </article>
+  `;
 }
 
 function renderClimateBusinessLab() {
@@ -142,6 +549,28 @@ function renderClimateBusinessLab() {
   `;
 }
 
+function renderMethod() {
+  if (!elements.method) return;
+  elements.method.innerHTML = `
+    <p>${escapeHtml(futureIndustryMethod.description)}</p>
+    <div class="future-method-parts">
+      ${futureIndustryMethod.parts.map((part) => `
+        <section>
+          <span>25점</span>
+          <strong>${escapeHtml(part.label)}</strong>
+          <p>${escapeHtml(part.detail)}</p>
+        </section>
+      `).join("")}
+    </div>
+    <aside>${escapeHtml(futureIndustryMethod.caution)}</aside>
+  `;
+}
+
+function getCompanyRole(company, contextIndustry = null) {
+  if (company.role) return company.role;
+  return contextIndustry?.shortLabel || industryById.get(company.sectorId)?.shortLabel || "미래산업";
+}
+
 function getHealthScore(company) {
   return Object.values(company.healthParts).reduce((sum, value) => sum + value, 0);
 }
@@ -162,228 +591,6 @@ function getHealthTone(score) {
 
 function formatGrowth(value) {
   return `${value > 0 ? "+" : ""}${numberFormatter.format(value)}%`;
-}
-
-function renderFutureIndustryChapter() {
-  const industry = industryById.get(viewState.sector) || futureIndustries[0];
-  const companies = industry.companyIds.map((id) => companyById.get(id)).filter(Boolean);
-
-  elements.update.textContent = `${futureIndustryMethod.updatedAt.replaceAll("-", ".")} 기준`;
-  elements.summary.innerHTML = `
-    <div>
-      <span>분석 범위</span>
-      <strong>${futureIndustries.length}개 산업 + 기후사업 ${climateBusinessFramework.opportunities.length}개</strong>
-      <p>성장 이유·고객·매출 구조와 병목을 연결</p>
-    </div>
-    <div>
-      <span>기업 스냅샷</span>
-      <strong>${futureCompanies.length}개 기업</strong>
-      <p>기업별 원자료 제공기관·회계연도 표시</p>
-    </div>
-    <div>
-      <span>비교 원칙</span>
-      <strong>원 통화 유지</strong>
-      <p>성장률·수익성·현금 신호를 분리</p>
-    </div>
-  `;
-
-  renderClimateBusinessLab();
-
-  elements.industryTabs.replaceChildren(
-    ...futureIndustries.map((item) => {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.role = "tab";
-      button.dataset.futureSector = item.id;
-      button.setAttribute("aria-selected", String(item.id === industry.id));
-      button.innerHTML = `<span>${escapeHtml(item.eyebrow)}</span><strong>${escapeHtml(item.shortLabel)}</strong>`;
-      return button;
-    })
-  );
-
-  elements.story.innerHTML = renderIndustryStory(industry);
-  elements.companyCount.textContent = `관련 기업 사례 ${companies.length}개 · 다각화 기업 포함 · 자세히 펼쳐보기`;
-  elements.companyList.replaceChildren(
-    ...companies.map((company) => renderCompanyCard(company, industry))
-  );
-  renderComparison();
-  renderMethod();
-  requestAnimationFrame(updateChapterHeight);
-}
-
-function renderIndustryStory(industry) {
-  return `
-    <header class="future-story-head">
-      <div>
-        <span>${escapeHtml(industry.eyebrow)}</span>
-        <h3>${escapeHtml(industry.label)}</h3>
-        <p>${escapeHtml(industry.thesis)}</p>
-      </div>
-      <aside>
-        <span>현재 단계</span>
-        <strong>${escapeHtml(industry.stage)}</strong>
-        <em>관찰 기간 · ${escapeHtml(industry.horizon)}</em>
-      </aside>
-    </header>
-    <div class="future-plain">
-      <span>한 문장으로 쉽게</span>
-      <strong>${escapeHtml(industry.plain)}</strong>
-    </div>
-    <div class="future-forces">
-      <section>
-        <span>성장을 만드는 힘</span>
-        <ul>${industry.drivers.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
-      </section>
-      <section>
-        <span>성장을 막을 수 있는 병목</span>
-        <ul>${industry.bottlenecks.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
-      </section>
-    </div>
-    <section class="future-value-chain">
-      <div><span>돈이 이동하는 순서</span><strong>가치사슬</strong></div>
-      <ol>
-        ${industry.valueChain.map((item, index) => `
-          <li><i>${String(index + 1).padStart(2, "0")}</i><strong>${escapeHtml(item)}</strong></li>
-        `).join("")}
-      </ol>
-    </section>
-    <div class="future-korea">
-      <span>한국의 자리</span>
-      <p>${escapeHtml(industry.korea)}</p>
-    </div>
-    <details class="future-deep-read">
-      <summary>${escapeHtml(industry.label)} 전체 해설 펼치기</summary>
-      <div>
-        ${industry.deepDive.map((section) => `
-          <article>
-            <strong>${escapeHtml(section.title)}</strong>
-            <p>${escapeHtml(section.body)}</p>
-          </article>
-        `).join("")}
-      </div>
-      <footer>
-        <span>앞으로 확인할 숫자</span>
-        ${industry.signals.map((signal) => `<em>${escapeHtml(signal)}</em>`).join("")}
-      </footer>
-    </details>
-  `;
-}
-
-function renderCompanyCard(company, contextIndustry = null) {
-  const industry = industryById.get(company.sectorId);
-  const contextLabel = contextIndustry?.shortLabel || industry?.shortLabel || "";
-  const contextSuffix =
-    contextIndustry && contextIndustry.id !== company.sectorId ? " 관련 사례" : "";
-  const score = getHealthScore(company);
-  const selected = viewState.compareIds.includes(company.id);
-  const card = document.createElement("article");
-  card.className = "future-company-card";
-  card.dataset.tone = getHealthTone(score);
-  card.innerHTML = `
-    <header>
-      <div class="future-company-name">
-        <span>${escapeHtml(company.country)} · ${escapeHtml(contextLabel + contextSuffix)}</span>
-        <strong>${escapeHtml(company.name)}</strong>
-        <em>${escapeHtml(company.ticker)} · ${escapeHtml(company.fiscal)}</em>
-      </div>
-      <button type="button" data-future-compare="${escapeHtml(company.id)}" aria-pressed="${selected}">
-        ${selected ? "비교 빼기" : "비교 담기"}
-      </button>
-    </header>
-    <div class="future-company-metrics">
-      <div><span>연간 매출</span><strong>${escapeHtml(company.revenue)}</strong></div>
-      <div data-direction="${company.revenueGrowth >= 0 ? "up" : "down"}"><span>매출 성장</span><strong>${formatGrowth(company.revenueGrowth)}</strong></div>
-      <div><span>영업수익성</span><strong>${numberFormatter.format(company.margin)}%</strong></div>
-      <div class="future-score-cell"><span>사업체력</span><strong>${score}<em>/100 · ${getHealthGrade(score)}</em></strong></div>
-    </div>
-    <p class="future-company-business">${escapeHtml(company.business)}</p>
-    <details>
-      <summary>사업구조·강점·위험 자세히 보기</summary>
-      <div class="future-company-detail">
-        <section><span>현금·재무 신호</span><p>${escapeHtml(company.cashSignal)}</p></section>
-        <section><span>단단한 이유</span><p>${escapeHtml(company.moat)}</p></section>
-        <section><span>약해질 수 있는 지점</span><p>${escapeHtml(company.risk)}</p></section>
-      </div>
-      <div class="future-score-parts">
-        ${futureIndustryMethod.parts.map((part) => `
-          <div>
-            <span>${escapeHtml(part.label)}</span>
-            <i><b style="width: ${company.healthParts[part.id] * 4}%"></b></i>
-            <strong>${company.healthParts[part.id]}/25</strong>
-          </div>
-        `).join("")}
-      </div>
-      <div class="future-company-watch">
-        <span>다음 실적에서 확인</span>
-        <ul>${company.watch.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
-      </div>
-      <a href="${escapeHtml(company.source.url)}" target="_blank" rel="noopener noreferrer">
-        ${escapeHtml(company.source.label)} <span aria-hidden="true">↗</span>
-      </a>
-    </details>
-  `;
-  return card;
-}
-
-function renderComparison() {
-  const selected = viewState.compareIds.map((id) => companyById.get(id)).filter(Boolean);
-  elements.compareCount.textContent = `${selected.length}/3개 선택`;
-
-  if (!selected.length) {
-    elements.compare.innerHTML = `
-      <div class="future-compare-empty">
-        <strong>비교할 기업을 담아보세요.</strong>
-        <p>산업별 기업의 비교 담기 버튼으로 최대 3개를 나란히 볼 수 있습니다.</p>
-      </div>
-    `;
-    return;
-  }
-
-  elements.compare.innerHTML = `
-    <div class="future-compare-note">
-      매출액은 통화와 회계연도가 달라 직접 순위를 매기지 않습니다. 성장률·수익성과 현금 신호를 함께 보세요.
-    </div>
-    <div class="future-compare-grid" style="--future-compare-columns: ${selected.length}">
-      ${selected.map((company) => renderComparisonCard(company)).join("")}
-    </div>
-  `;
-}
-
-function renderComparisonCard(company) {
-  const score = getHealthScore(company);
-  const industry = industryById.get(company.sectorId);
-  return `
-    <article data-tone="${getHealthTone(score)}">
-      <header>
-        <span>${escapeHtml(industry?.shortLabel || "")}</span>
-        <strong>${escapeHtml(company.name)}</strong>
-        <em>${escapeHtml(company.fiscal)}</em>
-      </header>
-      <dl>
-        <div><dt>연간 매출</dt><dd>${escapeHtml(company.revenue)}</dd></div>
-        <div><dt>매출 성장</dt><dd data-direction="${company.revenueGrowth >= 0 ? "up" : "down"}">${formatGrowth(company.revenueGrowth)}</dd></div>
-        <div><dt>영업수익성</dt><dd>${escapeHtml(company.profitability)}</dd></div>
-        <div><dt>현금·재무</dt><dd>${escapeHtml(company.cashSignal)}</dd></div>
-        <div><dt>사업체력</dt><dd><b>${score}</b>/100 · ${getHealthGrade(score)}</dd></div>
-      </dl>
-    </article>
-  `;
-}
-
-function renderMethod() {
-  elements.method.innerHTML = `
-    <p>${escapeHtml(futureIndustryMethod.description)}</p>
-    <div class="future-method-parts">
-      ${futureIndustryMethod.parts.map((part) => `
-        <section>
-          <span>25점</span>
-          <strong>${escapeHtml(part.label)}</strong>
-          <p>${escapeHtml(part.detail)}</p>
-        </section>
-      `).join("")}
-    </div>
-    <aside>${escapeHtml(futureIndustryMethod.caution)}</aside>
-  `;
 }
 
 function escapeHtml(value) {
