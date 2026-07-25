@@ -1,5 +1,5 @@
-import { climateBusinessFramework } from "./climate-business-data.js?v=82";
-import { futureCompanies, futureIndustries, futureIndustryMethod } from "./future-industry-data.js?v=82";
+import { climateBusinessFramework } from "./climate-business-data.js?v=83";
+import { futureCompanies, futureIndustries, futureIndustryMethod } from "./future-industry-data.js?v=83";
 
 const numberFormatter = new Intl.NumberFormat("ko-KR", { maximumFractionDigits: 1 });
 const companyById = new Map(futureCompanies.map((company) => [company.id, company]));

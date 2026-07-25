@@ -1,4 +1,4 @@
-import { resourceProductionMetadata } from "./resource-production-data.js?v=64";
+import { resourceProductionMetadata } from "./resource-production-data.js?v=83";
 
 const boundRoots = new WeakSet();
 
