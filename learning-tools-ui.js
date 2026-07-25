@@ -2,14 +2,14 @@ import {
   economicLabControls,
   economicLabPresets,
   evaluateEconomicScenario
-} from "./economic-lab-data.js?v=83";
+} from "./economic-lab-data.js?v=84";
 import {
   indicatorCountries,
   indicatorDefinitions as baseIndicatorDefinitions
-} from "./indicator-data.js?v=83";
-import { financeIndicatorDefinitions } from "./indicator-finance-data.js?v=83";
-import { expandedIndicatorDefinitions } from "./indicator-expanded-data.js?v=83";
-import { indicatorSnapshot } from "./indicator-values.js?v=83";
+} from "./indicator-data.js?v=84";
+import { financeIndicatorDefinitions } from "./indicator-finance-data.js?v=84";
+import { expandedIndicatorDefinitions } from "./indicator-expanded-data.js?v=84";
+import { indicatorSnapshot } from "./indicator-values.js?v=84";
 
 const comparableIndicators = [
   ...baseIndicatorDefinitions,
@@ -206,43 +206,89 @@ function setNestedView({
 }
 
 function formatControlValue(control, value) {
-  if (control.id === "fiscal") {
+  if (control.unit === "단계") {
     if (value === 0) return "중립";
-    return `${value > 0 ? "확장" : "긴축"} ${Math.abs(value).toFixed(1)}단계`;
+    return `${value > 0 ? control.upperLabel : control.lowerLabel} ${Math.abs(value).toFixed(1)}단계`;
   }
   if (value === 0) return `0${control.unit}`;
   const digits = control.step < 1 ? 2 : 0;
   return `${value > 0 ? "+" : ""}${value.toFixed(digits)}${control.unit}`;
 }
 
+function getEconomicControlPosition(control, value) {
+  return ((value - control.min) / (control.max - control.min)) * 100;
+}
+
+const economicControlGroups = [
+  {
+    id: "financial",
+    label: "금융 여건",
+    description: "한국·미국 금리와 가계 상환 부담"
+  },
+  {
+    id: "external",
+    label: "대외 환경",
+    description: "환율·에너지 비용과 해외 주문"
+  },
+  {
+    id: "domestic",
+    label: "국내 수요·공급",
+    description: "재정·생산성·경제 심리"
+  }
+];
+
 function renderEconomicControls(values) {
-  return economicLabControls
-    .map(
-      (control) => `
-        <label class="economic-control" for="economic-control-${control.id}">
-          <span class="economic-control-head">
-            <strong>${escapeHtml(control.label)}</strong>
-            <output data-economic-value="${control.id}">${escapeHtml(
-              formatControlValue(control, values[control.id])
-            )}</output>
-          </span>
-          <input
-            id="economic-control-${control.id}"
-            type="range"
-            min="${control.min}"
-            max="${control.max}"
-            step="${control.step}"
-            value="${values[control.id]}"
-            data-economic-control="${control.id}"
-          />
-          <span class="economic-control-range">
-            <small>${escapeHtml(control.lowerLabel)}</small>
-            <small>${escapeHtml(control.upperLabel)}</small>
-          </span>
-          <em>${escapeHtml(control.description)}</em>
-        </label>
-      `
-    )
+  return economicControlGroups
+    .map((group) => {
+      const controls = economicLabControls.filter((control) => control.group === group.id);
+      return `
+        <section class="economic-control-group" data-control-group="${group.id}">
+          <div class="economic-control-group-title">
+            <strong>${escapeHtml(group.label)}</strong>
+            <span>${escapeHtml(group.description)}</span>
+          </div>
+          ${controls
+            .map((control) => {
+              const value = values[control.id];
+              const position = getEconomicControlPosition(control, value);
+              const direction = value > 0 ? "positive" : value < 0 ? "negative" : "neutral";
+              return `
+                <label class="economic-control" for="economic-control-${control.id}">
+                  <span class="economic-control-head">
+                    <strong>${escapeHtml(control.label)}</strong>
+                    <output data-economic-value="${control.id}">${escapeHtml(
+                      formatControlValue(control, value)
+                    )}</output>
+                  </span>
+                  <span
+                    class="economic-range-wrap"
+                    data-economic-direction="${direction}"
+                    style="--economic-position:${position}%"
+                  >
+                    <input
+                      id="economic-control-${control.id}"
+                      type="range"
+                      min="${control.min}"
+                      max="${control.max}"
+                      step="${control.step}"
+                      value="${value}"
+                      data-economic-control="${control.id}"
+                      aria-valuetext="${escapeHtml(formatControlValue(control, value))}"
+                    />
+                  </span>
+                  <span class="economic-control-range">
+                    <small>${escapeHtml(control.lowerLabel)}</small>
+                    <small>0 기준</small>
+                    <small>${escapeHtml(control.upperLabel)}</small>
+                  </span>
+                  <em>${escapeHtml(control.description)}</em>
+                </label>
+              `;
+            })
+            .join("")}
+        </section>
+      `;
+    })
     .join("");
 }
 
@@ -253,7 +299,10 @@ function buildCounterSignals(evaluation) {
     oil: "유가 변화가 짧게 끝나거나 정제마진·세금·보조금이 완충하면 소비자물가 전가는 제한될 수 있습니다.",
     exports: "수출금액이 늘어도 가격 상승이나 일부 품목 집중이라면 생산·고용으로 이어지는 힘은 약할 수 있습니다.",
     fiscal: "예산 집행이 늦거나 수입품 구매로 빠져나가고 금리가 오르면 재정의 국내 경기 효과는 줄 수 있습니다.",
-    productivity: "생산성 향상이 일부 기업에만 집중되거나 고용 전환 비용이 크면 가계소득 개선은 늦어질 수 있습니다."
+    productivity: "생산성 향상이 일부 기업에만 집중되거나 고용 전환 비용이 크면 가계소득 개선은 늦어질 수 있습니다.",
+    globalRate: "미국 금리가 올라도 국내 성장과 물가 흐름이 다르면 한국 금리와 원화가 같은 폭으로 움직이지 않을 수 있습니다.",
+    debt: "대출 만기, 고정금리 비중, 소득 증가와 채무조정에 따라 같은 부채 규모라도 실제 소비 위축은 달라질 수 있습니다.",
+    confidence: "심리 개선이 실제 주문·고용·소득으로 이어지지 않으면 체감 회복은 일시적으로 끝날 수 있습니다."
   };
   const selected = evaluation.activeDrivers
     .slice(0, 3)
@@ -272,44 +321,104 @@ function renderEconomicMethodology(evaluation) {
   return `
     <details class="economic-method-details">
       <summary>
-        <span>계산식·가중치 자세히 보기</span>
-        <strong>입력 표준화 × 영향계수 × 18점</strong>
+        <span class="economic-method-summary-copy">
+          <small>모형 설명</small>
+          <strong>계산식·가중치 자세히 보기</strong>
+        </span>
+        <em>규칙 v${escapeHtml(evaluation.methodology.version)} · -100~+100</em>
       </summary>
-      <div class="economic-method-overview">
-        <p><b>점수 뜻</b> -100은 하방 압력, +100은 상방 압력입니다. 예측 확률이나 실제 성장률·수익률이 아닙니다.</p>
-        <p><b>중립 구간</b> 절댓값 12점 미만은 방향이 뚜렷하지 않은 것으로 표시합니다.</p>
-        <p><b>상한 처리</b> 여러 충격을 합친 원점수가 범위를 넘으면 -100 또는 +100에서 잘라 표시합니다.</p>
+      <div class="economic-method-body">
+        <section class="economic-formula-panel">
+          <div>
+            <span>기본 계산식</span>
+            <strong>입력의 크기와 방향을 같은 척도로 바꾼 뒤 결과별 계수를 적용합니다</strong>
+            <code>표준화 입력 × 영향계수 × ${evaluation.methodology.pointsPerStandardizedUnit}점</code>
+          </div>
+          <ol>
+            <li>
+              <b>01</b>
+              <span><strong>입력 표준화</strong><em>각 입력값을 해당 변수의 scale로 나눕니다.</em></span>
+            </li>
+            <li>
+              <b>02</b>
+              <span><strong>방향·크기 적용</strong><em>결과별 영향계수를 곱해 올림·내림 압력을 계산합니다.</em></span>
+            </li>
+            <li>
+              <b>03</b>
+              <span><strong>합산·범위 제한</strong><em>모든 압력을 더하고 -100에서 +100 사이로 제한합니다.</em></span>
+            </li>
+          </ol>
+        </section>
+
+        <div class="economic-method-rules">
+          <article>
+            <span>점수의 뜻</span>
+            <strong>-100 하방 · 0 중립 · +100 상방</strong>
+            <p>실제 성장률·물가상승률·수익률 또는 발생 확률이 아니라 상대적인 방향 압력입니다.</p>
+          </article>
+          <article>
+            <span>중립 구간</span>
+            <strong>-11점부터 +11점까지</strong>
+            <p>절댓값 ${evaluation.methodology.neutralBand}점 미만은 방향이 뚜렷하지 않은 것으로 표시합니다.</p>
+          </article>
+          <article>
+            <span>상한 처리</span>
+            <strong>원점수가 범위를 넘으면 ±100</strong>
+            <p>충격이 겹쳐도 숫자가 과도하게 커지지 않도록 표시 범위에서 잘라 냅니다.</p>
+          </article>
+        </div>
+
+        <section class="economic-weight-section">
+          <header>
+            <div>
+              <span>결과별 영향계수</span>
+              <strong>같은 입력도 결과에 따라 방향과 전달 강도가 달라집니다</strong>
+            </div>
+            <p>
+              <i data-sign="positive">+ 결과를 올림</i>
+              <i data-sign="negative">- 결과를 내림</i>
+            </p>
+          </header>
+          <div class="economic-weight-list">
+            ${evaluation.results
+              .map(
+                (result) => `
+                  <article class="economic-weight-row">
+                    <header>
+                      <strong>${escapeHtml(result.label)}</strong>
+                      <span>원점수 ${signedPoints(result.rawScore)} · 표시 ${signedPoints(result.score)}</span>
+                    </header>
+                    <div>
+                      ${Object.entries(result.coefficients)
+                        .map(([controlId, coefficient]) => {
+                          const control = economicLabControls.find(
+                            (item) => item.id === controlId
+                          );
+                          return `
+                            <span data-sign="${coefficient >= 0 ? "positive" : "negative"}">
+                              <em>${escapeHtml(control?.label || controlId)}</em>
+                              <b>${coefficient > 0 ? "+" : ""}${coefficient.toFixed(2)}</b>
+                            </span>
+                          `;
+                        })
+                        .join("")}
+                    </div>
+                  </article>
+                `
+              )
+              .join("")}
+          </div>
+        </section>
+
+        <p class="economic-method-warning">
+          <strong>해석 주의</strong>
+          <span>계수는 알려진 경제 전달 방향을 일관되게 비교하기 위한 교육용 규칙입니다. 과거 예측력을 통계적으로 검증한 모형이 아니며 실제 정책·투자 판단에 그대로 사용할 수 없습니다.</span>
+        </p>
       </div>
-      <div class="economic-weight-list">
-        ${evaluation.results
-          .map(
-            (result) => `
-              <article>
-                <header>
-                  <strong>${escapeHtml(result.label)}</strong>
-                  <span>원점수 ${signedPoints(result.rawScore)} → 표시 ${signedPoints(result.score)}</span>
-                </header>
-                <div>
-                  ${Object.entries(result.coefficients)
-                    .map(([controlId, coefficient]) => {
-                      const control = economicLabControls.find(
-                        (item) => item.id === controlId
-                      );
-                      return `<span>${escapeHtml(control?.label || controlId)} <b>${coefficient > 0 ? "+" : ""}${coefficient}</b></span>`;
-                    })
-                    .join("")}
-                </div>
-              </article>
-            `
-          )
-          .join("")}
-      </div>
-      <p class="economic-method-warning">
-        계수는 공개적으로 알려진 전달 방향을 일관되게 비교하기 위한 교육용 규칙이며, 과거 예측력을 통계적으로 검증한 모형이 아닙니다.
-      </p>
     </details>
   `;
 }
+
 function renderEconomicResults(evaluation) {
   const summary = evaluation.isNeutral
     ? {
@@ -442,33 +551,46 @@ function renderEconomicLab(root, values) {
         <div>
           <p class="section-kicker">경제 실험실</p>
           <h3>여러 충격이 겹칠 때 무엇이 먼저 움직일까</h3>
-          <p>금리 하나만 바꾸는 예시가 아니라 환율·유가·수출·재정·생산성을 함께 조절해 상쇄와 증폭을 비교합니다.</p>
-        </div>
-        <div class="economic-heading-actions">
-          <button type="button" class="economic-reset-button" data-economic-reset>
-            <span aria-hidden="true">↺</span>
-            <span>모든 값 0으로 초기화</span>
-          </button>
-          <small class="economic-reset-status" data-economic-reset-status aria-live="polite">현재 기본값입니다.</small>
+          <p>한국·미국 금리, 가계부채, 환율, 유가, 수출, 재정, 생산성과 경제 심리를 함께 조절해 충격의 상쇄와 증폭을 비교합니다.</p>
         </div>
       </div>
-      <div class="economic-preset-tabs" role="group" aria-label="경제 실험 시나리오">
-        ${economicLabPresets
-          .map(
-            (preset) => `
-              <button type="button" data-economic-preset="${preset.id}" aria-pressed="false">
-                <strong>${escapeHtml(preset.label)}</strong>
-                <span>${escapeHtml(preset.description)}</span>
-              </button>
-            `
-          )
-          .join("")}
-      </div>
+
+      <section class="economic-preset-section">
+        <header>
+          <span>빠른 시나리오</span>
+          <strong>${economicLabPresets.length}개 상황을 선택하거나 아래 값을 직접 조절하세요</strong>
+        </header>
+        <div class="economic-preset-tabs" role="group" aria-label="경제 실험 시나리오">
+          ${economicLabPresets
+            .map(
+              (preset) => `
+                <button type="button" data-economic-preset="${preset.id}" aria-pressed="false">
+                  <strong>${escapeHtml(preset.label)}</strong>
+                  <span>${escapeHtml(preset.description)}</span>
+                </button>
+              `
+            )
+            .join("")}
+        </div>
+      </section>
+
       <div class="economic-lab-layout">
         <aside class="economic-controls" aria-label="경제 조건 조절">
-          <header>
-            <span>가정 입력</span>
-            <strong>현재 상태에서 얼마나 변하는가</strong>
+          <header class="economic-controls-header">
+            <div>
+              <span>가정 입력 · ${economicLabControls.length}개</span>
+              <strong>현재 상태에서 얼마나 변하는가</strong>
+            </div>
+            <button
+              type="button"
+              class="economic-reset-button"
+              data-economic-reset
+              aria-label="모든 경제 실험 입력을 0으로 초기화"
+            >
+              <span aria-hidden="true">↺</span>
+              <span>0으로 초기화</span>
+            </button>
+            <small class="economic-reset-status" data-economic-reset-status aria-live="polite">현재 기본값입니다.</small>
           </header>
           ${renderEconomicControls(values)}
         </aside>
@@ -488,8 +610,21 @@ function updateEconomicLab(root, values) {
   economicLabControls.forEach((control) => {
     const input = root.querySelector(`[data-economic-control="${control.id}"]`);
     const output = root.querySelector(`[data-economic-value="${control.id}"]`);
-    if (input) input.value = values[control.id];
-    if (output) output.textContent = formatControlValue(control, values[control.id]);
+    const value = values[control.id];
+    if (input) {
+      input.value = value;
+      input.setAttribute("aria-valuetext", formatControlValue(control, value));
+      const range = input.closest(".economic-range-wrap");
+      if (range) {
+        range.style.setProperty(
+          "--economic-position",
+          `${getEconomicControlPosition(control, value)}%`
+        );
+        range.dataset.economicDirection =
+          value > 0 ? "positive" : value < 0 ? "negative" : "neutral";
+      }
+    }
+    if (output) output.textContent = formatControlValue(control, value);
   });
   const results = root.querySelector("#economicLabResults");
   if (results) {

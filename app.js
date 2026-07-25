@@ -1,4 +1,4 @@
-import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=83";
+import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=84";
 
 let scenarioQuestions = [];
 let indicatorCategories = [];
@@ -720,14 +720,14 @@ function loadGlossaryData() {
       expanded,
       master
     ] = await Promise.all([
-      import("./glossary-data.js?v=83"),
-      import("./glossary-extra-data.js?v=83"),
-      import("./glossary-more-data.js?v=83"),
-      import("./glossary-pro-data.js?v=83"),
-      import("./glossary-special-data.js?v=83"),
-      import("./glossary-core-extra-data.js?v=83"),
-      import("./glossary-expanded-data.js?v=83"),
-      import("./glossary-master-data.js?v=83")
+      import("./glossary-data.js?v=84"),
+      import("./glossary-extra-data.js?v=84"),
+      import("./glossary-more-data.js?v=84"),
+      import("./glossary-pro-data.js?v=84"),
+      import("./glossary-special-data.js?v=84"),
+      import("./glossary-core-extra-data.js?v=84"),
+      import("./glossary-expanded-data.js?v=84"),
+      import("./glossary-master-data.js?v=84")
     ]);
 
     glossaryCategoryOrder = [
@@ -772,10 +772,10 @@ function loadQuizData() {
   return loadFeature("quiz", async () => {
     await loadGlossaryData();
     const [base, extra, more, expanded] = await Promise.all([
-      import("./quiz-data.js?v=83"),
-      import("./quiz-scenario-extra-data.js?v=83"),
-      import("./quiz-scenario-more-data.js?v=83"),
-      import("./quiz-scenario-expanded-data.js?v=83")
+      import("./quiz-data.js?v=84"),
+      import("./quiz-scenario-extra-data.js?v=84"),
+      import("./quiz-scenario-more-data.js?v=84"),
+      import("./quiz-scenario-expanded-data.js?v=84")
     ]);
     scenarioQuestions = [
       ...base.scenarioQuestions,
@@ -789,9 +789,9 @@ function loadQuizData() {
 function loadHistoryData() {
   return loadFeature("history", async () => {
     const [base, detail, reading] = await Promise.all([
-      import("./history-data.js?v=83"),
-      import("./history-detail-data.js?v=83"),
-      import("./history-reading-data.js?v=83")
+      import("./history-data.js?v=84"),
+      import("./history-detail-data.js?v=84"),
+      import("./history-reading-data.js?v=84")
     ]);
     historyEras = base.historyEras;
     historyEvents = base.historyEvents;
@@ -805,7 +805,7 @@ function loadHistoryData() {
 
 function loadRelationshipData() {
   return loadFeature("relationships", async () => {
-    const module = await import("./relationship-data.js?v=83");
+    const module = await import("./relationship-data.js?v=84");
     economicRelationships = module.economicRelationships;
   });
 }
@@ -813,12 +813,12 @@ function loadRelationshipData() {
 function loadIndicatorData() {
   return loadFeature("indicators", async () => {
     const [base, finance, expanded, values, production, productionUi] = await Promise.all([
-      import("./indicator-data.js?v=83"),
-      import("./indicator-finance-data.js?v=83"),
-      import("./indicator-expanded-data.js?v=83"),
-      import("./indicator-values.js?v=83"),
-      import("./resource-production-data.js?v=83"),
-      import("./resource-production-ui.js?v=83")
+      import("./indicator-data.js?v=84"),
+      import("./indicator-finance-data.js?v=84"),
+      import("./indicator-expanded-data.js?v=84"),
+      import("./indicator-values.js?v=84"),
+      import("./resource-production-data.js?v=84"),
+      import("./resource-production-ui.js?v=84")
     ]);
     indicatorCategories = [...base.indicatorCategories, ...finance.financeIndicatorCategories];
     indicatorCountries = base.indicatorCountries;
@@ -838,14 +838,17 @@ function loadIndicatorData() {
 
 function initLearningToolsOnce() {
   return loadFeature("learning-tools", async () => {
-    const module = await import("./learning-tools-ui.js?v=83");
+    const [, module] = await Promise.all([
+      loadStylesheetOnce("learning-tools-styles", "/learning-tools.css?v=84"),
+      import("./learning-tools-ui.js?v=84")
+    ]);
     module.initLearningTools({ updateHeight: updateChapterHeight });
   });
 }
 
 function initFutureIndustryOnce() {
   return loadFeature("future-industry", async () => {
-    const module = await import("./future-industry-ui.js?v=83");
+    const module = await import("./future-industry-ui.js?v=84");
     module.initFutureIndustryChapter({ updateHeight: updateChapterHeight });
   });
 }
@@ -853,8 +856,8 @@ function initFutureIndustryOnce() {
 function initResourceLibraryOnce() {
   return loadFeature("resource-library", async () => {
     const [, module] = await Promise.all([
-      loadStylesheetOnce("resource-library-styles", "/resource-library.css?v=83"),
-      import("./resource-library-ui.js?v=83")
+      loadStylesheetOnce("resource-library-styles", "/resource-library.css?v=84"),
+      import("./resource-library-ui.js?v=84")
     ]);
     module.initResourceLibraryChapter({ updateHeight: updateChapterHeight });
   });
@@ -920,7 +923,7 @@ if ("serviceWorker" in navigator) {
   const hadServiceWorkerController = Boolean(navigator.serviceWorker.controller);
   let reloadingForServiceWorker = false;
   navigator.serviceWorker
-    .register("/sw.js?v=83")
+    .register("/sw.js?v=84")
     .then((registration) => {
       registration.update().catch(() => {});
       setInterval(() => registration.update().catch(() => {}), 5 * 60_000);

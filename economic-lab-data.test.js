@@ -6,17 +6,18 @@ import {
   evaluateEconomicScenario
 } from "./economic-lab-data.js";
 
-test("economic lab exposes six bounded controls and ten complete presets", () => {
-  assert.equal(economicLabControls.length, 6);
-  assert.equal(economicLabPresets.length, 10);
+test("economic lab exposes nine aligned controls and fifteen complete presets", () => {
+  assert.equal(economicLabControls.length, 9);
+  assert.equal(economicLabPresets.length, 15);
   economicLabControls.forEach((control) => {
     assert.ok(control.min < 0);
     assert.ok(control.max > 0);
     assert.ok(control.step > 0);
+    assert.equal(Math.abs(control.min), control.max);
     assert.ok(control.description.length >= 25);
   });
   economicLabPresets.forEach((preset) => {
-    assert.equal(Object.keys(preset.values).length, 6);
+    assert.equal(Object.keys(preset.values).length, 9);
     assert.ok(preset.description.length >= 25);
   });
 });
@@ -38,6 +39,18 @@ test("a rate increase applies the expected basic transmission directions", () =>
   assert.ok(byId.housing.score < 0);
 });
 
+test("global rates, debt burden, and confidence use distinct transmission paths", () => {
+  const evaluation = evaluateEconomicScenario({
+    globalRate: 1.25,
+    debt: 1.5,
+    confidence: -12
+  });
+  const byId = Object.fromEntries(evaluation.results.map((result) => [result.id, result]));
+  assert.ok(byId.credit.score < 0);
+  assert.ok(byId.housing.score < 0);
+  assert.ok(byId.domesticBusiness.score < 0);
+});
+
 test("won weakness and an oil shock raise costs without claiming certainty", () => {
   const evaluation = evaluateEconomicScenario({ fx: 12, oil: 35 });
   const byId = Object.fromEntries(evaluation.results.map((result) => [result.id, result]));
@@ -50,7 +63,7 @@ test("won weakness and an oil shock raise costs without claiming certainty", () 
 test("every output is bounded and explains its drivers, timing, and indicators", () => {
   economicLabPresets.forEach((preset) => {
     const evaluation = evaluateEconomicScenario(preset.values);
-    assert.equal(evaluation.results.length, 9);
+    assert.equal(evaluation.results.length, 12);
     evaluation.results.forEach((result) => {
       assert.ok(result.score >= -100 && result.score <= 100);
       assert.ok(result.labelText.length >= 4);
