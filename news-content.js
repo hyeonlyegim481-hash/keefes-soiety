@@ -348,8 +348,8 @@ function buildExtractiveSummary(content, title, limit) {
 function buildArticleDigest(content, title) {
   const sentences = rankSentences(content, title);
   return {
-    summary: String(sentences[0] || "").slice(0, 420),
-    keyPoints: sentences.slice(1, 4).map((sentence) => sentence.slice(0, 260))
+    summary: sentences.slice(0, 3).join(" ").slice(0, 900),
+    keyPoints: sentences.slice(0, 5).map((sentence) => sentence.slice(0, 300))
   };
 }
 

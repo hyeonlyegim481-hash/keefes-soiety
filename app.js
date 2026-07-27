@@ -409,7 +409,7 @@ let state = {
   quizComplete: false,
   quizMistakes: [],
   newsSection: "all",
-  openNewsSummaryIds: new Set(),
+  activeNewsSummaryKey: null,
   newsSummaryResults: new Map()
 };
 
@@ -898,6 +898,9 @@ async function ensureChapterContent(chapter) {
         renderHistory(state.snapshot);
       }
       break;
+    case "news":
+      await loadStylesheetOnce("news-system-styles", "/news-system.css?v=88");
+      break;
     case "politics":
       await initPoliticsOnce();
       break;
@@ -944,7 +947,7 @@ if ("serviceWorker" in navigator) {
   const hadServiceWorkerController = Boolean(navigator.serviceWorker.controller);
   let reloadingForServiceWorker = false;
   navigator.serviceWorker
-    .register("/sw.js?v=87")
+    .register("/sw.js?v=88")
     .then((registration) => {
       registration.update().catch(() => {});
       setInterval(() => registration.update().catch(() => {}), 5 * 60_000);
@@ -3666,7 +3669,7 @@ function cacheNewsSummary(summaryKey, result) {
   if (state.newsSummaryResults.size <= 48) return;
 
   for (const cachedKey of state.newsSummaryResults.keys()) {
-    if (!state.openNewsSummaryIds.has(cachedKey)) {
+    if (cachedKey !== state.activeNewsSummaryKey) {
       state.newsSummaryResults.delete(cachedKey);
     }
     if (state.newsSummaryResults.size <= 48) break;
@@ -3674,14 +3677,18 @@ function cacheNewsSummary(summaryKey, result) {
 }
 
 const NEWS_SECTION_DEFINITIONS = [
-  { id: "korea", label: "한국", description: "환율·정책·수출·가계 흐름" },
+  { id: "korea", label: "한국 핵심", description: "거시지표·환율·정책·한국 시장" },
+  { id: "industry", label: "산업·기업", description: "실적·반도체·AI·자동차·조선·배터리" },
+  { id: "households", label: "생활·부동산", description: "고용·소비·주택·가계대출·금융비용" },
   { id: "politics", label: "정치·법", description: "정부·의회·법률·예산이 경제에 미치는 변화" },
   { id: "security-disasters", label: "전쟁·사고·재난", description: "안보·대형 사고·자연재해·인프라 충격" },
   { id: "us", label: "미국", description: "연준·물가·고용·미국 시장" },
   { id: "china-asia", label: "중국·아시아", description: "중국 수요·위안·일본은행·엔화" },
   { id: "europe-global", label: "유럽·글로벌", description: "ECB·유로존·세계 성장과 무역" },
-  { id: "commodities-fx", label: "원자재·환율", description: "유가·금·달러·운임과 지정학" }
+  { id: "commodities-fx", label: "원자재·기후", description: "유가·금·달러·운임·전력·기후 비용" }
 ];
+
+const DOMESTIC_NEWS_SECTIONS = new Set(["korea", "industry", "households"]);
 
 function renderNews(headlines = [], analysis, dataQuality = {}) {
   const lookbackDays = Number(dataQuality?.newsLookbackDays) || 7;
@@ -3691,39 +3698,56 @@ function renderNews(headlines = [], analysis, dataQuality = {}) {
   }, {});
   const topTopics = Object.entries(topicCounts)
     .sort((a, b) => b[1] - a[1])
-    .slice(0, 3);
+    .slice(0, 4);
   const firstTopic = topTopics[0]?.[0] || "선별 기사 없음";
-  const koreaHeadlineCount = headlines.filter((headline) => headline.section === "korea").length;
+  const domesticHeadlineCount = headlines.filter((headline) => DOMESTIC_NEWS_SECTIONS.has(headline.section)).length;
   const criticalHeadlineCount = headlines.filter((headline) => headline.section === "security-disasters").length;
   const globalHeadlineCount = headlines.filter(
-    (headline) => !["korea", "security-disasters"].includes(headline.section)
+    (headline) => !DOMESTIC_NEWS_SECTIONS.has(headline.section) && headline.section !== "security-disasters"
   ).length;
+  const freshCount = headlines.filter(
+    (headline) => Date.now() - Date.parse(headline.publishedAt) < 24 * 60 * 60 * 1000
+  ).length;
+  const priorityCount = headlines.filter((headline) => headline.importanceLabel === "최우선").length;
+  const sourceCount = Number(dataQuality?.uniqueNewsSourceCount) || new Set(headlines.map((headline) => headline.source)).size;
   const riskText =
     headlines.length === 0
       ? `최근 ${lookbackDays}일 안에 경제 관련성과 최신성 기준을 통과한 새 기사가 없습니다.`
       : analysis?.riskScore >= 66
-      ? "뉴스는 방어적인 가격 흐름을 확인하는 재료로 봅니다."
-      : analysis?.riskScore >= 45
-        ? "뉴스는 방향을 정하기보다 변동 요인을 걸러내는 용도입니다."
-        : "뉴스는 위험선호 회복이 이어질 수 있는지 확인하는 재료입니다.";
+        ? "악재의 사실관계와 가격 반응을 먼저 확인할 구간입니다."
+        : analysis?.riskScore >= 45
+          ? "서로 다른 방향의 기사를 분리해 읽을 구간입니다."
+          : "호재가 실제 지표와 실적으로 이어지는지 확인할 구간입니다.";
 
+  elements.newsBrief.classList.add("news-brief");
   elements.newsBrief.innerHTML = `
-    <article class="brief-card brief-card-main">
-      <span>뉴스 초점</span>
-      <strong>한국 ${koreaHeadlineCount}건 · 전쟁·재난 ${criticalHeadlineCount}건 · 해외 경제 ${globalHeadlineCount}건</strong>
-      <p>${firstTopic} 중심 · ${riskText}</p>
+    <article class="news-brief-lead">
+      <div>
+        <span>ECONOMIC NEWS DESK</span>
+        <strong>${headlines.length ? `${headlines.length}건을 9개 분야로 정리했습니다.` : "새 기사 수집을 기다리고 있습니다."}</strong>
+        <p>${escapeHtml(firstTopic)} 중심 · ${escapeHtml(riskText)}</p>
+      </div>
+      <dl>
+        <div><dt>국내 경제</dt><dd>${domesticHeadlineCount}건</dd></div>
+        <div><dt>전쟁·재난</dt><dd>${criticalHeadlineCount}건</dd></div>
+        <div><dt>해외 핵심</dt><dd>${globalHeadlineCount}건</dd></div>
+      </dl>
     </article>
-    ${topTopics
-      .map(
-        ([topic, count]) => `
-          <article class="brief-card">
-            <span>${topic}</span>
-            <strong>${count}건</strong>
-            <p>${getTopicMeaning(topic)}</p>
-          </article>
-        `
-      )
-      .join("")}
+    <article class="news-brief-stat" data-tone="fresh">
+      <span>최신성</span>
+      <strong>${freshCount}<small>건</small></strong>
+      <p>24시간 이내 게시</p>
+    </article>
+    <article class="news-brief-stat" data-tone="priority">
+      <span>최우선</span>
+      <strong>${priorityCount}<small>건</small></strong>
+      <p>영향도·출처·최신성 기준</p>
+    </article>
+    <article class="news-brief-stat" data-tone="sources">
+      <span>출처 폭</span>
+      <strong>${sourceCount}<small>곳</small></strong>
+      <p>같은 매체 반복 노출 제한</p>
+    </article>
   `;
 
   if (headlines.length === 0) {
@@ -3748,9 +3772,13 @@ function renderNews(headlines = [], analysis, dataQuality = {}) {
     const fetchedAt = dataQuality?.newsFetchedAt ? new Date(dataQuality.newsFetchedAt) : null;
     const scheduledAnalysisCount = Number(dataQuality?.scheduledNewsAnalysisCount) || 0;
     const refreshLabel = dataQuality?.newsSourceMode === "scheduled"
-      ? `서버 예약 수집 · 1시간 간격 · 실제 AI 요약 ${scheduledAnalysisCount}건`
+      ? `서버 예약 수집 · 1시간 간격 · AI 요약 ${scheduledAnalysisCount}건`
       : `실시간 보완 수집 · ${Number(dataQuality?.newsRefreshMinutes) || 30}분 캐시`;
     controls.innerHTML = `
+      <div class="news-filter-copy">
+        <strong>분야별 기사</strong>
+        <span>중복 사건은 하나로 묶고 영향이 큰 순서로 표시합니다.</span>
+      </div>
       <div class="news-filter-tabs" role="tablist" aria-label="뉴스 분야">
         ${filterDefinitions.map((filter) => `
           <button type="button" role="tab" data-news-filter="${escapeHtml(filter.id)}" aria-selected="${state.newsSection === filter.id}">
@@ -3784,6 +3812,7 @@ function renderNews(headlines = [], analysis, dataQuality = {}) {
       const group = document.createElement("section");
       group.className = "news-section-group";
       group.dataset.newsSection = section.id;
+      group.dataset.newsCount = String(sectionHeadlines.length);
       group.innerHTML = `
         <header class="news-section-heading">
           <div>
@@ -3827,11 +3856,11 @@ function newsAnalysisStatusLabel(status) {
 function createNewsItem(headline, index, analysis) {
   const item = document.createElement("article");
   const newsUrl = safeNewsUrl(headline.url);
-  const summaryKey = getNewsSummaryKey(headline);
   const sectionLabel = NEWS_SECTION_DEFINITIONS.find((section) => section.id === headline.section)?.label || headline.topic;
-  const isGlobal = headline.section && headline.section !== "korea";
+  const isGlobal = headline.section && !DOMESTIC_NEWS_SECTIONS.has(headline.section);
   const analysisStatus = headline.analysisStatus || "rules";
   item.className = "news-item";
+  item.dataset.importance = headline.importanceLabel || "선별";
   if (headline.section === "security-disasters") item.dataset.newsKind = "critical";
   item.innerHTML = `
     <div class="news-item-head">
@@ -3848,98 +3877,84 @@ function createNewsItem(headline, index, analysis) {
           ${headline.relatedSourceCount > 1 ? `<span class="news-corroboration">교차 ${headline.relatedSourceCount}곳</span>` : ""}
           <span class="news-exact-date" title="${escapeHtml(relativeTime(headline.publishedAt))}">${escapeHtml(formatExactDate(headline.publishedAt, "게시일 미확인"))}</span>
           <span class="news-analysis-mode" data-mode="${escapeHtml(analysisStatus)}">${escapeHtml(newsAnalysisStatusLabel(analysisStatus))}</span>
-          <a class="news-original-link" href="${escapeHtml(newsUrl)}" target="${newsUrl.startsWith("http") ? "_blank" : "_self"}" rel="noopener noreferrer">원문 보기 <span aria-hidden="true">↗</span></a>
         </span>
       </div>
     </div>
-    <details class="news-ai-detail">
-      <summary>
+    <div class="news-item-actions">
+      <button class="news-summary-button" type="button" data-open-news-analysis>
         <span class="ai-label">${analysisStatus.includes("ai") ? "AI" : "요약"}</span>
-        <strong>기사 요약 보기</strong>
-        <em>요약 방식 · 출처 · 핵심 사실 · 시장 영향 · 한국 영향</em>
-      </summary>
-      <div class="news-ai-output" data-news-analysis>
-        <p>분석을 준비하고 있습니다.</p>
-      </div>
-    </details>
+        <span>
+          <strong>상세 요약</strong>
+          <em>핵심 사실·전달 경로·시점별 영향</em>
+        </span>
+        <i aria-hidden="true">↗</i>
+      </button>
+      <a class="news-original-button" href="${escapeHtml(newsUrl)}" target="${newsUrl.startsWith("http") ? "_blank" : "_self"}" rel="noopener noreferrer">
+        원문 <span aria-hidden="true">↗</span>
+      </a>
+    </div>
   `;
-  const details = item.querySelector(".news-ai-detail");
-  const cachedSummary = state.newsSummaryResults.get(summaryKey);
-  details.dataset.summaryKey = summaryKey;
-  if (cachedSummary) {
-    renderNewsAnalysisResult(details.querySelector("[data-news-analysis]"), cachedSummary);
-    details.dataset.loaded = "true";
-  }
-  if (state.openNewsSummaryIds.has(summaryKey)) details.open = true;
-  details.addEventListener("toggle", () => {
-    if (details.open) {
-      state.openNewsSummaryIds.add(summaryKey);
-      if (details.dataset.loaded !== "true" && details.dataset.loaded !== "loading") {
-        loadNewsAnalysis(details, headline, analysis);
-      }
-    } else {
-      state.openNewsSummaryIds.delete(summaryKey);
-    }
+  item.querySelector("[data-open-news-analysis]")?.addEventListener("click", () => {
+    openNewsAnalysisDialog(headline, analysis);
   });
-  if (details.open && !cachedSummary) {
-    requestAnimationFrame(() => {
-      if (details.isConnected && details.open && details.dataset.loaded !== "loading") {
-        loadNewsAnalysis(details, headline, analysis);
-      }
-    });
-  }
   return item;
 }
 
 function renderNewsBoard(headlines, topTopics, analysis) {
-  const newest = [...headlines].sort((a, b) => Date.parse(b.publishedAt) - Date.parse(a.publishedAt))[0];
-  const koreaCount = headlines.filter((headline) => headline.section === "korea").length;
+  const priorityHeadlines = [...headlines]
+    .sort((left, right) =>
+      Number(right.importanceScore || 0) - Number(left.importanceScore || 0) ||
+      Date.parse(right.publishedAt) - Date.parse(left.publishedAt)
+    )
+    .slice(0, 3);
+  const domesticCount = headlines.filter((headline) => DOMESTIC_NEWS_SECTIONS.has(headline.section)).length;
   const criticalCount = headlines.filter((headline) => headline.section === "security-disasters").length;
   const globalCount = headlines.filter(
-    (headline) => !["korea", "security-disasters"].includes(headline.section)
+    (headline) => !DOMESTIC_NEWS_SECTIONS.has(headline.section) && headline.section !== "security-disasters"
   ).length;
   const readingMode = headlines.length === 0
     ? "새 기사 대기"
     : analysis?.riskScore >= 66
-      ? "악재 확인"
+      ? "사실 확인 우선"
       : analysis?.riskScore >= 45
-        ? "방향 필터링"
-        : "호재 지속 확인";
+        ? "방향 분리"
+        : "지속성 확인";
 
+  elements.newsBoard.classList.add("news-editorial-board");
   elements.newsBoard.innerHTML = `
-    <div class="board-heading">
+    <div class="news-desk-heading">
       <div>
-        <p class="section-kicker">뉴스 해석</p>
-        <h3>읽는 순서</h3>
+        <p class="section-kicker">편집자 선별</p>
+        <h3>먼저 읽을 뉴스 3건</h3>
+        <p>중요도·최신성·출처 수준을 함께 보고 정렬했습니다.</p>
       </div>
-      <span>${readingMode}</span>
+      <span>${escapeHtml(readingMode)}</span>
     </div>
-    <div class="chapter-board-grid">
-      <article class="board-card board-card-main">
-        <span>첫 번째로 볼 기사</span>
-        <strong>${escapeHtml(newest?.title || "최근 기준을 통과한 기사 없음")}</strong>
-        <p>${newest ? `${escapeHtml(newest.topic)} · ${escapeHtml(newest.source)} · ${relativeTime(newest.publishedAt)}` : "오래된 기사를 가져와 빈자리를 채우지 않습니다."}</p>
-      </article>
-      <article class="board-card">
-        <span>한국 뉴스</span>
-        <strong>${koreaCount}건</strong>
-        <p>환율, 수출, 외국인 수급으로 이어지는지 먼저 봅니다.</p>
-      </article>
-      <article class="board-card">
-        <span>전쟁·사고·재난</span>
-        <strong>${criticalCount}건</strong>
-        <p>안보·인명·인프라 충격과 함께 공급망, 유가, 환율로 번지는 경로를 봅니다.</p>
-      </article>
-      <article class="board-card">
-        <span>해외 중요 뉴스</span>
-        <strong>${globalCount}건</strong>
-        <p>미국·중국·유럽·원자재 중 한국 시장으로 번질 기사만 선별합니다.</p>
-      </article>
-      <article class="board-card">
-        <span>주요 토픽</span>
-        <strong>${topTopics.map(([topic]) => topic).join(" · ") || "분류 중"}</strong>
-        <p>${topTopics.map(([topic, count]) => `${topic} ${count}건`).join(", ") || "뉴스 토픽을 분류하고 있습니다."}</p>
-      </article>
+    <div class="news-priority-queue">
+      ${priorityHeadlines.length ? priorityHeadlines.map((headline, index) => {
+        const url = safeNewsUrl(headline.url);
+        const section = NEWS_SECTION_DEFINITIONS.find((item) => item.id === headline.section)?.label || headline.topic;
+        return `
+          <article>
+            <i>${String(index + 1).padStart(2, "0")}</i>
+            <div>
+              <span>${escapeHtml(section)} · ${escapeHtml(headline.source)} · ${escapeHtml(relativeTime(headline.publishedAt))}</span>
+              <a href="${escapeHtml(url)}" target="${url.startsWith("http") ? "_blank" : "_self"}" rel="noopener noreferrer">${escapeHtml(headline.title)}</a>
+            </div>
+            <em>${escapeHtml(headline.importanceLabel || "선별")}</em>
+          </article>
+        `;
+      }).join("") : `
+        <article class="news-priority-empty">
+          <div><strong>우선순위 기준을 통과한 새 기사가 없습니다.</strong></div>
+        </article>
+      `}
+    </div>
+    <div class="news-coverage-rail">
+      <div><span>국내 경제</span><strong>${domesticCount}건</strong><p>거시·산업·생활경제</p></div>
+      <div><span>전쟁·재난</span><strong>${criticalCount}건</strong><p>공급망·유가·인프라</p></div>
+      <div><span>해외 핵심</span><strong>${globalCount}건</strong><p>미국·중국·유럽</p></div>
+      <div><span>주요 토픽</span><strong>${topTopics.map(([topic]) => topic).slice(0, 2).join(" · ") || "분류 중"}</strong><p>${topTopics.map(([topic, count]) => `${topic} ${count}`).join(" · ") || "새 기사 대기"}</p></div>
     </div>
   `;
 }
@@ -3954,11 +3969,13 @@ function renderNewsIntelligence(headlines, topTopics, analysis, dataQuality = {}
     [/반도체|chip|AI|기술주|테크/i, "반도체·기술"],
     [/지진|홍수|산불|태풍|폭발|붕괴|정전|사이버|항만\s*마비/i, "재난·인프라"],
     [/유가|원유|OPEC|중동|전쟁|공습|미사일|oil/i, "에너지·지정학"],
-    [/중국|China|수출|무역|export/i, "중국·수출"]
+    [/중국|China|수출|무역|export/i, "중국·수출"],
+    [/주택|부동산|가계대출|고용|실업|임금|소비|자영업/i, "생활·부동산"],
+    [/폭염|기후|전력수요|탄소|배출권|재생에너지/i, "기후·전력"]
   ]
     .filter(([pattern]) => pattern.test(combined))
     .map(([, label]) => label)
-    .slice(0, 4);
+    .slice(0, 5);
   const freshCount = headlines.filter(
     (headline) => Date.now() - new Date(headline.publishedAt).getTime() < 24 * 60 * 60 * 1000
   ).length;
@@ -4003,24 +4020,72 @@ function renderNewsIntelligence(headlines, topTopics, analysis, dataQuality = {}
   `;
 }
 
-async function loadNewsAnalysis(details, headline, marketAnalysis) {
-  const output = details.querySelector("[data-news-analysis]");
+function ensureNewsAnalysisDialog() {
+  let dialog = document.querySelector("#newsAnalysisDialog");
+  if (dialog) return dialog;
+
+  dialog = document.createElement("dialog");
+  dialog.id = "newsAnalysisDialog";
+  dialog.className = "news-analysis-dialog";
+  dialog.setAttribute("aria-labelledby", "newsAnalysisDialogTitle");
+  dialog.innerHTML = `
+    <article class="news-analysis-dialog-shell">
+      <header class="news-analysis-dialog-head">
+        <div>
+          <span>DETAILED NEWS BRIEF</span>
+          <h2 id="newsAnalysisDialogTitle">기사 상세 요약</h2>
+          <p id="newsAnalysisDialogMeta"></p>
+        </div>
+        <button type="button" data-close-news-dialog aria-label="기사 상세 요약 닫기">
+          <span aria-hidden="true">×</span>
+        </button>
+      </header>
+      <div class="news-analysis-dialog-body" data-dialog-news-analysis></div>
+    </article>
+  `;
+  dialog.querySelector("[data-close-news-dialog]")?.addEventListener("click", () => dialog.close());
+  dialog.addEventListener("click", (event) => {
+    if (event.target === dialog) dialog.close();
+  });
+  dialog.addEventListener("close", () => {
+    state.activeNewsSummaryKey = null;
+  });
+  document.body.append(dialog);
+  return dialog;
+}
+
+async function openNewsAnalysisDialog(headline, marketAnalysis) {
+  const dialog = ensureNewsAnalysisDialog();
+  const output = dialog.querySelector("[data-dialog-news-analysis]");
   const summaryKey = getNewsSummaryKey(headline);
-  const cachedSummary = state.newsSummaryResults.get(summaryKey);
-  if (cachedSummary) {
-    renderNewsAnalysisResult(output, cachedSummary);
-    details.dataset.loaded = "true";
-    requestAnimationFrame(updateChapterHeight);
-    return;
-  }
-  details.dataset.loaded = "loading";
+  const title = dialog.querySelector("#newsAnalysisDialogTitle");
+  const meta = dialog.querySelector("#newsAnalysisDialogMeta");
+  state.activeNewsSummaryKey = summaryKey;
+  title.textContent = headline.title || "기사 상세 요약";
+  meta.textContent = `${headline.source || "출처 확인 중"} · ${formatExactDate(headline.publishedAt, "게시일 미확인")} · ${headline.importanceLabel || "선별"}`;
   output.innerHTML = `
     <div class="analysis-loading">
       <span></span>
-      <p>기사 원문을 정리하고 기사 시점의 시장 가격과 연결하고 있습니다.</p>
+      <p>기사 내용과 경제 전달 경로를 구조화하고 있습니다.</p>
     </div>
   `;
-  updateChapterHeight();
+  if (!dialog.open) dialog.showModal();
+
+  const cachedSummary = state.newsSummaryResults.get(summaryKey);
+  if (cachedSummary) {
+    renderNewsAnalysisResult(output, cachedSummary);
+    return;
+  }
+
+  const result = await resolveNewsAnalysis(headline, marketAnalysis);
+  if (state.activeNewsSummaryKey !== summaryKey || !dialog.open) return;
+  renderNewsAnalysisResult(output, result);
+}
+
+async function resolveNewsAnalysis(headline, marketAnalysis) {
+  const summaryKey = getNewsSummaryKey(headline);
+  const cachedSummary = state.newsSummaryResults.get(summaryKey);
+  if (cachedSummary) return cachedSummary;
 
   try {
     const response = await fetch("/api/news-analysis", {
@@ -4038,25 +4103,31 @@ async function loadNewsAnalysis(details, headline, marketAnalysis) {
     if (!response.ok) throw new Error(`News analysis failed: ${response.status}`);
     const result = await response.json();
     cacheNewsSummary(summaryKey, result);
-    renderNewsAnalysisResult(output, result);
+    return result;
   } catch {
     const fallback = buildLocalNewsAnalysis(headline, marketAnalysis);
     cacheNewsSummary(summaryKey, fallback);
-    renderNewsAnalysisResult(output, fallback);
-  } finally {
-    details.dataset.loaded = "true";
-    requestAnimationFrame(updateChapterHeight);
+    return fallback;
   }
 }
 
 function renderNewsAnalysisResult(output, result) {
   const checkpoints = Array.isArray(result.checkpoints) ? result.checkpoints.slice(0, 3) : [];
-  const keyPoints = Array.isArray(result.keyPoints) ? result.keyPoints.slice(0, 3) : [];
+  const keyPoints = Array.isArray(result.keyPoints) ? result.keyPoints.slice(0, 5) : [];
+  const transmissionPath = Array.isArray(result.transmissionPath) && result.transmissionPath.length
+    ? result.transmissionPath.slice(0, 4)
+    : ["기사·발표", "기대 변화", "가격·거래량 반응", "한국 경제 전달 여부"];
+  const timeHorizon = Array.isArray(result.timeHorizon) && result.timeHorizon.length
+    ? result.timeHorizon.slice(0, 3)
+    : ["즉시: 가격과 거래량 반응", "수일~수주: 후속 기사와 공식 자료", "수개월: 실물지표와 기업 실적"];
+  const counterSignals = Array.isArray(result.counterSignals) && result.counterSignals.length
+    ? result.counterSignals.slice(0, 2)
+    : ["기사 방향과 가격 반응이 다르면 영향을 낮춰 봅니다.", "후속 공식 자료가 확인하지 못하면 결론을 보류합니다."];
   const isArticleBased = result.contentBasis === "article";
   const isAiGenerated = result.aiGenerated === true;
   const contentBasis = isArticleBased ? "원문 확인 기반" : "제목 기반";
-  const summaryLabel = isAiGenerated ? "AI 재작성 요약" : "규칙 기반 재작성";
-  const pointsLabel = isArticleBased ? "핵심 사실" : "읽는 포인트";
+  const summaryLabel = isAiGenerated ? "AI 재작성 요약" : "규칙 기반 상세 요약";
+  const pointsLabel = isArticleBased ? "확인된 핵심 단서" : "제목에서 읽을 수 있는 범위";
   const marketBasis = result.marketContextBasis === "post-article"
     ? "기사 이후 가격"
     : result.marketContextBasis === "article-time"
@@ -4071,21 +4142,21 @@ function renderNewsAnalysisResult(output, result) {
     <div class="ai-result-head">
       <div class="ai-result-tags">
         <span data-tone="${escapeHtml(result.tone || "watch")}">${escapeHtml(result.signal || "혼합 신호")}</span>
-        <strong class="ai-summary-badge" data-ai="${isAiGenerated}">${isAiGenerated ? "AI 요약" : "AI 미사용 · 규칙 재작성"}</strong>
+        <strong class="ai-summary-badge" data-ai="${isAiGenerated}">${isAiGenerated ? "AI 요약" : "AI 미사용 · 규칙 분석"}</strong>
       </div>
-      <em>${escapeHtml(result.engineLabel || "규칙 기반 재작성")} · ${contentBasis} · ${marketBasis} · ${sourceBasis} · 신뢰도 ${escapeHtml(result.confidence || "중간")}</em>
+      <em>${escapeHtml(result.engineLabel || "규칙 기반 상세 분석")} · ${contentBasis} · ${marketBasis} · ${sourceBasis} · 신뢰도 ${escapeHtml(result.confidence || "중간")}</em>
     </div>
     <section class="news-source-panel">
       <header>
-        <strong>기사 출처 정보</strong>
+        <strong>출처와 기준</strong>
         ${originalUrl !== "#" ? `<a href="${escapeHtml(originalUrl)}" target="_blank" rel="noopener noreferrer">원문 보기 <span aria-hidden="true">↗</span></a>` : "<span>원문 주소 미확인</span>"}
       </header>
       <dl>
         <div><dt>언론사</dt><dd>${escapeHtml(sourceInfo.publisher || "확인되지 않음")}</dd></div>
         <div><dt>기자·작성자</dt><dd>${escapeHtml(sourceInfo.author || "원문 메타데이터에서 확인되지 않음")}</dd></div>
-        <div><dt>정확한 게시일</dt><dd>${escapeHtml(formatExactDate(sourceInfo.publishedAt, "확인되지 않음"))}</dd></div>
+        <div><dt>게시일</dt><dd>${escapeHtml(formatExactDate(sourceInfo.publishedAt, "확인되지 않음"))}</dd></div>
         <div><dt>수정일</dt><dd>${escapeHtml(formatExactDate(sourceInfo.modifiedAt, "수정 정보 없음"))}</dd></div>
-        <div><dt>요약 방식</dt><dd>${isAiGenerated ? "생성형 AI가 원문을 새 문장으로 요약" : "생성형 AI 미사용 · 원문 문장을 싣지 않고 규칙으로 재작성"}</dd></div>
+        <div><dt>분석 기준</dt><dd>${isAiGenerated ? "생성형 AI가 확인 가능한 입력만 재작성" : isArticleBased ? "원문에서 주체·수치·방향을 추출해 규칙으로 재작성" : "본문 미확인 · 제목과 시장 데이터만 규칙으로 연결"}</dd></div>
       </dl>
     </section>
     <section class="ai-article-summary">
@@ -4101,6 +4172,20 @@ function renderNewsAnalysisResult(output, result) {
         ${keyPoints.map((item, index) => `<span><b>${String(index + 1).padStart(2, "0")}</b><i>${escapeHtml(item)}</i></span>`).join("")}
       </div>
     ` : ""}
+    <section class="news-transmission-section">
+      <header>
+        <strong>경제 전달 경로</strong>
+        <span>기사가 실제 경제와 가격에 닿는 순서</span>
+      </header>
+      <ol>
+        ${transmissionPath.map((step, index) => `
+          <li>
+            <i>${String(index + 1).padStart(2, "0")}</i>
+            <span>${escapeHtml(step)}</span>
+          </li>
+        `).join("")}
+      </ol>
+    </section>
     <div class="ai-section-title">
       <strong>경제적 의미</strong>
       <span>기사 내용이 시장과 한국에 이어지는 경로</span>
@@ -4119,18 +4204,37 @@ function renderNewsAnalysisResult(output, result) {
         <p>${escapeHtml(result.koreaImpact || "환율과 외국인 수급으로 이어지는지 확인합니다.")}</p>
       </article>
     </div>
-    ${checkpoints.length ? `
-      <div class="ai-checkpoints">
+    <section class="news-horizon-section">
+      <header>
+        <strong>시점별 확인</strong>
+        <span>같은 기사도 시간에 따라 영향이 달라집니다.</span>
+      </header>
+      <div>
+        ${timeHorizon.map((item, index) => `
+          <article>
+            <i>${["NOW", "NEXT", "LATER"][index] || `T${index + 1}`}</i>
+            <p>${escapeHtml(item)}</p>
+          </article>
+        `).join("")}
+      </div>
+    </section>
+    <div class="news-verification-grid">
+      <section class="ai-checkpoints">
         <strong>다음에 확인할 것</strong>
         ${checkpoints.map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
-      </div>
-    ` : ""}
+      </section>
+      <section class="news-counter-signals">
+        <strong>이 해석이 약해지는 조건</strong>
+        ${counterSignals.map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
+      </section>
+    </div>
     <div class="ai-limitation">
       <strong>주의할 점</strong>
       <span>${escapeHtml(result.limitation || "기사 원문과 실제 가격 반응을 함께 확인해야 합니다.")}</span>
     </div>
   `;
 }
+
 function drawChart() {
   if (!state.snapshot) return;
   const market =
@@ -4639,25 +4743,44 @@ function buildLocalNewsAnalysis(headline, marketAnalysis = {}) {
   const text = `${headline.title || ""} ${headline.topic || ""}`;
   const hasRates = /금리|연준|Fed|채권|물가|inflation|CPI|yield/i.test(text);
   const hasFx = /환율|달러|원화|위안|엔화|dollar/i.test(text);
-  const hasChips = /반도체|chip|semiconductor|AI|기술주/i.test(text);
-  const hasEnergy = /유가|원유|OPEC|중동|전쟁|oil|WTI/i.test(text);
-  const hasChina = /중국|China|수출|무역|export/i.test(text);
-  const negativeCount = (text.match(/급락|폭락|경고|둔화|위기|부담|전쟁|하락/gi) || []).length;
-  const positiveCount = (text.match(/호조|회복|돌파|개선|완화|상승|증가/gi) || []).length;
+  const hasChips = /반도체|chip|semiconductor|AI|기술주|HBM|데이터센터/i.test(text);
+  const hasEnergy = /유가|원유|OPEC|중동|전쟁|oil|WTI|전력/i.test(text);
+  const hasChina = /중국|China|수출|무역|관세|export/i.test(text);
+  const hasHouseholds = /주택|부동산|가계|대출|고용|실업|임금|소비|자영업/i.test(text);
+  const negativeCount = (text.match(/급락|폭락|경고|둔화|위기|부담|전쟁|하락|감소|악화/gi) || []).length;
+  const positiveCount = (text.match(/호조|회복|돌파|개선|완화|상승|증가|확대/gi) || []).length;
   const tone = negativeCount > positiveCount ? "negative" : positiveCount > negativeCount ? "positive" : "watch";
   const signal = tone === "negative" ? "경계 신호" : tone === "positive" ? "개선 가능성" : "혼합 신호";
   const themes = [
     hasRates && "금리·물가",
     hasFx && "환율",
-    hasChips && "반도체",
+    hasChips && "반도체·기술",
     hasEnergy && "에너지·지정학",
-    hasChina && "중국·수출"
+    hasChina && "중국·무역",
+    hasHouseholds && "생활·가계"
   ].filter(Boolean);
   const themeText = themes.join(", ") || "시장 심리";
   const checkpoints = [
     hasFx ? "원/달러가 기사 방향과 같은 쪽으로 움직이는지" : "원/달러와 외국인 수급 반응",
     hasRates ? "미국 장기금리와 성장주 반응" : hasChips ? "NASDAQ과 한국 반도체 대형주 반응" : "KOSPI와 S&P 500의 실제 등락",
-    hasEnergy ? "WTI가 추가 상승하는지" : hasChina ? "중국 수요와 한국 수출 지표" : "후속 기사와 원문 수치"
+    hasEnergy ? "WTI가 추가 상승하는지" : hasChina ? "중국 수요와 한국 수출 지표" : hasHouseholds ? "대출·고용·소비의 후속 공식 통계" : "후속 기사와 원문 수치"
+  ];
+  const transmissionPath = hasRates
+    ? ["금리·물가 헤드라인", "채권금리·달러 기대", "주식 할인율·대출금리", "원/달러·내수·외국인 수급"]
+    : hasChips
+      ? ["수요·투자 헤드라인", "기술주·메모리 기대", "수출·설비투자", "한국 반도체 이익·KOSPI 수급"]
+      : hasEnergy
+        ? ["공급·지정학 충격", "유가·운임", "기업 원가·기대물가", "무역수지·소비·금리 기대"]
+        : hasHouseholds
+          ? ["가계·주택 지표", "대출비용·소득", "소비·연체·거래량", "내수·금융건전성"]
+          : ["새 헤드라인", "기대 변화", "가격·거래량 반응", "한국 시장 전달 여부"];
+  const summary = `기사 본문을 가져오지 못해 제목 기반 규칙 분석만 제공합니다. 「${headline.title || "제목 미확인"}」은 ${themeText} 변수가 현재 ${marketAnalysis.regime || "시장"} 흐름에 영향을 줄 가능성을 다룹니다. 제목만으로 사건의 규모나 인과관계를 확정하지 않으며, ${transmissionPath.slice(0, 3).join(" → ")} 순서가 실제 가격과 후속 자료에서 확인되는지 봐야 합니다.`;
+  const keyPoints = [
+    `기사 범위: ${themeText} 관련 변화`,
+    `확인 수준: 본문 미확인 · 제목에 나타난 표현만 사용`,
+    "수치 단서: 원문을 확보하지 못해 임의의 숫자를 만들지 않음",
+    `1차 전달 경로: ${transmissionPath.slice(0, 3).join(" → ")}`,
+    `한국 점검: ${checkpoints[0]}`
   ];
 
   return {
@@ -4666,7 +4789,7 @@ function buildLocalNewsAnalysis(headline, marketAnalysis = {}) {
     confidence: "낮음",
     aiGenerated: false,
     analysisMode: "rules",
-    engineLabel: "헤드라인 규칙 기반 재작성",
+    engineLabel: "헤드라인 규칙 기반 상세 분석",
     contentBasis: "headline",
     marketContextBasis: "current",
     marketContextAt: null,
@@ -4678,14 +4801,27 @@ function buildLocalNewsAnalysis(headline, marketAnalysis = {}) {
       modifiedAt: null,
       originalUrl: headline.url || ""
     },
-    summary: `이 헤드라인은 ${themeText} 변수가 현재 ${marketAnalysis.regime || "시장"} 흐름에 어떤 영향을 주는지 확인해야 하는 기사입니다. 제목의 방향보다 실제 환율·금리·주가 반응이 더 중요합니다.`,
+    summary,
+    keyPoints,
+    transmissionPath,
+    timeHorizon: [
+      `즉시: ${transmissionPath[1]}과 가격 반응 확인`,
+      `수일~수주: ${checkpoints[1]}`,
+      `수개월: ${transmissionPath[3]}로 실제 영향이 이어지는지 확인`
+    ],
+    counterSignals: [
+      `${checkpoints[0]}이 기사 방향과 다르면 단기 영향을 낮춰 봅니다.`,
+      "후속 원문과 공식 자료가 제목의 방향을 확인하지 못하면 판단을 보류합니다."
+    ],
     whyItMatters: hasRates
       ? "금리와 물가는 기업 가치평가, 채권금리, 달러를 동시에 움직여 여러 자산에 파급될 수 있습니다."
       : hasEnergy
         ? "에너지와 지정학 변수는 물가 기대와 기업 비용을 동시에 바꿔 중앙은행 기대까지 흔들 수 있습니다."
         : hasChips
           ? "반도체는 한국 수출과 KOSPI 대형주의 이익 기대에 직접 연결되는 비중이 큰 변수입니다."
-          : "헤드라인이 반복 보도되면 투자자의 기대가 바뀌고 가격 변동성이 커질 수 있습니다.",
+          : hasHouseholds
+            ? "고용·대출·주택은 가계의 실제 소비 여력과 금융건전성을 동시에 보여주는 변수입니다."
+            : "헤드라인이 반복 보도되면 투자자의 기대가 바뀌고 가격 변동성이 커질 수 있습니다.",
     marketImpact: hasFx
       ? "달러와 채권금리, 한국 주식의 외국인 수급을 같이 봐야 합니다. 환율만 움직이고 주가가 버티면 충격은 제한적일 수 있습니다."
       : hasRates
@@ -4697,9 +4833,11 @@ function buildLocalNewsAnalysis(headline, marketAnalysis = {}) {
       ? "한국에서는 반도체 수출, 중국 수요, 원/달러가 함께 움직이는지가 핵심입니다. 수출 호재라도 환율 급등과 외국인 매도가 겹치면 지수 반응은 약할 수 있습니다."
       : hasRates || hasFx
         ? "한국은 대외금리와 환율 변화에 민감합니다. 원화 약세가 길어지면 외국인 수급과 수입물가, 금리 인하 여력에 부담이 됩니다."
-        : "한국 시장에서는 대형 수출주와 원/달러, 외국인 순매수 반응을 통해 영향이 실제로 전달되는지 확인합니다.",
+        : hasHouseholds
+          ? "한국에서는 대출금리와 소득, 거래량, 연체율이 같은 방향인지 봐야 체감경기와 금융 위험을 구분할 수 있습니다."
+          : "한국 시장에서는 대형 수출주와 원/달러, 외국인 순매수 반응을 통해 영향이 실제로 전달되는지 확인합니다.",
     checkpoints,
-    limitation: "원문과 생성형 AI를 사용하지 않고 헤드라인을 규칙으로 재작성한 낮은 신뢰도의 요약입니다. 기사 원문, 발표 시점, 기저효과와 이미 가격에 반영됐는지를 반드시 함께 확인하세요."
+    limitation: "기사 원문과 생성형 AI를 사용하지 않은 제목 기반 규칙 분석입니다. 제목에 없는 사건 규모·원인·수치를 추측하지 않았으며 원문과 후속 공식 자료를 반드시 확인해야 합니다."
   };
 }
 

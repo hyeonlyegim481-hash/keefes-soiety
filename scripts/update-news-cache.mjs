@@ -36,7 +36,7 @@ async function main() {
   }
 
   const snapshot = await getSnapshot({ forceNews: true, preferScheduledNews: false });
-  const headlines = snapshot.headlines.slice(0, 28);
+  const headlines = snapshot.headlines.slice(0, 36);
   const seen = buildSeenIndex(previous.seen, headlines, now);
   const analyses = pruneAnalyses(previous.analyses, seen);
   const candidates = headlines
