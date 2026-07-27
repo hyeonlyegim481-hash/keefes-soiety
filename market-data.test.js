@@ -173,6 +173,40 @@ test("builds a complete market record with timing, source and interval metadata"
   assert.equal(record.seriesMeta.pointCount, 3);
 });
 
+test("uses and appends a newer completed metadata session when the chart lags", () => {
+  const item = MARKET_CONFIG.find((market) => market.id === "kospi");
+  const currentTime = Date.UTC(2026, 6, 27, 9, 5, 30);
+  const record = buildMarketRecord({
+    item,
+    now: Date.UTC(2026, 6, 27, 15, 30),
+    timestamps: [
+      Date.UTC(2026, 6, 23) / 1000,
+      Date.UTC(2026, 6, 24) / 1000
+    ],
+    closes: [7096.9, 6690.6],
+    meta: {
+      regularMarketPrice: 6755.75,
+      regularMarketTime: currentTime / 1000,
+      exchangeTimezoneName: "Asia/Seoul",
+      currentTradingPeriod: {
+        regular: {
+          start: Date.UTC(2026, 6, 27, 0) / 1000,
+          end: Date.UTC(2026, 6, 27, 6, 30) / 1000
+        }
+      }
+    }
+  });
+
+  assert.equal(record.value, 6755.8);
+  assert.equal(record.previousClose, 6690.6);
+  assert.equal(record.previousTradingDate, "2026-07-24");
+  assert.equal(record.changePercent, 0.97);
+  assert.equal(record.asOf, new Date(currentTime).toISOString());
+  assert.equal(record.series.at(-1).value, 6755.8);
+  assert.equal(record.seriesMeta.endAt, new Date(currentTime).toISOString());
+  assert.equal(record.seriesMeta.quality.metadataPointCount, 1);
+});
+
 test("filters one year of daily prices into readable chart periods", () => {
   const series = Array.from({ length: 366 }, (_, index) => ({
     time: new Date(now - (365 - index) * day),

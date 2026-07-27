@@ -244,6 +244,7 @@ export function isRegularMarketOpen(meta = {}, now = Date.now()) {
 export function resolveMarketPoint(meta = {}, series = [], now = Date.now()) {
   const lastPoint = series.at(-1);
   const marketOpen = isRegularMarketOpen(meta, now);
+  const timezone = meta?.exchangeTimezoneName || "UTC";
   const metaValue = Number(meta?.regularMarketPrice);
   const metaTime = Number(meta?.regularMarketTime);
   const metaPoint = {
@@ -256,8 +257,17 @@ export function resolveMarketPoint(meta = {}, series = [], now = Date.now()) {
     Number.isFinite(metaPoint.value) &&
     metaPoint.value > 0 &&
     Number.isFinite(Date.parse(metaPoint.time));
+  const metaTimestamp = Date.parse(metaPoint.time);
+  const lastTimestamp = Date.parse(lastPoint?.time);
+  const metaIsNewerCompletedSession =
+    hasMetaPoint &&
+    metaTimestamp <= now + 5 * 60 * 1000 &&
+    (!Number.isFinite(lastTimestamp) ||
+      (metaTimestamp > lastTimestamp &&
+        getDateKey(metaPoint.time, timezone) !==
+          getDateKey(lastPoint?.time, timezone)));
 
-  if (marketOpen !== false && hasMetaPoint) {
+  if ((marketOpen !== false || metaIsNewerCompletedSession) && hasMetaPoint) {
     return { ...metaPoint, marketOpen };
   }
   return {
@@ -513,8 +523,16 @@ export function buildMarketRecord({
   );
   const movement = calculateMarketChange(current, previousCloseInfo, item);
   const timing = buildMarketTiming(meta, asOf, now, item);
+  const lastNormalizedPoint = normalized.series.at(-1);
+  const appendCurrentPoint =
+    Date.parse(currentPoint.time) > Date.parse(lastNormalizedPoint?.time) &&
+    getDateKey(currentPoint.time, timing.timezone) !==
+      getDateKey(lastNormalizedPoint?.time, timing.timezone);
+  const completeSeries = appendCurrentPoint
+    ? [...normalized.series, currentPoint]
+    : normalized.series;
   const safePointLimit = Math.max(2, Math.floor(Number(maxSeriesPoints) || 280));
-  const series = normalized.series.slice(-safePointLimit).map((point) => ({
+  const series = completeSeries.slice(-safePointLimit).map((point) => ({
     time: point.time,
     value: roundByMagnitude(point.value)
   }));
@@ -550,7 +568,11 @@ export function buildMarketRecord({
       interval: chartInterval,
       intervalMinutes: normalized.inferredIntervalMinutes,
       pointCount: series.length,
-      quality: normalized.quality
+      quality: {
+        ...normalized.quality,
+        outputPointCount: completeSeries.length,
+        metadataPointCount: appendCurrentPoint ? 1 : 0
+      }
     },
     chartRange,
     chartInterval,
