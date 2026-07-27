@@ -103,6 +103,14 @@ test("connection status exposes presence only and never a token value", () => {
   assert.equal(status.configured, true);
   assert.equal(status.hasReadWriteToken, true);
   assert.equal(JSON.stringify(status).includes("secret-value"), false);
+
+  const runtimeOidc = getBlobConnectionStatus({
+    VERCEL: "1",
+    BLOB_STORE_ID: "store_example"
+  });
+  assert.equal(runtimeOidc.configured, true);
+  assert.equal(runtimeOidc.authMode, "oidc");
+  assert.equal(runtimeOidc.hasOidc, true);
 });
 
 test("bundle contains only the required version files and filtered data", () => {

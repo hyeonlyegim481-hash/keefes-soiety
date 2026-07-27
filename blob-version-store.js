@@ -33,7 +33,8 @@ export class BlobVersionValidationError extends Error {
 export function getBlobConnectionStatus(env = process.env) {
   const hasReadWriteToken = Boolean(env?.BLOB_READ_WRITE_TOKEN);
   const hasOidc =
-    Boolean(env?.VERCEL_OIDC_TOKEN) && Boolean(env?.BLOB_STORE_ID);
+    Boolean(env?.BLOB_STORE_ID) &&
+    (Boolean(env?.VERCEL_OIDC_TOKEN) || env?.VERCEL === "1");
   return {
     configured: hasReadWriteToken || hasOidc,
     authMode: hasReadWriteToken ? "read-write-token" : hasOidc ? "oidc" : "none",
