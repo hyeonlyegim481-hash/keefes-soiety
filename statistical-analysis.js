@@ -148,11 +148,75 @@ function findMacroGrowth(macro, pattern) {
   return finite(item?.changePercent) ? Number(item.changePercent) : null;
 }
 
+function changeAtObservation(points, observationIndex, days = 1) {
+  const current = points[observationIndex];
+  if (!current) return null;
+  const target = current.time - days * DAY_MS;
+  const baseline = points
+    .slice(0, observationIndex)
+    .filter((point) => point.time <= target)
+    .at(-1);
+  return baseline ? percentChange(current.value, baseline.value) : null;
+}
+
+function buildSignalsAtOffset(markets, macro, offset) {
+  const observations = Object.fromEntries(
+    markets.map((market) => {
+      const points = cleanSeries(market.series);
+      const index = points.length - 1 - offset;
+      return [
+        market.id,
+        {
+          value: points[index]?.value ?? null,
+          change: changeAtObservation(points, index)
+        }
+      ];
+    })
+  );
+  const riskSignals = Object.entries(observations)
+    .map(([id, observation]) => riskSign(id, observation.change))
+    .filter((sign) => sign !== 0);
+  const equityIds = ["kospi", "kosdaq", "sp500", "nasdaq"];
+  const knownEquities = equityIds.filter((id) => finite(observations[id]?.change));
+  const positiveEquities = knownEquities.filter(
+    (id) => Number(observations[id].change) > 0
+  );
+  return {
+    riskScore: null,
+    riskDirection: riskSignals.length
+      ? Math.sign(riskSignals.reduce((sum, sign) => sum + sign, 0))
+      : 0,
+    equityBreadth: knownEquities.length
+      ? positiveEquities.length / knownEquities.length
+      : 0.5,
+    vix: observations.vix?.value ?? null,
+    wtiChange: observations.wti?.change ?? null,
+    fxChange: observations.usdkrw?.change ?? null,
+    nasdaqChange: observations.nasdaq?.change ?? null,
+    kospiChange: observations.kospi?.change ?? null,
+    exportGrowth: findMacroGrowth(macro, /수출/),
+    domesticGrowth: findMacroGrowth(macro, /소매|소비|내수/)
+  };
+}
+
+function deriveRegimeObservationHistory(markets, macro) {
+  return [2, 1].map((offset) => {
+    const signals = buildSignalsAtOffset(markets, macro, offset);
+    return Object.fromEntries(
+      ECONOMIC_REGIME_RULES.map((rule) => [rule.id, Boolean(rule.test(signals))])
+    );
+  });
+}
+
 export function evaluateEconomicRegimes(signals, observationHistory = []) {
   const prior = Array.isArray(observationHistory) ? observationHistory.slice(-2) : [];
   return ECONOMIC_REGIME_RULES.map((rule) => {
     const current = Boolean(rule.test(signals));
-    const previousMatches = prior.filter((item) => item?.[rule.id] === true).length;
+    let previousMatches = 0;
+    for (let index = prior.length - 1; index >= 0; index -= 1) {
+      if (prior[index]?.[rule.id] !== true) break;
+      previousMatches += 1;
+    }
     const consecutiveObservations = current ? previousMatches + 1 : 0;
     return {
       id: rule.id,
@@ -241,7 +305,10 @@ export function buildStatisticalRuleAnalysis({
     exportGrowth: findMacroGrowth(macro, /수출/),
     domesticGrowth: findMacroGrowth(macro, /소매|소비|내수/)
   };
-  const regimes = evaluateEconomicRegimes(signals, observationHistory);
+  const effectiveObservationHistory = observationHistory.length
+    ? observationHistory
+    : deriveRegimeObservationHistory(markets, macro);
+  const regimes = evaluateEconomicRegimes(signals, effectiveObservationHistory);
   const confirmed = regimes.filter((regime) => regime.status === "confirmed");
   const candidates = regimes.filter((regime) => regime.status === "candidate");
 
@@ -275,6 +342,11 @@ export function buildStatisticalRuleAnalysis({
       sufficientSampleRatio: round(enoughSamplesRatio * 100, 1)
     },
     regimes,
+    regimeObservationBasis: {
+      required: 3,
+      interval: "시장 시계열의 연속 관측",
+      historyCount: effectiveObservationHistory.length
+    },
     currentRegime:
       confirmed[0]?.label ||
       (candidates[0] ? `확정 전: ${candidates[0].label} (${candidates[0].consecutiveObservations}/3)` : "판단 자료 부족"),

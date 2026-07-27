@@ -60,6 +60,37 @@ test("regimes require three consecutive observations before confirmation", () =>
     { "financial-stress": true }
   ]);
   assert.equal(third.find((item) => item.id === "financial-stress").status, "confirmed");
+  const interrupted = evaluateEconomicRegimes(signals, [
+    { "financial-stress": true },
+    { "financial-stress": false }
+  ]);
+  assert.equal(
+    interrupted.find((item) => item.id === "financial-stress").consecutiveObservations,
+    1
+  );
+});
+
+test("market history can confirm a regime without a separate AI or fabricated value", () => {
+  const ids = ["kospi", "kosdaq", "sp500", "nasdaq", "vix", "usdkrw", "wti", "gold"];
+  const markets = ids.map((id, index) => ({
+    id,
+    name: id,
+    value: id === "vix" ? 30 : 100 + index,
+    asOf: "2026-07-27T10:00:00Z",
+    series: series(5, 1, id === "vix" ? 30 : 100 + index).map((point) =>
+      id === "vix" ? { ...point, value: 30 } : point
+    )
+  }));
+  const result = buildStatisticalRuleAnalysis({
+    markets,
+    riskScore: 70,
+    now: Date.parse("2026-07-27T10:05:00Z")
+  });
+  assert.equal(
+    result.regimes.find((item) => item.id === "financial-stress").status,
+    "confirmed"
+  );
+  assert.equal(result.regimeObservationBasis.historyCount, 2);
 });
 
 test("risk, confidence and data quality remain separate", () => {
