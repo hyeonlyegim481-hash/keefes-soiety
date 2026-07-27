@@ -13,8 +13,10 @@ import {
 import {
   APP_VERSION,
   createFeatureLoader,
+  createSnapshotConnectionState,
   createStylesheetLoader,
-  importVersioned
+  importVersioned,
+  resolveSnapshotRefreshFailure
 } from "./runtime-loader.js";
 import {
   canonicalizeCurrentUrl,
@@ -455,6 +457,7 @@ let marketDeepRenderRequest = 0;
 
 let state = {
   snapshot: null,
+  snapshotConnection: createSnapshotConnectionState(),
   sharedDataGraph: null,
   narrative: null,
   selectedMarket: initialUrlState.market || "kospi",
@@ -1324,6 +1327,7 @@ if ("serviceWorker" in navigator) {
 }
 
 setActiveChapter(state.activeChapter, { skipAnimation: true, syncUrl: false });
+globalThis.__KEEFES_MARK_BOOT_READY__?.();
 queueMicrotask(() => {
   refreshSnapshot();
   setInterval(() => {
@@ -1335,6 +1339,11 @@ async function refreshSnapshot() {
   if (state.isRefreshing) return;
   state.isRefreshing = true;
   setConnection("loading", "업데이트");
+  const previousSnapshotState = {
+    snapshot: state.snapshot,
+    sharedDataGraph: state.sharedDataGraph,
+    narrative: state.narrative
+  };
 
   try {
     const snapshot = await fetchSnapshot();
@@ -1353,15 +1362,29 @@ async function refreshSnapshot() {
       }
     }
     render(snapshot);
+    state.snapshotConnection = createSnapshotConnectionState("current");
     updateConnectionStatus(snapshot);
   } catch (error) {
     console.error("[snapshot] refresh failed", error);
+    const failure = resolveSnapshotRefreshFailure({
+      hasSnapshot: Boolean(previousSnapshotState.snapshot),
+      failedAt: new Date().toISOString()
+    });
+    state.snapshotConnection = failure.connection;
+    if (failure.preserveSnapshot) {
+      state.snapshot = previousSnapshotState.snapshot;
+      state.sharedDataGraph = previousSnapshotState.sharedDataGraph;
+      state.narrative = previousSnapshotState.narrative;
+      setConnection(failure.uiState, failure.label);
+      return;
+    }
+
     state.snapshot = null;
     state.sharedDataGraph = null;
     politicsController?.updateSnapshot(null);
     futureController?.updateSnapshot(null);
     renderDataUnavailable();
-    setConnection("error", "자료 수집 실패");
+    setConnection(failure.uiState, failure.label);
   } finally {
     state.isRefreshing = false;
   }
@@ -1617,6 +1640,7 @@ function renderDataProvenance(snapshot) {
             <dl>
               <div><dt>데이터 기준</dt><dd>${Array.isArray(detail?.basisAt) ? detail.basisAt.map(escapeHtml).join("<br>") : escapeHtml(formatExactDate(detail?.basisAt))}</dd></div>
               <div><dt>업데이트</dt><dd>${escapeHtml(formatExactDate(detail?.updatedAt))}</dd></div>
+              ${detail?.lastAttemptAt && detail.lastAttemptAt !== detail.updatedAt ? `<div><dt>마지막 수집 시도</dt><dd>${escapeHtml(formatExactDate(detail.lastAttemptAt))}</dd></div>` : ""}
               <div><dt>수정 여부</dt><dd>${escapeHtml(detail?.revision || "제공기관 갱신 시 수정 가능")}</dd></div>
               <div><dt>계산식</dt><dd>${escapeHtml(detail?.calculation || "원자료 표시")}</dd></div>
               <div><dt>명목·실질</dt><dd>${escapeHtml(detail?.valueType || "지표별 정의에 따름")}</dd></div>
@@ -4050,8 +4074,10 @@ function exportChangeText(item) {
 
 function macroDeltaText(item) {
   if (item?.status !== "official") return "확인 실패";
-  if (item.deltaLabel) return item.deltaLabel;
-  return Number.isFinite(Number(item.delta)) ? signed(Number(item.delta)) : "변화 확인 중";
+  const delta = item.deltaLabel || (
+    Number.isFinite(Number(item.delta)) ? signed(Number(item.delta)) : "변화 확인 중"
+  );
+  return item.stale ? `이전값 · ${delta}` : delta;
 }
 
 function macroDeltaClass(item) {
@@ -4130,11 +4156,11 @@ function renderMacro(macro, analysis, narrative = state.narrative) {
       const node = document.createElement("article");
       const sourceUrl = safeNewsUrl(item.sourceUrl);
       node.className = "macro-item";
-      node.dataset.status = item.status || "unavailable";
+      node.dataset.status = item.stale ? "stale" : item.status || "unavailable";
       node.innerHTML = `
         <header>
           <span class="macro-label">${escapeHtml(item.label)}</span>
-          <span class="state-badge" data-mood="${escapeHtml(item.mood || "neutral")}">${escapeHtml(item.cadence)}</span>
+          <span class="state-badge" data-mood="${escapeHtml(item.mood || "neutral")}">${escapeHtml(item.status !== "official" ? `${item.cadence} · 실패` : item.stale ? `${item.cadence} · 이전값` : item.cadence)}</span>
         </header>
         <strong class="macro-value">${escapeHtml(macroValueText(item, true))}</strong>
         <div class="macro-meta">
@@ -4151,6 +4177,7 @@ function renderMacro(macro, analysis, narrative = state.narrative) {
                 <div><span>원자료 제공기관</span><strong><a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noreferrer">${escapeHtml(item.source)}</a></strong></div>
                 <div><span>데이터 기준일</span><strong>${escapeHtml(item.periodLabel || formatExactDate(item.asOf))}</strong></div>
                 <div><span>업데이트 시간</span><strong>${escapeHtml(formatExactDate(item.fetchedAt))}</strong></div>
+                ${item.lastAttemptAt && item.lastAttemptAt !== item.fetchedAt ? `<div><span>마지막 수집 시도</span><strong>${escapeHtml(formatExactDate(item.lastAttemptAt))}</strong></div>` : ""}
                 <div><span>잠정·수정 여부</span><strong>${escapeHtml(method.revision)}</strong></div>
                 <div><span>계산식</span><strong>${escapeHtml(method.calculation)}</strong></div>
                 <div><span>명목·실질</span><strong>${escapeHtml(method.valueType)}</strong></div>
@@ -5863,7 +5890,7 @@ function updateConnectionStatus(snapshot) {
   const quality = snapshot.dataQuality;
   const missingCount = quality?.missingMarketIds?.length || 0;
   const liveCount = snapshot.markets.filter((market) => market.live).length;
-  if (missingCount > 0) {
+  if (quality?.partialSuccess || missingCount > 0) {
     setConnection("partial", "일부 데이터");
   } else if (liveCount === snapshot.markets.length && liveCount > 0) {
     setConnection("live", "실시간");

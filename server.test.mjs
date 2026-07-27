@@ -3,7 +3,9 @@ import assert from "node:assert/strict";
 import {
   buildAnalysis,
   buildArticleMarketContext,
+  buildDataQuality,
   fetchMarket,
+  normalizeAvailableNewsFeedCount,
   rankAndDedupeHeadlines,
   resolveMarketPoint,
   resolveMarketStatus,
@@ -269,4 +271,35 @@ test("returns 판단 자료 부족 instead of treating a missing previous close 
   assert.deepEqual(analysis.missingInputs, ["kospiChange"]);
   assert.match(analysis.pulse, /0으로 바꾸지 않고/);
   assert.doesNotMatch(JSON.stringify(analysis), /KOSPI[^"]*\+0/);
+});
+
+test("preserves an explicit zero available-news count", () => {
+  assert.equal(normalizeAvailableNewsFeedCount(0, 12), 0);
+  assert.equal(normalizeAvailableNewsFeedCount("0", 12), 0);
+  assert.equal(normalizeAvailableNewsFeedCount("invalid", 7), 7);
+  assert.equal(normalizeAvailableNewsFeedCount(-3, 7), 0);
+});
+
+test("does not count unavailable markets as available", () => {
+  const quality = buildDataQuality([
+    {
+      id: "kospi",
+      status: "closed",
+      asOf: "2026-07-28T01:00:00.000Z",
+      live: false,
+      changeAvailable: true,
+      seriesMeta: { quality: {} }
+    },
+    {
+      id: "kosdaq",
+      status: "unavailable",
+      asOf: null,
+      live: false,
+      changeAvailable: false,
+      seriesMeta: { quality: {} }
+    }
+  ]);
+
+  assert.equal(quality.availableMarketCount, 1);
+  assert.ok(quality.missingMarketIds.includes("kosdaq"));
 });

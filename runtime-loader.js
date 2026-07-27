@@ -2,6 +2,42 @@ import "./app-version.js";
 
 export const APP_VERSION = String(globalThis.KEEFES_APP_VERSION || "dev");
 export const DEFAULT_RESOURCE_TIMEOUT_MS = 10_000;
+const SNAPSHOT_CONNECTION_STATUSES = new Set([
+  "idle",
+  "current",
+  "stale",
+  "error"
+]);
+
+export function createSnapshotConnectionState(status = "idle", failedAt = null) {
+  const normalizedStatus = SNAPSHOT_CONNECTION_STATUSES.has(status)
+    ? status
+    : "idle";
+  return {
+    status: normalizedStatus,
+    failedAt:
+      normalizedStatus === "stale" || normalizedStatus === "error"
+        ? String(failedAt || "") || null
+        : null
+  };
+}
+
+export function resolveSnapshotRefreshFailure({
+  hasSnapshot = false,
+  failedAt = null
+} = {}) {
+  const preserveSnapshot = Boolean(hasSnapshot);
+  return {
+    connection: createSnapshotConnectionState(
+      preserveSnapshot ? "stale" : "error",
+      failedAt
+    ),
+    preserveSnapshot,
+    renderUnavailable: !preserveSnapshot,
+    uiState: preserveSnapshot ? "stale" : "error",
+    label: preserveSnapshot ? "이전 데이터 표시 중" : "자료 수집 실패"
+  };
+}
 
 export class ResourceLoadError extends Error {
   constructor(message, { resource = "", code = "load-error", cause } = {}) {

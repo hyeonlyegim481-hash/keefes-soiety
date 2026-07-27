@@ -625,6 +625,76 @@
       </div>
     </dialog>
 
+    <script data-app-boot-guard>
+      (() => {
+        const BOOT_TIMEOUT_MS = 12_000;
+        const BANNER_ID = "appBootFailure";
+        const state = {
+          status: "pending",
+          startedAt: new Date().toISOString(),
+          readyAt: null,
+          failedAt: null,
+          failureReason: null,
+          retryRequested: false,
+          timeoutMs: BOOT_TIMEOUT_MS,
+          timer: null
+        };
+
+        const removeBanner = () => {
+          document.getElementById(BANNER_ID)?.remove();
+        };
+
+        const showFailure = (reason = "timeout") => {
+          if (state.status === "ready" || document.getElementById(BANNER_ID)) return;
+          state.status = "failed";
+          state.failedAt = new Date().toISOString();
+          state.failureReason = reason;
+          console.error("[app-boot] core module did not become ready", { reason });
+
+          const banner = document.createElement("section");
+          banner.id = BANNER_ID;
+          banner.className = "boot-failure-banner";
+          banner.setAttribute("role", "alert");
+          banner.setAttribute("aria-live", "assertive");
+          banner.innerHTML = `
+            <div>
+              <strong>화면 파일을 불러오지 못했습니다.</strong>
+              <p>인터넷 연결이나 저장된 앱 파일에 문제가 있을 수 있습니다. 아래 버튼으로 한 번 다시 불러와 주세요.</p>
+            </div>
+            <button type="button" data-boot-retry>다시 불러오기</button>
+          `;
+          banner.querySelector("[data-boot-retry]")?.addEventListener("click", (event) => {
+            if (state.retryRequested) return;
+            state.retryRequested = true;
+            const button = event.currentTarget;
+            button.disabled = true;
+            button.textContent = "다시 불러오는 중";
+            window.location.reload();
+          }, { once: true });
+
+          const host = document.querySelector(".app-shell") || document.body;
+          host.prepend(banner);
+        };
+
+        const handleResourceError = (event) => {
+          const target = event.target;
+          if (target?.tagName !== "SCRIPT" || target.type !== "module") return;
+          showFailure("module-load-error");
+        };
+
+        window.addEventListener("error", handleResourceError, true);
+        window.__KEEFES_BOOT_STATE__ = state;
+        window.__KEEFES_MARK_BOOT_READY__ = () => {
+          if (state.timer) clearTimeout(state.timer);
+          window.removeEventListener("error", handleResourceError, true);
+          state.status = "ready";
+          state.readyAt = new Date().toISOString();
+          state.failureReason = null;
+          removeBanner();
+        };
+        state.timer = window.setTimeout(() => showFailure("timeout"), BOOT_TIMEOUT_MS);
+      })();
+    </script>
     <script type="module" src="/app.js"></script>
   </body>
 </html>

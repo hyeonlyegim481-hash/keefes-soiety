@@ -4,7 +4,9 @@ import {
   APP_VERSION,
   ResourceLoadError,
   createFeatureLoader,
+  createSnapshotConnectionState,
   importVersioned,
+  resolveSnapshotRefreshFailure,
   versionedResource,
   withTimeout
 } from "./runtime-loader.js";
@@ -82,4 +84,36 @@ test("module retry receives a new versioned URL", async () => {
   const url = new URL(requestedUrl);
   assert.equal(url.searchParams.get("v"), APP_VERSION);
   assert.equal(url.searchParams.get("retry"), "2");
+});
+
+test("snapshot refresh failure preserves an existing normal snapshot", () => {
+  const result = resolveSnapshotRefreshFailure({
+    hasSnapshot: true,
+    failedAt: "2026-07-28T01:00:00.000Z"
+  });
+  assert.equal(result.preserveSnapshot, true);
+  assert.equal(result.renderUnavailable, false);
+  assert.equal(result.label, "이전 데이터 표시 중");
+  assert.deepEqual(result.connection, {
+    status: "stale",
+    failedAt: "2026-07-28T01:00:00.000Z"
+  });
+});
+
+test("initial snapshot failure selects the unavailable screen", () => {
+  const result = resolveSnapshotRefreshFailure({
+    hasSnapshot: false,
+    failedAt: "2026-07-28T01:05:00.000Z"
+  });
+  assert.equal(result.preserveSnapshot, false);
+  assert.equal(result.renderUnavailable, true);
+  assert.equal(result.label, "자료 수집 실패");
+  assert.equal(result.connection.status, "error");
+});
+
+test("successful snapshot refresh clears stale failure state", () => {
+  assert.deepEqual(createSnapshotConnectionState("current", "ignored"), {
+    status: "current",
+    failedAt: null
+  });
 });
