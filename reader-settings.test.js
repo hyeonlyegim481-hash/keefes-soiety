@@ -58,6 +58,9 @@ test("switches the viewport between responsive and desktop layout modes", () => 
   };
   applyReaderViewport({ desktopLayout: true }, viewport);
   assert.equal(viewport.content, DESKTOP_VIEWPORT_CONTENT);
+  assert.match(viewport.content, /minimum-scale=0\.1/);
+  assert.match(viewport.content, /maximum-scale=5\.0/);
+  assert.match(viewport.content, /user-scalable=yes/);
   applyReaderViewport({ desktopLayout: false }, viewport);
   assert.equal(viewport.content, RESPONSIVE_VIEWPORT_CONTENT);
 });

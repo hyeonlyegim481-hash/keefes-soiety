@@ -3,7 +3,8 @@ export const READER_FONT_MIN = 90;
 export const READER_FONT_MAX = 125;
 export const READER_FONT_STEP = 5;
 export const RESPONSIVE_VIEWPORT_CONTENT = "width=device-width, initial-scale=1.0";
-export const DESKTOP_VIEWPORT_CONTENT = "width=1180";
+export const DESKTOP_VIEWPORT_CONTENT =
+  "width=1180, minimum-scale=0.1, maximum-scale=5.0, user-scalable=yes";
 export const DEFAULT_READER_SETTINGS = Object.freeze({
   fontScale: 105,
   highContrast: true,
