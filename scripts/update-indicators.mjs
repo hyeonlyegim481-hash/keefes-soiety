@@ -40,8 +40,11 @@ for (const indicator of definitions) {
   indicators[indicator.id] = value;
 }
 
+const collectedAt = new Date().toISOString();
 const snapshot = {
-  dataUpdatedAt: new Date().toISOString().slice(0, 10),
+  dataUpdatedAt: collectedAt.slice(0, 10),
+  collectedAt,
+  collectionStatus: "success",
   indicators
 };
 const outputPath = path.resolve(
@@ -77,7 +80,8 @@ async function fetchIndicator(indicator) {
       }
       const payload = JSON.parse((await response.text()).replace(/^\uFEFF/, ""));
       const rows = Array.isArray(payload?.[1]) ? payload[1] : [];
-      const snapshot = buildIndicatorSnapshot(rows);
+      const sourceUpdatedAt = payload?.[0]?.lastupdated || null;
+      const snapshot = buildIndicatorSnapshot(rows, sourceUpdatedAt);
       if (!snapshot.countries.KOR || snapshot.koreaTrend.length < 2) {
         throw new Error("Korea observations are incomplete");
       }
@@ -93,7 +97,7 @@ async function fetchIndicator(indicator) {
   );
 }
 
-function buildIndicatorSnapshot(rows) {
+function buildIndicatorSnapshot(rows, sourceUpdatedAt) {
   const countries = {};
 
   for (const country of indicatorCountries) {
@@ -106,17 +110,15 @@ function buildIndicatorSnapshot(rows) {
           Number.isFinite(Number(row.value)) &&
           Number.isFinite(Number(row.date))
       )
-      .map((row) => ({
-        year: Number(row.date),
-        value: round(Number(row.value), 4)
-      }))
+      .map(normalizeObservation)
       .sort((a, b) => a.year - b.year);
     const latest = observations.at(-1);
     if (!latest) continue;
     const previous = observations.at(-2);
     countries[country.id] = {
       ...latest,
-      ...(previous ? { previous } : {})
+      ...(previous ? { previous } : {}),
+      history: observations
     };
   }
 
@@ -129,13 +131,24 @@ function buildIndicatorSnapshot(rows) {
         Number.isFinite(Number(row.value)) &&
         Number.isFinite(Number(row.date))
     )
-    .map((row) => ({
-      year: Number(row.date),
-      value: round(Number(row.value), 4)
-    }))
+    .map(normalizeObservation)
     .sort((a, b) => a.year - b.year);
 
-  return { countries, koreaTrend };
+  return {
+    countries,
+    koreaTrend,
+    collectionStatus: "success",
+    sourceUpdatedAt: sourceUpdatedAt || null
+  };
+}
+
+function normalizeObservation(row) {
+  const status = String(row?.obs_status || "").trim();
+  return {
+    year: Number(row.date),
+    value: round(Number(row.value), 4),
+    ...(status ? { status } : {})
+  };
 }
 
 function round(value, digits) {

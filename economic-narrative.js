@@ -1,97 +1,14 @@
-const MARKET_GUIDES = {
-  kospi: {
-    definition: "한국 유가증권시장의 대형 상장기업 흐름을 보여주는 지수입니다.",
-    up: "대형주 중심의 매수세가 우세했다는 뜻입니다.",
-    down: "대형주 중심으로 매도 압력이 더 강했다는 뜻입니다.",
-    caution: "KOSPI가 올라도 KOSDAQ이나 다수 종목이 내리면 시장 전체가 좋아진 것은 아닙니다.",
-    peers: [
-      { id: "kosdaq", question: "상승이 중소형주까지 넓게 퍼졌는가" },
-      { id: "usdkrw", question: "환율이 외국인 수급을 돕고 있는가" },
-      { id: "sp500", question: "미국 시장과 같은 방향인가" }
-    ]
-  },
-  kosdaq: {
-    definition: "기술·바이오·중소형 성장기업 비중이 높은 한국 시장 지수입니다.",
-    up: "성장주와 중소형주를 감수하려는 투자심리가 강해졌다는 뜻입니다.",
-    down: "투자자가 변동성이 큰 성장주와 중소형주 위험을 줄였다는 뜻입니다.",
-    caution: "KOSDAQ은 업종 쏠림과 수급 영향을 크게 받으므로 하루 등락만으로 경기 전체를 판단하면 안 됩니다.",
-    peers: [
-      { id: "kospi", question: "대형주와 중소형주의 방향이 같은가" },
-      { id: "nasdaq", question: "미국 기술주 약세가 함께 나타나는가" },
-      { id: "usdkrw", question: "원화 약세가 성장주 수급을 압박하는가" }
-    ]
-  },
-  usdkrw: {
-    definition: "1달러를 사는 데 필요한 원화의 수입니다. 숫자가 오르면 원화 약세, 내리면 원화 강세입니다.",
-    up: "달러가 강해지거나 원화 수요가 약해져 원화 가치가 떨어졌다는 뜻입니다.",
-    down: "달러 부담이 줄거나 원화 수요가 살아나 원화 가치가 강해졌다는 뜻입니다.",
-    caution: "하루 하락만 보고 환율이 안정됐다고 단정하면 안 됩니다. 전일 방향과 절대 수준을 함께 봐야 합니다.",
-    peers: [
-      { id: "kospi", question: "환율 변화가 국내 주가와 외국인 수급에 반영되는가" },
-      { id: "vix", question: "글로벌 위험회피와 같이 움직이는가" },
-      { id: "wti", question: "수입 에너지 비용까지 동시에 높아지는가" }
-    ]
-  },
-  sp500: {
-    definition: "미국 대표 대형기업 500개의 주가 흐름을 보여주는 지수입니다.",
-    up: "미국 대형주 전반의 이익과 경기 기대가 우세했다는 뜻입니다.",
-    down: "미국 대형주 전반에서 위험을 줄이려는 움직임이 강했다는 뜻입니다.",
-    caution: "대형 기술주 몇 종목이 지수를 움직일 수 있으므로 NASDAQ과 VIX를 함께 봐야 합니다.",
-    peers: [
-      { id: "nasdaq", question: "기술주가 시장보다 강한가 약한가" },
-      { id: "vix", question: "하락이 공포 확대로 번지고 있는가" },
-      { id: "kospi", question: "미국 흐름이 한국으로 전달됐는가" }
-    ]
-  },
-  nasdaq: {
-    definition: "미국 기술·성장기업 비중이 높은 주가지수입니다.",
-    up: "금리와 미래 성장에 민감한 기술주 선호가 강해졌다는 뜻입니다.",
-    down: "기술주 이익 기대나 높은 평가가 조정받고 있다는 뜻입니다.",
-    caution: "NASDAQ 하락이 곧 경기침체를 뜻하지는 않습니다. 금리, 실적, 차익실현 중 원인을 나눠 봐야 합니다.",
-    peers: [
-      { id: "sp500", question: "기술주만의 조정인가 시장 전체 약세인가" },
-      { id: "vix", question: "공포성 매도로 확대되고 있는가" },
-      { id: "kosdaq", question: "한국 성장주에도 같은 압력이 나타나는가" }
-    ]
-  },
-  vix: {
-    definition: "S&P 500 옵션 가격으로 계산한 향후 약 30일의 예상 변동성 지수입니다.",
-    up: "시장 참여자가 주가 급변에 대비한 보험을 더 비싸게 사고 있다는 뜻입니다.",
-    down: "단기 충격에 대비하려는 수요가 줄고 있다는 뜻입니다.",
-    caution: "VIX가 낮다고 주가가 반드시 오르는 것은 아니며, 20 아래에서는 약세가 있어도 공황으로 보지 않는 경우가 많습니다.",
-    peers: [
-      { id: "sp500", question: "주가 방향과 공포가 서로 확인되는가" },
-      { id: "nasdaq", question: "기술주 조정이 시장 공포로 확대되는가" },
-      { id: "usdkrw", question: "위험회피가 달러와 원화에도 전달되는가" }
-    ]
-  },
-  wti: {
-    definition: "미국 서부텍사스산 원유 가격으로, 세계 에너지 비용의 대표 기준 중 하나입니다.",
-    up: "에너지 수요가 강하거나 공급 차질 우려가 커졌다는 뜻입니다.",
-    down: "수요 둔화 우려나 공급 여유가 커졌다는 뜻입니다.",
-    caution: "유가 상승은 산유국과 에너지기업에는 호재일 수 있지만 에너지 수입국인 한국에는 비용 부담이 될 수 있습니다.",
-    peers: [
-      { id: "usdkrw", question: "달러와 유가가 한국의 수입비용을 함께 높이는가" },
-      { id: "sp500", question: "수요 호조인지 공급 충격인지 구분할 단서가 있는가" },
-      { id: "gold", question: "물가·지정학적 위험 신호가 함께 나타나는가" }
-    ]
-  },
-  gold: {
-    definition: "안전자산 수요, 실질금리, 달러, 물가 기대에 함께 반응하는 금 가격입니다.",
-    up: "안전자산 수요나 물가 우려가 커졌거나 실질금리 부담이 줄었다는 뜻일 수 있습니다.",
-    down: "안전자산 수요가 약해졌거나 금리·달러 부담이 커졌다는 뜻일 수 있습니다.",
-    caution: "금 상승만으로 위험회피라고 단정할 수 없습니다. 달러와 금리 움직임이 같은 결과를 만들 수 있습니다.",
-    peers: [
-      { id: "vix", question: "안전자산 수요가 시장 공포와 함께 커지는가" },
-      { id: "usdkrw", question: "달러 강세 속에서도 금이 오르는가" },
-      { id: "wti", question: "원자재 전반의 물가 압력인가" }
-    ]
-  }
-};
+import { getMarketKnowledge } from "./economic-graph.js";
+
+function isFiniteInput(value) {
+  return value !== null
+    && value !== undefined
+    && value !== ""
+    && Number.isFinite(Number(value));
+}
 
 function asNumber(value, fallback = 0) {
-  const number = Number(value);
-  return Number.isFinite(number) ? number : fallback;
+  return isFiniteInput(value) ? Number(value) : fallback;
 }
 
 function formatNumber(value) {
@@ -106,9 +23,13 @@ function signed(value) {
 }
 
 function formatMarket(market) {
-  if (!market) return "--";
+  if (!market || !isFiniteInput(market.value)) return "--";
   const value = formatNumber(market.value);
-  return market.unit === "KRW" ? `${value}원` : value;
+  if (market.unit === "KRW") return `${value}원`;
+  if (market.unit === "USD/bbl") return `${value}/배럴`;
+  if (market.unit === "USD/oz") return `${value}/트로이온스`;
+  if (market.unit === "pt") return `${value}포인트`;
+  return value;
 }
 
 function macroValue(item) {
@@ -122,7 +43,7 @@ function hasOfficialMacro(item) {
   return item?.status === "official" && Number.isFinite(Number(item.value));
 }
 
-function buildUnavailableNarrative(snapshot, missingIds) {
+function buildUnavailableNarrative(snapshot, missingIds, reason = "market-value") {
   const markets = snapshot?.markets || [];
   const names = {
     kospi: "KOSPI",
@@ -135,14 +56,20 @@ function buildUnavailableNarrative(snapshot, missingIds) {
     gold: "금"
   };
   const missingLabel = missingIds.map((id) => names[id] || id).join(", ");
-  const notice = `${missingLabel} 자료를 가져오지 못했습니다.`;
+  const changeUnavailable = reason === "previous-close";
+  const notice = changeUnavailable
+    ? `${missingLabel}의 이전 종가를 확인하지 못해 등락률을 계산할 수 없습니다.`
+    : `${missingLabel} 자료를 가져오지 못했습니다.`;
   return {
     dataComplete: false,
     missingMarketIds: missingIds,
-    heroTitle: "일부 시장 자료를 가져오지 못했습니다",
+    unavailableReason: reason,
+    heroTitle: changeUnavailable
+      ? "일부 시장의 당일 등락률을 계산할 수 없습니다"
+      : "일부 시장 자료를 가져오지 못했습니다",
     title: "불완전한 숫자로 경제 방향을 예측하지 않습니다.",
-    plainSummary: `${notice} 연결이 복구될 때까지 위험 온도와 시장 방향 분석을 표시하지 않습니다.`,
-    meaning: "확인되지 않은 값을 임의 숫자로 바꾸면 반대 결론이 나올 수 있어 분석을 보류했습니다.",
+    plainSummary: `${notice} 확인이 끝날 때까지 위험 온도와 시장 방향 분석을 표시하지 않습니다.`,
+    meaning: "확인되지 않은 값을 0이나 임의 숫자로 바꾸면 반대 결론이 나올 수 있어 분석을 보류했습니다.",
     globalRead: notice,
     costRead: notice,
     riskScore: null,
@@ -195,7 +122,13 @@ function toneFromChange(change) {
 }
 
 function toneForMarket(market) {
-  if (!market) return "neutral";
+  if (
+    !market
+    || !isFiniteInput(market.changePercent)
+    || market.changeAvailable === false
+  ) {
+    return "neutral";
+  }
   const change = asNumber(market.changePercent);
   if (market.id === "gold") return "neutral";
   if (["usdkrw", "vix", "wti"].includes(market.id)) {
@@ -256,8 +189,24 @@ export function buildEconomicNarrative(snapshot) {
   const credit = findMacro(/신용/);
 
   const requiredMarketIds = ["kospi", "kosdaq", "usdkrw", "sp500", "nasdaq", "vix", "wti", "gold"];
-  const missingMarketIds = requiredMarketIds.filter((id) => !byId[id] || !Number.isFinite(Number(byId[id].value)));
-  if (missingMarketIds.length) return buildUnavailableNarrative(snapshot, missingMarketIds);
+  const missingMarketIds = requiredMarketIds.filter(
+    (id) => !byId[id] || !isFiniteInput(byId[id].value)
+  );
+  if (missingMarketIds.length) {
+    return buildUnavailableNarrative(snapshot, missingMarketIds);
+  }
+  const unavailableChangeIds = requiredMarketIds.filter(
+    (id) =>
+      !isFiniteInput(byId[id].changePercent)
+      || byId[id].changeAvailable === false
+  );
+  if (unavailableChangeIds.length) {
+    return buildUnavailableNarrative(
+      snapshot,
+      unavailableChangeIds,
+      "previous-close"
+    );
+  }
 
   const kospiChange = asNumber(kospi?.changePercent);
   const kosdaqChange = asNumber(kosdaq?.changePercent);
@@ -566,16 +515,26 @@ export function getMarketDeepRead(selected, markets, narrative) {
     };
   }
 
-  const guide = MARKET_GUIDES[selected.id] || {
+  const guide = getMarketKnowledge(selected.id) || {
     definition: "시장의 가격 흐름을 보여주는 지표입니다.",
     up: "매수 우위 흐름입니다.",
     down: "매도 우위 흐름입니다.",
     caution: "한 지표만으로 시장 전체를 단정하면 안 됩니다.",
-    peers: []
+    peers: [],
+    deepFocus: "선택 시장과 한국 경제의 연결",
+    transmission: "시장 가격 변화 → 금융여건과 기대 변화 → 기업·가계 행동",
+    koreaImpact: "한 시장지표만으로 한국 경제 전체의 방향을 단정하지 않습니다.",
+    watch: []
   };
-  const change = asNumber(selected.changePercent);
-  const direction = change > 0 ? "올랐고" : change < 0 ? "내렸고" : "변화가 없고";
-  const movement = `${selected.name}은 전일 기준보다 ${signed(change)}% ${direction}, 이는 ${magnitudeLabel(change)} 움직임입니다.`;
+  const changeAvailable =
+    isFiniteInput(selected.changePercent)
+    && selected.changeAvailable !== false;
+  const change = changeAvailable ? asNumber(selected.changePercent) : null;
+  const direction =
+    change > 0 ? "올랐고" : change < 0 ? "내렸고" : "변화가 없고";
+  const movement = changeAvailable
+    ? `${selected.name}은 전일 기준보다 ${signed(change)}% ${direction}, 이는 ${magnitudeLabel(change)} 움직임입니다.`
+    : `${selected.name}의 현재값은 ${formatMarket(selected)}이지만 이전 종가를 확인하지 못해 당일 등락률은 계산하지 않습니다.`;
   let levelNote = "";
   if (selected.id === "usdkrw") {
     levelNote = ` 당일 방향과 별개로 ${formatMarket(selected)}이라는 절대 수준도 함께 봐야 합니다.`;
@@ -592,7 +551,11 @@ export function getMarketDeepRead(selected, markets, narrative) {
       if (!market) return null;
       return {
         name: market.name,
-        value: `${formatMarket(market)} · ${signed(market.changePercent)}%`,
+        value:
+          isFiniteInput(market.changePercent)
+          && market.changeAvailable !== false
+            ? `${formatMarket(market)} · ${signed(market.changePercent)}%`
+            : `${formatMarket(market)} · 등락률 계산 불가`,
         question: peer.question,
         tone: toneForMarket(market)
       };
@@ -602,10 +565,16 @@ export function getMarketDeepRead(selected, markets, narrative) {
   return {
     definition: guide.definition,
     movement,
-    interpretation: `${change >= 0 ? guide.up : guide.down}${levelNote}`,
+    interpretation: changeAvailable
+      ? `${change >= 0 ? guide.up : guide.down}${levelNote}`
+      : `당일 방향은 단정하지 않습니다.${levelNote}`,
     caution: guide.caution,
     checks,
     overallContext: narrative?.title || "시장 전체 신호를 함께 확인해야 합니다.",
+    deepFocus: guide.deepFocus,
+    transmission: guide.transmission,
+    koreaImpact: guide.koreaImpact,
+    watch: guide.watch,
     tone: toneForMarket(selected)
   };
 }

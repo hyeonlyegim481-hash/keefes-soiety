@@ -4,7 +4,12 @@ import {
   politicalCalendar,
   politicalTransmissionPaths,
   politicsMeta
-} from "./politics-data.js?v=87";
+} from "./politics-data.js";
+import {
+  readUrlState,
+  subscribeUrlState,
+  syncUrlState
+} from "./url-state.js";
 
 const viewIds = ["overview", "laws", "countries", "news"];
 const lawStatusOrder = ["in-force", "upcoming", "rulemaking"];
@@ -17,17 +22,17 @@ const dateFormatter = new Intl.DateTimeFormat("ko-KR", {
 });
 
 const documentRef = globalThis.document;
-const initialParams = globalThis.location
-  ? new URLSearchParams(globalThis.location.search)
-  : new URLSearchParams();
-const requestedView = initialParams.get("politics");
-const requestedCountry = initialParams.get("country");
+const initialUrlState = readUrlState();
 
 const viewState = {
-  view: viewIds.includes(requestedView) ? requestedView : "overview",
-  country: countrySnapshots.some((country) => country.id === requestedCountry)
-    ? requestedCountry
-    : "korea",
+  view: initialUrlState.chapter === "politics"
+    ? initialUrlState.politics
+    : "overview",
+  country:
+    initialUrlState.chapter === "politics"
+    && countrySnapshots.some((country) => country.id === initialUrlState.country)
+      ? initialUrlState.country
+      : "korea",
   jurisdiction: "전체",
   lawStatus: "all",
   snapshot: null
@@ -35,6 +40,7 @@ const viewState = {
 
 let updateChapterHeight = () => {};
 let getCurrentSnapshot = () => null;
+let subscribedToUrlState = false;
 
 const elements = {
   update: documentRef?.querySelector("#politicsUpdate"),
@@ -49,6 +55,10 @@ export function initPoliticsChapter({
   updateChapterHeight = updateHeight;
   getCurrentSnapshot = getSnapshot;
   viewState.snapshot = getCurrentSnapshot();
+  if (!subscribedToUrlState) {
+    subscribedToUrlState = true;
+    subscribeUrlState(applyPoliticsUrlState);
+  }
 
   elements.tabs?.addEventListener("click", (event) => {
     const button = event.target.closest?.("[data-politics-view]");
@@ -107,12 +117,30 @@ function setView(view) {
 }
 
 function updateLocation() {
-  if (!globalThis.location || !globalThis.history) return;
-  const url = new URL(globalThis.location.href);
-  url.searchParams.set("politics", viewState.view);
-  if (viewState.view === "countries") url.searchParams.set("country", viewState.country);
-  else url.searchParams.delete("country");
-  globalThis.history.replaceState(null, "", url);
+  syncUrlState(
+    {
+      chapter: "politics",
+      politics: viewState.view,
+      ...(viewState.view === "countries" ? { country: viewState.country } : {})
+    },
+    { mode: "push", source: "politics-view" }
+  );
+}
+
+function applyPoliticsUrlState(urlState) {
+  if (urlState.chapter !== "politics") return;
+  const nextView = viewIds.includes(urlState.politics)
+    ? urlState.politics
+    : "overview";
+  const nextCountry = countrySnapshots.some(
+    (country) => country.id === urlState.country
+  )
+    ? urlState.country
+    : "korea";
+  if (viewState.view === nextView && viewState.country === nextCountry) return;
+  viewState.view = nextView;
+  viewState.country = nextCountry;
+  renderPoliticsChapter();
 }
 
 function renderPoliticsChapter() {

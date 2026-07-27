@@ -3,25 +3,48 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { fetchMacroIndicators } from "./macro-data.js";
+import { buildSharedDataGraph } from "./economic-graph.js";
+import { futureCompanies, futureIndustries } from "./future-industry-data.js";
+import { historyEvents } from "./history-data.js";
+import {
+  indicatorCountries,
+  indicatorDefinitions
+} from "./indicator-data.js";
+import { expandedIndicatorDefinitions } from "./indicator-expanded-data.js";
+import { financeIndicatorDefinitions } from "./indicator-finance-data.js";
+import { countrySnapshots, lawChanges } from "./politics-data.js";
+import { resourceProductionIndicators } from "./resource-production-data.js";
+import { buildStatisticalRuleAnalysis } from "./statistical-analysis.js";
 import { enrichHeadlineWithArticle } from "./news-content.js";
+import {
+  MARKET_CONFIG,
+  buildMarketRecord,
+  normalizeMarketSeries,
+  resolveMarketPoint,
+  resolveMarketStatus,
+  resolvePreviousClose
+} from "./market-data.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PORT = Number(process.env.PORT || 4173);
-const CACHE_TTL_MS = 45_000;
+const MARKET_OPEN_CACHE_TTL_MS = 5 * 60_000;
+const MARKET_CLOSED_CACHE_TTL_MS = 30 * 60_000;
 const NEWS_CACHE_TTL_MS = 30 * 60 * 1000;
 const SCHEDULED_NEWS_MAX_AGE_MS = 2 * 60 * 60 * 1000;
 const REQUEST_TIMEOUT_MS = 5_000;
 const MARKET_STALE_CACHE_MS = 6 * 60 * 60 * 1000;
 const NEWS_LOOKBACK_DAYS = 7;
 const NEWS_LOOKBACK_MS = NEWS_LOOKBACK_DAYS * 24 * 60 * 60 * 1000;
-const AI_API_KEY = process.env.AI_API_KEY || process.env.OPENAI_API_KEY || "";
-const AI_API_URL = process.env.AI_API_URL || (AI_API_KEY ? "https://api.openai.com/v1/responses" : "");
-const AI_MODEL = process.env.AI_MODEL || process.env.OPENAI_MODEL || (AI_API_KEY ? "gpt-5.6-luna" : "");
-const AI_REASONING_EFFORT = normalizeReasoningEffort(process.env.AI_REASONING_EFFORT || "low");
-const AI_ON_DEMAND_ENABLED = process.env.AI_ON_DEMAND_ENABLED === "true";
+// This deployment is intentionally rule-based. AI API calls remain disabled.
+const AI_API_KEY = "";
+const AI_API_URL = "";
+const AI_MODEL = "";
+const AI_REASONING_EFFORT = "low";
+const AI_ON_DEMAND_ENABLED = false;
 
 let snapshotCache = null;
+let snapshotFetchPromise = null;
 let newsFeedCache = null;
 let newsFetchPromise = null;
 const marketCache = new Map();
@@ -39,16 +62,7 @@ const mimeTypes = {
   ".webmanifest": "application/manifest+json; charset=utf-8"
 };
 
-const marketConfig = [
-  { id: "kospi", name: "KOSPI", symbol: "^KS11", group: "korea", unit: "pt" },
-  { id: "kosdaq", name: "KOSDAQ", symbol: "^KQ11", group: "korea", unit: "pt" },
-  { id: "usdkrw", name: "USD/KRW", symbol: "USDKRW=X", group: "korea", unit: "KRW" },
-  { id: "sp500", name: "S&P 500", symbol: "^GSPC", group: "global", unit: "pt" },
-  { id: "nasdaq", name: "NASDAQ", symbol: "^IXIC", group: "global", unit: "pt" },
-  { id: "vix", name: "VIX", symbol: "^VIX", group: "global", unit: "idx" },
-  { id: "wti", name: "WTI", symbol: "CL=F", group: "global", unit: "USD" },
-  { id: "gold", name: "Gold", symbol: "GC=F", group: "global", unit: "USD" }
-];
+const marketConfig = MARKET_CONFIG;
 
 const headlineFeeds = [
   { topic: "한국경제", section: "korea", query: "한국 경제 (환율 OR 금리 OR 물가 OR 수출 OR 반도체) when:7d" },
@@ -235,27 +249,37 @@ if (process.argv[1] && path.resolve(process.argv[1]) === __filename) {
   });
 }
 
-async function getSnapshot({ forceNews = false, preferScheduledNews = true } = {}) {
+async function getSnapshot(options = {}) {
+  const forceNews = options.forceNews === true;
   const now = Date.now();
-  if (!forceNews && snapshotCache && now - snapshotCache.createdAt < CACHE_TTL_MS) {
+  if (!forceNews && snapshotCache && now < snapshotCache.expiresAt) {
     return snapshotCache.payload;
   }
+  if (!forceNews && snapshotFetchPromise) return snapshotFetchPromise;
+  const promise = buildSnapshot(options);
+  if (!forceNews) snapshotFetchPromise = promise;
+  try {
+    return await promise;
+  } finally {
+    if (snapshotFetchPromise === promise) snapshotFetchPromise = null;
+  }
+}
 
+async function buildSnapshot({ forceNews = false, preferScheduledNews = true } = {}) {
+  const now = Date.now();
   const [marketResults, newsBundle, macro] = await Promise.all([
     Promise.allSettled(marketConfig.map(fetchMarket)),
     getNewsBundle({ now, force: forceNews, preferScheduled: preferScheduledNews }),
     fetchMacroIndicators()
   ]);
-  const markets = marketResults.flatMap((result) =>
-    result.status === "fulfilled" ? [result.value] : []
+  const markets = marketResults.map((result, index) =>
+    result.status === "fulfilled"
+      ? result.value
+      : createUnavailableMarket(marketConfig[index], result.reason)
   );
-  const availableMarketIds = new Set(markets.map((market) => market.id));
-  const missingMarketIds = marketConfig
-    .map((market) => market.id)
-    .filter((id) => !availableMarketIds.has(id));
-  if (missingMarketIds.length) {
-    throw new Error(`Market data is incomplete: ${missingMarketIds.join(", ")}`);
-  }
+  const missingMarketIds = markets
+    .filter((market) => market.status === "unavailable")
+    .map((market) => market.id);
 
   const { rawHeadlines, headlines, availableNewsFeedCount } = newsBundle;
   const dataQuality = {
@@ -263,7 +287,9 @@ async function getSnapshot({ forceNews = false, preferScheduledNews = true } = {
     newsFetchedAt: newsBundle.fetchedAt,
     newsRefreshMinutes: NEWS_CACHE_TTL_MS / 60_000,
     newsSourceMode: newsBundle.sourceMode,
-    scheduledNewsAnalysisCount: newsBundle.scheduledAnalysisCount || 0
+    scheduledNewsAnalysisCount: newsBundle.scheduledAnalysisCount || 0,
+    missingMarketIds,
+    partialSuccess: missingMarketIds.length > 0
   };
   const generatedAt = new Date().toISOString();
   const latestMarketTimestamp = Math.max(
@@ -271,13 +297,47 @@ async function getSnapshot({ forceNews = false, preferScheduledNews = true } = {
       .map((market) => Date.parse(market.asOf))
       .filter(Number.isFinite)
   );
+  const baseAnalysis = buildAnalysis(markets, headlines);
+  const statisticalAnalysis = buildStatisticalRuleAnalysis({
+    markets,
+    macro,
+    riskScore: baseAnalysis.riskScore,
+    now
+  });
+  const analysis = {
+    ...baseAnalysis,
+    statisticalAnalysis,
+    regimeResults: statisticalAnalysis.regimes,
+    currentEconomicRegime: statisticalAnalysis.currentRegime,
+    analysisConfidence: statisticalAnalysis.confidence,
+    analysisDataQuality: statisticalAnalysis.dataQuality
+  };
+  const connections = buildSharedDataGraph({
+    generatedAt,
+    markets,
+    headlines,
+    analysis,
+    indicatorDefinitions: [
+      ...indicatorDefinitions,
+      ...financeIndicatorDefinitions,
+      ...expandedIndicatorDefinitions,
+      ...resourceProductionIndicators
+    ],
+    countries: indicatorCountries,
+    countrySnapshots,
+    industries: futureIndustries,
+    companies: futureCompanies,
+    historyEvents,
+    lawChanges
+  });
   const payload = {
     generatedAt,
     markets,
     dataQuality,
     macro,
     headlines,
-    analysis: buildAnalysis(markets, headlines),
+    analysis,
+    connections,
     sources: {
       markets: "Yahoo Finance chart endpoint",
       news: newsBundle.sourceMode === "scheduled"
@@ -293,10 +353,10 @@ async function getSnapshot({ forceNews = false, preferScheduledNews = true } = {
           : null,
         updatedAt: generatedAt,
         revision: "장중 값은 거래가 이어지면서 바뀌며 종가도 제공처 정정에 따라 수정될 수 있음",
-        calculation: "등락률 = (최근값 ÷ 비교기준 종가 - 1) × 100",
-        valueType: "명목 시장가격",
+        calculation: "동일 응답에서 이전 종가가 확인된 경우에만 등락값 = 현재값 - 이전 종가, 등락률 = (현재값 ÷ 이전 종가 - 1) × 100",
+        valueType: "명목 시장가격 · WTI와 Gold는 최근월물 연속 선물",
         seasonalAdjustment: "해당 없음",
-        status: "실시간·장중 잠정값 또는 확정 종가 · 시장 상태를 카드에서 구분"
+        status: "장중·장 마감·지연·마지막 정상값을 구분하며 제공처 지연 여부를 시장 상세에서 표시"
       },
       macro: {
         provider: "한국은행·국가데이터처·관세청",
@@ -327,8 +387,58 @@ async function getSnapshot({ forceNews = false, preferScheduledNews = true } = {
     }
   };
 
-  if (!forceNews) snapshotCache = { createdAt: now, payload };
+  if (!forceNews) {
+    snapshotCache = {
+      createdAt: now,
+      expiresAt: now + getSnapshotCacheTtl(markets),
+      payload
+    };
+  }
   return payload;
+}
+
+export function getSnapshotCacheTtl(markets = []) {
+  return markets.some((market) => market.marketOpen === true)
+    ? MARKET_OPEN_CACHE_TTL_MS
+    : MARKET_CLOSED_CACHE_TTL_MS;
+}
+
+export function createUnavailableMarket(item, error) {
+  return {
+    id: item.id,
+    name: item.name,
+    symbol: item.symbol,
+    group: item.group,
+    value: null,
+    previousClose: null,
+    change: null,
+    changePercent: null,
+    changeAvailable: false,
+    changeUnavailableReason: "자료 수집 실패",
+    unit: item.unit,
+    displayUnit: item.displayUnit,
+    quoteDirection: item.quoteDirection || null,
+    instrumentType: item.instrumentType,
+    instrumentLabel: item.instrumentLabel,
+    contractBasis: item.contractBasis || null,
+    asOf: null,
+    tradingDate: null,
+    exchangeTimezone: item.fallbackTimezone || "UTC",
+    marketOpen: null,
+    marketStateLabel: "자료 수집 실패",
+    status: "unavailable",
+    live: false,
+    delayed: null,
+    dataAgeMinutes: null,
+    source: "Yahoo Finance chart endpoint",
+    sourceUrl: null,
+    interval: null,
+    seriesStart: null,
+    seriesEnd: null,
+    series: [],
+    unavailableReason:
+      error instanceof Error ? error.message : "자료 수집 실패"
+  };
 }
 
 async function getNewsBundle({ now = Date.now(), force = false, preferScheduled = true } = {}) {
@@ -429,92 +539,6 @@ async function findScheduledNewsAnalysis(headline) {
     }
   };
 }
-function normalizeMarketSeries(timestamps = [], closes = []) {
-  return timestamps
-    .map((timestamp, index) => {
-      const numericTimestamp = Number(timestamp);
-      const rawValue = closes[index];
-      const value = rawValue === null || rawValue === undefined ? Number.NaN : Number(rawValue);
-      return {
-        time: Number.isFinite(numericTimestamp) ? new Date(numericTimestamp * 1000).toISOString() : "",
-        value
-      };
-    })
-    .filter(
-      (point) =>
-        point.time &&
-        Number.isFinite(Date.parse(point.time)) &&
-        Number.isFinite(point.value) &&
-        point.value > 0
-    );
-}
-
-function getRegularTradingPeriod(meta = {}) {
-  const regular = meta?.currentTradingPeriod?.regular;
-  const start = Number(regular?.start) * 1000;
-  const end = Number(regular?.end) * 1000;
-  return Number.isFinite(start) && Number.isFinite(end) && end > start
-    ? { start, end }
-    : null;
-}
-
-function isRegularMarketOpen(meta = {}, now = Date.now()) {
-  const period = getRegularTradingPeriod(meta);
-  if (!period) return null;
-  return now >= period.start && now < period.end;
-}
-
-function resolveMarketPoint(meta = {}, series = [], now = Date.now()) {
-  const lastPoint = series.at(-1);
-  const marketOpen = isRegularMarketOpen(meta, now);
-  const metaValue = Number(meta?.regularMarketPrice);
-  const metaTime = Number(meta?.regularMarketTime);
-  const metaPoint = {
-    value: metaValue,
-    time: Number.isFinite(metaTime) ? new Date(metaTime * 1000).toISOString() : ""
-  };
-  const hasMetaPoint =
-    Number.isFinite(metaPoint.value) &&
-    metaPoint.value > 0 &&
-    Number.isFinite(Date.parse(metaPoint.time));
-
-  if (marketOpen !== false && hasMetaPoint) {
-    return { ...metaPoint, marketOpen };
-  }
-  return {
-    value: lastPoint?.value,
-    time: lastPoint?.time || metaPoint.time,
-    marketOpen
-  };
-}
-
-function resolvePreviousClose(meta = {}, series = [], current = 0) {
-  const candidates = [
-    meta?.previousClose,
-    meta?.chartPreviousClose,
-    series.length > 1 ? series.at(-2)?.value : null,
-    current
-  ];
-  const value = candidates
-    .map(Number)
-    .find((candidate) => Number.isFinite(candidate) && candidate > 0);
-  return value || current;
-}
-
-function resolveMarketStatus(meta = {}, asOf, now = Date.now()) {
-  const marketOpen = isRegularMarketOpen(meta, now);
-  const ageMs = now - Date.parse(asOf);
-  const recent =
-    Number.isFinite(ageMs) &&
-    ageMs >= -5 * 60 * 1000 &&
-    ageMs <= 2.5 * 60 * 60 * 1000;
-  const live = marketOpen === null ? recent : marketOpen && recent;
-  return {
-    live,
-    status: live ? "live" : marketOpen ? "stale" : "closed"
-  };
-}
-
 async function fetchMarket(item) {
   let lastError;
   for (const hostname of ["query1.finance.yahoo.com", "query2.finance.yahoo.com"]) {
@@ -528,12 +552,22 @@ async function fetchMarket(item) {
   }
 
   const cached = marketCache.get(item.id);
-  if (cached && Date.now() - cached.createdAt < MARKET_STALE_CACHE_MS) {
+  const cacheReadAt = Date.now();
+  if (cached && cacheReadAt - cached.createdAt < MARKET_STALE_CACHE_MS) {
+    const marketTimestamp = Date.parse(cached.market.asOf);
+    const dataAgeMinutes = Number.isFinite(marketTimestamp)
+      ? Math.max(0, Math.round((cacheReadAt - marketTimestamp) / 60_000))
+      : null;
     return {
       ...cached.market,
       live: false,
       status: "stale",
-      recoveredFromCache: true
+      marketOpen: null,
+      marketStateLabel: "마지막 정상 데이터",
+      dataAgeMinutes,
+      delayed: true,
+      recoveredFromCache: true,
+      cacheRecoveredAt: new Date(cacheReadAt).toISOString()
     };
   }
 
@@ -564,38 +598,14 @@ async function fetchMarketFromHost(item, hostname) {
 
   const timestamps = result.timestamp || [];
   const quote = result.indicators?.quote?.[0] || {};
-  const closes = quote.close || [];
-  const series = normalizeMarketSeries(timestamps, closes);
-
-  if (!series.length) throw new Error(`No usable prices for ${item.symbol}`);
-
-  const now = Date.now();
-  const marketPoint = resolveMarketPoint(result.meta, series, now);
-  const current = Number(marketPoint.value) || series.at(-1).value;
-  const baseline = resolvePreviousClose(result.meta, series, current);
-  const change = current - baseline;
-  const changePercent = baseline ? (change / baseline) * 100 : 0;
-
-  const asOf = marketPoint.time || series.at(-1).time;
-  const { live, status } = resolveMarketStatus(result.meta, asOf, now);
-
-  return {
-    ...item,
-    value: roundByMagnitude(current),
-    change: roundByMagnitude(change),
-    changePercent: round(changePercent, 2),
-    direction: changePercent >= 0 ? "up" : "down",
-    asOf,
-    series: series.slice(-160).map((point) => ({
-      ...point,
-      value: roundByMagnitude(point.value)
-    })),
-    chartRange: "5d",
-    chartInterval: "1h",
-    chartSource: "Yahoo Finance",
-    live,
-    status
-  };
+  return buildMarketRecord({
+    item,
+    meta: result.meta || {},
+    timestamps,
+    closes: quote.close || [],
+    now: Date.now(),
+    fetchedAt: new Date().toISOString()
+  });
 }
 
 async function fetchHeadlines(feed) {
@@ -1570,13 +1580,140 @@ async function serveStatic(pathname, res) {
   }
 }
 
+function buildInsufficientMarketAnalysis(markets, missingInputs) {
+  const labels = {
+    vix: "VIX 현재값",
+    usdkrw: "원/달러 현재값",
+    kospiChange: "KOSPI 이전 종가·등락률",
+    spChange: "S&P 500 이전 종가·등락률",
+    wtiChange: "WTI 이전 종가·등락률"
+  };
+  const missingLabels = missingInputs.map((id) => labels[id] || id);
+  const notice = `${missingLabels.join(", ")}을 확인하지 못했습니다.`;
+  return {
+    dataComplete: false,
+    riskScore: null,
+    riskScoreAvailable: false,
+    missingInputs,
+    regime: "판단 자료 부족",
+    pulse: `${notice} 누락값을 0으로 바꾸지 않고 분석을 보류합니다.`,
+    bullets: [
+      notice,
+      "현재값은 표시할 수 있어도 동일 응답의 이전 종가가 없으면 당일 등락률을 계산하지 않습니다."
+    ],
+    riskMethodology: {
+      version: "1.1",
+      rawScore: null,
+      floor: 12,
+      ceiling: 88,
+      components: [],
+      validation: "입력 자료가 완전할 때만 계산",
+      significance: "자료 부족 상태에서는 점수를 표시하지 않음",
+      scope: "VIX·환율·한국 및 미국 주가·WTI의 검증된 현재값과 이전 종가"
+    },
+    riskDrivers: [{
+      label: "데이터 품질",
+      impact: "판단 보류",
+      detail: notice
+    }],
+    koreaWatch: [{
+      label: "자료 상태",
+      state: "확인 필요",
+      mood: "watch"
+    }],
+    watchlist: [
+      "동일 원자료 응답에서 이전 종가와 현재값이 함께 복구되는지 확인",
+      "기준시각과 거래일이 일치하는지 확인"
+    ],
+    reasonCards: [{
+      id: "data-quality",
+      title: "시장 자료 검증 대기",
+      summary: notice,
+      detail: "확인되지 않은 가격을 임의 값으로 대체하지 않습니다.",
+      evidence: missingLabels
+    }],
+    dailyFlow: {
+      title: "시장 판단을 보류한 이유",
+      verdict: "판단 자료 부족",
+      lead: notice,
+      keyNumbers: markets.map((market) => ({
+        label: market.name,
+        value: Number.isFinite(Number(market.value))
+          ? formatNumber(Number(market.value))
+          : "자료 수집 실패",
+        context:
+          market.changeAvailable === false
+            ? "이전 종가가 없어 등락률 계산 불가"
+            : "현재값 확인"
+      })),
+      transmissionPath: [],
+      paragraphs: [
+        "현재값과 이전 종가의 기준이 맞지 않으면 등락률과 위험 점수가 왜곡될 수 있어 계산을 중단했습니다."
+      ],
+      counterSignals: [],
+      upsideCondition: {
+        title: "자료 복구 후 재판단",
+        body: "검증된 이전 종가가 확보되면 다시 계산합니다."
+      },
+      downsideCondition: {
+        title: "자료 부족 지속",
+        body: "마지막 정상값의 시각과 지연시간만 표시합니다."
+      },
+      invalidation: {
+        title: "입력 검증 통과",
+        body: "현재값·이전 종가·거래일·시간대가 모두 확인되면 보류 상태를 해제합니다."
+      },
+      conclusion: "현재는 방향을 추정하지 않습니다.",
+      chapters: [{
+        label: "01",
+        title: "자료 상태",
+        summary: notice
+      }],
+      detailedSections: [{
+        title: "1. 계산 보류",
+        body: "이전 종가가 없거나 기준이 맞지 않는 시장은 0%로 간주하지 않습니다."
+      }]
+    }
+  };
+}
+
+function isFiniteMarketInput(value) {
+  return value !== null
+    && value !== undefined
+    && value !== ""
+    && Number.isFinite(Number(value));
+}
+
 function buildAnalysis(markets, headlines) {
   const byId = Object.fromEntries(markets.map((market) => [market.id, market]));
-  const vix = byId.vix?.value ?? 16;
-  const usdkrw = byId.usdkrw?.value ?? 1360;
-  const kospiChange = byId.kospi?.changePercent ?? 0;
-  const spChange = byId.sp500?.changePercent ?? 0;
-  const wtiChange = byId.wti?.changePercent ?? 0;
+  const input = {
+    vix: byId.vix?.value,
+    usdkrw: byId.usdkrw?.value,
+    kospiChange:
+      byId.kospi?.changeAvailable === false
+        ? null
+        : byId.kospi?.changePercent,
+    spChange:
+      byId.sp500?.changeAvailable === false
+        ? null
+        : byId.sp500?.changePercent,
+    wtiChange:
+      byId.wti?.changeAvailable === false
+        ? null
+        : byId.wti?.changePercent
+  };
+  const missingInputs = Object.entries(input)
+    .filter(([, value]) => !isFiniteMarketInput(value))
+    .map(([id]) => id);
+  if (missingInputs.length) {
+    return buildInsufficientMarketAnalysis(markets, missingInputs);
+  }
+
+  const vix = Number(input.vix);
+  const usdkrw = Number(input.usdkrw);
+  const kospiChange = Number(input.kospiChange);
+  const spChange = Number(input.spChange);
+  const wtiChange = Number(input.wtiChange);
 
   const riskComponents = [
     {
@@ -1863,6 +2000,9 @@ function buildAnalysis(markets, headlines) {
   };
 
   return {
+    dataComplete: true,
+    riskScoreAvailable: true,
+    missingInputs: [],
     riskScore,
     riskMethodology: {
       version: "1.0",
@@ -1929,6 +2069,28 @@ function buildDataQuality(
     requestedMarketCount: requestedIds.length,
     availableMarketCount: markets.length,
     liveMarketCount: markets.filter((market) => market.live).length,
+    marketChangeAvailableCount: markets.filter(
+      (market) => market.changeAvailable === true
+    ).length,
+    unavailableChangeMarketIds: markets
+      .filter((market) => market.changeAvailable !== true)
+      .map((market) => market.id),
+    delayedMarketIds: markets
+      .filter((market) => market.delayed === true)
+      .map((market) => market.id),
+    recoveredMarketIds: markets
+      .filter((market) => market.recoveredFromCache)
+      .map((market) => market.id),
+    rejectedMarketPointCount: markets.reduce(
+      (total, market) => {
+        const quality = market.seriesMeta?.quality || {};
+        return total
+          + Number(quality.invalidPointCount || 0)
+          + Number(quality.nonPositivePointCount || 0)
+          + Number(quality.outlierPointCount || 0);
+      },
+      0
+    ),
     missingMarketIds: requestedIds.filter((id) => !availableIds.has(id)),
     latestMarketAt: timestamps.length ? new Date(Math.max(...timestamps)).toISOString() : null,
     oldestMarketAt: timestamps.length ? new Date(Math.min(...timestamps)).toISOString() : null,
@@ -2039,7 +2201,9 @@ function roundByMagnitude(value) {
 }
 
 function signed(value) {
-  return `${value >= 0 ? "+" : ""}${round(value, 2)}`;
+  if (!isFiniteMarketInput(value)) return "--";
+  const number = Number(value);
+  return `${number >= 0 ? "+" : ""}${round(number, 2)}`;
 }
 
 function formatNumber(value) {
@@ -2049,6 +2213,7 @@ function formatNumber(value) {
 }
 
 export {
+  buildAnalysis,
   buildArticleMarketContext,
   buildAutomatedNewsAnalysis,
   consumeNewsAnalysisQuota,

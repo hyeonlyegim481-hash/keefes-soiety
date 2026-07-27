@@ -6,7 +6,7 @@ import {
   outlookCategories,
   outlookSources,
   policyTemperaturePaths
-} from "./future-outlook-data.js?v=87";
+} from "./future-outlook-data.js";
 
 const sourceById = new Map(outlookSources.map((source) => [source.id, source]));
 const state = {

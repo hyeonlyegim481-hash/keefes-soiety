@@ -103,3 +103,31 @@ test("does not call unavailable exports positive", () => {
   assert.match(narrative.korea.summary, /자료를 가져오지 못했습니다/);
   assert.doesNotMatch(narrative.korea.summary, /긍정적/);
 });
+
+test("does not turn a missing previous close into a zero-percent move", () => {
+  const incomplete = {
+    ...snapshot,
+    markets: snapshot.markets.map((item) =>
+      item.id === "kospi"
+        ? {
+            ...item,
+            previousClose: null,
+            changePercent: null,
+            changeAvailable: false,
+            changeUnavailableReason: "previous-close-missing"
+          }
+        : item
+    )
+  };
+  const narrative = buildEconomicNarrative(incomplete);
+  const kospi = incomplete.markets.find((item) => item.id === "kospi");
+  const read = getMarketDeepRead(kospi, incomplete.markets, narrative);
+
+  assert.equal(narrative.dataComplete, false);
+  assert.equal(narrative.unavailableReason, "previous-close");
+  assert.deepEqual(narrative.missingMarketIds, ["kospi"]);
+  assert.match(narrative.plainSummary, /이전 종가/);
+  assert.doesNotMatch(narrative.plainSummary, /0%/);
+  assert.match(read.movement, /등락률은 계산하지 않습니다/);
+  assert.match(read.interpretation, /당일 방향은 단정하지 않습니다/);
+});

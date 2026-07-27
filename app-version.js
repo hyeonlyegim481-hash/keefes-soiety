@@ -1,0 +1,1 @@
+globalThis.KEEFES_APP_VERSION = "96";

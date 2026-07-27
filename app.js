@@ -1,4 +1,24 @@
-import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js?v=87";
+import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js";
+import {
+  buildSharedDataGraph,
+  getGraphEntity,
+  getMarketKnowledge
+} from "./economic-graph.js";
+import {
+  computeMarketChartScale,
+  sanitizeMarketSeries
+} from "./market-data.js";
+import {
+  APP_VERSION,
+  createFeatureLoader,
+  createStylesheetLoader,
+  importVersioned
+} from "./runtime-loader.js";
+import {
+  canonicalizeCurrentUrl,
+  notifyUrlState,
+  syncUrlState
+} from "./url-state.js";
 
 let scenarioQuestions = [];
 let indicatorCategories = [];
@@ -6,6 +26,12 @@ let indicatorDefinitions = [];
 let allIndicatorDefinitions = [];
 let indicatorCountries = [];
 let indicatorSnapshot = { indicators: {} };
+let buildIndicatorMetadata = () => ({});
+let formatIndicatorDisplayValue = () => "--";
+let formatIndicatorDisplayDelta = () => "--";
+let formatIndicatorDisplayMagnitude = () => "--";
+let isMetadataUnavailable = () => true;
+let buildIndicatorCountryComparison = () => ({ entries: [], available: [] });
 let resourceProductionIndicators = [];
 let bindResourceProductionDetail = () => {};
 let formatProductionExact = () => "자료 준비 중";
@@ -93,6 +119,10 @@ const elements = {
   marketBrief: document.querySelector("#marketBrief"),
   marketBoard: document.querySelector("#marketBoard"),
   marketConnections: document.querySelector("#marketConnections"),
+  marketViewTabs: document.querySelector("#marketViewTabs"),
+  marketViewPanels: document.querySelectorAll("[data-market-view-panel]"),
+  marketDeepStatus: document.querySelector("#marketDeepStatus"),
+  marketDeepTitle: document.querySelector("#marketDeepTitle"),
   chartTabs: document.querySelector("#chartTabs"),
   chartTitle: document.querySelector("#chartTitle"),
   chartMeta: document.querySelector("#chartMeta"),
@@ -376,18 +406,22 @@ const economicTerms = [
     answer: "기업 고유의 위험이 커졌다기보다 시장 전체 금리 수준이 오른 영향일 가능성이 큽니다."
   }
 ];
-const initialParameters = new URLSearchParams(window.location.search);
-const requestedInitialChapter = initialParameters.get("chapter") || "brief";
-const initialChapter = requestedInitialChapter === "history" ? "study" : requestedInitialChapter;
-const requestedIndicator = initialParameters.get("indicator");
-const initialIndicator = requestedIndicator || "fertility";
+const initialUrlState = canonicalizeCurrentUrl({ emit: false }).state;
+const initialChapter = initialUrlState.chapter;
+const initialIndicator = initialUrlState.indicator || "fertility";
 let swipeStart = null;
 let chartRenderState = null;
+let sharedMarketAnalysisCache = null;
+let renderedMarketDeepSnapshot = null;
+let renderedMarketDeepId = null;
+let marketDeepRenderRequest = 0;
 
 let state = {
   snapshot: null,
+  sharedDataGraph: null,
   narrative: null,
-  selectedMarket: "kospi",
+  selectedMarket: initialUrlState.market || "kospi",
+  marketView: initialUrlState.marketView || "summary",
   isRefreshing: false,
   activeChapter: initialChapter,
   historyEra: "overview",
@@ -408,7 +442,7 @@ let state = {
   quizSelected: null,
   quizComplete: false,
   quizMistakes: [],
-  newsSection: "all",
+  newsSection: initialUrlState.news || "all",
   activeNewsSummaryKey: null,
   newsSummaryResults: new Map()
 };
@@ -420,6 +454,23 @@ if (elements.chapterProgress && elements.chapterTabs.length) {
 elements.refreshButton.addEventListener("click", () => refreshSnapshot());
 elements.chapterTabs.forEach((tab) => {
   tab.addEventListener("click", () => setActiveChapter(tab.dataset.chapter));
+});
+elements.marketViewTabs?.addEventListener("click", (event) => {
+  const button = event.target.closest?.("[data-market-view]");
+  if (!button) return;
+  setMarketView(button.dataset.marketView);
+});
+document.addEventListener("click", (event) => {
+  const retryButton = event.target.closest?.("[data-retry-chapter]");
+  if (!retryButton) return;
+  const chapter = retryButton.dataset.retryChapter;
+  if (!chapter) return;
+  requestChapterContent(chapter);
+});
+document.addEventListener("click", (event) => {
+  const graphButton = event.target.closest?.("[data-graph-target]");
+  if (!graphButton) return;
+  handleGraphNavigation(graphButton);
 });
 elements.chartCanvasWrap.addEventListener("pointerdown", (event) => {
   event.stopPropagation();
@@ -468,9 +519,10 @@ elements.indicatorList.addEventListener("click", (event) => {
   const button = event.target.closest?.("[data-indicator-id]");
   if (!button) return;
   state.selectedIndicatorId = button.dataset.indicatorId;
-  const url = new URL(window.location.href);
-  url.searchParams.set("indicator", state.selectedIndicatorId);
-  history.replaceState(null, "", url);
+  syncUrlState(
+    { chapter: "indicators", indicator: state.selectedIndicatorId },
+    { mode: "push", source: "indicator-select" }
+  );
   renderIndicators();
   revealSelectedIndicatorTrend();
 });
@@ -636,33 +688,104 @@ if ("ResizeObserver" in window) {
 }
 
 
-const featureLoads = new Map();
+const { loadFeature } = createFeatureLoader();
+const loadStylesheetOnce = createStylesheetLoader();
 const loadedChapters = new Set();
+const dynamicChapters = new Set([
+  "indicators",
+  "future",
+  "study",
+  "news",
+  "politics",
+  "glossary",
+  "quiz",
+  "resources"
+]);
+const chapterLoadStates = new Map(
+  [...dynamicChapters].map((chapter) => [
+    chapter,
+    { status: "idle", attempt: 0, error: null, promise: null }
+  ])
+);
+let activeChapterLoadRequest = 0;
 
-function loadFeature(key, loader) {
-  if (featureLoads.has(key)) return featureLoads.get(key);
-  const promise = Promise.resolve()
-    .then(loader)
-    .catch((error) => {
-      featureLoads.delete(key);
-      throw error;
-    });
-  featureLoads.set(key, promise);
-  return promise;
+function findChapterPane(chapter) {
+  return [...elements.chapterPanes].find(
+    (item) => item.dataset.chapterPanel === chapter
+  );
 }
 
-function loadStylesheetOnce(id, href) {
-  const existing = document.getElementById(id);
-  if (existing?.sheet) return Promise.resolve();
-  return new Promise((resolve, reject) => {
-    const link = existing || document.createElement("link");
-    link.id = id;
-    link.rel = "stylesheet";
-    link.href = href;
-    link.addEventListener("load", resolve, { once: true });
-    link.addEventListener("error", reject, { once: true });
-    if (!existing) document.head.append(link);
-  });
+function getChapterLoadState(chapter) {
+  return chapterLoadStates.get(chapter) || {
+    status: "loaded",
+    attempt: 0,
+    error: null,
+    promise: null
+  };
+}
+
+function getChapterLoadLabel(chapter) {
+  return {
+    indicators: "지표",
+    future: "미래",
+    study: "공부",
+    news: "뉴스",
+    politics: "정치",
+    glossary: "용어",
+    quiz: "퀴즈",
+    resources: "추가 정보"
+  }[chapter] || "이 챕터";
+}
+
+function renderChapterLoadState(chapter, record) {
+  const pane = findChapterPane(chapter);
+  if (!pane) return;
+  pane.dataset.loadState = record.status;
+  pane.setAttribute("aria-busy", String(record.status === "loading"));
+  if (record.status === "error") pane.dataset.loadError = "true";
+  else delete pane.dataset.loadError;
+
+  let feedback = [...pane.children].find(
+    (child) => child.hasAttribute?.("data-chapter-load-feedback")
+  );
+  if (record.status === "idle" || record.status === "loaded") {
+    feedback?.remove();
+    return;
+  }
+  if (!feedback) {
+    feedback = document.createElement("div");
+    feedback.dataset.chapterLoadFeedback = "";
+    pane.prepend(feedback);
+  }
+
+  const label = getChapterLoadLabel(chapter);
+  feedback.className = "chapter-load-feedback";
+  feedback.dataset.state = record.status;
+  if (record.status === "loading") {
+    feedback.setAttribute("role", "status");
+    feedback.innerHTML = `
+      <span class="chapter-load-spinner" aria-hidden="true"></span>
+      <div>
+        <strong>${escapeHtml(label)} 자료를 불러오고 있습니다.</strong>
+        <p>필요한 화면 파일을 확인하는 중입니다.</p>
+      </div>
+    `;
+    return;
+  }
+
+  feedback.setAttribute("role", "alert");
+  feedback.innerHTML = `
+    <div class="chapter-load-error-icon" aria-hidden="true">!</div>
+    <div>
+      <strong>${escapeHtml(label)} 챕터를 불러오지 못했습니다.</strong>
+      <p>연결이 늦거나 화면 파일을 가져오지 못했습니다. 다른 챕터는 계속 이용할 수 있습니다.</p>
+    </div>
+    <button type="button" data-retry-chapter="${escapeHtml(chapter)}">다시 시도</button>
+  `;
+}
+
+for (const [chapter, record] of chapterLoadStates) {
+  renderChapterLoadState(chapter, record);
 }
 
 function countGlossaryCategories(terms) {
@@ -710,7 +833,7 @@ function buildGlossaryMetadata() {
 }
 
 function loadGlossaryData() {
-  return loadFeature("glossary", async () => {
+  return loadFeature("glossary", async ({ attempt }) => {
     const [
       core,
       extra,
@@ -721,14 +844,14 @@ function loadGlossaryData() {
       expanded,
       master
     ] = await Promise.all([
-      import("./glossary-data.js?v=87"),
-      import("./glossary-extra-data.js?v=87"),
-      import("./glossary-more-data.js?v=87"),
-      import("./glossary-pro-data.js?v=87"),
-      import("./glossary-special-data.js?v=87"),
-      import("./glossary-core-extra-data.js?v=87"),
-      import("./glossary-expanded-data.js?v=87"),
-      import("./glossary-master-data.js?v=87")
+      importVersioned("./glossary-data.js", { attempt }),
+      importVersioned("./glossary-extra-data.js", { attempt }),
+      importVersioned("./glossary-more-data.js", { attempt }),
+      importVersioned("./glossary-pro-data.js", { attempt }),
+      importVersioned("./glossary-special-data.js", { attempt }),
+      importVersioned("./glossary-core-extra-data.js", { attempt }),
+      importVersioned("./glossary-expanded-data.js", { attempt }),
+      importVersioned("./glossary-master-data.js", { attempt })
     ]);
 
     glossaryCategoryOrder = [
@@ -770,13 +893,13 @@ function loadGlossaryData() {
 }
 
 function loadQuizData() {
-  return loadFeature("quiz", async () => {
+  return loadFeature("quiz", async ({ attempt }) => {
     await loadGlossaryData();
     const [base, extra, more, expanded] = await Promise.all([
-      import("./quiz-data.js?v=87"),
-      import("./quiz-scenario-extra-data.js?v=87"),
-      import("./quiz-scenario-more-data.js?v=87"),
-      import("./quiz-scenario-expanded-data.js?v=87")
+      importVersioned("./quiz-data.js", { attempt }),
+      importVersioned("./quiz-scenario-extra-data.js", { attempt }),
+      importVersioned("./quiz-scenario-more-data.js", { attempt }),
+      importVersioned("./quiz-scenario-expanded-data.js", { attempt })
     ]);
     scenarioQuestions = [
       ...base.scenarioQuestions,
@@ -788,11 +911,11 @@ function loadQuizData() {
 }
 
 function loadHistoryData() {
-  return loadFeature("history", async () => {
+  return loadFeature("history", async ({ attempt }) => {
     const [base, detail, reading] = await Promise.all([
-      import("./history-data.js?v=87"),
-      import("./history-detail-data.js?v=87"),
-      import("./history-reading-data.js?v=87")
+      importVersioned("./history-data.js", { attempt }),
+      importVersioned("./history-detail-data.js", { attempt }),
+      importVersioned("./history-reading-data.js", { attempt })
     ]);
     historyEras = base.historyEras;
     historyEvents = base.historyEvents;
@@ -805,21 +928,23 @@ function loadHistoryData() {
 }
 
 function loadRelationshipData() {
-  return loadFeature("relationships", async () => {
-    const module = await import("./relationship-data.js?v=87");
+  return loadFeature("relationships", async ({ attempt }) => {
+    const module = await importVersioned("./relationship-data.js", { attempt });
     economicRelationships = module.economicRelationships;
   });
 }
 
 function loadIndicatorData() {
-  return loadFeature("indicators", async () => {
-    const [base, finance, expanded, values, production, productionUi] = await Promise.all([
-      import("./indicator-data.js?v=87"),
-      import("./indicator-finance-data.js?v=87"),
-      import("./indicator-expanded-data.js?v=87"),
-      import("./indicator-values.js?v=87"),
-      import("./resource-production-data.js?v=87"),
-      import("./resource-production-ui.js?v=87")
+  return loadFeature("indicators", async ({ attempt }) => {
+    const [base, finance, expanded, values, production, productionUi, metadata, comparison] = await Promise.all([
+      importVersioned("./indicator-data.js", { attempt }),
+      importVersioned("./indicator-finance-data.js", { attempt }),
+      importVersioned("./indicator-expanded-data.js", { attempt }),
+      importVersioned("./indicator-values.js", { attempt }),
+      importVersioned("./resource-production-data.js", { attempt }),
+      importVersioned("./resource-production-ui.js", { attempt }),
+      importVersioned("./indicator-metadata.js", { attempt }),
+      importVersioned("./indicator-comparison.js", { attempt })
     ]);
     indicatorCategories = [...base.indicatorCategories, ...finance.financeIndicatorCategories];
     indicatorCountries = base.indicatorCountries;
@@ -831,6 +956,12 @@ function loadIndicatorData() {
     resourceProductionIndicators = production.resourceProductionIndicators;
     allIndicatorDefinitions = [...indicatorDefinitions, ...resourceProductionIndicators];
     indicatorSnapshot = values.indicatorSnapshot;
+    buildIndicatorMetadata = metadata.buildIndicatorMetadata;
+    formatIndicatorDisplayValue = metadata.formatIndicatorDisplayValue;
+    formatIndicatorDisplayDelta = metadata.formatIndicatorDisplayDelta;
+    formatIndicatorDisplayMagnitude = metadata.formatIndicatorDisplayMagnitude;
+    isMetadataUnavailable = metadata.isMetadataUnavailable;
+    buildIndicatorCountryComparison = comparison.buildIndicatorCountryComparison;
     bindResourceProductionDetail = productionUi.bindResourceProductionDetail;
     formatProductionExact = productionUi.formatProductionExact;
     renderResourceProductionDetail = productionUi.renderResourceProductionDetail;
@@ -838,41 +969,41 @@ function loadIndicatorData() {
 }
 
 function initLearningToolsOnce() {
-  return loadFeature("learning-tools", async () => {
+  return loadFeature("learning-tools", async ({ attempt }) => {
     const [, module] = await Promise.all([
-      loadStylesheetOnce("learning-tools-styles", "/learning-tools.css?v=87"),
-      import("./learning-tools-ui.js?v=87")
+      loadStylesheetOnce("learning-tools-styles", "/learning-tools.css", { attempt }),
+      importVersioned("./learning-tools-ui.js", { attempt })
     ]);
     module.initLearningTools({ updateHeight: updateChapterHeight });
   });
 }
 
 function initFutureIndustryOnce() {
-  return loadFeature("future-industry", async () => {
+  return loadFeature("future-industry", async ({ attempt }) => {
     const [, , module] = await Promise.all([
-      loadStylesheetOnce("future-industry-styles", "/future-industry.css?v=87"),
-      loadStylesheetOnce("future-outlook-styles", "/future-outlook.css?v=87"),
-      import("./future-industry-ui.js?v=87")
+      loadStylesheetOnce("future-industry-styles", "/future-industry.css", { attempt }),
+      loadStylesheetOnce("future-outlook-styles", "/future-outlook.css", { attempt }),
+      importVersioned("./future-industry-ui.js", { attempt })
     ]);
     module.initFutureIndustryChapter({ updateHeight: updateChapterHeight });
   });
 }
 
 function initResourceLibraryOnce() {
-  return loadFeature("resource-library", async () => {
+  return loadFeature("resource-library", async ({ attempt }) => {
     const [, module] = await Promise.all([
-      loadStylesheetOnce("resource-library-styles", "/resource-library.css?v=87"),
-      import("./resource-library-ui.js?v=87")
+      loadStylesheetOnce("resource-library-styles", "/resource-library.css", { attempt }),
+      importVersioned("./resource-library-ui.js", { attempt })
     ]);
     module.initResourceLibraryChapter({ updateHeight: updateChapterHeight });
   });
 }
 
 function initPoliticsOnce() {
-  return loadFeature("politics", async () => {
+  return loadFeature("politics", async ({ attempt }) => {
     const [, module] = await Promise.all([
-      loadStylesheetOnce("politics-styles", "/politics.css?v=87"),
-      import("./politics-ui.js?v=87")
+      loadStylesheetOnce("politics-styles", "/politics.css", { attempt }),
+      importVersioned("./politics-ui.js", { attempt })
     ]);
     politicsController = module.initPoliticsChapter({
       updateHeight: updateChapterHeight,
@@ -881,91 +1012,163 @@ function initPoliticsOnce() {
   });
 }
 
-async function ensureChapterContent(chapter) {
-  if (loadedChapters.has(chapter)) return;
+function performChapterLoad(chapter, attempt) {
   switch (chapter) {
     case "indicators":
-      await Promise.all([loadIndicatorData(), initLearningToolsOnce()]);
-      renderIndicators();
-      break;
+      return Promise.all([loadIndicatorData(), initLearningToolsOnce()]).then(() => {
+        renderIndicators();
+      });
     case "future":
-      await initFutureIndustryOnce();
-      break;
+      return initFutureIndustryOnce();
     case "study":
-      await Promise.all([loadHistoryData(), loadRelationshipData(), initLearningToolsOnce()]);
-      if (state.snapshot) {
-        renderStudy(state.snapshot);
-        renderHistory(state.snapshot);
-      }
-      break;
+      return Promise.all([
+        loadHistoryData(),
+        loadRelationshipData(),
+        initLearningToolsOnce()
+      ]).then(() => {
+        if (state.snapshot) {
+          renderStudy(state.snapshot);
+          renderHistory(state.snapshot);
+        }
+      });
     case "news":
-      await loadStylesheetOnce("news-system-styles", "/news-system.css?v=89");
-      break;
+      return loadStylesheetOnce(
+        "news-system-styles",
+        "/news-system.css",
+        { attempt }
+      );
     case "politics":
-      await initPoliticsOnce();
-      break;
+      return initPoliticsOnce();
     case "glossary":
-      await loadGlossaryData();
-      renderGlossary();
-      break;
+      return loadGlossaryData().then(() => renderGlossary());
     case "quiz":
-      await loadQuizData();
-      renderQuiz();
-      break;
+      return loadQuizData().then(() => renderQuiz());
     case "resources":
-      await initResourceLibraryOnce();
-      break;
+      return initResourceLibraryOnce();
     default:
-      break;
+      return Promise.resolve();
   }
-  loadedChapters.add(chapter);
+}
+
+function ensureChapterContent(chapter) {
+  if (!dynamicChapters.has(chapter)) {
+    loadedChapters.add(chapter);
+    return Promise.resolve();
+  }
+
+  const current = getChapterLoadState(chapter);
+  if (current.status === "loaded") return Promise.resolve();
+  if (current.status === "loading" && current.promise) return current.promise;
+
+  const record = {
+    status: "loading",
+    attempt: current.attempt + 1,
+    error: null,
+    promise: null
+  };
+  chapterLoadStates.set(chapter, record);
+  renderChapterLoadState(chapter, record);
+
+  const promise = Promise.resolve()
+    .then(() => performChapterLoad(chapter, record.attempt))
+    .then(() => {
+      if (chapterLoadStates.get(chapter) !== record) return;
+      record.status = "loaded";
+      record.error = null;
+      loadedChapters.add(chapter);
+      renderChapterLoadState(chapter, record);
+    })
+    .catch((error) => {
+      if (chapterLoadStates.get(chapter) === record) {
+        record.status = "error";
+        record.error = error;
+        loadedChapters.delete(chapter);
+        renderChapterLoadState(chapter, record);
+      }
+      console.error("[chapter-loader] chapter failed", {
+        chapter,
+        attempt: record.attempt,
+        resource: error?.resource || "unknown",
+        error
+      });
+      throw error;
+    })
+    .finally(() => {
+      if (chapterLoadStates.get(chapter) === record) record.promise = null;
+    });
+
+  record.promise = promise;
+  return promise;
 }
 
 function requestChapterContent(chapter) {
-  const pane = [...elements.chapterPanes].find(
-    (item) => item.dataset.chapterPanel === chapter
-  );
-  pane?.setAttribute("aria-busy", "true");
-  ensureChapterContent(chapter)
+  const requestId = ++activeChapterLoadRequest;
+  return ensureChapterContent(chapter)
     .then(() => {
-      pane?.setAttribute("aria-busy", "false");
-      delete pane?.dataset.loadError;
-      if (state.activeChapter === chapter) {
-        requestAnimationFrame(() => {
-          updateChapterHeight();
-          if (chapter === "indicators") drawIndicatorTrend();
-        });
+      if (
+        requestId !== activeChapterLoadRequest ||
+        state.activeChapter !== chapter
+      ) {
+        return;
       }
+      requestAnimationFrame(() => {
+        if (
+          requestId !== activeChapterLoadRequest ||
+          state.activeChapter !== chapter
+        ) {
+          return;
+        }
+        updateChapterHeight();
+        if (chapter === "indicators") drawIndicatorTrend();
+      });
     })
-    .catch(() => {
-      pane?.setAttribute("aria-busy", "false");
-      if (pane) pane.dataset.loadError = "true";
+    .catch((error) => {
+      console.warn("[chapter-loader] request ended with an error", {
+        chapter,
+        requestId,
+        resource: error?.resource || "unknown"
+      });
     });
 }
+
+window.addEventListener("popstate", handlePopState);
 
 if ("serviceWorker" in navigator) {
   const hadServiceWorkerController = Boolean(navigator.serviceWorker.controller);
   let reloadingForServiceWorker = false;
+  const reportServiceWorkerUpdateError = (error) => {
+    console.warn("[service-worker] update failed", error);
+  };
   navigator.serviceWorker
-    .register("/sw.js?v=89")
+    .register(`/sw.js?v=${encodeURIComponent(APP_VERSION)}`)
     .then((registration) => {
-      registration.update().catch(() => {});
-      setInterval(() => registration.update().catch(() => {}), 5 * 60_000);
+      if (!registration || typeof registration.update !== "function") {
+        console.info("[service-worker] registration unavailable in this browser context");
+        return;
+      }
+      registration.update().catch(reportServiceWorkerUpdateError);
+      setInterval(() => {
+        if (document.visibilityState === "visible") {
+          registration.update().catch(reportServiceWorkerUpdateError);
+        }
+      }, 5 * 60_000);
       navigator.serviceWorker.addEventListener("controllerchange", () => {
         if (!hadServiceWorkerController || reloadingForServiceWorker) return;
         reloadingForServiceWorker = true;
         window.location.reload();
       });
     })
-    .catch(() => {});
+    .catch((error) => {
+      console.warn("[service-worker] registration failed", error);
+    });
 }
 
-setActiveChapter(state.activeChapter, { skipAnimation: true });
+setActiveChapter(state.activeChapter, { skipAnimation: true, syncUrl: false });
 queueMicrotask(() => {
   refreshSnapshot();
   setInterval(() => {
     if (document.visibilityState === "visible") refreshSnapshot();
-  }, 60_000);
+  }, 5 * 60_000);
 });
 
 async function refreshSnapshot() {
@@ -978,11 +1181,23 @@ async function refreshSnapshot() {
     state.snapshot = snapshot;
     if (!snapshot.markets.some((market) => market.id === state.selectedMarket)) {
       state.selectedMarket = snapshot.markets[0]?.id || "kospi";
+      if (state.activeChapter === "markets") {
+        syncUrlState(
+          {
+            chapter: "markets",
+            market: state.selectedMarket,
+            marketView: state.marketView
+          },
+          { mode: "replace", source: "market-fallback" }
+        );
+      }
     }
     render(snapshot);
     updateConnectionStatus(snapshot);
-  } catch {
+  } catch (error) {
+    console.error("[snapshot] refresh failed", error);
     state.snapshot = null;
+    state.sharedDataGraph = null;
     politicsController?.updateSnapshot(null);
     renderDataUnavailable();
     setConnection("error", "자료 수집 실패");
@@ -1005,17 +1220,43 @@ async function fetchSnapshot() {
   return snapshot;
 }
 
+function resolveSharedDataGraph(snapshot) {
+  const serverGraph = snapshot?.connections;
+  if (serverGraph?.integrity?.valid === true) return serverGraph;
+  if (serverGraph) {
+    console.warn("[economic-graph] server graph failed integrity check", {
+      unresolvedRefs: serverGraph.integrity?.unresolvedRefs || []
+    });
+  }
+  const fallback = buildSharedDataGraph({
+    generatedAt: snapshot?.generatedAt,
+    markets: snapshot?.markets,
+    headlines: snapshot?.headlines,
+    analysis: snapshot?.analysis,
+    indicatorDefinitions,
+    glossaryTerms,
+    historyEvents
+  });
+  if (!fallback.integrity.valid) {
+    console.error("[economic-graph] client fallback has unresolved references", {
+      unresolvedRefs: fallback.integrity.unresolvedRefs
+    });
+  }
+  return fallback;
+}
+
 function render(snapshot) {
   const narrative = buildEconomicNarrative(snapshot);
+  state.sharedDataGraph = resolveSharedDataGraph(snapshot);
   state.narrative = narrative;
   renderSummary(snapshot, narrative);
+  renderEconomicQuote(snapshot.analysis);
   renderBriefBoard(snapshot, narrative);
   renderMarkets(snapshot.markets);
   renderTabs(snapshot.markets);
   renderMarketBrief(snapshot.markets);
   renderMarketBoard(snapshot.markets);
   renderMarketConnections(snapshot.markets, snapshot.analysis);
-  renderAnalysis(snapshot, narrative);
   renderMacro(snapshot.macro, snapshot.analysis, narrative);
   if (loadedChapters.has("study")) {
     renderStudy(snapshot);
@@ -1024,7 +1265,7 @@ function render(snapshot) {
   renderNews(snapshot.headlines, snapshot.analysis, snapshot.dataQuality);
   politicsController?.updateSnapshot(snapshot);
   drawChart();
-  setActiveChapter(state.activeChapter, { skipAnimation: true });
+  setActiveChapter(state.activeChapter, { skipAnimation: true, syncUrl: false });
 }
 
 function renderSummary(snapshot, narrative = state.narrative) {
@@ -1041,8 +1282,9 @@ function renderSummary(snapshot, narrative = state.narrative) {
     ? `${quality.availableMarketCount}/${quality.requestedMarketCount}개 시장지표`
     : `${snapshot.markets.length}개 시장지표`;
   elements.sourceLine.textContent = `${marketCount} · 원자료·기준·계산식 확인`;
-  elements.riskScore.textContent = analysis.riskScore;
-  const summaryTone = analysis.riskScore >= 66 ? "negative" : analysis.riskScore >= 45 ? "watch" : "positive";
+  const riskScore = getAvailableRiskScore(analysis);
+  const summaryTone = getRiskTone(analysis);
+  elements.riskScore.textContent = formatRiskScore(analysis);
   elements.regimeTitle.closest(".signal-panel").dataset.tone = summaryTone;
   elements.riskScore.closest(".risk-panel").dataset.tone = summaryTone;
   elements.riskScore.classList.remove("is-updated");
@@ -1050,12 +1292,16 @@ function renderSummary(snapshot, narrative = state.narrative) {
   elements.riskScore.classList.add("is-updated");
 
   const circumference = 314;
-  const offset = circumference - (circumference * analysis.riskScore) / 100;
+  const offset =
+    riskScore === null
+      ? circumference
+      : circumference - (circumference * riskScore) / 100;
   elements.riskMeter.style.strokeDashoffset = offset;
-  elements.riskMeter.style.stroke = riskColor(analysis.riskScore);
+  elements.riskMeter.style.stroke =
+    riskScore === null ? "#8a969d" : riskColor(riskScore);
 
   elements.watchChips.replaceChildren(
-    ...analysis.koreaWatch.map((item) => {
+    ...(analysis.koreaWatch || []).map((item) => {
       const chip = document.createElement("span");
       chip.className = "chip";
       chip.dataset.mood = item.mood;
@@ -1075,20 +1321,31 @@ function renderSummary(snapshot, narrative = state.narrative) {
   );
 
   const activeRiskLevel =
-    riskLevels.find((level) => analysis.riskScore >= level.min && analysis.riskScore <= level.max) ||
-    riskLevels[0];
+    riskScore === null
+      ? null
+      : riskLevels.find(
+          (level) => riskScore >= level.min && riskScore <= level.max
+        ) || riskLevels[0];
   const activeRiskNote = document.createElement("div");
   activeRiskNote.className = "risk-active-note";
-  activeRiskNote.innerHTML = `
-    <strong>${activeRiskLevel.min}~${activeRiskLevel.max} · ${activeRiskLevel.label}</strong>
-    <span>${activeRiskLevel.detail}</span>
-  `;
+  activeRiskNote.innerHTML = activeRiskLevel
+    ? `
+        <strong>${activeRiskLevel.min}~${activeRiskLevel.max} · ${activeRiskLevel.label}</strong>
+        <span>${activeRiskLevel.detail}</span>
+      `
+    : `
+        <strong>판단 자료 부족</strong>
+        <span>현재값과 이전 종가의 기준이 확인될 때까지 위험 온도를 표시하지 않습니다.</span>
+      `;
 
   elements.riskLegend.replaceChildren(
     activeRiskNote,
     ...riskLevels.map((level) => {
       const item = document.createElement("div");
-      const isActive = analysis.riskScore >= level.min && analysis.riskScore <= level.max;
+      const isActive =
+        riskScore !== null
+        && riskScore >= level.min
+        && riskScore <= level.max;
       item.className = "risk-level";
       item.dataset.tone = level.tone;
       item.dataset.active = String(isActive);
@@ -1115,6 +1372,23 @@ function renderRiskMethodology(analysis) {
   if (!elements.riskMethodology) return;
   const wasOpen = elements.riskMethodology.open;
   const method = analysis?.riskMethodology;
+  if (getAvailableRiskScore(analysis) === null) {
+    elements.riskMethodology.innerHTML = `
+      <summary>
+        <span>위험 온도 계산 보류 이유 보기</span>
+        <strong>판단 자료 부족</strong>
+      </summary>
+      <div class="risk-method-body">
+        <p class="risk-method-lead">${escapeHtml(analysis?.pulse || "필수 시장 자료를 확인하지 못했습니다.")}</p>
+        <div class="risk-method-cautions">
+          <p><b>계산 원칙</b> 현재값·이전 종가·거래일이 확인되지 않은 시장은 0%로 바꾸지 않습니다.</p>
+          <p><b>재개 조건</b> ${escapeHtml(analysis?.riskMethodology?.validation || "필수 입력 자료가 모두 검증되면 다시 계산합니다.")}</p>
+        </div>
+      </div>
+    `;
+    elements.riskMethodology.open = wasOpen;
+    return;
+  }
   const components = Array.isArray(method?.components)
     ? method.components
     : [];
@@ -1197,7 +1471,7 @@ function renderDataProvenance(snapshot) {
 
 function renderBriefBoard(snapshot, narrative = state.narrative) {
   const { analysis } = snapshot;
-  const tone = analysis.riskScore >= 66 ? "negative" : analysis.riskScore >= 45 ? "watch" : "positive";
+  const tone = getRiskTone(analysis);
   const reasons = narrative?.coreReasons || [];
   const breadth = narrative?.breadth || { rising: 0, falling: 0, total: snapshot.markets.length };
 
@@ -1205,7 +1479,7 @@ function renderBriefBoard(snapshot, narrative = state.narrative) {
     <section class="explain-hero" data-tone="${tone}">
       <header>
         <span>30초 이해</span>
-        <em>위험 온도 <strong>${analysis.riskScore}</strong>/100 · ${escapeHtml(narrative?.riskBand || analysis.regime)}</em>
+        <em>위험 온도 <strong>${escapeHtml(formatRiskScore(analysis))}</strong>${getAvailableRiskScore(analysis) === null ? "" : "/100"} · ${escapeHtml(narrative?.riskBand || analysis.regime)}</em>
       </header>
       <h3>${escapeHtml(narrative?.title || analysis.regime)}</h3>
       <p>${escapeHtml(narrative?.meaning || analysis.pulse)}</p>
@@ -1271,12 +1545,13 @@ function renderBriefBoard(snapshot, narrative = state.narrative) {
         <strong>${escapeHtml(narrative?.heroTitle || analysis.regime)}</strong>
         <em>한 지표가 아니라 교차 신호 기준</em>
       </div>
-      <button type="button" data-open-chapter="analysis">근거 전체 보기 <span aria-hidden="true">→</span></button>
+      <button type="button" data-open-market-deep>시장 심층 분석 보기 <span aria-hidden="true">→</span></button>
     </footer>
   `;
 
-  elements.briefBoard.querySelector("[data-open-chapter='analysis']")?.addEventListener("click", () => {
-    setActiveChapter("analysis");
+  elements.briefBoard.querySelector("[data-open-market-deep]")?.addEventListener("click", () => {
+    state.marketView = "deep";
+    setActiveChapter("markets");
   });
 }
 function renderMarkets(markets) {
@@ -1284,34 +1559,42 @@ function renderMarkets(markets) {
     ...markets.map((market) => {
       const button = document.createElement("button");
       const reason = getMarketReason(market);
-      const directionLabel = market.direction === "up" ? "상승" : "하락";
       const statusLabel = getMarketStatusLabel(market);
-      const basisLabel = market.asOf ? marketTimeFormatter.format(new Date(market.asOf)) : "기준시각 없음";
+      const basisLabel = formatMarketTimestamp(market, market.asOf);
+      const movementLabel = formatMarketChangePercent(market);
+      const directionLabel = getMarketDirectionLabel(market);
+      const tone = getMarketTone(market);
       button.type = "button";
       button.className = "ticker-item";
-      button.dataset.direction = market.direction === "up" ? "up" : "down";
+      button.dataset.direction = tone;
       button.dataset.live = String(Boolean(market.live));
       button.dataset.status = market.status || (market.live ? "live" : "closed");
       button.title = `${statusLabel} · ${basisLabel} · ${reason.title}: ${reason.detail}`;
       button.setAttribute(
         "aria-label",
-        `${market.name} ${formatMarketValue(market)}, ${directionLabel} ${signed(
-          market.changePercent
-        )}퍼센트, ${statusLabel}, ${basisLabel} 기준. 자세한 시장 차트로 이동`
+        `${market.name} ${formatMarketValue(market)}, ${directionLabel} ${movementLabel}, ${statusLabel}, ${basisLabel} 기준. 자세한 시장 차트로 이동`
       );
       button.innerHTML = `
-        <span class="ticker-name">${market.name}<em>${statusLabel}</em></span>
-        <strong class="ticker-value">${formatMarketValue(market)}</strong>
+        <span class="ticker-name">${escapeHtml(market.name)}<em>${escapeHtml(statusLabel)}</em></span>
+        <strong class="ticker-value">${escapeHtml(formatMarketValue(market))}</strong>
         <canvas class="ticker-sparkline" width="76" height="30" aria-hidden="true"></canvas>
         <span class="ticker-change">
-          <span aria-hidden="true">${market.direction === "up" ? "▲" : "▼"}</span>
-          ${signed(market.changePercent)}%
+          <span aria-hidden="true">${tone === "up" ? "▲" : tone === "down" ? "▼" : "·"}</span>
+          ${escapeHtml(movementLabel)}
         </span>
-        <span class="ticker-live">${statusLabel}</span>
+        <span class="ticker-live">${escapeHtml(statusLabel)}</span>
       `;
       drawTickerSparkline(button.querySelector(".ticker-sparkline"), market);
       button.addEventListener("click", () => {
         state.selectedMarket = market.id;
+        syncUrlState(
+          {
+            chapter: "markets",
+            market: state.selectedMarket,
+            marketView: state.marketView
+          },
+          { mode: "push", source: "market-select" }
+        );
         renderTabs(state.snapshot.markets);
         renderMarketBrief(state.snapshot.markets);
         renderMarketBoard(state.snapshot.markets);
@@ -1324,11 +1607,30 @@ function renderMarkets(markets) {
   );
 }
 
+function getSanitizedClientMarketSeries(market, limit = Number.POSITIVE_INFINITY) {
+  const input = Array.isArray(market?.series) ? market.series : [];
+  const normalized = sanitizeMarketSeries(
+    input.map((point) => Date.parse(point?.time) / 1000),
+    input.map((point) => point?.value),
+    {
+      allowZero: market?.allowZero === true,
+      maxIsolatedChangePercent:
+        Number(market?.maxIsolatedChangePercent) || Number.POSITIVE_INFINITY,
+      maxEndpointChangePercent:
+        Number(market?.maxDailyChangePercent) || Number.POSITIVE_INFINITY
+    }
+  ).series;
+  const selected = Number.isFinite(limit) ? normalized.slice(-limit) : normalized;
+  return selected.map((point) => ({
+    time: new Date(point.time),
+    value: point.value
+  }));
+}
+
 function drawTickerSparkline(canvas, market) {
-  const values = (market?.series || [])
-    .slice(-20)
-    .map((point) => Number(point.value))
-    .filter(Number.isFinite);
+  const values = getSanitizedClientMarketSeries(market, 20).map(
+    (point) => point.value
+  );
   if (!canvas || values.length < 2) return;
 
   const width = 76;
@@ -1340,21 +1642,27 @@ function drawTickerSparkline(canvas, market) {
   context.scale(ratio, ratio);
   context.clearRect(0, 0, width, height);
 
-  const minimum = Math.min(...values);
-  const maximum = Math.max(...values);
-  const range = maximum - minimum || 1;
+  const scale = computeMarketChartScale(values, market);
+  if (!scale) return;
+  const { min: minimum, max: maximum, range } = scale;
   const points = values.map((value, index) => ({
     x: 2 + (index / (values.length - 1)) * (width - 4),
     y: 3 + ((maximum - value) / range) * (height - 7)
   }));
-  const color = market.direction === "up" ? "#65d777" : "#fb7185";
+  const tone = getMarketTone(market);
+  const color = tone === "up" ? "#65d777" : tone === "down" ? "#fb7185" : "#9aa9b2";
 
   context.beginPath();
   context.moveTo(points[0].x, height - 2);
   points.forEach((point) => context.lineTo(point.x, point.y));
   context.lineTo(points.at(-1).x, height - 2);
   context.closePath();
-  context.fillStyle = market.direction === "up" ? "rgba(101, 215, 119, 0.10)" : "rgba(251, 113, 133, 0.10)";
+  context.fillStyle =
+    tone === "up"
+      ? "rgba(101, 215, 119, 0.10)"
+      : tone === "down"
+        ? "rgba(251, 113, 133, 0.10)"
+        : "rgba(154, 169, 178, 0.09)";
   context.fill();
 
   context.beginPath();
@@ -1375,7 +1683,69 @@ function drawTickerSparkline(canvas, market) {
   context.fill();
 }
 
-function setActiveChapter(chapter, { skipAnimation = false } = {}) {
+function setMarketView(
+  nextView,
+  { syncUrl = true, historyMode = "push" } = {}
+) {
+  const normalized = ["summary", "chart", "deep"].includes(nextView)
+    ? nextView
+    : "summary";
+  state.marketView = normalized;
+
+  elements.marketViewTabs?.querySelectorAll("[data-market-view]").forEach((button) => {
+    button.setAttribute(
+      "aria-selected",
+      String(button.dataset.marketView === normalized)
+    );
+  });
+  elements.marketViewPanels.forEach((panel) => {
+    const selected = panel.dataset.marketViewPanel === normalized;
+    panel.setAttribute("aria-hidden", String(!selected));
+    panel.inert = !selected;
+  });
+
+  if (syncUrl) {
+    syncUrlState(
+      {
+        chapter: "markets",
+        market: state.selectedMarket,
+        marketView: normalized
+      },
+      { mode: historyMode, source: "market-view" }
+    );
+  }
+
+  if (normalized === "chart") {
+    requestAnimationFrame(drawChart);
+  } else if (normalized === "deep") {
+    ensureMarketDeepAnalysis();
+  } else {
+    marketDeepRenderRequest += 1;
+  }
+  requestAnimationFrame(updateChapterHeight);
+}
+
+function getChapterUrlState(chapter) {
+  if (chapter === "markets") {
+    return {
+      chapter,
+      market: state.selectedMarket,
+      marketView: state.marketView
+    };
+  }
+  if (chapter === "indicators") {
+    return { chapter, indicator: state.selectedIndicatorId };
+  }
+  if (chapter === "news") {
+    return { chapter, news: state.newsSection };
+  }
+  return { chapter };
+}
+
+function setActiveChapter(
+  chapter,
+  { skipAnimation = false, syncUrl = true, historyMode = "push" } = {}
+) {
   const chapters = getChapterOrder();
   const nextChapter = chapters.includes(chapter) ? chapter : "brief";
   const index = Math.max(0, chapters.indexOf(nextChapter));
@@ -1420,19 +1790,80 @@ function setActiveChapter(chapter, { skipAnimation = false } = {}) {
     elements.chapterProgress.style.transform = `translateX(${index * 100}%)`;
   }
 
-  if (!skipAnimation) {
-    const url = new URL(window.location.href);
-    url.searchParams.set("chapter", nextChapter);
-    history.replaceState(null, "", url);
+  if (syncUrl) {
+    syncUrlState(getChapterUrlState(nextChapter), {
+      mode: historyMode,
+      source: "chapter-select"
+    });
   }
 
   if (nextChapter === "markets") {
-    requestAnimationFrame(drawChart);
+    setMarketView(state.marketView, { syncUrl: false });
   }
   if (nextChapter === "indicators" && loadedChapters.has("indicators")) {
     requestAnimationFrame(drawIndicatorTrend);
   }
   requestChapterContent(nextChapter);
+}
+
+function applyUrlStateToScreen(urlState) {
+  const marketChanged =
+    urlState.chapter === "markets"
+    && state.selectedMarket !== (urlState.market || "kospi");
+  const indicatorChanged =
+    urlState.chapter === "indicators"
+    && state.selectedIndicatorId !== (urlState.indicator || "fertility");
+  const newsChanged =
+    urlState.chapter === "news"
+    && state.newsSection !== (urlState.news || "all");
+
+  if (urlState.chapter === "markets") {
+    state.selectedMarket = urlState.market || "kospi";
+    state.marketView = urlState.marketView || "summary";
+  }
+  if (urlState.chapter === "indicators") {
+    state.selectedIndicatorId = urlState.indicator || "fertility";
+    state.indicatorCategory = state.selectedIndicatorId.startsWith("production-")
+      ? "resources"
+      : "all";
+    state.indicatorQuery = "";
+    if (elements.indicatorSearch) elements.indicatorSearch.value = "";
+  }
+  if (urlState.chapter === "news") {
+    state.newsSection = urlState.news || "all";
+  }
+
+  if (state.snapshot && marketChanged) {
+    renderTabs(state.snapshot.markets);
+    renderMarketBrief(state.snapshot.markets);
+    renderMarketBoard(state.snapshot.markets);
+    renderMarketConnections(state.snapshot.markets, state.snapshot.analysis);
+    requestAnimationFrame(drawChart);
+  }
+  if (indicatorChanged && loadedChapters.has("indicators")) {
+    renderIndicators();
+  }
+  if (state.snapshot && newsChanged) {
+    renderNews(
+      state.snapshot.headlines,
+      state.snapshot.analysis,
+      state.snapshot.dataQuality
+    );
+  }
+
+  setActiveChapter(urlState.chapter, {
+    skipAnimation: true,
+    syncUrl: false
+  });
+  notifyUrlState(urlState, { source: "popstate" });
+}
+
+function handlePopState() {
+  const { state: urlState } = canonicalizeCurrentUrl({
+    emit: false,
+    source: "popstate-canonicalize"
+  });
+  applyUrlStateToScreen(urlState);
 }
 
 function moveChapter(direction) {
@@ -1457,40 +1888,78 @@ function updateChapterHeight() {
 
 function renderTabs(markets) {
   elements.chartTabs.replaceChildren(
-    ...markets.slice(0, 6).map((market) => {
+    ...markets.map((market) => {
       const button = document.createElement("button");
       button.type = "button";
       button.className = "segment-button";
       button.role = "tab";
+      button.dataset.marketId = market.id;
       button.textContent = market.name;
       button.setAttribute("aria-selected", String(market.id === state.selectedMarket));
       button.addEventListener("click", () => {
         state.selectedMarket = market.id;
+        syncUrlState(
+          {
+            chapter: "markets",
+            market: state.selectedMarket,
+            marketView: state.marketView
+          },
+          { mode: "push", source: "market-select" }
+        );
         renderTabs(state.snapshot.markets);
         renderMarketBrief(state.snapshot.markets);
         renderMarketBoard(state.snapshot.markets);
         renderMarketConnections(state.snapshot.markets, state.snapshot.analysis);
         drawChart();
+        ensureMarketDeepAnalysis();
       });
       return button;
     })
   );
 }
 
-function renderMarketBrief(markets) {
+function getSharedMarketAnalysis(markets = state.snapshot?.markets || []) {
   const selected =
     markets.find((item) => item.id === state.selectedMarket) ||
     markets[0];
+  if (!selected) return { selected: null, read: getMarketDeepRead(null, markets, state.narrative) };
+
+  if (
+    sharedMarketAnalysisCache?.markets === markets
+    && sharedMarketAnalysisCache?.marketId === selected.id
+    && sharedMarketAnalysisCache?.narrative === state.narrative
+  ) {
+    return sharedMarketAnalysisCache.result;
+  }
+
+  const result = {
+    selected,
+    read: getMarketDeepRead(selected, markets, state.narrative)
+  };
+  sharedMarketAnalysisCache = {
+    markets,
+    marketId: selected.id,
+    narrative: state.narrative,
+    result
+  };
+  return result;
+}
+
+function renderMarketBrief(markets) {
+  const { selected, read } = getSharedMarketAnalysis(markets);
   if (!selected) {
     elements.marketBrief.replaceChildren();
     return;
   }
 
-  const read = getMarketDeepRead(selected, markets, state.narrative);
   const statusLabel = getMarketStatusLabel(selected);
-  const basisLabel = selected.asOf
-    ? marketTimeFormatter.format(new Date(selected.asOf))
-    : "기준시각 없음";
+  const basisLabel = formatMarketTimestamp(selected, selected.asOf);
+  const tone = getMarketTone(selected);
+  const sourceUrl = safeNewsUrl(selected.sourceUrl);
+  const sourceMarkup =
+    sourceUrl === "#"
+      ? escapeHtml(selected.source || "원자료 확인 필요")
+      : `<a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(selected.source || "Yahoo Finance 원문")}</a>`;
 
   elements.marketBrief.innerHTML = `
     <section class="market-readable" data-tone="${escapeHtml(read.tone || "neutral")}">
@@ -1498,10 +1967,22 @@ function renderMarketBrief(markets) {
         <div>
           <span>지금 선택한 지표</span>
           <strong>${escapeHtml(selected.name)} ${escapeHtml(formatMarketValue(selected))}</strong>
-          <em class="${selected.direction === "up" ? "up" : "down"}">${escapeHtml(signed(selected.changePercent))}%</em>
+          <em class="${tone}">${escapeHtml(formatMarketChangePercent(selected))}</em>
         </div>
         <p>${escapeHtml(statusLabel)} · ${escapeHtml(basisLabel)}</p>
       </header>
+      <dl class="market-source-facts" aria-label="${escapeHtml(selected.name)} 데이터 기준">
+        <div><dt>현재값</dt><dd>${escapeHtml(formatMarketValue(selected))}</dd></div>
+        <div><dt>이전 종가</dt><dd>${escapeHtml(formatMarketPreviousClose(selected))}</dd></div>
+        <div><dt>등락값·등락률</dt><dd>${escapeHtml(formatMarketMovement(selected))}</dd></div>
+        <div><dt>거래일</dt><dd>${escapeHtml(selected.tradingDate || "확인되지 않음")}</dd></div>
+        <div><dt>시장 상태</dt><dd>${escapeHtml(statusLabel)}</dd></div>
+        <div><dt>기준시각·시간대</dt><dd>${escapeHtml(basisLabel)}</dd></div>
+        <div><dt>지연 여부</dt><dd>${escapeHtml(getMarketDelayLabel(selected))}</dd></div>
+        <div><dt>자료 구분</dt><dd>${escapeHtml(selected.instrumentLabel || getMarketInstrumentLabel(selected))}</dd></div>
+        <div><dt>단위</dt><dd>${escapeHtml(selected.displayUnit || getMarketDisplayUnit(selected))}</dd></div>
+        <div><dt>원자료</dt><dd>${sourceMarkup}</dd></div>
+      </dl>
       <div class="market-explain-grid">
         <article>
           <span>이 숫자는 무엇인가</span>
@@ -1541,7 +2022,7 @@ function renderMarketBoard(markets) {
             <button class="market-mini-card" type="button" data-market-id="${market.id}" aria-pressed="${isSelected}">
               <span>${market.group === "korea" ? "한국" : "글로벌"}</span>
               <strong>${market.name}</strong>
-              <em class="${market.direction === "up" ? "up" : "down"}">${formatMarketValue(market)} · ${signed(market.changePercent)}%</em>
+              <em class="${getMarketTone(market)}">${escapeHtml(formatMarketValue(market))} · ${escapeHtml(formatMarketChangePercent(market))}</em>
               <p>${escapeHtml(read.interpretation)}</p>
             </button>
           `;
@@ -1553,19 +2034,30 @@ function renderMarketBoard(markets) {
   elements.marketBoard.querySelectorAll("[data-market-id]").forEach((button) => {
     button.addEventListener("click", () => {
       state.selectedMarket = button.dataset.marketId;
+      syncUrlState(
+        {
+          chapter: "markets",
+          market: state.selectedMarket,
+          marketView: state.marketView
+        },
+        { mode: "push", source: "market-select" }
+      );
       renderTabs(state.snapshot.markets);
       renderMarketBrief(state.snapshot.markets);
       renderMarketBoard(state.snapshot.markets);
       renderMarketConnections(state.snapshot.markets, state.snapshot.analysis);
       drawChart();
+      ensureMarketDeepAnalysis();
       updateChapterHeight();
     });
   });
 }
 function renderMarketConnections(markets, analysis) {
-  const selected = markets.find((market) => market.id === state.selectedMarket) || markets[0];
-  const read = getMarketDeepRead(selected, markets, state.narrative);
+  const { selected, read } = getSharedMarketAnalysis(markets);
   const tensions = state.narrative?.tensions || [];
+  const relation = selected
+    ? state.sharedDataGraph?.relations?.markets?.[selected.id]
+    : null;
 
   elements.marketConnections.innerHTML = `
     <section class="expansion-section cross-reading">
@@ -1595,16 +2087,254 @@ function renderMarketConnections(markets, analysis) {
       <div class="market-context-band">
         <span>시장 전체 결론</span>
         <strong>${escapeHtml(read.overallContext)}</strong>
-        <em>위험 온도 ${escapeHtml(String(analysis.riskScore))}/100</em>
+        <em>위험 온도 ${escapeHtml(formatRiskScore(analysis))}${getAvailableRiskScore(analysis) === null ? "" : "/100"}</em>
       </div>
       <div class="tension-list">
         <strong>결론을 서두르면 안 되는 반대 신호</strong>
         ${tensions.slice(0, 3).map((item) => `<p>${escapeHtml(item)}</p>`).join("")}
       </div>
-      <p class="data-caveat">지표가 같은 시간에 움직였다는 사실만으로 원인과 결과가 확정되지는 않습니다. 교차 지표는 해석을 검증하는 단서입니다.</p>
+      ${renderMarketRelationMap(relation)}
+      <p class="data-caveat">지표가 같은 시간에 움직였다는 사실만으로 원인과 결과가 확정되지는 않습니다. 연결 항목은 같은 원자료와 공통 ID를 참조하며, 원인으로 확정하는 목록이 아닙니다.</p>
     </section>
   `;
 }
+
+function getGraphEntities(refs = []) {
+  return refs
+    .map((entityId) => getGraphEntity(state.sharedDataGraph, entityId))
+    .filter(Boolean);
+}
+
+function renderGraphButtons(refs, targetType, limit = 5) {
+  return getGraphEntities(refs)
+    .slice(0, limit)
+    .map(
+      (entity) => `
+        <button
+          type="button"
+          class="graph-link"
+          data-graph-target="${escapeHtml(targetType)}"
+          data-graph-ref="${escapeHtml(entity.entityId)}"
+          title="${escapeHtml(entity.label)} 열기"
+        >${escapeHtml(entity.label)}</button>
+      `
+    )
+    .join("");
+}
+
+function renderGraphRelationGroup(label, refs, targetType, limit = 5) {
+  const buttons = renderGraphButtons(refs, targetType, limit);
+  if (!buttons) return "";
+  return `
+    <div class="shared-data-group">
+      <span>${escapeHtml(label)}</span>
+      <div>${buttons}</div>
+    </div>
+  `;
+}
+
+function renderMarketRelationMap(relation) {
+  if (!relation) {
+    return `
+      <div class="shared-data-map" data-state="unavailable">
+        <strong>연결 자료를 확인할 수 없습니다.</strong>
+        <p>시장 원자료는 표시하지만 챕터 간 관계는 임의로 만들지 않습니다.</p>
+      </div>
+    `;
+  }
+  return `
+    <section class="shared-data-map" aria-label="공통 데이터 연결 지도">
+      <header>
+        <div>
+          <span>공통 데이터 연결</span>
+          <strong>같은 숫자를 다른 챕터에서 이어 보기</strong>
+        </div>
+        <em>복사본 없이 ID로 연결</em>
+      </header>
+      <div class="shared-data-groups">
+        ${renderGraphRelationGroup("관련 뉴스", relation.newsRefs, "news", 3)}
+        ${renderGraphRelationGroup("관련 지표", relation.indicatorRefs, "indicator", 4)}
+        ${renderGraphRelationGroup("함께 볼 용어", relation.termRefs, "term", 4)}
+        ${renderGraphRelationGroup("과거 유사 사례", relation.historyRefs, "history", 3)}
+        ${renderGraphRelationGroup("미래 산업", relation.industryRefs, "industry", 3)}
+        ${renderGraphRelationGroup("관련 기업", relation.companyRefs, "company", 4)}
+        ${renderGraphRelationGroup("정치·국가", relation.countryRefs, "country", 4)}
+        ${renderGraphRelationGroup("정책 변화", relation.policyRefs, "policy", 3)}
+      </div>
+    </section>
+  `;
+}
+
+function handleGraphNavigation(button) {
+  const targetType = button.dataset.graphTarget;
+  const entity = getGraphEntity(state.sharedDataGraph, button.dataset.graphRef);
+  if (!entity) {
+    console.warn("[economic-graph] navigation target is missing", {
+      targetType,
+      entityRef: button.dataset.graphRef
+    });
+    return;
+  }
+  const entityId = entity.sourceId || entity.id;
+
+  if (targetType === "market") {
+    if (!state.snapshot?.markets?.some((market) => market.id === entityId)) return;
+    state.selectedMarket = entityId;
+    state.marketView = "summary";
+    setActiveChapter("markets");
+    renderTabs(state.snapshot.markets);
+    renderMarketBrief(state.snapshot.markets);
+    renderMarketBoard(state.snapshot.markets);
+    renderMarketConnections(state.snapshot.markets, state.snapshot.analysis);
+    requestAnimationFrame(drawChart);
+    return;
+  }
+
+  if (targetType === "indicator") {
+    state.selectedIndicatorId = entityId;
+    state.indicatorCategory = entityId.startsWith("production-") ? "resources" : "all";
+    state.indicatorQuery = "";
+    if (elements.indicatorSearch) elements.indicatorSearch.value = "";
+    setActiveChapter("indicators");
+    if (loadedChapters.has("indicators")) renderIndicators();
+    return;
+  }
+
+  if (targetType === "history") {
+    state.historyEra = entity.parentId || "overview";
+    syncUrlState(
+      { chapter: "study", study: "history" },
+      { mode: "push", source: "graph-history" }
+    );
+    setActiveChapter("study", { syncUrl: false });
+    if (loadedChapters.has("study") && state.snapshot) renderHistory(state.snapshot);
+    return;
+  }
+
+  if (targetType === "industry" || targetType === "company") {
+    const industryId = targetType === "industry"
+      ? entityId
+      : entity.parentId || getMarketKnowledge(state.selectedMarket)?.industries?.[0]?.id;
+    if (!industryId) return;
+    syncUrlState(
+      { chapter: "future", future: "industries", industry: industryId },
+      { mode: "push", source: "graph-future" }
+    );
+    setActiveChapter("future", { syncUrl: false });
+    return;
+  }
+
+  if (targetType === "country") {
+    const countryMap = {
+      KOR: "korea",
+      USA: "us",
+      CHN: "china",
+      JPN: "japan",
+      RUS: "russia",
+      EU: "eu",
+      IND: "india"
+    };
+    const countryId = countryMap[String(entityId).toUpperCase()] || entityId;
+    syncUrlState(
+      { chapter: "politics", politics: "countries", country: countryId },
+      { mode: "push", source: "graph-politics-country" }
+    );
+    setActiveChapter("politics", { syncUrl: false });
+    return;
+  }
+
+  if (targetType === "policy") {
+    syncUrlState(
+      { chapter: "politics", politics: "laws" },
+      { mode: "push", source: "graph-politics-policy" }
+    );
+    setActiveChapter("politics", { syncUrl: false });
+    return;
+  }
+
+  if (targetType === "term") {
+    state.glossaryQuery = entity.label;
+    state.glossaryLevel = "all";
+    state.glossaryCategory = "전체";
+    state.glossaryLimit = GLOSSARY_PAGE_SIZE;
+    if (elements.glossarySearch) elements.glossarySearch.value = entity.label;
+    setActiveChapter("glossary");
+    if (loadedChapters.has("glossary")) renderGlossary();
+    return;
+  }
+
+  if (targetType === "news") {
+    state.newsSection = entity.parentId || "all";
+    setActiveChapter("news");
+    if (state.snapshot) {
+      renderNews(
+        state.snapshot.headlines,
+        state.snapshot.analysis,
+        state.snapshot.dataQuality
+      );
+    }
+  }
+}
+
+function renderIndicatorMarketConnections(indicatorId) {
+  const relation = state.sharedDataGraph?.relations?.indicators?.[indicatorId];
+  if (!relation?.marketRefs?.length) return "";
+  return `
+    <section class="indicator-linked-markets">
+      <div>
+        <span>현재 시장과 연결</span>
+        <strong>이 지표가 해석에 쓰이는 시장</strong>
+      </div>
+      <div class="indicator-linked-market-buttons">
+        ${renderGraphButtons(relation.marketRefs, "market", 8)}
+      </div>
+    </section>
+  `;
+}
+
+function renderHistoryMarketLinks(historyEventId) {
+  const relation = state.sharedDataGraph?.relations?.history?.[historyEventId];
+  if (!relation?.marketRefs?.length) return "";
+  return `
+    <div class="history-current-market-links">
+      <span>오늘 시장에서 다시 확인</span>
+      <div>${renderGraphButtons(relation.marketRefs, "market", 5)}</div>
+    </div>
+  `;
+}
+
+function renderStudyMarketCases(snapshot) {
+  const refs = state.sharedDataGraph?.relations?.study?.currentMarketRefs || [];
+  const markets = new Map((snapshot?.markets || []).map((market) => [
+    `market:${market.id}`,
+    market
+  ]));
+  const cases = refs
+    .map((entityRef) => ({ entityRef, market: markets.get(entityRef) }))
+    .filter((item) => item.market);
+  if (!cases.length) return "";
+  return `
+    <section class="study-live-cases" aria-label="현재 실제 시장 사례">
+      <header>
+        <span>공통 데이터 사례</span>
+        <strong>오늘 변동이 큰 시장에서 사고법 적용</strong>
+      </header>
+      <div>
+        ${cases.map(({ entityRef, market }) => {
+          const knowledge = getMarketKnowledge(market.id);
+          return `
+            <button type="button" data-graph-target="market" data-graph-ref="${escapeHtml(entityRef)}">
+              <span>${escapeHtml(market.name)}</span>
+              <strong>${escapeHtml(formatMarketChangePercent(market))}</strong>
+              <p>${escapeHtml(knowledge?.deepFocus || "관련 시장 경로 확인")}</p>
+            </button>
+          `;
+        }).join("")}
+      </div>
+    </section>
+  `;
+}
+
 function renderEconomicQuote(analysis) {
   if (!elements.analysisQuote) return;
 
@@ -1616,12 +2346,15 @@ function renderEconomicQuote(analysis) {
   }).format(new Date());
   const quoteIndex = dateKey.split("-").reduce((total, value) => total + Number(value), 0) % ECONOMIC_QUOTES.length;
   const quote = ECONOMIC_QUOTES[quoteIndex];
+  const riskScore = getAvailableRiskScore(analysis);
   const marketApplication =
-    analysis.riskScore >= 66
-      ? "지금은 기대수익보다 손실을 키울 수 있는 환율과 변동성부터 확인할 구간입니다."
-      : analysis.riskScore >= 45
-        ? "지금은 방향을 예측하기보다 판단을 바꿀 확인 신호를 기다릴 구간입니다."
-        : "지금은 회복 신호를 보되 가격 상승과 실제 가치 개선을 구분할 구간입니다.";
+    riskScore === null
+      ? "현재는 핵심 가격 기준이 부족하므로 방향을 추정하지 않고 자료 복구를 먼저 확인합니다."
+      : riskScore >= 66
+        ? "지금은 기대수익보다 손실을 키울 수 있는 환율과 변동성부터 확인할 구간입니다."
+        : riskScore >= 45
+          ? "지금은 방향을 예측하기보다 판단을 바꿀 확인 신호를 기다릴 구간입니다."
+          : "지금은 회복 신호를 보되 가격 상승과 실제 가치 개선을 구분할 구간입니다.";
 
   elements.analysisQuote.innerHTML = `
     <span class="quote-label">오늘의 경제 명언</span>
@@ -1633,19 +2366,144 @@ function renderEconomicQuote(analysis) {
   `;
 }
 
+function ensureMarketDeepAnalysis() {
+  if (state.activeChapter !== "markets" || state.marketView !== "deep") return;
+  const snapshot = state.snapshot;
+  if (!snapshot) {
+    if (elements.marketDeepStatus) {
+      elements.marketDeepStatus.hidden = false;
+      elements.marketDeepStatus.dataset.state = "waiting";
+      elements.marketDeepStatus.querySelector("p").textContent =
+        "시장 데이터가 확인되면 심층 분석을 표시합니다.";
+    }
+    return;
+  }
+  if (
+    renderedMarketDeepSnapshot === snapshot
+    && renderedMarketDeepId === state.selectedMarket
+    && elements.analysisList?.children.length
+  ) {
+    if (elements.marketDeepStatus) elements.marketDeepStatus.hidden = true;
+    return;
+  }
+
+  const requestId = ++marketDeepRenderRequest;
+  if (elements.marketDeepStatus) {
+    elements.marketDeepStatus.hidden = false;
+    elements.marketDeepStatus.dataset.state = "loading";
+    elements.marketDeepStatus.querySelector("p").textContent =
+      "선택 시장과 공통 데이터를 연결해 심층 분석을 구성하고 있습니다.";
+  }
+  requestAnimationFrame(() => {
+    if (
+      requestId !== marketDeepRenderRequest
+      || state.activeChapter !== "markets"
+      || state.marketView !== "deep"
+      || state.snapshot !== snapshot
+    ) {
+      return;
+    }
+    renderAnalysis(snapshot, state.narrative);
+    renderedMarketDeepSnapshot = snapshot;
+    renderedMarketDeepId = state.selectedMarket;
+    if (elements.marketDeepStatus) {
+      elements.marketDeepStatus.hidden = true;
+      elements.marketDeepStatus.dataset.state = "loaded";
+    }
+    requestAnimationFrame(updateChapterHeight);
+  });
+}
+
 function renderAnalysis(snapshot, narrative = state.narrative) {
   const analysis = snapshot?.analysis || {};
+  const { selected, read } = getSharedMarketAnalysis(snapshot?.markets || []);
   const facts = narrative?.facts || [];
   const inferences = narrative?.inferences || [];
   const tensions = narrative?.tensions || [];
   const limitations = narrative?.limitations || [];
-  const verdictTone = analysis.riskScore >= 66 ? "negative" : analysis.riskScore >= 45 ? "watch" : "positive";
+  const verdictTone = getRiskTone(analysis);
+  const statistics = analysis?.statisticalAnalysis || {};
+  const selectedStatistics = statistics?.markets?.[selected?.id] || null;
+  const horizonCards = Object.values(selectedStatistics?.horizons || {}).map((item) => {
+    const available = item.status === "available" && Number.isFinite(Number(item.value));
+    return `
+      <article data-state="${available ? "available" : "insufficient"}">
+        <span>${escapeHtml(item.label || "기간")}</span>
+        <strong>${available ? `${Number(item.value) >= 0 ? "+" : ""}${Number(item.value).toFixed(2)}%` : "자료 부족"}</strong>
+        <small>${escapeHtml(
+          available
+            ? `${formatExactDate(item.baselineAt)} → ${formatExactDate(item.currentAt)}`
+            : item.reason || "기간 자료가 충분하지 않음"
+        )}</small>
+      </article>
+    `;
+  }).join("");
 
-  renderEconomicQuote(analysis);
   renderAnalysisBoard(analysis, narrative);
   renderScenarioMatrix(analysis, narrative);
 
+  if (elements.marketDeepTitle) {
+    elements.marketDeepTitle.textContent = `${selected?.name || "선택 시장"}의 원인과 한국 영향`;
+  }
+  const marketBasis = selected?.asOf
+    ? marketTimeFormatter.format(new Date(selected.asOf))
+    : "기준시각 없음";
+
   elements.analysisList.innerHTML = `
+    <li class="selected-market-deep" data-tone="${escapeHtml(read.tone || "neutral")}">
+      <header>
+        <div>
+          <span>선택 시장</span>
+          <h3>${escapeHtml(selected?.name || "시장 자료 없음")}</h3>
+          <p>${escapeHtml(read.deepFocus || "선택 시장과 한국 경제의 연결")}</p>
+        </div>
+        <div class="selected-market-reading">
+          <strong>${selected ? escapeHtml(formatMarketValue(selected)) : "--"}</strong>
+          <em>${selected ? escapeHtml(formatMarketChangePercent(selected)) : "등락률 없음"}</em>
+          <small>${escapeHtml(marketBasis)}</small>
+        </div>
+      </header>
+      <div class="market-deep-route-grid">
+        <article>
+          <span>현재 움직임</span>
+          <p>${escapeHtml(read.movement)}</p>
+        </article>
+        <article>
+          <span>원인 → 시장 전달 경로</span>
+          <p>${escapeHtml(read.transmission)}</p>
+        </article>
+        <article>
+          <span>한국 경제 영향</span>
+          <p>${escapeHtml(read.koreaImpact)}</p>
+        </article>
+      </div>
+      <div class="market-deep-checks">
+        <strong>앞으로 함께 확인할 지표</strong>
+        ${(read.watch || []).map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
+      </div>
+      <p class="market-deep-caution"><strong>단정하면 안 되는 점</strong> ${escapeHtml(read.caution)}</p>
+    </li>
+    <li class="statistical-deep-panel">
+      <header>
+        <div>
+          <span>통계·규칙 분석</span>
+          <h3>${escapeHtml(statistics.currentRegime || "판단 자료 부족")}</h3>
+          <p>한 번의 움직임으로 국면을 확정하지 않고 같은 규칙이 3회 이어지는지 확인합니다.</p>
+        </div>
+        <div class="statistical-score-strip">
+          <span><small>위험도</small><strong>${Number.isFinite(Number(statistics?.risk?.score)) ? `${statistics.risk.score}/100` : "자료 부족"}</strong></span>
+          <span><small>분석 확실도</small><strong>${escapeHtml(statistics?.confidence?.label || "자료 부족")} ${Number.isFinite(Number(statistics?.confidence?.score)) ? statistics.confidence.score : ""}</strong></span>
+          <span><small>데이터 품질</small><strong>${escapeHtml(statistics?.dataQuality?.label || "자료 부족")} ${Number.isFinite(Number(statistics?.dataQuality?.score)) ? statistics.dataQuality.score : ""}</strong></span>
+        </div>
+      </header>
+      <div class="statistical-horizon-grid">
+        ${horizonCards || "<p>선택 시장의 시계열을 확인하지 못했습니다.</p>"}
+      </div>
+      <footer>
+        <p><strong>신호 일치율</strong> ${Number.isFinite(Number(statistics?.directionAgreement?.rate)) ? `${statistics.directionAgreement.rate}% · ${escapeHtml(statistics.directionAgreement.dominant)}` : "판단 자료 부족"}</p>
+        <p><strong>반대 신호</strong> ${(statistics?.directionAgreement?.counterSignals || []).length ? statistics.directionAgreement.counterSignals.map((id) => escapeHtml((snapshot?.markets || []).find((market) => market.id === id)?.name || id)).join(", ") : "뚜렷한 반대 신호 없음"}</p>
+      </footer>
+    </li>
     <li class="deep-thesis" data-tone="${verdictTone}">
       <span>심층 결론</span>
       <h3>${escapeHtml(narrative?.title || analysis.regime || "현재 시장을 교차 확인합니다.")}</h3>
@@ -1738,6 +2596,28 @@ function renderAnalysis(snapshot, narrative = state.narrative) {
   `;
 }
 function renderAnalysisBoard(analysis, narrative = state.narrative) {
+  if (
+    getAvailableRiskScore(analysis) === null
+    || narrative?.dataComplete === false
+  ) {
+    elements.analysisBoard.innerHTML = `
+      <section class="analysis-score-board is-unavailable">
+        <div class="board-heading">
+          <div>
+            <p class="section-kicker">계산 보류</p>
+            <h3>위험 온도는 필수 시장 자료가 모두 확인될 때만 계산합니다</h3>
+          </div>
+          <span>판단 자료 부족</span>
+        </div>
+        <p class="analysis-unavailable-copy">${escapeHtml(
+          narrative?.plainSummary
+          || analysis?.pulse
+          || "현재값과 이전 종가의 기준을 확인하지 못했습니다."
+        )}</p>
+      </section>
+    `;
+    return;
+  }
   const components = narrative?.riskComponents || [];
   const actual = Number(analysis.riskScore || narrative?.riskScore || 0);
   const rebuilt = Number(narrative?.rebuiltRisk || actual);
@@ -1834,7 +2714,17 @@ function renderIndicators() {
   });
 
   if (!filtered.some((indicator) => indicator.id === state.selectedIndicatorId)) {
+    const previousIndicatorId = state.selectedIndicatorId;
     state.selectedIndicatorId = filtered[0]?.id || state.selectedIndicatorId;
+    if (
+      state.activeChapter === "indicators"
+      && state.selectedIndicatorId !== previousIndicatorId
+    ) {
+      syncUrlState(
+        { chapter: "indicators", indicator: state.selectedIndicatorId },
+        { mode: "replace", source: "indicator-filter-fallback" }
+      );
+    }
   }
 
   const fertility = indicatorSnapshot.indicators.fertility?.countries?.KOR;
@@ -1954,27 +2844,133 @@ function renderIndicatorListItem(indicator) {
   `;
 }
 
-function getIndicatorValueBasis(indicator) {
-  const code = String(indicator?.code || "");
-  if (/\.CD$/.test(code)) return "명목 현재가격 미 달러";
-  if (/\.KD(?:\.ZG)?$/.test(code)) return "물가 영향을 제거한 실질 기준";
-  if (/PPP|PP\.|\.PA\./i.test(code)) return "구매력평가(PPP) 기준";
-  if (indicator?.unit === "%") return "비율 지표 · 명목/실질 구분은 원자료 정의에 따름";
-  return "지표 정의에 따름";
+function renderIndicatorMetadataDetails(metadata, indicator) {
+  const currentValue = isMetadataUnavailable(metadata.value)
+    ? null
+    : formatIndicatorValue(indicator, metadata.value);
+  const rows = [
+    ["공식 코드", metadata.officialCode],
+    ["공식 지표명", metadata.officialName, true],
+    ["현재 표시값", currentValue],
+    ["단위 의미", metadata.displayUnit],
+    ["배율", `×${metadata.multiplier}`],
+    ["값의 범위", metadata.valueScope],
+    ["기준기간", metadata.referencePeriod],
+    ["발표일", formatIndicatorMetadataDate(metadata.releaseDate)],
+    ["수집시각", formatIndicatorMetadataDate(metadata.collectedAt, true)],
+    ["자료 주기", metadata.frequency],
+    ["측정 방식", metadata.measureType],
+    ["증감 기준", metadata.changeBasis],
+    ["연율 환산", metadata.annualized],
+    ["명목·실질", metadata.nominalReal],
+    ["가격 기준", metadata.priceBasis],
+    ["통화 기준", metadata.currency],
+    ["기준연도", metadata.baseYear],
+    ["계절조정", metadata.seasonalAdjustment],
+    ["잠정·확정", metadata.releaseStatus],
+    ["수정 여부", metadata.revisionStatus]
+  ];
+
+  return `
+    <details class="indicator-source-details">
+      <summary>
+        <span>출처·단위·계산 기준 자세히 보기</span>
+        <strong>${escapeHtml(metadata.sourceDataset || indicator.source)}</strong>
+      </summary>
+      <div class="indicator-metadata-body">
+        <section class="indicator-metadata-source">
+          <span>원자료 기관</span>
+          <strong>${renderIndicatorMetadataValue(metadata.sourceInstitution)}</strong>
+          <p>세계은행 WDI가 여러 원자료 기관의 통계를 코드별로 연결해 제공합니다.</p>
+        </section>
+        <dl class="indicator-metadata-grid">
+          ${rows.map(([label, value, wide]) => renderIndicatorMetadataRow(label, value, wide)).join("")}
+        </dl>
+        <div class="indicator-metadata-footer">
+          <p><b>화면 계산</b> 원자료 × ${metadata.multiplier}; 증감은 직전 공표값과의 차이이며 비율 지표의 차이는 <b>%p</b>로 표시; 화면은 소수 ${indicator.precision}자리까지 반올림</p>
+          <p><b>수집 한계</b> 발표일·잠정/확정 상태가 원응답에 없으면 추정하지 않고 ‘제공처 미공개’로 표시합니다.</p>
+          <a href="${safeNewsUrl(metadata.sourceUrl)}" target="_blank" rel="noopener noreferrer">세계은행 원자료 보기 <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </details>
+  `;
 }
+
+function renderIndicatorMetadataRow(label, value, wide = false) {
+  const unavailable = isMetadataUnavailable(value);
+  return `
+    <div${wide ? ' class="is-wide"' : ""}>
+      <dt>${escapeHtml(label)}</dt>
+      <dd${unavailable ? ' class="is-unavailable"' : ""}>${renderIndicatorMetadataValue(value)}</dd>
+    </div>
+  `;
+}
+
+function renderIndicatorMetadataValue(value) {
+  return escapeHtml(isMetadataUnavailable(value) ? "제공처 미공개" : String(value));
+}
+
+function formatIndicatorMetadataDate(value, includeTime = false) {
+  if (isMetadataUnavailable(value)) return null;
+  const text = String(value);
+  if (/^\d{4}-\d{2}-\d{2}$/.test(text)) {
+    return `${text.replaceAll("-", ".")}${includeTime ? " · 시각 미기록" : ""}`;
+  }
+  const date = new Date(text);
+  if (Number.isNaN(date.getTime())) return text;
+  return new Intl.DateTimeFormat("ko-KR", {
+    timeZone: "Asia/Seoul",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    ...(includeTime ? { hour: "2-digit", minute: "2-digit", hour12: false } : {})
+  }).format(date);
+}
+
 function renderIndicatorDetail(indicator) {
   const data = indicatorSnapshot.indicators[indicator.id];
-  const countryData = indicatorCountries
-    .map((country) => ({ ...country, observation: data?.countries?.[country.id] }))
-    .filter((country) => country.observation);
+  const countryComparison = buildIndicatorCountryComparison({
+    indicator,
+    dataset: data,
+    countries: indicatorCountries
+  });
+  const countryData = countryComparison.entries.map((entry) => ({
+    ...entry.country,
+    observation: entry.observation,
+    available: entry.available,
+    missingStatus: entry.missingStatus
+  }));
+  const availableCountryData = countryData.filter((country) => country.available);
   const korea = data?.countries?.KOR;
   const world = data?.countries?.WLD;
-  const values = countryData.map((country) => country.observation.value);
+  const koreaWorldComparison = buildIndicatorCountryComparison({
+    indicator,
+    dataset: data,
+    countries: indicatorCountries,
+    countryIds: ["KOR", "WLD"]
+  });
+  const koreaForComparison = koreaWorldComparison.entries.find(
+    (entry) => entry.country.id === "KOR"
+  )?.observation;
+  const worldForComparison = koreaWorldComparison.entries.find(
+    (entry) => entry.country.id === "WLD"
+  )?.observation;
+  const metadata = buildIndicatorMetadata(indicator, {
+    observation: korea,
+    snapshot: indicatorSnapshot,
+    dataset: data
+  });
+  const values = availableCountryData.map((country) => country.observation.value);
   const scaleMin = Math.min(0, ...values);
   const scaleMax = Math.max(0, ...values);
   const range = scaleMax - scaleMin || 1;
   const zeroPosition = ((0 - scaleMin) / range) * 100;
-  const comparison = buildIndicatorComparison(indicator, korea, world);
+  const comparison = buildIndicatorComparison(
+    indicator,
+    koreaForComparison,
+    worldForComparison,
+    koreaWorldComparison
+  );
   const trend = data?.koreaTrend || [];
   const first = trend[0];
   const last = trend.at(-1);
@@ -1990,6 +2986,7 @@ function renderIndicatorDetail(indicator) {
       <div class="indicator-primary-value">
         <span>한국 ${korea ? `${korea.year}년` : "기준 없음"}</span>
         <strong>${korea ? formatIndicatorValue(indicator, korea) : "--"}</strong>
+        <small class="indicator-unit-note">${escapeHtml(metadata.displayUnit || indicator.unit)}</small>
         <em>${korea?.previous ? `직전 공표 ${formatIndicatorDelta(indicator, korea.value - korea.previous.value)}` : "직전 공표 없음"}</em>
       </div>
     </header>
@@ -2014,27 +3011,44 @@ function renderIndicatorDetail(indicator) {
       <div class="indicator-section-title">
         <div>
           <span>국가 비교</span>
-          <strong>같은 지표, 각국 최신 공표값</strong>
+          <strong>${escapeHtml(countryComparison.comparisonLabel)}</strong>
         </div>
-        <em>연도는 행별 표시</em>
+        <em>${countryComparison.worldReferenceYear ? `세계 기준 ${countryComparison.worldReferenceYear}년` : "세계 기준연도 없음"}</em>
       </div>
       <div class="indicator-country-list">
         ${countryData.map((country) => {
+          if (!country.available) {
+            return `
+              <div class="indicator-country-row" data-country="${country.id}" data-available="false">
+                <span>${escapeHtml(country.label)}</span>
+                <div class="indicator-country-track" data-missing><span>${escapeHtml(country.missingStatus)}</span></div>
+                <strong>${escapeHtml(country.missingStatus)}</strong>
+                <em>기준연도 없음</em>
+              </div>
+            `;
+          }
           const valuePosition = ((country.observation.value - scaleMin) / range) * 100;
           const left = Math.min(zeroPosition, valuePosition);
           const width = Math.max(2, Math.abs(valuePosition - zeroPosition));
           return `
-            <div class="indicator-country-row" data-country="${country.id}">
+            <div class="indicator-country-row" data-country="${country.id}" data-available="true">
               <span>${escapeHtml(country.label)}</span>
               <div class="indicator-country-track" ${scaleMin < 0 ? `data-has-zero="true" style="--zero:${zeroPosition}%"` : ""}>
                 <i style="left:${left}%;width:${width}%"></i>
               </div>
               <strong>${formatIndicatorValue(indicator, country.observation)}</strong>
-              <em>${country.observation.year}</em>
+              <em>${country.observation.year}년</em>
             </div>
           `;
         }).join("")}
       </div>
+      ${countryComparison.yearNotice ? `
+        <div class="indicator-year-notice" data-year-gap="${countryComparison.yearGap}">
+          <strong>${escapeHtml(countryComparison.yearDifferenceLabel || "기준연도 다름")}</strong>
+          <p>${escapeHtml(countryComparison.yearNotice)}</p>
+          <span>${escapeHtml(countryComparison.interpretation)}</span>
+        </div>
+      ` : ""}
     </section>
     <div class="indicator-reading-grid">
       <section>
@@ -2046,22 +3060,8 @@ function renderIndicatorDetail(indicator) {
         <p>${escapeHtml(indicator.caution)}</p>
       </section>
     </div>
-    <details class="indicator-source-details">
-      <summary>
-        <span>출처·기준·계산식 자세히 보기</span>
-        <strong>${escapeHtml(indicator.source)}</strong>
-      </summary>
-      <div>
-        <p><b>원자료 제공기관</b> ${escapeHtml(indicator.source)}</p>
-        <p><b>데이터 기준일</b> 국가별 값 옆의 공표연도</p>
-        <p><b>사이트 갱신일</b> ${indicatorSnapshot.dataUpdatedAt.replaceAll("-", ".")}</p>
-        <p><b>계산식</b> WDI API 값을 변환하지 않고 ${escapeHtml(String(indicator.precision))}자리 정밀도로 표시</p>
-        <p><b>명목·실질</b> ${escapeHtml(getIndicatorValueBasis(indicator))}</p>
-        <p><b>계절조정</b> 연간 WDI 값이며 화면에 별도 계절조정 상태가 없음</p>
-        <p><b>잠정·수정 여부</b> WDI 공통 응답에 잠정/확정 필드가 없어 확정치로 단정하지 않으며 이후 갱신될 수 있음</p>
-        <a href="${safeNewsUrl(indicator.sourceUrl)}" target="_blank" rel="noopener noreferrer">원자료 보기 <span aria-hidden="true">↗</span></a>
-      </div>
-    </details>
+    ${renderIndicatorMarketConnections(indicator.id)}
+    ${renderIndicatorMetadataDetails(metadata, indicator)}
   `;
 }
 
@@ -2146,28 +3146,43 @@ function drawIndicatorTrend() {
   context.fillText(String(series.at(-1).year), width - padding.right, height - 11);
 }
 
-function buildIndicatorComparison(indicator, korea, world) {
+function buildIndicatorComparison(indicator, korea, world, comparisonModel) {
   if (!korea || !world) {
     return {
       title: "비교 가능한 세계 집계값이 없습니다.",
-      detail: "국가마다 조사 시점이 다른 지표는 각 행의 기준연도를 먼저 확인하세요."
+      detail: "한국 또는 세계 행에서 자료 상태와 기준연도를 확인하세요."
     };
   }
   const difference = korea.value - world.value;
-  const direction = Math.abs(difference) < 10 ** -indicator.precision ? "비슷함" : difference > 0 ? "높음" : "낮음";
+  const direction =
+    Math.abs(difference) < 10 ** -indicator.precision
+      ? "비슷함"
+      : difference > 0
+        ? "높음"
+        : "낮음";
+  const valueDetail =
+    `한국 ${korea.year}년 ${formatIndicatorValue(indicator, korea)}, 세계 ${world.year}년 ${formatIndicatorValue(indicator, world)}입니다.`;
+
+  if (comparisonModel?.yearsDiffer && comparisonModel.pace === "fast") {
+    return {
+      title: "기준연도가 달라 현재 우열을 단정하지 않습니다.",
+      detail: `${valueDetail} ${comparisonModel.interpretation}`
+    };
+  }
+  if (comparisonModel?.yearDifferenceLabel) {
+    return {
+      title: `${comparisonModel.yearDifferenceLabel} · 참고 비교`,
+      detail: `${valueDetail} 값의 방향은 한국이 세계보다 ${formatIndicatorMagnitude(indicator, Math.abs(difference))} ${direction}지만 동일 시점 비교가 아닙니다.`
+    };
+  }
   return {
-    title: `한국이 세계보다 ${formatIndicatorMagnitude(indicator, Math.abs(difference))} ${direction}`,
-    detail: `한국 ${korea.year}년 ${formatIndicatorValue(indicator, korea)}, 세계 ${world.year}년 ${formatIndicatorValue(indicator, world)}입니다. 기준연도가 다르면 방향만 참고하세요.`
+    title: `한국이 세계보다 ${formatIndicatorMagnitude(indicator, Math.abs(difference))} ${direction}${comparisonModel?.yearsDiffer ? " · 참고 비교" : ""}`,
+    detail: `${valueDetail}${comparisonModel?.yearsDiffer ? ` ${comparisonModel.interpretation}` : ""}`
   };
 }
 
 function formatIndicatorValue(indicator, observation) {
-  const value = typeof observation === "number" ? observation : observation?.value;
-  if (!Number.isFinite(value)) return "--";
-  const formatted = formatIndicatorNumber(indicator, value);
-  if (indicator.format === "currency") return `$${formatted}`;
-  if (indicator.unit === "%") return `${formatted}%`;
-  return `${formatted} ${indicator.unit}`;
+  return formatIndicatorDisplayValue(indicator, observation);
 }
 
 function formatIndicatorNumber(indicator, value) {
@@ -2178,16 +3193,11 @@ function formatIndicatorNumber(indicator, value) {
 }
 
 function formatIndicatorDelta(indicator, value) {
-  const sign = value > 0 ? "+" : "";
-  if (indicator.format === "currency") return `${sign}$${formatIndicatorNumber(indicator, value)}`;
-  const suffix = indicator.unit === "%" ? "%p" : indicator.unit;
-  return `${sign}${formatIndicatorNumber(indicator, value)} ${suffix}`;
+  return formatIndicatorDisplayDelta(indicator, value);
 }
 
 function formatIndicatorMagnitude(indicator, value) {
-  if (indicator.format === "currency") return `$${formatIndicatorNumber(indicator, value)}`;
-  const suffix = indicator.unit === "%" ? "%p" : indicator.unit;
-  return `${formatIndicatorNumber(indicator, value)} ${suffix}`;
+  return formatIndicatorDisplayMagnitude(indicator, value);
 }
 
 function getIndicatorCategoryLabel(categoryId) {
@@ -2351,7 +3361,7 @@ function renderHistoryEvent(event, index) {
   const flow = detail.flow || [];
   const checklist = perspective.checklist || [];
   return `
-    <details class="history-event" ${index === 0 ? "open" : ""}>
+    <details class="history-event" data-history-event-id="${escapeHtml(event.id)}" ${index === 0 ? "open" : ""}>
       <summary>
         <time>${escapeHtml(event.year)}</time>
         <div class="history-event-summary">
@@ -2415,6 +3425,7 @@ function renderHistoryEvent(event, index) {
         <div class="history-term-row">
           ${(event.terms || []).map((term) => `<span>${escapeHtml(term)}</span>`).join("")}
         </div>
+        ${renderHistoryMarketLinks(event.id)}
       </div>
     </details>
   `;
@@ -2734,6 +3745,7 @@ function renderStudy(snapshot) {
         ${renderThinkingStep("03", "한국에는 어떻게 오나", `미국 증시 변화가 환율과 외국인 수급을 거쳐 KOSPI에 전달됩니다. 현재 한미 지수 차이는 ${signed(koreaGap)}%p입니다.`)}
         ${renderThinkingStep("04", "무엇이면 생각을 바꾸나", `${changeCondition} 확인합니다. 반대 증거가 나오면 기존 결론을 고칩니다.`)}
       </div>
+      ${renderStudyMarketCases(snapshot)}
       <div class="thinking-rule">
         <strong>오늘의 사고 규칙</strong>
         <p>좋은 뉴스인지 나쁜 뉴스인지 먼저 판단하지 말고, 그 뉴스 뒤에 환율·금리·주가가 실제로 같은 방향으로 움직였는지 확인하세요.</p>
@@ -3818,6 +4830,10 @@ function renderNews(headlines = [], analysis, dataQuality = {}) {
     controls.querySelectorAll("[data-news-filter]").forEach((button) => {
       button.addEventListener("click", () => {
         state.newsSection = button.dataset.newsFilter || "all";
+        syncUrlState(
+          { chapter: "news", news: state.newsSection },
+          { mode: "push", source: "news-filter" }
+        );
         renderNews(headlines, analysis, dataQuality);
         requestAnimationFrame(() => {
           const activeButton = elements.newsList.querySelector('[data-news-filter][aria-selected="true"]');
@@ -4283,13 +5299,7 @@ function drawChart() {
 
   hideChartTooltip();
   elements.chartTitle.textContent = market.name;
-  const series = (market.series || [])
-    .map((point) => ({
-      time: new Date(point.time),
-      value: point.value === null || point.value === undefined ? Number.NaN : Number(point.value)
-    }))
-    .filter((point) => Number.isFinite(point.time.getTime()) && Number.isFinite(point.value) && point.value > 0)
-    .sort((a, b) => a.time - b.time);
+  const series = getSanitizedClientMarketSeries(market);
 
   const canvas = elements.marketChart;
   const context = canvas.getContext("2d");
@@ -4321,29 +5331,49 @@ function drawChart() {
   const firstPoint = series[0];
   const lastPoint = series.at(-1);
 
-  const periodChange = firstPoint.value
-    ? ((lastPoint.value - firstPoint.value) / firstPoint.value) * 100
-    : 0;
-  const direction = periodChange > 0.005 ? "up" : periodChange < -0.005 ? "down" : "flat";
-  const statusLabel = market.live ? "실시간" : market.status === "stale" ? "이전 데이터" : "마감";
+  const periodChange =
+    firstPoint.value > 0
+      ? ((lastPoint.value - firstPoint.value) / firstPoint.value) * 100
+      : null;
+  const direction =
+    Number.isFinite(periodChange) && periodChange > 0.005
+      ? "up"
+      : Number.isFinite(periodChange) && periodChange < -0.005
+        ? "down"
+        : "flat";
+  const statusLabel = getMarketStatusLabel(market);
   const pointValue = formatChartPointValue(market, lastPoint.value);
-  const startLabel = marketTimeFormatter.format(firstPoint.time);
-  const endLabel = marketTimeFormatter.format(lastPoint.time);
+  const startLabel = formatMarketTimestamp(market, firstPoint.time);
+  const endLabel = formatMarketTimestamp(market, lastPoint.time);
+  const intervalMinutes = Number(market.seriesMeta?.intervalMinutes);
+  const intervalLabel = Number.isFinite(intervalMinutes)
+    ? `약 ${formatter.format(intervalMinutes)}분`
+    : market.chartInterval === "1h"
+      ? "1시간"
+      : market.chartInterval || "간격 미확인";
+  const sourceUrl = safeNewsUrl(market.sourceUrl);
+  const sourceMarkup =
+    sourceUrl === "#"
+      ? escapeHtml(market.source || market.chartSource || "원자료 확인 필요")
+      : `<a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(market.source || market.chartSource || "원자료")}</a>`;
 
   elements.chartCurrentValue.textContent = pointValue;
   elements.chartCurrentValue.parentElement.dataset.direction = direction;
   elements.chartStatusText.textContent = `${statusLabel} · ${endLabel} 기준`;
   elements.chartPeriodBadge.dataset.direction = direction;
-  elements.chartPeriodBadge.querySelector("strong").textContent = `${signed(periodChange)}%`;
+  elements.chartPeriodBadge.querySelector("strong").textContent =
+    Number.isFinite(periodChange) ? `${signed(periodChange)}%` : "기간 등락 계산 불가";
   elements.chartMeta.innerHTML = `
     <span><b>조회 기간</b>${escapeHtml(startLabel)} ~ ${escapeHtml(endLabel)}</span>
-    <span><b>데이터 간격</b>5일 · 1시간 · 비거래 시간 제외 · ${series.length}개</span>
-    <span><b>비교</b>기간 ${signed(periodChange)}% · 전일 ${signed(market.changePercent)}%</span>
-    <span><b>출처·상태</b>Yahoo Finance · ${statusLabel}</span>
+    <span><b>데이터 간격</b>${escapeHtml(market.chartRange || "5d")} 조회 · ${escapeHtml(intervalLabel)} · ${series.length}개</span>
+    <span><b>비교</b>기간 ${escapeHtml(Number.isFinite(periodChange) ? `${signed(periodChange)}%` : "계산 불가")} · 전일 ${escapeHtml(formatMarketChangePercent(market))}</span>
+    <span><b>거래 기준</b>${escapeHtml(market.tradingDate || "거래일 미확인")} · ${escapeHtml(statusLabel)} · ${escapeHtml(getMarketDelayLabel(market))}</span>
+    <span><b>상품·단위</b>${escapeHtml(market.instrumentLabel || getMarketInstrumentLabel(market))} · ${escapeHtml(market.displayUnit || getMarketDisplayUnit(market))}</span>
+    <span><b>원자료</b>${sourceMarkup}</span>
   `;
   canvas.setAttribute(
     "aria-label",
-    `${market.name} ${startLabel}부터 ${endLabel}까지 1시간 가격 차트. 기간 변화 ${signed(periodChange)}퍼센트`
+    `${market.name} ${startLabel}부터 ${endLabel}까지 ${intervalLabel} 간격의 단일 계열 가격 차트. 기간 변화 ${Number.isFinite(periodChange) ? `${signed(periodChange)}퍼센트` : "계산 불가"}`
   );
 
   const compact = width < 560;
@@ -4353,13 +5383,12 @@ function drawChart() {
   const plotWidth = width - padding.left - padding.right;
   const plotHeight = height - padding.top - padding.bottom;
   const values = series.map((point) => point.value);
-  const rawMin = Math.min(...values);
-  const rawMax = Math.max(...values);
-  const rawRange = rawMax - rawMin;
-  const margin = rawRange > 0 ? rawRange * 0.12 : Math.max(0.01, rawMax * 0.006);
-  const min = rawMin - margin;
-  const max = rawMax + margin;
-  const range = max - min;
+  const scale = computeMarketChartScale(values, market);
+  if (!scale) return;
+  const { rawMin, rawMax, min, max, range } = scale;
+  const scaleNote = document.createElement("span");
+  scaleNote.innerHTML = `<b>축 기준</b>단일 계열·단일 단위 · ${scale.minimumRangeApplied ? "최소 표시 범위 적용" : "실제 범위 기준"}`;
+  elements.chartMeta.append(scaleNote);
   const lineColor =
     direction === "up" ? "#087b6d" : direction === "down" ? "#d1493f" : "#51636e";
   const areaTop =
@@ -4518,8 +5547,7 @@ function drawChart() {
 }
 
 function formatChartPointValue(market, value) {
-  const formatted = formatter.format(value);
-  return market.unit === "KRW" ? `${formatted}원` : formatted;
+  return formatMarketValueAt(market, value);
 }
 
 function drawChartExtremum(context, point, label, value, color, width, padding, showLabel) {
@@ -4640,8 +5668,10 @@ function updateConnectionStatus(snapshot) {
 }
 
 function getMarketStatusLabel(market) {
-  if (market?.status === "stale") return "이전";
-  return market?.live ? "실시간" : "마감";
+  if (market?.recoveredFromCache) return "마지막 정상 데이터";
+  if (market?.marketStateLabel) return market.marketStateLabel;
+  if (market?.status === "stale") return "장중 데이터 지연";
+  return market?.live ? "장중" : "장 마감";
 }
 
 function getLatestMarketTimestamp(snapshot) {
@@ -4653,6 +5683,9 @@ function getLatestMarketTimestamp(snapshot) {
 }
 
 function renderDataUnavailable() {
+  sharedMarketAnalysisCache = null;
+  renderedMarketDeepSnapshot = null;
+  renderedMarketDeepId = null;
   state.narrative = null;
   elements.regimeTitle.textContent = "데이터 연결 확인 필요";
   elements.pulseText.textContent = "실제 자료를 불러오지 못했습니다. 이전 값이나 추정값은 대신 표시하지 않습니다.";
@@ -4899,13 +5932,150 @@ function escapeHtml(value) {
 }
 
 function formatMarketValue(market) {
-  const value = formatter.format(Number(market.value));
-  return market.unit === "KRW" ? `${value}원` : `${value}`;
+  return formatMarketValueAt(market, market?.value);
+}
+
+function formatMarketValueAt(market, rawValue) {
+  if (rawValue === null || rawValue === undefined || rawValue === "") return "--";
+  const number = Number(rawValue);
+  if (!Number.isFinite(number)) return "--";
+  const value = formatter.format(number);
+  if (market?.unit === "KRW") return `${value}원`;
+  if (market?.unit === "USD/bbl") return `${value}/배럴`;
+  if (market?.unit === "USD/oz") return `${value}/트로이온스`;
+  if (market?.unit === "pt") return `${value}포인트`;
+  return value;
+}
+
+function hasMarketChange(market) {
+  if (!market) return false;
+  const change = market.changePercent;
+  if (change === null || change === undefined || change === "") return false;
+  if (!Number.isFinite(Number(change))) return false;
+  if ("changeAvailable" in market && market.changeAvailable !== true) return false;
+  if ("previousClose" in market) {
+    const baseline = Number(market.previousClose);
+    if (!Number.isFinite(baseline) || baseline <= 0) return false;
+  }
+  return true;
+}
+
+function getMarketTone(market) {
+  if (!hasMarketChange(market)) return "flat";
+  const change = Number(market.changePercent);
+  return change > 0 ? "up" : change < 0 ? "down" : "flat";
+}
+
+function getMarketDirectionLabel(market) {
+  if (!hasMarketChange(market)) return "등락률 계산 불가";
+  const tone = getMarketTone(market);
+  return tone === "up" ? "상승" : tone === "down" ? "하락" : "보합";
+}
+
+function formatMarketChangePercent(market) {
+  return hasMarketChange(market)
+    ? `${signed(market.changePercent)}%`
+    : "등락률 계산 불가";
+}
+
+function formatMarketChangeValue(market) {
+  if (!hasMarketChange(market)) return "계산 불가";
+  const change = Number(market.change);
+  if (!Number.isFinite(change)) return "계산 불가";
+  const absolute = formatMarketValueAt(market, Math.abs(change));
+  return `${change > 0 ? "+" : change < 0 ? "-" : ""}${absolute}`;
+}
+
+function formatMarketMovement(market) {
+  if (!hasMarketChange(market)) {
+    return `계산 불가 · ${getMarketChangeUnavailableReason(market)}`;
+  }
+  return `${formatMarketChangeValue(market)} · ${formatMarketChangePercent(market)}`;
+}
+
+function formatMarketPreviousClose(market) {
+  const value = market?.previousClose;
+  if (value === null || value === undefined || !Number.isFinite(Number(value))) {
+    return `확인되지 않음 · ${getMarketChangeUnavailableReason(market)}`;
+  }
+  const date = market.previousTradingDate
+    ? ` · ${market.previousTradingDate}`
+    : "";
+  return `${formatMarketValueAt(market, value)}${date}`;
+}
+
+function getMarketChangeUnavailableReason(market) {
+  const labels = {
+    "previous-close-missing": "이전 종가 없음",
+    "previous-close-too-old": "이전 종가가 너무 오래됨",
+    "current-point-invalid": "현재값 기준시각 오류",
+    "abnormal-daily-change": "비정상 급등락으로 계산 제외"
+  };
+  return labels[market?.changeUnavailableReason] || "이전 종가 확인 필요";
+}
+
+function getMarketDisplayUnit(market) {
+  const labels = {
+    KRW: "1달러당 원",
+    pt: "포인트",
+    idx: "지수",
+    "USD/bbl": "미국달러/배럴",
+    "USD/oz": "미국달러/트로이온스"
+  };
+  return labels[market?.unit] || market?.unit || "단위 확인 필요";
+}
+
+function getMarketInstrumentLabel(market) {
+  const labels = {
+    index: "지수",
+    "spot-fx": "현물 환율",
+    futures: "최근월물 연속 선물"
+  };
+  return labels[market?.instrumentType] || "자료 구분 확인 필요";
+}
+
+function getMarketDelayLabel(market) {
+  const age = Number(market?.dataAgeMinutes);
+  if (market?.recoveredFromCache) {
+    return Number.isFinite(age)
+      ? `마지막 정상값 · ${formatter.format(age)}분 경과`
+      : "마지막 정상값";
+  }
+  const providerDelay = Number(market?.providerDelayMinutes);
+  if (market?.delayed === true) {
+    return Number.isFinite(providerDelay)
+      ? `제공처 기준 ${formatter.format(providerDelay)}분 지연`
+      : "지연 데이터";
+  }
+  if (market?.delayed === false) return "제공처 표기상 지연 없음";
+  return Number.isFinite(age)
+    ? `지연 여부 미확인 · ${formatter.format(age)}분 경과`
+    : "지연 여부 미확인";
+}
+
+function formatMarketTimestamp(market, value) {
+  const date = value instanceof Date ? value : new Date(value);
+  if (!Number.isFinite(date.getTime())) return "기준시각 없음";
+  const timezone = market?.timezone || "Asia/Seoul";
+  try {
+    const formatted = new Intl.DateTimeFormat("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZone: timezone
+    }).format(date);
+    return `${formatted} (${timezone})`;
+  } catch {
+    return `${exactDateTimeFormatter.format(date)} (시간대 확인 필요)`;
+  }
 }
 
 function getMarketReason(market) {
-  const movement =
-    Math.abs(market.changePercent) >= 1
+  const movement = !hasMarketChange(market)
+    ? `${market.name}은 이전 종가가 확인되지 않아 당일 변동폭을 계산하지 않습니다.`
+    : Math.abs(Number(market.changePercent)) >= 1
       ? `${market.name} 변동폭이 커져 단기 해석 비중이 높습니다.`
       : `${market.name} 변동폭은 제한적이지만 다른 지표와 같이 봐야 합니다.`;
   const reasonMap = {
@@ -5046,8 +6216,34 @@ function getTopicMeaning(topic) {
 }
 
 function signed(value) {
+  if (value === null || value === undefined || value === "") return "--";
   const number = Number(value);
+  if (!Number.isFinite(number)) return "--";
   return `${number >= 0 ? "+" : ""}${formatter.format(number)}`;
+}
+
+function getAvailableRiskScore(analysis) {
+  if (
+    analysis?.riskScoreAvailable === false
+    || analysis?.riskScore === null
+    || analysis?.riskScore === undefined
+    || analysis?.riskScore === ""
+  ) {
+    return null;
+  }
+  const score = Number(analysis.riskScore);
+  return Number.isFinite(score) ? score : null;
+}
+
+function formatRiskScore(analysis) {
+  const score = getAvailableRiskScore(analysis);
+  return score === null ? "판단 자료 부족" : formatter.format(score);
+}
+
+function getRiskTone(analysis) {
+  const score = getAvailableRiskScore(analysis);
+  if (score === null) return "neutral";
+  return score >= 66 ? "negative" : score >= 45 ? "watch" : "positive";
 }
 
 function riskColor(score) {

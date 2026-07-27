@@ -7,9 +7,14 @@
     "start": "node server.mjs",
     "test": "node --test",
     "update:indicators": "node scripts/update-indicators.mjs",
-    "update:news": "node scripts/update-news-cache.mjs"
+    "update:indicator-metadata": "node scripts/update-indicator-metadata.mjs",
+    "update:news": "node scripts/update-news-cache.mjs",
+    "update:blob": "node scripts/publish-blob-version.mjs"
   },
   "engines": {
     "node": ">=18"
+  },
+  "dependencies": {
+    "@vercel/blob": "2.6.1"
   }
 }

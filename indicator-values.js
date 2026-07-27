@@ -1,5 +1,7 @@
 export const indicatorSnapshot = {
-  "dataUpdatedAt": "2026-07-24",
+  "dataUpdatedAt": "2026-07-27",
+  "collectedAt": "2026-07-27T07:47:12.406Z",
+  "collectionStatus": "success",
   "indicators": {
     "fertility": {
       "countries": {
@@ -9,7 +11,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 0.721
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.239
+            },
+            {
+              "year": 2016,
+              "value": 1.172
+            },
+            {
+              "year": 2017,
+              "value": 1.052
+            },
+            {
+              "year": 2018,
+              "value": 0.977
+            },
+            {
+              "year": 2019,
+              "value": 0.918
+            },
+            {
+              "year": 2020,
+              "value": 0.837
+            },
+            {
+              "year": 2021,
+              "value": 0.808
+            },
+            {
+              "year": 2022,
+              "value": 0.778
+            },
+            {
+              "year": 2023,
+              "value": 0.721
+            },
+            {
+              "year": 2024,
+              "value": 0.748
+            }
+          ]
         },
         "WLD": {
           "year": 2024,
@@ -17,7 +61,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 2.1957
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.49
+            },
+            {
+              "year": 2016,
+              "value": 2.4914
+            },
+            {
+              "year": 2017,
+              "value": 2.4598
+            },
+            {
+              "year": 2018,
+              "value": 2.3917
+            },
+            {
+              "year": 2019,
+              "value": 2.3532
+            },
+            {
+              "year": 2020,
+              "value": 2.2762
+            },
+            {
+              "year": 2021,
+              "value": 2.2455
+            },
+            {
+              "year": 2022,
+              "value": 2.215
+            },
+            {
+              "year": 2023,
+              "value": 2.1957
+            },
+            {
+              "year": 2024,
+              "value": 2.1883
+            }
+          ]
         },
         "USA": {
           "year": 2024,
@@ -25,7 +111,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 1.6165
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.8435
+            },
+            {
+              "year": 2016,
+              "value": 1.8205
+            },
+            {
+              "year": 2017,
+              "value": 1.7655
+            },
+            {
+              "year": 2018,
+              "value": 1.7295
+            },
+            {
+              "year": 2019,
+              "value": 1.706
+            },
+            {
+              "year": 2020,
+              "value": 1.6415
+            },
+            {
+              "year": 2021,
+              "value": 1.664
+            },
+            {
+              "year": 2022,
+              "value": 1.6565
+            },
+            {
+              "year": 2023,
+              "value": 1.6165
+            },
+            {
+              "year": 2024,
+              "value": 1.6265
+            }
+          ]
         },
         "JPN": {
           "year": 2024,
@@ -33,7 +161,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 1.2
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.45
+            },
+            {
+              "year": 2016,
+              "value": 1.44
+            },
+            {
+              "year": 2017,
+              "value": 1.43
+            },
+            {
+              "year": 2018,
+              "value": 1.42
+            },
+            {
+              "year": 2019,
+              "value": 1.36
+            },
+            {
+              "year": 2020,
+              "value": 1.33
+            },
+            {
+              "year": 2021,
+              "value": 1.3
+            },
+            {
+              "year": 2022,
+              "value": 1.26
+            },
+            {
+              "year": 2023,
+              "value": 1.2
+            },
+            {
+              "year": 2024,
+              "value": 1.15
+            }
+          ]
         },
         "CHN": {
           "year": 2024,
@@ -41,7 +211,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 0.999
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.67
+            },
+            {
+              "year": 2016,
+              "value": 1.772
+            },
+            {
+              "year": 2017,
+              "value": 1.795
+            },
+            {
+              "year": 2018,
+              "value": 1.539
+            },
+            {
+              "year": 2019,
+              "value": 1.496
+            },
+            {
+              "year": 2020,
+              "value": 1.236
+            },
+            {
+              "year": 2021,
+              "value": 1.117
+            },
+            {
+              "year": 2022,
+              "value": 1.034
+            },
+            {
+              "year": 2023,
+              "value": 0.999
+            },
+            {
+              "year": 2024,
+              "value": 1.013
+            }
+          ]
         },
         "DEU": {
           "year": 2024,
@@ -49,7 +261,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 1.39
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.5
+            },
+            {
+              "year": 2016,
+              "value": 1.6
+            },
+            {
+              "year": 2017,
+              "value": 1.57
+            },
+            {
+              "year": 2018,
+              "value": 1.57
+            },
+            {
+              "year": 2019,
+              "value": 1.54
+            },
+            {
+              "year": 2020,
+              "value": 1.53
+            },
+            {
+              "year": 2021,
+              "value": 1.58
+            },
+            {
+              "year": 2022,
+              "value": 1.455
+            },
+            {
+              "year": 2023,
+              "value": 1.39
+            },
+            {
+              "year": 2024,
+              "value": 1.36
+            }
+          ]
         },
         "GBR": {
           "year": 2024,
@@ -57,7 +311,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 1.56
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.8
+            },
+            {
+              "year": 2016,
+              "value": 1.79
+            },
+            {
+              "year": 2017,
+              "value": 1.74
+            },
+            {
+              "year": 2018,
+              "value": 1.68
+            },
+            {
+              "year": 2019,
+              "value": 1.632
+            },
+            {
+              "year": 2020,
+              "value": 1.571
+            },
+            {
+              "year": 2021,
+              "value": 1.583
+            },
+            {
+              "year": 2022,
+              "value": 1.56
+            },
+            {
+              "year": 2023,
+              "value": 1.56
+            },
+            {
+              "year": 2024,
+              "value": 1.551
+            }
+          ]
         },
         "FRA": {
           "year": 2024,
@@ -65,7 +361,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 1.66
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.96
+            },
+            {
+              "year": 2016,
+              "value": 1.92
+            },
+            {
+              "year": 2017,
+              "value": 1.89
+            },
+            {
+              "year": 2018,
+              "value": 1.87
+            },
+            {
+              "year": 2019,
+              "value": 1.86
+            },
+            {
+              "year": 2020,
+              "value": 1.82
+            },
+            {
+              "year": 2021,
+              "value": 1.83
+            },
+            {
+              "year": 2022,
+              "value": 1.78
+            },
+            {
+              "year": 2023,
+              "value": 1.66
+            },
+            {
+              "year": 2024,
+              "value": 1.61
+            }
+          ]
         },
         "CAN": {
           "year": 2024,
@@ -73,7 +411,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 1.27
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.6
+            },
+            {
+              "year": 2016,
+              "value": 1.59
+            },
+            {
+              "year": 2017,
+              "value": 1.55
+            },
+            {
+              "year": 2018,
+              "value": 1.51
+            },
+            {
+              "year": 2019,
+              "value": 1.47
+            },
+            {
+              "year": 2020,
+              "value": 1.41
+            },
+            {
+              "year": 2021,
+              "value": 1.44
+            },
+            {
+              "year": 2022,
+              "value": 1.34
+            },
+            {
+              "year": 2023,
+              "value": 1.27
+            },
+            {
+              "year": 2024,
+              "value": 1.25
+            }
+          ]
         },
         "AUS": {
           "year": 2024,
@@ -81,7 +461,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 1.499
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.814
+            },
+            {
+              "year": 2016,
+              "value": 1.752
+            },
+            {
+              "year": 2017,
+              "value": 1.741
+            },
+            {
+              "year": 2018,
+              "value": 1.74
+            },
+            {
+              "year": 2019,
+              "value": 1.657
+            },
+            {
+              "year": 2020,
+              "value": 1.581
+            },
+            {
+              "year": 2021,
+              "value": 1.7
+            },
+            {
+              "year": 2022,
+              "value": 1.63
+            },
+            {
+              "year": 2023,
+              "value": 1.499
+            },
+            {
+              "year": 2024,
+              "value": 1.481
+            }
+          ]
         },
         "IND": {
           "year": 2024,
@@ -89,7 +511,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 1.975
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.289
+            },
+            {
+              "year": 2016,
+              "value": 2.284
+            },
+            {
+              "year": 2017,
+              "value": 2.193
+            },
+            {
+              "year": 2018,
+              "value": 2.184
+            },
+            {
+              "year": 2019,
+              "value": 2.12
+            },
+            {
+              "year": 2020,
+              "value": 2.047
+            },
+            {
+              "year": 2021,
+              "value": 2.014
+            },
+            {
+              "year": 2022,
+              "value": 1.994
+            },
+            {
+              "year": 2023,
+              "value": 1.975
+            },
+            {
+              "year": 2024,
+              "value": 1.962
+            }
+          ]
         },
         "BRA": {
           "year": 2024,
@@ -97,7 +561,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 1.619
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.777
+            },
+            {
+              "year": 2016,
+              "value": 1.727
+            },
+            {
+              "year": 2017,
+              "value": 1.74
+            },
+            {
+              "year": 2018,
+              "value": 1.744
+            },
+            {
+              "year": 2019,
+              "value": 1.705
+            },
+            {
+              "year": 2020,
+              "value": 1.653
+            },
+            {
+              "year": 2021,
+              "value": 1.638
+            },
+            {
+              "year": 2022,
+              "value": 1.629
+            },
+            {
+              "year": 2023,
+              "value": 1.619
+            },
+            {
+              "year": 2024,
+              "value": 1.614
+            }
+          ]
         },
         "SGP": {
           "year": 2024,
@@ -105,7 +611,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 0.97
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.24
+            },
+            {
+              "year": 2016,
+              "value": 1.2
+            },
+            {
+              "year": 2017,
+              "value": 1.16
+            },
+            {
+              "year": 2018,
+              "value": 1.14
+            },
+            {
+              "year": 2019,
+              "value": 1.14
+            },
+            {
+              "year": 2020,
+              "value": 1.1
+            },
+            {
+              "year": 2021,
+              "value": 1.12
+            },
+            {
+              "year": 2022,
+              "value": 1.04
+            },
+            {
+              "year": 2023,
+              "value": 0.97
+            },
+            {
+              "year": 2024,
+              "value": 0.97
+            }
+          ]
         },
         "IDN": {
           "year": 2024,
@@ -113,7 +661,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 2.127
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.346
+            },
+            {
+              "year": 2016,
+              "value": 2.311
+            },
+            {
+              "year": 2017,
+              "value": 2.253
+            },
+            {
+              "year": 2018,
+              "value": 2.219
+            },
+            {
+              "year": 2019,
+              "value": 2.205
+            },
+            {
+              "year": 2020,
+              "value": 2.189
+            },
+            {
+              "year": 2021,
+              "value": 2.166
+            },
+            {
+              "year": 2022,
+              "value": 2.149
+            },
+            {
+              "year": 2023,
+              "value": 2.127
+            },
+            {
+              "year": 2024,
+              "value": 2.115
+            }
+          ]
         },
         "VNM": {
           "year": 2024,
@@ -121,7 +711,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 1.913
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.1
+            },
+            {
+              "year": 2016,
+              "value": 2
+            },
+            {
+              "year": 2017,
+              "value": 1.985
+            },
+            {
+              "year": 2018,
+              "value": 1.88
+            },
+            {
+              "year": 2019,
+              "value": 1.943
+            },
+            {
+              "year": 2020,
+              "value": 1.957
+            },
+            {
+              "year": 2021,
+              "value": 1.942
+            },
+            {
+              "year": 2022,
+              "value": 1.927
+            },
+            {
+              "year": 2023,
+              "value": 1.913
+            },
+            {
+              "year": 2024,
+              "value": 1.895
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -165,7 +797,9 @@ export const indicatorSnapshot = {
           "year": 2024,
           "value": 0.748
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "population-growth": {
       "countries": {
@@ -175,7 +809,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 0.0743
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.5273
+            },
+            {
+              "year": 2016,
+              "value": 0.3969
+            },
+            {
+              "year": 2017,
+              "value": 0.281
+            },
+            {
+              "year": 2018,
+              "value": 0.4335
+            },
+            {
+              "year": 2019,
+              "value": 0.3479
+            },
+            {
+              "year": 2020,
+              "value": 0.1379
+            },
+            {
+              "year": 2021,
+              "value": -0.1288
+            },
+            {
+              "year": 2022,
+              "value": -0.1875
+            },
+            {
+              "year": 2023,
+              "value": 0.0775
+            },
+            {
+              "year": 2024,
+              "value": 0.0743
+            },
+            {
+              "year": 2025,
+              "value": -0.1286
+            }
+          ]
         },
         "WLD": {
           "year": 2025,
@@ -183,7 +863,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 0.9624
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.1836
+            },
+            {
+              "year": 2016,
+              "value": 1.1642
+            },
+            {
+              "year": 2017,
+              "value": 1.1302
+            },
+            {
+              "year": 2018,
+              "value": 1.0761
+            },
+            {
+              "year": 2019,
+              "value": 1.047
+            },
+            {
+              "year": 2020,
+              "value": 0.9814
+            },
+            {
+              "year": 2021,
+              "value": 0.8331
+            },
+            {
+              "year": 2022,
+              "value": 0.8673
+            },
+            {
+              "year": 2023,
+              "value": 0.9267
+            },
+            {
+              "year": 2024,
+              "value": 0.9624
+            },
+            {
+              "year": 2025,
+              "value": 0.9113
+            }
+          ]
         },
         "USA": {
           "year": 2025,
@@ -191,7 +917,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 0.9601
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.7979
+            },
+            {
+              "year": 2016,
+              "value": 0.7856
+            },
+            {
+              "year": 2017,
+              "value": 0.6929
+            },
+            {
+              "year": 2018,
+              "value": 0.5864
+            },
+            {
+              "year": 2019,
+              "value": 0.5151
+            },
+            {
+              "year": 2020,
+              "value": 0.4085
+            },
+            {
+              "year": 2021,
+              "value": 0.1573
+            },
+            {
+              "year": 2022,
+              "value": 0.5693
+            },
+            {
+              "year": 2023,
+              "value": 0.8226
+            },
+            {
+              "year": 2024,
+              "value": 0.9601
+            },
+            {
+              "year": 2025,
+              "value": 0.5225
+            }
+          ]
         },
         "JPN": {
           "year": 2025,
@@ -199,7 +971,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": -0.4357
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": -0.1061
+            },
+            {
+              "year": 2016,
+              "value": -0.0511
+            },
+            {
+              "year": 2017,
+              "value": -0.0819
+            },
+            {
+              "year": 2018,
+              "value": -0.1269
+            },
+            {
+              "year": 2019,
+              "value": -0.1405
+            },
+            {
+              "year": 2020,
+              "value": -0.2942
+            },
+            {
+              "year": 2021,
+              "value": -0.46
+            },
+            {
+              "year": 2022,
+              "value": -0.4439
+            },
+            {
+              "year": 2023,
+              "value": -0.4874
+            },
+            {
+              "year": 2024,
+              "value": -0.4357
+            },
+            {
+              "year": 2025,
+              "value": -0.4921
+            }
+          ]
         },
         "CHN": {
           "year": 2025,
@@ -207,7 +1025,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": -0.1231
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.5815
+            },
+            {
+              "year": 2016,
+              "value": 0.5731
+            },
+            {
+              "year": 2017,
+              "value": 0.6052
+            },
+            {
+              "year": 2018,
+              "value": 0.4677
+            },
+            {
+              "year": 2019,
+              "value": 0.3547
+            },
+            {
+              "year": 2020,
+              "value": 0.238
+            },
+            {
+              "year": 2021,
+              "value": 0.0893
+            },
+            {
+              "year": 2022,
+              "value": -0.0131
+            },
+            {
+              "year": 2023,
+              "value": -0.1038
+            },
+            {
+              "year": 2024,
+              "value": -0.1231
+            },
+            {
+              "year": 2025,
+              "value": -0.1698
+            }
+          ]
         },
         "DEU": {
           "year": 2025,
@@ -215,7 +1079,539 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 0.275
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.8657
+            },
+            {
+              "year": 2016,
+              "value": 0.8072
+            },
+            {
+              "year": 2017,
+              "value": 0.3737
+            },
+            {
+              "year": 2018,
+              "value": 0.3005
+            },
+            {
+              "year": 2019,
+              "value": 0.2255
+            },
+            {
+              "year": 2020,
+              "value": 0.0817
+            },
+            {
+              "year": 2021,
+              "value": 0.0423
+            },
+            {
+              "year": 2022,
+              "value": -0.022
+            },
+            {
+              "year": 2023,
+              "value": 0.1315
+            },
+            {
+              "year": 2024,
+              "value": 0.275
+            },
+            {
+              "year": 2025,
+              "value": -0.0304
+            }
+          ]
+        },
+        "GBR": {
+          "year": 2025,
+          "value": 0.2969,
+          "previous": {
+            "year": 2024,
+            "value": 1.0957
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.7216
+            },
+            {
+              "year": 2016,
+              "value": 0.7942
+            },
+            {
+              "year": 2017,
+              "value": 0.5442
+            },
+            {
+              "year": 2018,
+              "value": 0.4885
+            },
+            {
+              "year": 2019,
+              "value": 0.5131
+            },
+            {
+              "year": 2020,
+              "value": 0.168
+            },
+            {
+              "year": 2021,
+              "value": 0.356
+            },
+            {
+              "year": 2022,
+              "value": 0.9776
+            },
+            {
+              "year": 2023,
+              "value": 1.3073
+            },
+            {
+              "year": 2024,
+              "value": 1.0957
+            },
+            {
+              "year": 2025,
+              "value": 0.2969
+            }
+          ]
+        },
+        "FRA": {
+          "year": 2025,
+          "value": 0.2458,
+          "previous": {
+            "year": 2024,
+            "value": 0.262
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.3556
+            },
+            {
+              "year": 2016,
+              "value": 0.2639
+            },
+            {
+              "year": 2017,
+              "value": 0.2902
+            },
+            {
+              "year": 2018,
+              "value": 0.3585
+            },
+            {
+              "year": 2019,
+              "value": 0.3326
+            },
+            {
+              "year": 2020,
+              "value": 0.3246
+            },
+            {
+              "year": 2021,
+              "value": 0.3569
+            },
+            {
+              "year": 2022,
+              "value": 0.5023
+            },
+            {
+              "year": 2023,
+              "value": 0.2751
+            },
+            {
+              "year": 2024,
+              "value": 0.262
+            },
+            {
+              "year": 2025,
+              "value": 0.2458
+            }
+          ]
+        },
+        "CAN": {
+          "year": 2025,
+          "value": 0.9391,
+          "previous": {
+            "year": 2024,
+            "value": 2.9844
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.7603
+            },
+            {
+              "year": 2016,
+              "value": 1.1315
+            },
+            {
+              "year": 2017,
+              "value": 1.1954
+            },
+            {
+              "year": 2018,
+              "value": 1.4332
+            },
+            {
+              "year": 2019,
+              "value": 1.4617
+            },
+            {
+              "year": 2020,
+              "value": 1.0844
+            },
+            {
+              "year": 2021,
+              "value": 0.5539
+            },
+            {
+              "year": 2022,
+              "value": 1.8404
+            },
+            {
+              "year": 2023,
+              "value": 2.7824
+            },
+            {
+              "year": 2024,
+              "value": 2.9844
+            },
+            {
+              "year": 2025,
+              "value": 0.9391
+            }
+          ]
+        },
+        "AUS": {
+          "year": 2025,
+          "value": 1.5331,
+          "previous": {
+            "year": 2024,
+            "value": 1.9845
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.4392
+            },
+            {
+              "year": 2016,
+              "value": 1.5619
+            },
+            {
+              "year": 2017,
+              "value": 1.6468
+            },
+            {
+              "year": 2018,
+              "value": 1.496
+            },
+            {
+              "year": 2019,
+              "value": 1.4775
+            },
+            {
+              "year": 2020,
+              "value": 1.2334
+            },
+            {
+              "year": 2021,
+              "value": 0.1409
+            },
+            {
+              "year": 2022,
+              "value": 1.2893
+            },
+            {
+              "year": 2023,
+              "value": 2.4345
+            },
+            {
+              "year": 2024,
+              "value": 1.9845
+            },
+            {
+              "year": 2025,
+              "value": 1.5331
+            }
+          ]
+        },
+        "IND": {
+          "year": 2025,
+          "value": 0.8872,
+          "previous": {
+            "year": 2024,
+            "value": 0.8907
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.1929
+            },
+            {
+              "year": 2016,
+              "value": 1.1916
+            },
+            {
+              "year": 2017,
+              "value": 1.1624
+            },
+            {
+              "year": 2018,
+              "value": 1.0973
+            },
+            {
+              "year": 2019,
+              "value": 1.04
+            },
+            {
+              "year": 2020,
+              "value": 0.9734
+            },
+            {
+              "year": 2021,
+              "value": 0.8226
+            },
+            {
+              "year": 2022,
+              "value": 0.7902
+            },
+            {
+              "year": 2023,
+              "value": 0.8833
+            },
+            {
+              "year": 2024,
+              "value": 0.8907
+            },
+            {
+              "year": 2025,
+              "value": 0.8872
+            }
+          ]
+        },
+        "BRA": {
+          "year": 2025,
+          "value": 0.3832,
+          "previous": {
+            "year": 2024,
+            "value": 0.4055
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.7917
+            },
+            {
+              "year": 2016,
+              "value": 0.762
+            },
+            {
+              "year": 2017,
+              "value": 0.7282
+            },
+            {
+              "year": 2018,
+              "value": 0.6834
+            },
+            {
+              "year": 2019,
+              "value": 0.652
+            },
+            {
+              "year": 2020,
+              "value": 0.5794
+            },
+            {
+              "year": 2021,
+              "value": 0.4254
+            },
+            {
+              "year": 2022,
+              "value": 0.3602
+            },
+            {
+              "year": 2023,
+              "value": 0.3959
+            },
+            {
+              "year": 2024,
+              "value": 0.4055
+            },
+            {
+              "year": 2025,
+              "value": 0.3832
+            }
+          ]
+        },
+        "SGP": {
+          "year": 2025,
+          "value": 1.2235,
+          "previous": {
+            "year": 2024,
+            "value": 1.9945
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.1864
+            },
+            {
+              "year": 2016,
+              "value": 1.2974
+            },
+            {
+              "year": 2017,
+              "value": 0.0886
+            },
+            {
+              "year": 2018,
+              "value": 0.4697
+            },
+            {
+              "year": 2019,
+              "value": 1.1443
+            },
+            {
+              "year": 2020,
+              "value": -0.3119
+            },
+            {
+              "year": 2021,
+              "value": -4.1703
+            },
+            {
+              "year": 2022,
+              "value": 3.3086
+            },
+            {
+              "year": 2023,
+              "value": 4.8583
+            },
+            {
+              "year": 2024,
+              "value": 1.9945
+            },
+            {
+              "year": 2025,
+              "value": 1.2235
+            }
+          ]
+        },
+        "IDN": {
+          "year": 2025,
+          "value": 0.7847,
+          "previous": {
+            "year": 2024,
+            "value": 0.8139
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.1223
+            },
+            {
+              "year": 2016,
+              "value": 1.0745
+            },
+            {
+              "year": 2017,
+              "value": 1.0223
+            },
+            {
+              "year": 2018,
+              "value": 0.9697
+            },
+            {
+              "year": 2019,
+              "value": 0.9356
+            },
+            {
+              "year": 2020,
+              "value": 0.8498
+            },
+            {
+              "year": 2021,
+              "value": 0.7046
+            },
+            {
+              "year": 2022,
+              "value": 0.7461
+            },
+            {
+              "year": 2023,
+              "value": 0.8427
+            },
+            {
+              "year": 2024,
+              "value": 0.8139
+            },
+            {
+              "year": 2025,
+              "value": 0.7847
+            }
+          ]
+        },
+        "VNM": {
+          "year": 2025,
+          "value": 0.603,
+          "previous": {
+            "year": 2024,
+            "value": 0.6313
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.2398
+            },
+            {
+              "year": 2016,
+              "value": 1.2599
+            },
+            {
+              "year": 2017,
+              "value": 1.2442
+            },
+            {
+              "year": 2018,
+              "value": 1.1079
+            },
+            {
+              "year": 2019,
+              "value": 0.9684
+            },
+            {
+              "year": 2020,
+              "value": 0.9274
+            },
+            {
+              "year": 2021,
+              "value": 0.8689
+            },
+            {
+              "year": 2022,
+              "value": 0.7508
+            },
+            {
+              "year": 2023,
+              "value": 0.6714
+            },
+            {
+              "year": 2024,
+              "value": 0.6313
+            },
+            {
+              "year": 2025,
+              "value": 0.603
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -263,7 +1659,9 @@ export const indicatorSnapshot = {
           "year": 2025,
           "value": -0.1286
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "older-population": {
       "countries": {
@@ -273,7 +1671,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 19.2735
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 12.9547
+            },
+            {
+              "year": 2016,
+              "value": 13.3631
+            },
+            {
+              "year": 2017,
+              "value": 13.8737
+            },
+            {
+              "year": 2018,
+              "value": 14.4544
+            },
+            {
+              "year": 2019,
+              "value": 15.0635
+            },
+            {
+              "year": 2020,
+              "value": 15.8222
+            },
+            {
+              "year": 2021,
+              "value": 16.6596
+            },
+            {
+              "year": 2022,
+              "value": 17.4846
+            },
+            {
+              "year": 2023,
+              "value": 18.335
+            },
+            {
+              "year": 2024,
+              "value": 19.2735
+            },
+            {
+              "year": 2025,
+              "value": 20.3304
+            }
+          ]
         },
         "WLD": {
           "year": 2025,
@@ -281,7 +1725,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 10.2018
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 8.2584
+            },
+            {
+              "year": 2016,
+              "value": 8.4491
+            },
+            {
+              "year": 2017,
+              "value": 8.6553
+            },
+            {
+              "year": 2018,
+              "value": 8.8762
+            },
+            {
+              "year": 2019,
+              "value": 9.1058
+            },
+            {
+              "year": 2020,
+              "value": 9.3319
+            },
+            {
+              "year": 2021,
+              "value": 9.5278
+            },
+            {
+              "year": 2022,
+              "value": 9.7392
+            },
+            {
+              "year": 2023,
+              "value": 9.9815
+            },
+            {
+              "year": 2024,
+              "value": 10.2018
+            },
+            {
+              "year": 2025,
+              "value": 10.4024
+            }
+          ]
         },
         "USA": {
           "year": 2025,
@@ -289,7 +1779,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 17.9287
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 14.3102
+            },
+            {
+              "year": 2016,
+              "value": 14.6147
+            },
+            {
+              "year": 2017,
+              "value": 14.9391
+            },
+            {
+              "year": 2018,
+              "value": 15.2915
+            },
+            {
+              "year": 2019,
+              "value": 15.6729
+            },
+            {
+              "year": 2020,
+              "value": 16.0719
+            },
+            {
+              "year": 2021,
+              "value": 16.4738
+            },
+            {
+              "year": 2022,
+              "value": 16.9196
+            },
+            {
+              "year": 2023,
+              "value": 17.4318
+            },
+            {
+              "year": 2024,
+              "value": 17.9287
+            },
+            {
+              "year": 2025,
+              "value": 18.3872
+            }
+          ]
         },
         "JPN": {
           "year": 2025,
@@ -297,7 +1833,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 29.7808
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 26.923
+            },
+            {
+              "year": 2016,
+              "value": 27.512
+            },
+            {
+              "year": 2017,
+              "value": 27.9778
+            },
+            {
+              "year": 2018,
+              "value": 28.3452
+            },
+            {
+              "year": 2019,
+              "value": 28.6288
+            },
+            {
+              "year": 2020,
+              "value": 28.9182
+            },
+            {
+              "year": 2021,
+              "value": 29.217
+            },
+            {
+              "year": 2022,
+              "value": 29.4026
+            },
+            {
+              "year": 2023,
+              "value": 29.5618
+            },
+            {
+              "year": 2024,
+              "value": 29.7808
+            },
+            {
+              "year": 2025,
+              "value": 29.9941
+            }
+          ]
         },
         "CHN": {
           "year": 2025,
@@ -305,7 +1887,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 14.6653
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 10.0534
+            },
+            {
+              "year": 2016,
+              "value": 10.4908
+            },
+            {
+              "year": 2017,
+              "value": 10.981
+            },
+            {
+              "year": 2018,
+              "value": 11.5162
+            },
+            {
+              "year": 2019,
+              "value": 12.0614
+            },
+            {
+              "year": 2020,
+              "value": 12.6452
+            },
+            {
+              "year": 2021,
+              "value": 13.2057
+            },
+            {
+              "year": 2022,
+              "value": 13.7819
+            },
+            {
+              "year": 2023,
+              "value": 14.3161
+            },
+            {
+              "year": 2024,
+              "value": 14.6653
+            },
+            {
+              "year": 2025,
+              "value": 14.9114
+            }
+          ]
         },
         "DEU": {
           "year": 2025,
@@ -313,7 +1941,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 23.1956
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 21.0534
+            },
+            {
+              "year": 2016,
+              "value": 21.135
+            },
+            {
+              "year": 2017,
+              "value": 21.2936
+            },
+            {
+              "year": 2018,
+              "value": 21.4498
+            },
+            {
+              "year": 2019,
+              "value": 21.6284
+            },
+            {
+              "year": 2020,
+              "value": 21.8447
+            },
+            {
+              "year": 2021,
+              "value": 22.1345
+            },
+            {
+              "year": 2022,
+              "value": 22.4589
+            },
+            {
+              "year": 2023,
+              "value": 22.79
+            },
+            {
+              "year": 2024,
+              "value": 23.1956
+            },
+            {
+              "year": 2025,
+              "value": 23.7032
+            }
+          ]
         },
         "GBR": {
           "year": 2025,
@@ -321,7 +1995,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 19.4998
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 17.77
+            },
+            {
+              "year": 2016,
+              "value": 17.9162
+            },
+            {
+              "year": 2017,
+              "value": 18.0734
+            },
+            {
+              "year": 2018,
+              "value": 18.2558
+            },
+            {
+              "year": 2019,
+              "value": 18.458
+            },
+            {
+              "year": 2020,
+              "value": 18.6058
+            },
+            {
+              "year": 2021,
+              "value": 18.7186
+            },
+            {
+              "year": 2022,
+              "value": 18.9303
+            },
+            {
+              "year": 2023,
+              "value": 19.2381
+            },
+            {
+              "year": 2024,
+              "value": 19.4998
+            },
+            {
+              "year": 2025,
+              "value": 19.7027
+            }
+          ]
         },
         "FRA": {
           "year": 2025,
@@ -329,7 +2049,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 22.1466
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 18.8516
+            },
+            {
+              "year": 2016,
+              "value": 19.2847
+            },
+            {
+              "year": 2017,
+              "value": 19.6708
+            },
+            {
+              "year": 2018,
+              "value": 20.0394
+            },
+            {
+              "year": 2019,
+              "value": 20.4101
+            },
+            {
+              "year": 2020,
+              "value": 20.7474
+            },
+            {
+              "year": 2021,
+              "value": 21.0508
+            },
+            {
+              "year": 2022,
+              "value": 21.3773
+            },
+            {
+              "year": 2023,
+              "value": 21.7491
+            },
+            {
+              "year": 2024,
+              "value": 22.1466
+            },
+            {
+              "year": 2025,
+              "value": 22.5419
+            }
+          ]
         },
         "CAN": {
           "year": 2025,
@@ -337,7 +2103,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 19.7996
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 16.0102
+            },
+            {
+              "year": 2016,
+              "value": 16.3881
+            },
+            {
+              "year": 2017,
+              "value": 16.7582
+            },
+            {
+              "year": 2018,
+              "value": 17.1297
+            },
+            {
+              "year": 2019,
+              "value": 17.5319
+            },
+            {
+              "year": 2020,
+              "value": 17.9854
+            },
+            {
+              "year": 2021,
+              "value": 18.4823
+            },
+            {
+              "year": 2022,
+              "value": 18.9407
+            },
+            {
+              "year": 2023,
+              "value": 19.3581
+            },
+            {
+              "year": 2024,
+              "value": 19.7996
+            },
+            {
+              "year": 2025,
+              "value": 20.2604
+            }
+          ]
         },
         "AUS": {
           "year": 2025,
@@ -345,7 +2157,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 17.73
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 14.8995
+            },
+            {
+              "year": 2016,
+              "value": 15.1508
+            },
+            {
+              "year": 2017,
+              "value": 15.3876
+            },
+            {
+              "year": 2018,
+              "value": 15.641
+            },
+            {
+              "year": 2019,
+              "value": 15.9451
+            },
+            {
+              "year": 2020,
+              "value": 16.3387
+            },
+            {
+              "year": 2021,
+              "value": 16.7492
+            },
+            {
+              "year": 2022,
+              "value": 17.075
+            },
+            {
+              "year": 2023,
+              "value": 17.384
+            },
+            {
+              "year": 2024,
+              "value": 17.73
+            },
+            {
+              "year": 2025,
+              "value": 18.093
+            }
+          ]
         },
         "IND": {
           "year": 2025,
@@ -353,7 +2211,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 7.1465
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 5.4692
+            },
+            {
+              "year": 2016,
+              "value": 5.6417
+            },
+            {
+              "year": 2017,
+              "value": 5.8247
+            },
+            {
+              "year": 2018,
+              "value": 6.0193
+            },
+            {
+              "year": 2019,
+              "value": 6.2235
+            },
+            {
+              "year": 2020,
+              "value": 6.4169
+            },
+            {
+              "year": 2021,
+              "value": 6.5458
+            },
+            {
+              "year": 2022,
+              "value": 6.699
+            },
+            {
+              "year": 2023,
+              "value": 6.9218
+            },
+            {
+              "year": 2024,
+              "value": 7.1465
+            },
+            {
+              "year": 2025,
+              "value": 7.3766
+            }
+          ]
         },
         "BRA": {
           "year": 2025,
@@ -361,7 +2265,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 11.0492
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 7.9568
+            },
+            {
+              "year": 2016,
+              "value": 8.2686
+            },
+            {
+              "year": 2017,
+              "value": 8.5917
+            },
+            {
+              "year": 2018,
+              "value": 8.9279
+            },
+            {
+              "year": 2019,
+              "value": 9.2731
+            },
+            {
+              "year": 2020,
+              "value": 9.5987
+            },
+            {
+              "year": 2021,
+              "value": 9.9111
+            },
+            {
+              "year": 2022,
+              "value": 10.2518
+            },
+            {
+              "year": 2023,
+              "value": 10.6336
+            },
+            {
+              "year": 2024,
+              "value": 11.0492
+            },
+            {
+              "year": 2025,
+              "value": 11.4803
+            }
+          ]
         },
         "SGP": {
           "year": 2025,
@@ -369,7 +2319,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 13.6562
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 8.9982
+            },
+            {
+              "year": 2016,
+              "value": 9.4479
+            },
+            {
+              "year": 2017,
+              "value": 9.964
+            },
+            {
+              "year": 2018,
+              "value": 10.4836
+            },
+            {
+              "year": 2019,
+              "value": 10.9751
+            },
+            {
+              "year": 2020,
+              "value": 11.5849
+            },
+            {
+              "year": 2021,
+              "value": 12.2582
+            },
+            {
+              "year": 2022,
+              "value": 12.6909
+            },
+            {
+              "year": 2023,
+              "value": 13.0954
+            },
+            {
+              "year": 2024,
+              "value": 13.6562
+            },
+            {
+              "year": 2025,
+              "value": 14.211
+            }
+          ]
         },
         "IDN": {
           "year": 2025,
@@ -377,7 +2373,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 7.2886
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 6.0818
+            },
+            {
+              "year": 2016,
+              "value": 6.1486
+            },
+            {
+              "year": 2017,
+              "value": 6.2384
+            },
+            {
+              "year": 2018,
+              "value": 6.351
+            },
+            {
+              "year": 2019,
+              "value": 6.4857
+            },
+            {
+              "year": 2020,
+              "value": 6.6079
+            },
+            {
+              "year": 2021,
+              "value": 6.687
+            },
+            {
+              "year": 2022,
+              "value": 6.8247
+            },
+            {
+              "year": 2023,
+              "value": 7.0485
+            },
+            {
+              "year": 2024,
+              "value": 7.2886
+            },
+            {
+              "year": 2025,
+              "value": 7.5428
+            }
+          ]
         },
         "VNM": {
           "year": 2025,
@@ -385,7 +2427,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 9.0472
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 6.4508
+            },
+            {
+              "year": 2016,
+              "value": 6.6088
+            },
+            {
+              "year": 2017,
+              "value": 6.7677
+            },
+            {
+              "year": 2018,
+              "value": 6.9816
+            },
+            {
+              "year": 2019,
+              "value": 7.2502
+            },
+            {
+              "year": 2020,
+              "value": 7.5672
+            },
+            {
+              "year": 2021,
+              "value": 7.8857
+            },
+            {
+              "year": 2022,
+              "value": 8.23
+            },
+            {
+              "year": 2023,
+              "value": 8.6212
+            },
+            {
+              "year": 2024,
+              "value": 9.0472
+            },
+            {
+              "year": 2025,
+              "value": 9.4945
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -433,7 +2521,9 @@ export const indicatorSnapshot = {
           "year": 2025,
           "value": 20.3304
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "life-expectancy": {
       "countries": {
@@ -443,7 +2533,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 83.4293
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 82.0244
+            },
+            {
+              "year": 2016,
+              "value": 82.2756
+            },
+            {
+              "year": 2017,
+              "value": 82.6268
+            },
+            {
+              "year": 2018,
+              "value": 82.6268
+            },
+            {
+              "year": 2019,
+              "value": 83.2268
+            },
+            {
+              "year": 2020,
+              "value": 83.4268
+            },
+            {
+              "year": 2021,
+              "value": 83.5268
+            },
+            {
+              "year": 2022,
+              "value": 82.6805
+            },
+            {
+              "year": 2023,
+              "value": 83.4293
+            },
+            {
+              "year": 2024,
+              "value": 83.6293
+            }
+          ]
         },
         "WLD": {
           "year": 2024,
@@ -451,7 +2583,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 73.3302
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 71.9656
+            },
+            {
+              "year": 2016,
+              "value": 72.1858
+            },
+            {
+              "year": 2017,
+              "value": 72.3663
+            },
+            {
+              "year": 2018,
+              "value": 72.6442
+            },
+            {
+              "year": 2019,
+              "value": 72.8699
+            },
+            {
+              "year": 2020,
+              "value": 72.1832
+            },
+            {
+              "year": 2021,
+              "value": 71.2161
+            },
+            {
+              "year": 2022,
+              "value": 72.969
+            },
+            {
+              "year": 2023,
+              "value": 73.3302
+            },
+            {
+              "year": 2024,
+              "value": 73.4818
+            }
+          ]
         },
         "USA": {
           "year": 2024,
@@ -459,7 +2633,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 78.3854
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 78.6902
+            },
+            {
+              "year": 2016,
+              "value": 78.539
+            },
+            {
+              "year": 2017,
+              "value": 78.539
+            },
+            {
+              "year": 2018,
+              "value": 78.639
+            },
+            {
+              "year": 2019,
+              "value": 78.7878
+            },
+            {
+              "year": 2020,
+              "value": 76.9805
+            },
+            {
+              "year": 2021,
+              "value": 76.3293
+            },
+            {
+              "year": 2022,
+              "value": 77.4341
+            },
+            {
+              "year": 2023,
+              "value": 78.3854
+            },
+            {
+              "year": 2024,
+              "value": 78.8902
+            }
+          ]
         },
         "JPN": {
           "year": 2024,
@@ -467,7 +2683,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 84.0412
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 83.7939
+            },
+            {
+              "year": 2016,
+              "value": 83.9849
+            },
+            {
+              "year": 2017,
+              "value": 84.0998
+            },
+            {
+              "year": 2018,
+              "value": 84.211
+            },
+            {
+              "year": 2019,
+              "value": 84.3563
+            },
+            {
+              "year": 2020,
+              "value": 84.56
+            },
+            {
+              "year": 2021,
+              "value": 84.4456
+            },
+            {
+              "year": 2022,
+              "value": 83.9963
+            },
+            {
+              "year": 2023,
+              "value": 84.0412
+            },
+            {
+              "year": 2024,
+              "value": 84.0363
+            }
+          ]
         },
         "CHN": {
           "year": 2024,
@@ -475,7 +2733,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 77.953
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 76.975
+            },
+            {
+              "year": 2016,
+              "value": 77.214
+            },
+            {
+              "year": 2017,
+              "value": 77.235
+            },
+            {
+              "year": 2018,
+              "value": 77.709
+            },
+            {
+              "year": 2019,
+              "value": 77.94
+            },
+            {
+              "year": 2020,
+              "value": 78.019
+            },
+            {
+              "year": 2021,
+              "value": 78.117
+            },
+            {
+              "year": 2022,
+              "value": 78.202
+            },
+            {
+              "year": 2023,
+              "value": 77.953
+            },
+            {
+              "year": 2024,
+              "value": 78.017
+            }
+          ]
         },
         "DEU": {
           "year": 2024,
@@ -483,7 +2783,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 81.0415
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 80.6415
+            },
+            {
+              "year": 2016,
+              "value": 80.9902
+            },
+            {
+              "year": 2017,
+              "value": 80.9927
+            },
+            {
+              "year": 2018,
+              "value": 80.8927
+            },
+            {
+              "year": 2019,
+              "value": 81.2927
+            },
+            {
+              "year": 2020,
+              "value": 81.0415
+            },
+            {
+              "year": 2021,
+              "value": 80.7902
+            },
+            {
+              "year": 2022,
+              "value": 80.608
+            },
+            {
+              "year": 2023,
+              "value": 81.0415
+            },
+            {
+              "year": 2024,
+              "value": 80.7927
+            }
+          ]
         },
         "GBR": {
           "year": 2024,
@@ -491,7 +2833,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 81.2381
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 80.9561
+            },
+            {
+              "year": 2016,
+              "value": 81.1561
+            },
+            {
+              "year": 2017,
+              "value": 81.2561
+            },
+            {
+              "year": 2018,
+              "value": 81.2561
+            },
+            {
+              "year": 2019,
+              "value": 81.3691
+            },
+            {
+              "year": 2020,
+              "value": 80.3318
+            },
+            {
+              "year": 2021,
+              "value": 80.6473
+            },
+            {
+              "year": 2022,
+              "value": 81.0112
+            },
+            {
+              "year": 2023,
+              "value": 81.2381
+            },
+            {
+              "year": 2024,
+              "value": 81.3869
+            }
+          ]
         },
         "FRA": {
           "year": 2024,
@@ -499,7 +2883,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 82.8317
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 82.322
+            },
+            {
+              "year": 2016,
+              "value": 82.5732
+            },
+            {
+              "year": 2017,
+              "value": 82.5756
+            },
+            {
+              "year": 2018,
+              "value": 82.6756
+            },
+            {
+              "year": 2019,
+              "value": 82.8268
+            },
+            {
+              "year": 2020,
+              "value": 82.1756
+            },
+            {
+              "year": 2021,
+              "value": 82.3244
+            },
+            {
+              "year": 2022,
+              "value": 82.1293
+            },
+            {
+              "year": 2023,
+              "value": 82.8317
+            },
+            {
+              "year": 2024,
+              "value": 82.9805
+            }
+          ]
         },
         "CAN": {
           "year": 2024,
@@ -507,7 +2933,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 81.6263
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 81.8259
+            },
+            {
+              "year": 2016,
+              "value": 81.94
+            },
+            {
+              "year": 2017,
+              "value": 81.8078
+            },
+            {
+              "year": 2018,
+              "value": 81.8037
+            },
+            {
+              "year": 2019,
+              "value": 82.1585
+            },
+            {
+              "year": 2020,
+              "value": 81.53
+            },
+            {
+              "year": 2021,
+              "value": 81.4515
+            },
+            {
+              "year": 2022,
+              "value": 81.0949
+            },
+            {
+              "year": 2023,
+              "value": 81.6263
+            },
+            {
+              "year": 2024,
+              "value": 82.108
+            }
+          ]
         },
         "AUS": {
           "year": 2024,
@@ -515,7 +2983,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 83.0512
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 82.4
+            },
+            {
+              "year": 2016,
+              "value": 82.4488
+            },
+            {
+              "year": 2017,
+              "value": 82.5
+            },
+            {
+              "year": 2018,
+              "value": 82.7488
+            },
+            {
+              "year": 2019,
+              "value": 82.9
+            },
+            {
+              "year": 2020,
+              "value": 83.2
+            },
+            {
+              "year": 2021,
+              "value": 83.3
+            },
+            {
+              "year": 2022,
+              "value": 83.2
+            },
+            {
+              "year": 2023,
+              "value": 83.0512
+            },
+            {
+              "year": 2024,
+              "value": 83.0512
+            }
+          ]
         },
         "IND": {
           "year": 2024,
@@ -523,7 +3033,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 72.003
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 69.326
+            },
+            {
+              "year": 2016,
+              "value": 69.709
+            },
+            {
+              "year": 2017,
+              "value": 70.068
+            },
+            {
+              "year": 2018,
+              "value": 70.415
+            },
+            {
+              "year": 2019,
+              "value": 70.746
+            },
+            {
+              "year": 2020,
+              "value": 70.156
+            },
+            {
+              "year": 2021,
+              "value": 67.282
+            },
+            {
+              "year": 2022,
+              "value": 71.698
+            },
+            {
+              "year": 2023,
+              "value": 72.003
+            },
+            {
+              "year": 2024,
+              "value": 72.235
+            }
+          ]
         },
         "BRA": {
           "year": 2024,
@@ -531,7 +3083,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 75.848
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 75.106
+            },
+            {
+              "year": 2016,
+              "value": 75.081
+            },
+            {
+              "year": 2017,
+              "value": 75.383
+            },
+            {
+              "year": 2018,
+              "value": 75.633
+            },
+            {
+              "year": 2019,
+              "value": 75.809
+            },
+            {
+              "year": 2020,
+              "value": 74.506
+            },
+            {
+              "year": 2021,
+              "value": 73.038
+            },
+            {
+              "year": 2022,
+              "value": 74.872
+            },
+            {
+              "year": 2023,
+              "value": 75.848
+            },
+            {
+              "year": 2024,
+              "value": 76.023
+            }
+          ]
         },
         "SGP": {
           "year": 2024,
@@ -539,7 +3133,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 83.0976
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 82.7439
+            },
+            {
+              "year": 2016,
+              "value": 82.8463
+            },
+            {
+              "year": 2017,
+              "value": 83.0951
+            },
+            {
+              "year": 2018,
+              "value": 83.2976
+            },
+            {
+              "year": 2019,
+              "value": 83.5951
+            },
+            {
+              "year": 2020,
+              "value": 83.5439
+            },
+            {
+              "year": 2021,
+              "value": 83.0927
+            },
+            {
+              "year": 2022,
+              "value": 82.8951
+            },
+            {
+              "year": 2023,
+              "value": 83.0976
+            },
+            {
+              "year": 2024,
+              "value": 83.3463
+            }
+          ]
         },
         "IDN": {
           "year": 2024,
@@ -547,7 +3183,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 71.146
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 69.52
+            },
+            {
+              "year": 2016,
+              "value": 69.733
+            },
+            {
+              "year": 2017,
+              "value": 69.953
+            },
+            {
+              "year": 2018,
+              "value": 70.08
+            },
+            {
+              "year": 2019,
+              "value": 70.349
+            },
+            {
+              "year": 2020,
+              "value": 68.817
+            },
+            {
+              "year": 2021,
+              "value": 67.452
+            },
+            {
+              "year": 2022,
+              "value": 70.925
+            },
+            {
+              "year": 2023,
+              "value": 71.146
+            },
+            {
+              "year": 2024,
+              "value": 71.288
+            }
+          ]
         },
         "VNM": {
           "year": 2024,
@@ -555,7 +3233,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 74.588
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 73.955
+            },
+            {
+              "year": 2016,
+              "value": 73.984
+            },
+            {
+              "year": 2017,
+              "value": 74.026
+            },
+            {
+              "year": 2018,
+              "value": 74.1
+            },
+            {
+              "year": 2019,
+              "value": 74.211
+            },
+            {
+              "year": 2020,
+              "value": 75.383
+            },
+            {
+              "year": 2021,
+              "value": 74.145
+            },
+            {
+              "year": 2022,
+              "value": 74.502
+            },
+            {
+              "year": 2023,
+              "value": 74.588
+            },
+            {
+              "year": 2024,
+              "value": 74.736
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -599,7 +3319,9 @@ export const indicatorSnapshot = {
           "year": 2024,
           "value": 83.6293
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "gdp-per-capita": {
       "countries": {
@@ -609,7 +3331,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 36238.6399
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 30171.7907
+            },
+            {
+              "year": 2016,
+              "value": 30832.0628
+            },
+            {
+              "year": 2017,
+              "value": 33296.9845
+            },
+            {
+              "year": 2018,
+              "value": 35363.9508
+            },
+            {
+              "year": 2019,
+              "value": 33826.9443
+            },
+            {
+              "year": 2020,
+              "value": 33645.772
+            },
+            {
+              "year": 2021,
+              "value": 37518.4635
+            },
+            {
+              "year": 2022,
+              "value": 34822.4048
+            },
+            {
+              "year": 2023,
+              "value": 35674.096
+            },
+            {
+              "year": 2024,
+              "value": 36238.6399
+            },
+            {
+              "year": 2025,
+              "value": 36226.9664
+            }
+          ]
         },
         "WLD": {
           "year": 2025,
@@ -617,7 +3385,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 13717.091
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 10191.9753
+            },
+            {
+              "year": 2016,
+              "value": 10239.4657
+            },
+            {
+              "year": 2017,
+              "value": 10784.3951
+            },
+            {
+              "year": 2018,
+              "value": 11344.7282
+            },
+            {
+              "year": 2019,
+              "value": 11417.5959
+            },
+            {
+              "year": 2020,
+              "value": 10999.4918
+            },
+            {
+              "year": 2021,
+              "value": 12472.9074
+            },
+            {
+              "year": 2022,
+              "value": 12876.2377
+            },
+            {
+              "year": 2023,
+              "value": 13313.8576
+            },
+            {
+              "year": 2024,
+              "value": 13717.091
+            },
+            {
+              "year": 2025,
+              "value": 14405.8485
+            }
+          ]
         },
         "USA": {
           "year": 2025,
@@ -625,7 +3439,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 86169.6642
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 56849.4698
+            },
+            {
+              "year": 2016,
+              "value": 57976.6282
+            },
+            {
+              "year": 2017,
+              "value": 60047.7191
+            },
+            {
+              "year": 2018,
+              "value": 62875.6661
+            },
+            {
+              "year": 2019,
+              "value": 65227.9566
+            },
+            {
+              "year": 2020,
+              "value": 64465.2971
+            },
+            {
+              "year": 2021,
+              "value": 71441.232
+            },
+            {
+              "year": 2022,
+              "value": 78008.6896
+            },
+            {
+              "year": 2023,
+              "value": 82586.7848
+            },
+            {
+              "year": 2024,
+              "value": 86169.6642
+            },
+            {
+              "year": 2025,
+              "value": 90026.5163
+            }
+          ]
         },
         "JPN": {
           "year": 2025,
@@ -633,7 +3493,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 33797.1014
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 35664.6446
+            },
+            {
+              "year": 2016,
+              "value": 40214.9689
+            },
+            {
+              "year": 2017,
+              "value": 39679.8635
+            },
+            {
+              "year": 2018,
+              "value": 40645.4781
+            },
+            {
+              "year": 2019,
+              "value": 41424.8656
+            },
+            {
+              "year": 2020,
+              "value": 41098.9739
+            },
+            {
+              "year": 2021,
+              "value": 41580.739
+            },
+            {
+              "year": 2022,
+              "value": 35548.2645
+            },
+            {
+              "year": 2023,
+              "value": 35215.0035
+            },
+            {
+              "year": 2024,
+              "value": 33797.1014
+            },
+            {
+              "year": 2025,
+              "value": 35951.045
+            }
+          ]
         },
         "CHN": {
           "year": 2025,
@@ -641,7 +3547,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 13293.1162
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 8175.3329
+            },
+            {
+              "year": 2016,
+              "value": 8254.8686
+            },
+            {
+              "year": 2017,
+              "value": 8979.6765
+            },
+            {
+              "year": 2018,
+              "value": 10085.6638
+            },
+            {
+              "year": 2019,
+              "value": 10342.901
+            },
+            {
+              "year": 2020,
+              "value": 10627.4638
+            },
+            {
+              "year": 2021,
+              "value": 12887.4357
+            },
+            {
+              "year": 2022,
+              "value": 12970.6056
+            },
+            {
+              "year": 2023,
+              "value": 12951.1782
+            },
+            {
+              "year": 2024,
+              "value": 13293.1162
+            },
+            {
+              "year": 2025,
+              "value": 13861.9702
+            }
+          ]
         },
         "DEU": {
           "year": 2025,
@@ -649,7 +3601,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 56103.7323
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 41929.7549
+            },
+            {
+              "year": 2016,
+              "value": 42948.9382
+            },
+            {
+              "year": 2017,
+              "value": 45553.9341
+            },
+            {
+              "year": 2018,
+              "value": 48916.1687
+            },
+            {
+              "year": 2019,
+              "value": 47656.1997
+            },
+            {
+              "year": 2020,
+              "value": 47394.8735
+            },
+            {
+              "year": 2021,
+              "value": 52349.246
+            },
+            {
+              "year": 2022,
+              "value": 50506.518
+            },
+            {
+              "year": 2023,
+              "value": 54776.7668
+            },
+            {
+              "year": 2024,
+              "value": 56103.7323
+            },
+            {
+              "year": 2025,
+              "value": 60496.4351
+            }
+          ]
         },
         "GBR": {
           "year": 2025,
@@ -657,7 +3655,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 53341.3131
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 45256.0402
+            },
+            {
+              "year": 2016,
+              "value": 41258.5374
+            },
+            {
+              "year": 2017,
+              "value": 40918.0521
+            },
+            {
+              "year": 2018,
+              "value": 43704.3162
+            },
+            {
+              "year": 2019,
+              "value": 43160.6844
+            },
+            {
+              "year": 2020,
+              "value": 40815.1255
+            },
+            {
+              "year": 2021,
+              "value": 47695.6492
+            },
+            {
+              "year": 2022,
+              "value": 47034.7796
+            },
+            {
+              "year": 2023,
+              "value": 49919.6897
+            },
+            {
+              "year": 2024,
+              "value": 53341.3131
+            },
+            {
+              "year": 2025,
+              "value": 57601.9621
+            }
+          ]
         },
         "FRA": {
           "year": 2025,
@@ -665,7 +3709,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 46103.0841
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 36702.4324
+            },
+            {
+              "year": 2016,
+              "value": 37024.2157
+            },
+            {
+              "year": 2017,
+              "value": 38687.1626
+            },
+            {
+              "year": 2018,
+              "value": 41418.1766
+            },
+            {
+              "year": 2019,
+              "value": 40408.2849
+            },
+            {
+              "year": 2020,
+              "value": 39169.8606
+            },
+            {
+              "year": 2021,
+              "value": 43725.1
+            },
+            {
+              "year": 2022,
+              "value": 40988.6396
+            },
+            {
+              "year": 2023,
+              "value": 44700.1384
+            },
+            {
+              "year": 2024,
+              "value": 46103.0841
+            },
+            {
+              "year": 2025,
+              "value": 48985.7308
+            }
+          ]
         },
         "CAN": {
           "year": 2025,
@@ -673,7 +3763,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 55015.7067
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 43594.2379
+            },
+            {
+              "year": 2016,
+              "value": 42314.1034
+            },
+            {
+              "year": 2017,
+              "value": 45129.7335
+            },
+            {
+              "year": 2018,
+              "value": 46539.2178
+            },
+            {
+              "year": 2019,
+              "value": 46352.9695
+            },
+            {
+              "year": 2020,
+              "value": 43537.8981
+            },
+            {
+              "year": 2021,
+              "value": 52886.6408
+            },
+            {
+              "year": 2022,
+              "value": 56496.9275
+            },
+            {
+              "year": 2023,
+              "value": 54847.537
+            },
+            {
+              "year": 2024,
+              "value": 55015.7067
+            },
+            {
+              "year": 2025,
+              "value": 55697.664
+            }
+          ]
         },
         "AUS": {
           "year": 2025,
@@ -681,7 +3817,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 64609.9865
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 56970.3613
+            },
+            {
+              "year": 2016,
+              "value": 50084.4441
+            },
+            {
+              "year": 2017,
+              "value": 54117.5477
+            },
+            {
+              "year": 2018,
+              "value": 57410.1737
+            },
+            {
+              "year": 2019,
+              "value": 55194.7585
+            },
+            {
+              "year": 2020,
+              "value": 51983.4524
+            },
+            {
+              "year": 2021,
+              "value": 60758.9044
+            },
+            {
+              "year": 2022,
+              "value": 65169.5191
+            },
+            {
+              "year": 2023,
+              "value": 65058.3773
+            },
+            {
+              "year": 2024,
+              "value": 64609.9865
+            },
+            {
+              "year": 2025,
+              "value": 65129.7228
+            }
+          ]
         },
         "IND": {
           "year": 2025,
@@ -689,7 +3871,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 2591.9917
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1583.9982
+            },
+            {
+              "year": 2016,
+              "value": 1707.5089
+            },
+            {
+              "year": 2017,
+              "value": 1950.1047
+            },
+            {
+              "year": 2018,
+              "value": 1966.2546
+            },
+            {
+              "year": 2019,
+              "value": 2041.4286
+            },
+            {
+              "year": 2020,
+              "value": 1907.0425
+            },
+            {
+              "year": 2021,
+              "value": 2239.6138
+            },
+            {
+              "year": 2022,
+              "value": 2279.9815
+            },
+            {
+              "year": 2023,
+              "value": 2434.4483
+            },
+            {
+              "year": 2024,
+              "value": 2591.9917
+            },
+            {
+              "year": 2025,
+              "value": 2702.4799
+            }
+          ]
         },
         "BRA": {
           "year": 2025,
@@ -697,7 +3925,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 10310.5487
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 8936.1966
+            },
+            {
+              "year": 2016,
+              "value": 8836.2865
+            },
+            {
+              "year": 2017,
+              "value": 10080.5093
+            },
+            {
+              "year": 2018,
+              "value": 9300.6616
+            },
+            {
+              "year": 2019,
+              "value": 9029.8333
+            },
+            {
+              "year": 2020,
+              "value": 7074.1938
+            },
+            {
+              "year": 2021,
+              "value": 7972.5366
+            },
+            {
+              "year": 2022,
+              "value": 9281.3333
+            },
+            {
+              "year": 2023,
+              "value": 10377.5893
+            },
+            {
+              "year": 2024,
+              "value": 10310.5487
+            },
+            {
+              "year": 2025,
+              "value": 10713.2857
+            }
+          ]
         },
         "SGP": {
           "year": 2025,
@@ -705,7 +3979,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 94896.5621
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 55645.6069
+            },
+            {
+              "year": 2016,
+              "value": 57204.034
+            },
+            {
+              "year": 2017,
+              "value": 61436.1326
+            },
+            {
+              "year": 2018,
+              "value": 67032.8226
+            },
+            {
+              "year": 2019,
+              "value": 66068.7003
+            },
+            {
+              "year": 2020,
+              "value": 61772.5036
+            },
+            {
+              "year": 2021,
+              "value": 80884.8565
+            },
+            {
+              "year": 2022,
+              "value": 91227.697
+            },
+            {
+              "year": 2023,
+              "value": 86382.59
+            },
+            {
+              "year": 2024,
+              "value": 94896.5621
+            },
+            {
+              "year": 2025,
+              "value": 98813.9788
+            }
+          ]
         },
         "IDN": {
           "year": 2025,
@@ -713,7 +4033,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 4925.4364
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3288.2227
+            },
+            {
+              "year": 2016,
+              "value": 3521.4694
+            },
+            {
+              "year": 2017,
+              "value": 3798.8833
+            },
+            {
+              "year": 2018,
+              "value": 3860.9535
+            },
+            {
+              "year": 2019,
+              "value": 4106.9486
+            },
+            {
+              "year": 2020,
+              "value": 3853.7029
+            },
+            {
+              "year": 2021,
+              "value": 4287.1731
+            },
+            {
+              "year": 2022,
+              "value": 4730.8348
+            },
+            {
+              "year": 2023,
+              "value": 4876.2993
+            },
+            {
+              "year": 2024,
+              "value": 4925.4364
+            },
+            {
+              "year": 2025,
+              "value": 5059.626
+            }
+          ]
         },
         "VNM": {
           "year": 2025,
@@ -721,7 +4087,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 4716.6599
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2577.5689
+            },
+            {
+              "year": 2016,
+              "value": 2735.0604
+            },
+            {
+              "year": 2017,
+              "value": 2956.1099
+            },
+            {
+              "year": 2018,
+              "value": 3222.31
+            },
+            {
+              "year": 2019,
+              "value": 3440.9003
+            },
+            {
+              "year": 2020,
+              "value": 3534.0395
+            },
+            {
+              "year": 2021,
+              "value": 3704.1936
+            },
+            {
+              "year": 2022,
+              "value": 4147.6978
+            },
+            {
+              "year": 2023,
+              "value": 4322.8257
+            },
+            {
+              "year": 2024,
+              "value": 4716.6599
+            },
+            {
+              "year": 2025,
+              "value": 5065.9909
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -769,7 +4181,9 @@ export const indicatorSnapshot = {
           "year": 2025,
           "value": 36226.9664
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "gdp-growth": {
       "countries": {
@@ -779,7 +4193,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 2.0036
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.9203
+            },
+            {
+              "year": 2016,
+              "value": 3.1715
+            },
+            {
+              "year": 2017,
+              "value": 3.4332
+            },
+            {
+              "year": 2018,
+              "value": 3.1761
+            },
+            {
+              "year": 2019,
+              "value": 2.3138
+            },
+            {
+              "year": 2020,
+              "value": -0.7002
+            },
+            {
+              "year": 2021,
+              "value": 4.613
+            },
+            {
+              "year": 2022,
+              "value": 2.7276
+            },
+            {
+              "year": 2023,
+              "value": 1.583
+            },
+            {
+              "year": 2024,
+              "value": 2.0036
+            },
+            {
+              "year": 2025,
+              "value": 1.007
+            }
+          ]
         },
         "WLD": {
           "year": 2025,
@@ -787,7 +4247,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 2.9
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3.1272
+            },
+            {
+              "year": 2016,
+              "value": 2.7897
+            },
+            {
+              "year": 2017,
+              "value": 3.4466
+            },
+            {
+              "year": 2018,
+              "value": 3.2866
+            },
+            {
+              "year": 2019,
+              "value": 2.6803
+            },
+            {
+              "year": 2020,
+              "value": -2.8862
+            },
+            {
+              "year": 2021,
+              "value": 6.4851
+            },
+            {
+              "year": 2022,
+              "value": 3.44
+            },
+            {
+              "year": 2023,
+              "value": 2.8594
+            },
+            {
+              "year": 2024,
+              "value": 2.9
+            },
+            {
+              "year": 2025,
+              "value": 2.9213
+            }
+          ]
         },
         "USA": {
           "year": 2025,
@@ -795,7 +4301,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 2.7932
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.9456
+            },
+            {
+              "year": 2016,
+              "value": 1.8195
+            },
+            {
+              "year": 2017,
+              "value": 2.4576
+            },
+            {
+              "year": 2018,
+              "value": 2.9665
+            },
+            {
+              "year": 2019,
+              "value": 2.5838
+            },
+            {
+              "year": 2020,
+              "value": -2.0814
+            },
+            {
+              "year": 2021,
+              "value": 6.152
+            },
+            {
+              "year": 2022,
+              "value": 2.5242
+            },
+            {
+              "year": 2023,
+              "value": 2.9344
+            },
+            {
+              "year": 2024,
+              "value": 2.7932
+            },
+            {
+              "year": 2025,
+              "value": 2.1614
+            }
+          ]
         },
         "JPN": {
           "year": 2025,
@@ -803,7 +4355,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": -0.2401
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.8
+            },
+            {
+              "year": 2016,
+              "value": 0.705
+            },
+            {
+              "year": 2017,
+              "value": 1.6235
+            },
+            {
+              "year": 2018,
+              "value": 0.8341
+            },
+            {
+              "year": 2019,
+              "value": -0.3085
+            },
+            {
+              "year": 2020,
+              "value": -4.2833
+            },
+            {
+              "year": 2021,
+              "value": 3.5642
+            },
+            {
+              "year": 2022,
+              "value": 1.3316
+            },
+            {
+              "year": 2023,
+              "value": 0.7208
+            },
+            {
+              "year": 2024,
+              "value": -0.2401
+            },
+            {
+              "year": 2025,
+              "value": 1.1931
+            }
+          ]
         },
         "CHN": {
           "year": 2025,
@@ -811,7 +4409,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 4.9583
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 6.9816
+            },
+            {
+              "year": 2016,
+              "value": 6.7737
+            },
+            {
+              "year": 2017,
+              "value": 6.8912
+            },
+            {
+              "year": 2018,
+              "value": 6.7578
+            },
+            {
+              "year": 2019,
+              "value": 6.0674
+            },
+            {
+              "year": 2020,
+              "value": 2.3395
+            },
+            {
+              "year": 2021,
+              "value": 8.5704
+            },
+            {
+              "year": 2022,
+              "value": 3.1339
+            },
+            {
+              "year": 2023,
+              "value": 5.416
+            },
+            {
+              "year": 2024,
+              "value": 4.9583
+            },
+            {
+              "year": 2025,
+              "value": 4.9599
+            }
+          ]
         },
         "DEU": {
           "year": 2025,
@@ -819,7 +4463,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": -0.4959
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.663
+            },
+            {
+              "year": 2016,
+              "value": 2.2222
+            },
+            {
+              "year": 2017,
+              "value": 2.7979
+            },
+            {
+              "year": 2018,
+              "value": 1.1357
+            },
+            {
+              "year": 2019,
+              "value": 0.9777
+            },
+            {
+              "year": 2020,
+              "value": -4.1319
+            },
+            {
+              "year": 2021,
+              "value": 3.91
+            },
+            {
+              "year": 2022,
+              "value": 1.8093
+            },
+            {
+              "year": 2023,
+              "value": -0.8696
+            },
+            {
+              "year": 2024,
+              "value": -0.4959
+            },
+            {
+              "year": 2025,
+              "value": 0.2396
+            }
+          ]
         },
         "GBR": {
           "year": 2025,
@@ -827,7 +4517,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 1.0803
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.1404
+            },
+            {
+              "year": 2016,
+              "value": 2.2065
+            },
+            {
+              "year": 2017,
+              "value": 3.0232
+            },
+            {
+              "year": 2018,
+              "value": 1.5513
+            },
+            {
+              "year": 2019,
+              "value": 1.2563
+            },
+            {
+              "year": 2020,
+              "value": -10.0479
+            },
+            {
+              "year": 2021,
+              "value": 8.5431
+            },
+            {
+              "year": 2022,
+              "value": 5.1497
+            },
+            {
+              "year": 2023,
+              "value": 0.2717
+            },
+            {
+              "year": 2024,
+              "value": 1.0803
+            },
+            {
+              "year": 2025,
+              "value": 1.3884
+            }
+          ]
         },
         "FRA": {
           "year": 2025,
@@ -835,7 +4571,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 1.1905
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.0668
+            },
+            {
+              "year": 2016,
+              "value": 0.86
+            },
+            {
+              "year": 2017,
+              "value": 2.0836
+            },
+            {
+              "year": 2018,
+              "value": 1.6459
+            },
+            {
+              "year": 2019,
+              "value": 2.0274
+            },
+            {
+              "year": 2020,
+              "value": -7.4406
+            },
+            {
+              "year": 2021,
+              "value": 6.8823
+            },
+            {
+              "year": 2022,
+              "value": 2.7168
+            },
+            {
+              "year": 2023,
+              "value": 1.4392
+            },
+            {
+              "year": 2024,
+              "value": 1.1905
+            },
+            {
+              "year": 2025,
+              "value": 0.8409
+            }
+          ]
         },
         "CAN": {
           "year": 2025,
@@ -843,7 +4625,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 2.0463
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.65
+            },
+            {
+              "year": 2016,
+              "value": 1.0386
+            },
+            {
+              "year": 2017,
+              "value": 3.0338
+            },
+            {
+              "year": 2018,
+              "value": 2.743
+            },
+            {
+              "year": 2019,
+              "value": 1.9084
+            },
+            {
+              "year": 2020,
+              "value": -5.0382
+            },
+            {
+              "year": 2021,
+              "value": 5.9505
+            },
+            {
+              "year": 2022,
+              "value": 4.6954
+            },
+            {
+              "year": 2023,
+              "value": 1.9531
+            },
+            {
+              "year": 2024,
+              "value": 2.0463
+            },
+            {
+              "year": 2025,
+              "value": 1.7427
+            }
+          ]
         },
         "AUS": {
           "year": 2025,
@@ -851,7 +4679,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 1.3734
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.1643
+            },
+            {
+              "year": 2016,
+              "value": 2.7556
+            },
+            {
+              "year": 2017,
+              "value": 2.2933
+            },
+            {
+              "year": 2018,
+              "value": 2.8742
+            },
+            {
+              "year": 2019,
+              "value": 2.194
+            },
+            {
+              "year": 2020,
+              "value": -0.1335
+            },
+            {
+              "year": 2021,
+              "value": 2.0069
+            },
+            {
+              "year": 2022,
+              "value": 4.253
+            },
+            {
+              "year": 2023,
+              "value": 3.5838
+            },
+            {
+              "year": 2024,
+              "value": 1.3734
+            },
+            {
+              "year": 2025,
+              "value": 1.3504
+            }
+          ]
         },
         "IND": {
           "year": 2025,
@@ -859,7 +4733,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 7.0993
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 7.9963
+            },
+            {
+              "year": 2016,
+              "value": 8.2563
+            },
+            {
+              "year": 2017,
+              "value": 6.7954
+            },
+            {
+              "year": 2018,
+              "value": 6.4539
+            },
+            {
+              "year": 2019,
+              "value": 3.8714
+            },
+            {
+              "year": 2020,
+              "value": -5.7777
+            },
+            {
+              "year": 2021,
+              "value": 9.6896
+            },
+            {
+              "year": 2022,
+              "value": 7.6094
+            },
+            {
+              "year": 2023,
+              "value": 7.2102
+            },
+            {
+              "year": 2024,
+              "value": 7.0993
+            },
+            {
+              "year": 2025,
+              "value": 7.5667
+            }
+          ]
         },
         "BRA": {
           "year": 2025,
@@ -867,7 +4787,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 3.4193
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": -3.5458
+            },
+            {
+              "year": 2016,
+              "value": -3.2759
+            },
+            {
+              "year": 2017,
+              "value": 1.3229
+            },
+            {
+              "year": 2018,
+              "value": 1.7837
+            },
+            {
+              "year": 2019,
+              "value": 1.2208
+            },
+            {
+              "year": 2020,
+              "value": -3.2768
+            },
+            {
+              "year": 2021,
+              "value": 4.7626
+            },
+            {
+              "year": 2022,
+              "value": 3.0167
+            },
+            {
+              "year": 2023,
+              "value": 3.2417
+            },
+            {
+              "year": 2024,
+              "value": 3.4193
+            },
+            {
+              "year": 2025,
+              "value": 2.2857
+            }
+          ]
         },
         "SGP": {
           "year": 2025,
@@ -875,7 +4841,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 5.3435
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.9768
+            },
+            {
+              "year": 2016,
+              "value": 3.911
+            },
+            {
+              "year": 2017,
+              "value": 4.3268
+            },
+            {
+              "year": 2018,
+              "value": 3.1866
+            },
+            {
+              "year": 2019,
+              "value": 1.1588
+            },
+            {
+              "year": 2020,
+              "value": -3.6108
+            },
+            {
+              "year": 2021,
+              "value": 10.1411
+            },
+            {
+              "year": 2022,
+              "value": 4.0103
+            },
+            {
+              "year": 2023,
+              "value": 1.4503
+            },
+            {
+              "year": 2024,
+              "value": 5.3435
+            },
+            {
+              "year": 2025,
+              "value": 5.0259
+            }
+          ]
         },
         "IDN": {
           "year": 2025,
@@ -883,7 +4895,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 5.0326
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 4.8763
+            },
+            {
+              "year": 2016,
+              "value": 5.0331
+            },
+            {
+              "year": 2017,
+              "value": 5.0698
+            },
+            {
+              "year": 2018,
+              "value": 5.1743
+            },
+            {
+              "year": 2019,
+              "value": 5.0193
+            },
+            {
+              "year": 2020,
+              "value": -2.0655
+            },
+            {
+              "year": 2021,
+              "value": 3.7029
+            },
+            {
+              "year": 2022,
+              "value": 5.3072
+            },
+            {
+              "year": 2023,
+              "value": 5.0488
+            },
+            {
+              "year": 2024,
+              "value": 5.0326
+            },
+            {
+              "year": 2025,
+              "value": 5.1081
+            }
+          ]
         },
         "VNM": {
           "year": 2025,
@@ -891,7 +4949,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 7.0396
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 6.9872
+            },
+            {
+              "year": 2016,
+              "value": 6.69
+            },
+            {
+              "year": 2017,
+              "value": 6.9402
+            },
+            {
+              "year": 2018,
+              "value": 7.465
+            },
+            {
+              "year": 2019,
+              "value": 7.3593
+            },
+            {
+              "year": 2020,
+              "value": 2.8654
+            },
+            {
+              "year": 2021,
+              "value": 2.5537
+            },
+            {
+              "year": 2022,
+              "value": 8.5375
+            },
+            {
+              "year": 2023,
+              "value": 4.9787
+            },
+            {
+              "year": 2024,
+              "value": 7.0396
+            },
+            {
+              "year": 2025,
+              "value": 8.0188
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -939,7 +5043,9 @@ export const indicatorSnapshot = {
           "year": 2025,
           "value": 1.007
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "manufacturing-share": {
       "countries": {
@@ -949,7 +5055,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 26.618
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 27.8216
+            },
+            {
+              "year": 2016,
+              "value": 27.513
+            },
+            {
+              "year": 2017,
+              "value": 28.0322
+            },
+            {
+              "year": 2018,
+              "value": 27.7672
+            },
+            {
+              "year": 2019,
+              "value": 26.3702
+            },
+            {
+              "year": 2020,
+              "value": 25.7002
+            },
+            {
+              "year": 2021,
+              "value": 26.2481
+            },
+            {
+              "year": 2022,
+              "value": 26.4977
+            },
+            {
+              "year": 2023,
+              "value": 25.4551
+            },
+            {
+              "year": 2024,
+              "value": 26.618
+            },
+            {
+              "year": 2025,
+              "value": 27.4263
+            }
+          ]
         },
         "WLD": {
           "year": 2025,
@@ -957,7 +5109,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 14.8854
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 16.3769
+            },
+            {
+              "year": 2016,
+              "value": 16.2042
+            },
+            {
+              "year": 2017,
+              "value": 16.2515
+            },
+            {
+              "year": 2018,
+              "value": 16.3828
+            },
+            {
+              "year": 2019,
+              "value": 15.9691
+            },
+            {
+              "year": 2020,
+              "value": 15.9082
+            },
+            {
+              "year": 2021,
+              "value": 16.3554
+            },
+            {
+              "year": 2022,
+              "value": 15.71
+            },
+            {
+              "year": 2023,
+              "value": 15.2465
+            },
+            {
+              "year": 2024,
+              "value": 14.8854
+            },
+            {
+              "year": 2025,
+              "value": 14.872
+            }
+          ]
         },
         "USA": {
           "year": 2021,
@@ -965,7 +5163,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 10.4725
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 11.6056
+            },
+            {
+              "year": 2016,
+              "value": 11.1581
+            },
+            {
+              "year": 2017,
+              "value": 11.1815
+            },
+            {
+              "year": 2018,
+              "value": 11.2802
+            },
+            {
+              "year": 2019,
+              "value": 10.9764
+            },
+            {
+              "year": 2020,
+              "value": 10.4725
+            },
+            {
+              "year": 2021,
+              "value": 10.525
+            }
+          ]
         },
         "JPN": {
           "year": 2024,
@@ -973,7 +5201,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 19.4883
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 20.074
+            },
+            {
+              "year": 2016,
+              "value": 20.0278
+            },
+            {
+              "year": 2017,
+              "value": 20.1439
+            },
+            {
+              "year": 2018,
+              "value": 20.3304
+            },
+            {
+              "year": 2019,
+              "value": 20.0537
+            },
+            {
+              "year": 2020,
+              "value": 19.7836
+            },
+            {
+              "year": 2021,
+              "value": 19.6764
+            },
+            {
+              "year": 2022,
+              "value": 18.8237
+            },
+            {
+              "year": 2023,
+              "value": 19.4883
+            },
+            {
+              "year": 2024,
+              "value": 18.8174
+            }
+          ]
         },
         "CHN": {
           "year": 2025,
@@ -981,7 +5251,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 24.8416
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 28.389
+            },
+            {
+              "year": 2016,
+              "value": 27.5238
+            },
+            {
+              "year": 2017,
+              "value": 27.5999
+            },
+            {
+              "year": 2018,
+              "value": 27.3434
+            },
+            {
+              "year": 2019,
+              "value": 26.2595
+            },
+            {
+              "year": 2020,
+              "value": 25.581
+            },
+            {
+              "year": 2021,
+              "value": 26.6219
+            },
+            {
+              "year": 2022,
+              "value": 25.9807
+            },
+            {
+              "year": 2023,
+              "value": 25.0144
+            },
+            {
+              "year": 2024,
+              "value": 24.8416
+            },
+            {
+              "year": 2025,
+              "value": 24.7344
+            }
+          ]
         },
         "DEU": {
           "year": 2025,
@@ -989,7 +5305,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 18.0067
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 20.138
+            },
+            {
+              "year": 2016,
+              "value": 20.413
+            },
+            {
+              "year": 2017,
+              "value": 20.0927
+            },
+            {
+              "year": 2018,
+              "value": 19.8054
+            },
+            {
+              "year": 2019,
+              "value": 19.3095
+            },
+            {
+              "year": 2020,
+              "value": 18.5275
+            },
+            {
+              "year": 2021,
+              "value": 18.5726
+            },
+            {
+              "year": 2022,
+              "value": 18.3218
+            },
+            {
+              "year": 2023,
+              "value": 18.9403
+            },
+            {
+              "year": 2024,
+              "value": 18.0067
+            },
+            {
+              "year": 2025,
+              "value": 17.6132
+            }
+          ]
         },
         "GBR": {
           "year": 2025,
@@ -997,7 +5359,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 7.9735
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 9.3845
+            },
+            {
+              "year": 2016,
+              "value": 9.1317
+            },
+            {
+              "year": 2017,
+              "value": 9.0423
+            },
+            {
+              "year": 2018,
+              "value": 9.0155
+            },
+            {
+              "year": 2019,
+              "value": 8.9815
+            },
+            {
+              "year": 2020,
+              "value": 9.0818
+            },
+            {
+              "year": 2021,
+              "value": 8.7328
+            },
+            {
+              "year": 2022,
+              "value": 7.9613
+            },
+            {
+              "year": 2023,
+              "value": 8.2239
+            },
+            {
+              "year": 2024,
+              "value": 7.9735
+            },
+            {
+              "year": 2025,
+              "value": 7.6776
+            }
+          ]
         },
         "FRA": {
           "year": 2025,
@@ -1005,7 +5413,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 9.5665
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 10.3199
+            },
+            {
+              "year": 2016,
+              "value": 10.1652
+            },
+            {
+              "year": 2017,
+              "value": 10.0101
+            },
+            {
+              "year": 2018,
+              "value": 9.8862
+            },
+            {
+              "year": 2019,
+              "value": 9.911
+            },
+            {
+              "year": 2020,
+              "value": 9.2457
+            },
+            {
+              "year": 2021,
+              "value": 9.0958
+            },
+            {
+              "year": 2022,
+              "value": 9.3014
+            },
+            {
+              "year": 2023,
+              "value": 9.7687
+            },
+            {
+              "year": 2024,
+              "value": 9.5665
+            },
+            {
+              "year": 2025,
+              "value": 9.4862
+            }
+          ]
         },
         "CAN": {
           "year": 2022,
@@ -1013,7 +5467,41 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2021,
             "value": 9.5291
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 10.3125
+            },
+            {
+              "year": 2016,
+              "value": 10.2469
+            },
+            {
+              "year": 2017,
+              "value": 10.0022
+            },
+            {
+              "year": 2018,
+              "value": 10.1847
+            },
+            {
+              "year": 2019,
+              "value": 9.6089
+            },
+            {
+              "year": 2020,
+              "value": 9.302
+            },
+            {
+              "year": 2021,
+              "value": 9.5291
+            },
+            {
+              "year": 2022,
+              "value": 9.3245
+            }
+          ]
         },
         "AUS": {
           "year": 2025,
@@ -1021,7 +5509,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 5.3763
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 6.1619
+            },
+            {
+              "year": 2016,
+              "value": 5.9363
+            },
+            {
+              "year": 2017,
+              "value": 5.6371
+            },
+            {
+              "year": 2018,
+              "value": 5.5803
+            },
+            {
+              "year": 2019,
+              "value": 5.4517
+            },
+            {
+              "year": 2020,
+              "value": 5.5048
+            },
+            {
+              "year": 2021,
+              "value": 5.4302
+            },
+            {
+              "year": 2022,
+              "value": 5.2888
+            },
+            {
+              "year": 2023,
+              "value": 5.2694
+            },
+            {
+              "year": 2024,
+              "value": 5.3763
+            },
+            {
+              "year": 2025,
+              "value": 5.3171
+            }
+          ]
         },
         "IND": {
           "year": 2025,
@@ -1029,7 +5563,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 13.1392
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 15.5839
+            },
+            {
+              "year": 2016,
+              "value": 15.1622
+            },
+            {
+              "year": 2017,
+              "value": 15.0182
+            },
+            {
+              "year": 2018,
+              "value": 14.8815
+            },
+            {
+              "year": 2019,
+              "value": 13.4558
+            },
+            {
+              "year": 2020,
+              "value": 14.1205
+            },
+            {
+              "year": 2021,
+              "value": 14.377
+            },
+            {
+              "year": 2022,
+              "value": 13.3327
+            },
+            {
+              "year": 2023,
+              "value": 13.3128
+            },
+            {
+              "year": 2024,
+              "value": 13.1392
+            },
+            {
+              "year": 2025,
+              "value": 13.4711
+            }
+          ]
         },
         "BRA": {
           "year": 2025,
@@ -1037,7 +5617,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 12.1108
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 10.5209
+            },
+            {
+              "year": 2016,
+              "value": 10.7865
+            },
+            {
+              "year": 2017,
+              "value": 10.7215
+            },
+            {
+              "year": 2018,
+              "value": 10.5285
+            },
+            {
+              "year": 2019,
+              "value": 10.3325
+            },
+            {
+              "year": 2020,
+              "value": 10.6929
+            },
+            {
+              "year": 2021,
+              "value": 11.9044
+            },
+            {
+              "year": 2022,
+              "value": 13.0741
+            },
+            {
+              "year": 2023,
+              "value": 13.2532
+            },
+            {
+              "year": 2024,
+              "value": 12.1108
+            },
+            {
+              "year": 2025,
+              "value": 11.7723
+            }
+          ]
         },
         "SGP": {
           "year": 2025,
@@ -1045,7 +5671,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 16.2581
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 18.0893
+            },
+            {
+              "year": 2016,
+              "value": 17.3699
+            },
+            {
+              "year": 2017,
+              "value": 18.4783
+            },
+            {
+              "year": 2018,
+              "value": 20.6144
+            },
+            {
+              "year": 2019,
+              "value": 19.3067
+            },
+            {
+              "year": 2020,
+              "value": 19.6582
+            },
+            {
+              "year": 2021,
+              "value": 20.6116
+            },
+            {
+              "year": 2022,
+              "value": 19.6981
+            },
+            {
+              "year": 2023,
+              "value": 16.7319
+            },
+            {
+              "year": 2024,
+              "value": 16.2581
+            },
+            {
+              "year": 2025,
+              "value": 17.4296
+            }
+          ]
         },
         "IDN": {
           "year": 2025,
@@ -1053,7 +5725,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 18.984
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 20.9858
+            },
+            {
+              "year": 2016,
+              "value": 20.523
+            },
+            {
+              "year": 2017,
+              "value": 20.16
+            },
+            {
+              "year": 2018,
+              "value": 19.8632
+            },
+            {
+              "year": 2019,
+              "value": 19.7035
+            },
+            {
+              "year": 2020,
+              "value": 19.8664
+            },
+            {
+              "year": 2021,
+              "value": 19.2434
+            },
+            {
+              "year": 2022,
+              "value": 18.3362
+            },
+            {
+              "year": 2023,
+              "value": 18.6674
+            },
+            {
+              "year": 2024,
+              "value": 18.984
+            },
+            {
+              "year": 2025,
+              "value": 19.0651
+            }
+          ]
         },
         "VNM": {
           "year": 2025,
@@ -1061,7 +5779,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 24.3331
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 20.9601
+            },
+            {
+              "year": 2016,
+              "value": 21.4883
+            },
+            {
+              "year": 2017,
+              "value": 22.6271
+            },
+            {
+              "year": 2018,
+              "value": 23.3672
+            },
+            {
+              "year": 2019,
+              "value": 23.7867
+            },
+            {
+              "year": 2020,
+              "value": 23.9472
+            },
+            {
+              "year": 2021,
+              "value": 24.4594
+            },
+            {
+              "year": 2022,
+              "value": 24.6564
+            },
+            {
+              "year": 2023,
+              "value": 24.1128
+            },
+            {
+              "year": 2024,
+              "value": 24.3331
+            },
+            {
+              "year": 2025,
+              "value": 24.528
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -1109,7 +5873,9 @@ export const indicatorSnapshot = {
           "year": 2025,
           "value": 27.4263
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "trade-share": {
       "countries": {
@@ -1119,7 +5885,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 84.6425
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 75.3882
+            },
+            {
+              "year": 2016,
+              "value": 69.8997
+            },
+            {
+              "year": 2017,
+              "value": 73.1921
+            },
+            {
+              "year": 2018,
+              "value": 74.7075
+            },
+            {
+              "year": 2019,
+              "value": 71.4471
+            },
+            {
+              "year": 2020,
+              "value": 65.545
+            },
+            {
+              "year": 2021,
+              "value": 75.3063
+            },
+            {
+              "year": 2022,
+              "value": 90.5851
+            },
+            {
+              "year": 2023,
+              "value": 82.258
+            },
+            {
+              "year": 2024,
+              "value": 84.6425
+            },
+            {
+              "year": 2025,
+              "value": 86.3616
+            }
+          ]
         },
         "WLD": {
           "year": 2025,
@@ -1127,7 +5939,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 56.7228
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 55.6182
+            },
+            {
+              "year": 2016,
+              "value": 53.7909
+            },
+            {
+              "year": 2017,
+              "value": 55.4552
+            },
+            {
+              "year": 2018,
+              "value": 56.9897
+            },
+            {
+              "year": 2019,
+              "value": 55.8007
+            },
+            {
+              "year": 2020,
+              "value": 51.8676
+            },
+            {
+              "year": 2021,
+              "value": 56.499
+            },
+            {
+              "year": 2022,
+              "value": 62.1471
+            },
+            {
+              "year": 2023,
+              "value": 58.0659
+            },
+            {
+              "year": 2024,
+              "value": 56.7228
+            },
+            {
+              "year": 2025,
+              "value": 68.4921
+            }
+          ]
         },
         "USA": {
           "year": 2024,
@@ -1135,7 +5993,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 24.9293
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 27.6882
+            },
+            {
+              "year": 2016,
+              "value": 26.4526
+            },
+            {
+              "year": 2017,
+              "value": 27.1253
+            },
+            {
+              "year": 2018,
+              "value": 27.4454
+            },
+            {
+              "year": 2019,
+              "value": 26.2585
+            },
+            {
+              "year": 2020,
+              "value": 23.1399
+            },
+            {
+              "year": 2021,
+              "value": 25.2327
+            },
+            {
+              "year": 2022,
+              "value": 26.9079
+            },
+            {
+              "year": 2023,
+              "value": 24.9293
+            },
+            {
+              "year": 2024,
+              "value": 25.016
+            }
+          ]
         },
         "JPN": {
           "year": 2024,
@@ -1143,7 +6043,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 43.5951
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 34.7276
+            },
+            {
+              "year": 2016,
+              "value": 30.6563
+            },
+            {
+              "year": 2017,
+              "value": 33.6888
+            },
+            {
+              "year": 2018,
+              "value": 35.8036
+            },
+            {
+              "year": 2019,
+              "value": 34.3583
+            },
+            {
+              "year": 2020,
+              "value": 30.5192
+            },
+            {
+              "year": 2021,
+              "value": 35.4254
+            },
+            {
+              "year": 2022,
+              "value": 44.8606
+            },
+            {
+              "year": 2023,
+              "value": 43.5951
+            },
+            {
+              "year": 2024,
+              "value": 44.8529
+            }
+          ]
         },
         "CHN": {
           "year": 2025,
@@ -1151,7 +6093,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 37.9561
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 38.6972
+            },
+            {
+              "year": 2016,
+              "value": 36.1772
+            },
+            {
+              "year": 2017,
+              "value": 36.9509
+            },
+            {
+              "year": 2018,
+              "value": 36.8944
+            },
+            {
+              "year": 2019,
+              "value": 35.4544
+            },
+            {
+              "year": 2020,
+              "value": 34.3378
+            },
+            {
+              "year": 2021,
+              "value": 36.6429
+            },
+            {
+              "year": 2022,
+              "value": 37.5126
+            },
+            {
+              "year": 2023,
+              "value": 36.7391
+            },
+            {
+              "year": 2024,
+              "value": 37.9561
+            },
+            {
+              "year": 2025,
+              "value": 37.9564
+            }
+          ]
         },
         "DEU": {
           "year": 2025,
@@ -1159,7 +6147,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 79.0907
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 77.7566
+            },
+            {
+              "year": 2016,
+              "value": 76.006
+            },
+            {
+              "year": 2017,
+              "value": 77.4548
+            },
+            {
+              "year": 2018,
+              "value": 79.1252
+            },
+            {
+              "year": 2019,
+              "value": 79.0732
+            },
+            {
+              "year": 2020,
+              "value": 72.9335
+            },
+            {
+              "year": 2021,
+              "value": 79.9195
+            },
+            {
+              "year": 2022,
+              "value": 88.7858
+            },
+            {
+              "year": 2023,
+              "value": 81.9625
+            },
+            {
+              "year": 2024,
+              "value": 79.0907
+            },
+            {
+              "year": 2025,
+              "value": 78.5128
+            }
+          ]
         },
         "GBR": {
           "year": 2025,
@@ -1167,7 +6201,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 62.8391
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 57.125
+            },
+            {
+              "year": 2016,
+              "value": 59.8395
+            },
+            {
+              "year": 2017,
+              "value": 63.1899
+            },
+            {
+              "year": 2018,
+              "value": 64.9098
+            },
+            {
+              "year": 2019,
+              "value": 65.0036
+            },
+            {
+              "year": 2020,
+              "value": 59.1599
+            },
+            {
+              "year": 2021,
+              "value": 58.5384
+            },
+            {
+              "year": 2022,
+              "value": 69.1989
+            },
+            {
+              "year": 2023,
+              "value": 64.9924
+            },
+            {
+              "year": 2024,
+              "value": 62.8391
+            },
+            {
+              "year": 2025,
+              "value": 62.4573
+            }
+          ]
         },
         "FRA": {
           "year": 2025,
@@ -1175,7 +6255,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 68.1082
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 63.5047
+            },
+            {
+              "year": 2016,
+              "value": 63.3428
+            },
+            {
+              "year": 2017,
+              "value": 65.3958
+            },
+            {
+              "year": 2018,
+              "value": 66.8023
+            },
+            {
+              "year": 2019,
+              "value": 66.429
+            },
+            {
+              "year": 2020,
+              "value": 58.8389
+            },
+            {
+              "year": 2021,
+              "value": 63.7885
+            },
+            {
+              "year": 2022,
+              "value": 75.963
+            },
+            {
+              "year": 2023,
+              "value": 70.6261
+            },
+            {
+              "year": 2024,
+              "value": 68.1082
+            },
+            {
+              "year": 2025,
+              "value": 67.1924
+            }
+          ]
         },
         "CAN": {
           "year": 2025,
@@ -1183,7 +6309,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 65.1215
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 66.1648
+            },
+            {
+              "year": 2016,
+              "value": 65.3636
+            },
+            {
+              "year": 2017,
+              "value": 65.1009
+            },
+            {
+              "year": 2018,
+              "value": 66.5998
+            },
+            {
+              "year": 2019,
+              "value": 66.1713
+            },
+            {
+              "year": 2020,
+              "value": 61.1567
+            },
+            {
+              "year": 2021,
+              "value": 62.2469
+            },
+            {
+              "year": 2022,
+              "value": 66.9532
+            },
+            {
+              "year": 2023,
+              "value": 66.5745
+            },
+            {
+              "year": 2024,
+              "value": 65.1215
+            },
+            {
+              "year": 2025,
+              "value": 63.5105
+            }
+          ]
         },
         "AUS": {
           "year": 2025,
@@ -1191,7 +6363,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 47.1454
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 41.4948
+            },
+            {
+              "year": 2016,
+              "value": 40.8134
+            },
+            {
+              "year": 2017,
+              "value": 42.0354
+            },
+            {
+              "year": 2018,
+              "value": 43.5732
+            },
+            {
+              "year": 2019,
+              "value": 46.0017
+            },
+            {
+              "year": 2020,
+              "value": 44.4996
+            },
+            {
+              "year": 2021,
+              "value": 40.2022
+            },
+            {
+              "year": 2022,
+              "value": 45.6946
+            },
+            {
+              "year": 2023,
+              "value": 49.0443
+            },
+            {
+              "year": 2024,
+              "value": 47.1454
+            },
+            {
+              "year": 2025,
+              "value": 45.9014
+            }
+          ]
         },
         "IND": {
           "year": 2025,
@@ -1199,7 +6417,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 45.9167
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 41.9229
+            },
+            {
+              "year": 2016,
+              "value": 40.0825
+            },
+            {
+              "year": 2017,
+              "value": 40.7425
+            },
+            {
+              "year": 2018,
+              "value": 43.617
+            },
+            {
+              "year": 2019,
+              "value": 39.9054
+            },
+            {
+              "year": 2020,
+              "value": 37.7581
+            },
+            {
+              "year": 2021,
+              "value": 45.4231
+            },
+            {
+              "year": 2022,
+              "value": 50.6979
+            },
+            {
+              "year": 2023,
+              "value": 46.323
+            },
+            {
+              "year": 2024,
+              "value": 45.9167
+            },
+            {
+              "year": 2025,
+              "value": 46.2682
+            }
+          ]
         },
         "BRA": {
           "year": 2025,
@@ -1207,7 +6471,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 35.5845
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 26.9536
+            },
+            {
+              "year": 2016,
+              "value": 24.5337
+            },
+            {
+              "year": 2017,
+              "value": 24.3197
+            },
+            {
+              "year": 2018,
+              "value": 28.8762
+            },
+            {
+              "year": 2019,
+              "value": 28.8903
+            },
+            {
+              "year": 2020,
+              "value": 32.3021
+            },
+            {
+              "year": 2021,
+              "value": 37.6563
+            },
+            {
+              "year": 2022,
+              "value": 38.8161
+            },
+            {
+              "year": 2023,
+              "value": 33.6662
+            },
+            {
+              "year": 2024,
+              "value": 35.5845
+            },
+            {
+              "year": 2025,
+              "value": 35.2915
+            }
+          ]
         },
         "SGP": {
           "year": 2025,
@@ -1215,7 +6525,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 313.2994
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 329.4714
+            },
+            {
+              "year": 2016,
+              "value": 301.3389
+            },
+            {
+              "year": 2017,
+              "value": 315.4014
+            },
+            {
+              "year": 2018,
+              "value": 325.7258
+            },
+            {
+              "year": 2019,
+              "value": 324.2701
+            },
+            {
+              "year": 2020,
+              "value": 331.0806
+            },
+            {
+              "year": 2021,
+              "value": 326.5333
+            },
+            {
+              "year": 2022,
+              "value": 330.2469
+            },
+            {
+              "year": 2023,
+              "value": 323.7012
+            },
+            {
+              "year": 2024,
+              "value": 313.2994
+            },
+            {
+              "year": 2025,
+              "value": 320.306
+            }
+          ]
         },
         "IDN": {
           "year": 2025,
@@ -1223,7 +6579,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 42.8099
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 41.9376
+            },
+            {
+              "year": 2016,
+              "value": 37.4213
+            },
+            {
+              "year": 2017,
+              "value": 39.3555
+            },
+            {
+              "year": 2018,
+              "value": 43.0743
+            },
+            {
+              "year": 2019,
+              "value": 37.6278
+            },
+            {
+              "year": 2020,
+              "value": 32.9722
+            },
+            {
+              "year": 2021,
+              "value": 40.2048
+            },
+            {
+              "year": 2022,
+              "value": 45.4647
+            },
+            {
+              "year": 2023,
+              "value": 41.4605
+            },
+            {
+              "year": 2024,
+              "value": 42.8099
+            },
+            {
+              "year": 2025,
+              "value": 43.3912
+            }
+          ]
         },
         "VNM": {
           "year": 2025,
@@ -1231,7 +6633,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 173.8853
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 144.9142
+            },
+            {
+              "year": 2016,
+              "value": 145.4095
+            },
+            {
+              "year": 2017,
+              "value": 160.9801
+            },
+            {
+              "year": 2018,
+              "value": 164.6639
+            },
+            {
+              "year": 2019,
+              "value": 164.7042
+            },
+            {
+              "year": 2020,
+              "value": 163.2459
+            },
+            {
+              "year": 2021,
+              "value": 186.6758
+            },
+            {
+              "year": 2022,
+              "value": 183.1536
+            },
+            {
+              "year": 2023,
+              "value": 164.9956
+            },
+            {
+              "year": 2024,
+              "value": 173.8853
+            },
+            {
+              "year": 2025,
+              "value": 190.3368
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -1279,7 +6727,9 @@ export const indicatorSnapshot = {
           "year": 2025,
           "value": 86.3616
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "unemployment": {
       "countries": {
@@ -1289,7 +6739,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 2.784
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3.546
+            },
+            {
+              "year": 2016,
+              "value": 3.65
+            },
+            {
+              "year": 2017,
+              "value": 3.653
+            },
+            {
+              "year": 2018,
+              "value": 3.824
+            },
+            {
+              "year": 2019,
+              "value": 3.746
+            },
+            {
+              "year": 2020,
+              "value": 3.931
+            },
+            {
+              "year": 2021,
+              "value": 3.639
+            },
+            {
+              "year": 2022,
+              "value": 2.857
+            },
+            {
+              "year": 2023,
+              "value": 2.675
+            },
+            {
+              "year": 2024,
+              "value": 2.784
+            },
+            {
+              "year": 2025,
+              "value": 2.683
+            }
+          ]
         },
         "WLD": {
           "year": 2025,
@@ -1297,7 +6793,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 4.8063
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 5.9985
+            },
+            {
+              "year": 2016,
+              "value": 5.9709
+            },
+            {
+              "year": 2017,
+              "value": 5.898
+            },
+            {
+              "year": 2018,
+              "value": 5.7595
+            },
+            {
+              "year": 2019,
+              "value": 5.5885
+            },
+            {
+              "year": 2020,
+              "value": 6.5877
+            },
+            {
+              "year": 2021,
+              "value": 6.0456
+            },
+            {
+              "year": 2022,
+              "value": 5.2346
+            },
+            {
+              "year": 2023,
+              "value": 4.8499
+            },
+            {
+              "year": 2024,
+              "value": 4.8063
+            },
+            {
+              "year": 2025,
+              "value": 4.7913
+            }
+          ]
         },
         "USA": {
           "year": 2025,
@@ -1305,7 +6847,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 4.022
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 5.28
+            },
+            {
+              "year": 2016,
+              "value": 4.869
+            },
+            {
+              "year": 2017,
+              "value": 4.355
+            },
+            {
+              "year": 2018,
+              "value": 3.896
+            },
+            {
+              "year": 2019,
+              "value": 3.669
+            },
+            {
+              "year": 2020,
+              "value": 8.055
+            },
+            {
+              "year": 2021,
+              "value": 5.349
+            },
+            {
+              "year": 2022,
+              "value": 3.65
+            },
+            {
+              "year": 2023,
+              "value": 3.638
+            },
+            {
+              "year": 2024,
+              "value": 4.022
+            },
+            {
+              "year": 2025,
+              "value": 4.198
+            }
+          ]
         },
         "JPN": {
           "year": 2025,
@@ -1313,7 +6901,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 2.5
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3.385
+            },
+            {
+              "year": 2016,
+              "value": 3.132
+            },
+            {
+              "year": 2017,
+              "value": 2.822
+            },
+            {
+              "year": 2018,
+              "value": 2.467
+            },
+            {
+              "year": 2019,
+              "value": 2.351
+            },
+            {
+              "year": 2020,
+              "value": 2.809
+            },
+            {
+              "year": 2021,
+              "value": 2.808
+            },
+            {
+              "year": 2022,
+              "value": 2.614
+            },
+            {
+              "year": 2023,
+              "value": 2.6
+            },
+            {
+              "year": 2024,
+              "value": 2.5
+            },
+            {
+              "year": 2025,
+              "value": 2.451
+            }
+          ]
         },
         "CHN": {
           "year": 2025,
@@ -1321,7 +6955,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 4.59
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 4.65
+            },
+            {
+              "year": 2016,
+              "value": 4.56
+            },
+            {
+              "year": 2017,
+              "value": 4.47
+            },
+            {
+              "year": 2018,
+              "value": 4.31
+            },
+            {
+              "year": 2019,
+              "value": 4.56
+            },
+            {
+              "year": 2020,
+              "value": 5
+            },
+            {
+              "year": 2021,
+              "value": 4.55
+            },
+            {
+              "year": 2022,
+              "value": 4.98
+            },
+            {
+              "year": 2023,
+              "value": 4.67
+            },
+            {
+              "year": 2024,
+              "value": 4.59
+            },
+            {
+              "year": 2025,
+              "value": 4.615
+            }
+          ]
         },
         "DEU": {
           "year": 2025,
@@ -1329,7 +7009,539 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 3.4
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 4.612
+            },
+            {
+              "year": 2016,
+              "value": 4.104
+            },
+            {
+              "year": 2017,
+              "value": 3.781
+            },
+            {
+              "year": 2018,
+              "value": 3.384
+            },
+            {
+              "year": 2019,
+              "value": 3.163
+            },
+            {
+              "year": 2020,
+              "value": 3.881
+            },
+            {
+              "year": 2021,
+              "value": 3.594
+            },
+            {
+              "year": 2022,
+              "value": 3.137
+            },
+            {
+              "year": 2023,
+              "value": 3.071
+            },
+            {
+              "year": 2024,
+              "value": 3.4
+            },
+            {
+              "year": 2025,
+              "value": 3.711
+            }
+          ]
+        },
+        "GBR": {
+          "year": 2025,
+          "value": 4.746,
+          "previous": {
+            "year": 2024,
+            "value": 4.361
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 5.552
+            },
+            {
+              "year": 2016,
+              "value": 4.909
+            },
+            {
+              "year": 2017,
+              "value": 4.501
+            },
+            {
+              "year": 2018,
+              "value": 4.145
+            },
+            {
+              "year": 2019,
+              "value": 3.657
+            },
+            {
+              "year": 2020,
+              "value": 4.472
+            },
+            {
+              "year": 2021,
+              "value": 4.864
+            },
+            {
+              "year": 2022,
+              "value": 3.768
+            },
+            {
+              "year": 2023,
+              "value": 4.025
+            },
+            {
+              "year": 2024,
+              "value": 4.361
+            },
+            {
+              "year": 2025,
+              "value": 4.746
+            }
+          ]
+        },
+        "FRA": {
+          "year": 2025,
+          "value": 7.542,
+          "previous": {
+            "year": 2024,
+            "value": 7.4
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 10.354
+            },
+            {
+              "year": 2016,
+              "value": 10.057
+            },
+            {
+              "year": 2017,
+              "value": 9.409
+            },
+            {
+              "year": 2018,
+              "value": 9.018
+            },
+            {
+              "year": 2019,
+              "value": 8.415
+            },
+            {
+              "year": 2020,
+              "value": 8.009
+            },
+            {
+              "year": 2021,
+              "value": 7.871
+            },
+            {
+              "year": 2022,
+              "value": 7.303
+            },
+            {
+              "year": 2023,
+              "value": 7.335
+            },
+            {
+              "year": 2024,
+              "value": 7.4
+            },
+            {
+              "year": 2025,
+              "value": 7.542
+            }
+          ]
+        },
+        "CAN": {
+          "year": 2025,
+          "value": 6.907,
+          "previous": {
+            "year": 2024,
+            "value": 6.351
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 6.945
+            },
+            {
+              "year": 2016,
+              "value": 7.038
+            },
+            {
+              "year": 2017,
+              "value": 6.426
+            },
+            {
+              "year": 2018,
+              "value": 5.837
+            },
+            {
+              "year": 2019,
+              "value": 5.69
+            },
+            {
+              "year": 2020,
+              "value": 9.657
+            },
+            {
+              "year": 2021,
+              "value": 7.527
+            },
+            {
+              "year": 2022,
+              "value": 5.279
+            },
+            {
+              "year": 2023,
+              "value": 5.415
+            },
+            {
+              "year": 2024,
+              "value": 6.351
+            },
+            {
+              "year": 2025,
+              "value": 6.907
+            }
+          ]
+        },
+        "AUS": {
+          "year": 2025,
+          "value": 4.09,
+          "previous": {
+            "year": 2024,
+            "value": 3.942
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 6.055
+            },
+            {
+              "year": 2016,
+              "value": 5.711
+            },
+            {
+              "year": 2017,
+              "value": 5.592
+            },
+            {
+              "year": 2018,
+              "value": 5.345
+            },
+            {
+              "year": 2019,
+              "value": 5.143
+            },
+            {
+              "year": 2020,
+              "value": 6.394
+            },
+            {
+              "year": 2021,
+              "value": 5.022
+            },
+            {
+              "year": 2022,
+              "value": 3.728
+            },
+            {
+              "year": 2023,
+              "value": 3.668
+            },
+            {
+              "year": 2024,
+              "value": 3.942
+            },
+            {
+              "year": 2025,
+              "value": 4.09
+            }
+          ]
+        },
+        "IND": {
+          "year": 2025,
+          "value": 4.219,
+          "previous": {
+            "year": 2024,
+            "value": 4.173
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 7.629
+            },
+            {
+              "year": 2016,
+              "value": 7.611
+            },
+            {
+              "year": 2017,
+              "value": 7.626
+            },
+            {
+              "year": 2018,
+              "value": 7.652
+            },
+            {
+              "year": 2019,
+              "value": 6.51
+            },
+            {
+              "year": 2020,
+              "value": 7.859
+            },
+            {
+              "year": 2021,
+              "value": 6.38
+            },
+            {
+              "year": 2022,
+              "value": 4.822
+            },
+            {
+              "year": 2023,
+              "value": 4.172
+            },
+            {
+              "year": 2024,
+              "value": 4.173
+            },
+            {
+              "year": 2025,
+              "value": 4.219
+            }
+          ]
+        },
+        "BRA": {
+          "year": 2025,
+          "value": 5.97,
+          "previous": {
+            "year": 2024,
+            "value": 6.801
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 8.538
+            },
+            {
+              "year": 2016,
+              "value": 11.58
+            },
+            {
+              "year": 2017,
+              "value": 12.792
+            },
+            {
+              "year": 2018,
+              "value": 12.329
+            },
+            {
+              "year": 2019,
+              "value": 11.936
+            },
+            {
+              "year": 2020,
+              "value": 13.697
+            },
+            {
+              "year": 2021,
+              "value": 13.158
+            },
+            {
+              "year": 2022,
+              "value": 9.231
+            },
+            {
+              "year": 2023,
+              "value": 7.947
+            },
+            {
+              "year": 2024,
+              "value": 6.801
+            },
+            {
+              "year": 2025,
+              "value": 5.97
+            }
+          ]
+        },
+        "SGP": {
+          "year": 2025,
+          "value": 2.818,
+          "previous": {
+            "year": 2024,
+            "value": 2.737
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3.79
+            },
+            {
+              "year": 2016,
+              "value": 4.08
+            },
+            {
+              "year": 2017,
+              "value": 4.2
+            },
+            {
+              "year": 2018,
+              "value": 3.613
+            },
+            {
+              "year": 2019,
+              "value": 3.1
+            },
+            {
+              "year": 2020,
+              "value": 4.1
+            },
+            {
+              "year": 2021,
+              "value": 4.64
+            },
+            {
+              "year": 2022,
+              "value": 3.591
+            },
+            {
+              "year": 2023,
+              "value": 3.444
+            },
+            {
+              "year": 2024,
+              "value": 2.737
+            },
+            {
+              "year": 2025,
+              "value": 2.818
+            }
+          ]
+        },
+        "IDN": {
+          "year": 2025,
+          "value": 3.237,
+          "previous": {
+            "year": 2024,
+            "value": 3.301
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 4.514
+            },
+            {
+              "year": 2016,
+              "value": 4.301
+            },
+            {
+              "year": 2017,
+              "value": 3.783
+            },
+            {
+              "year": 2018,
+              "value": 4.387
+            },
+            {
+              "year": 2019,
+              "value": 3.59
+            },
+            {
+              "year": 2020,
+              "value": 4.255
+            },
+            {
+              "year": 2021,
+              "value": 3.827
+            },
+            {
+              "year": 2022,
+              "value": 3.462
+            },
+            {
+              "year": 2023,
+              "value": 3.308
+            },
+            {
+              "year": 2024,
+              "value": 3.301
+            },
+            {
+              "year": 2025,
+              "value": 3.237
+            }
+          ]
+        },
+        "VNM": {
+          "year": 2025,
+          "value": 1.523,
+          "previous": {
+            "year": 2024,
+            "value": 1.602
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.848
+            },
+            {
+              "year": 2016,
+              "value": 1.848
+            },
+            {
+              "year": 2017,
+              "value": 1.874
+            },
+            {
+              "year": 2018,
+              "value": 1.161
+            },
+            {
+              "year": 2019,
+              "value": 1.681
+            },
+            {
+              "year": 2020,
+              "value": 2.103
+            },
+            {
+              "year": 2021,
+              "value": 2.383
+            },
+            {
+              "year": 2022,
+              "value": 1.57
+            },
+            {
+              "year": 2023,
+              "value": 1.645
+            },
+            {
+              "year": 2024,
+              "value": 1.602
+            },
+            {
+              "year": 2025,
+              "value": 1.523
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -1377,7 +7589,9 @@ export const indicatorSnapshot = {
           "year": 2025,
           "value": 2.683
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "labor-participation": {
       "countries": {
@@ -1387,7 +7601,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 64.465
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 62.58
+            },
+            {
+              "year": 2016,
+              "value": 62.626
+            },
+            {
+              "year": 2017,
+              "value": 62.91
+            },
+            {
+              "year": 2018,
+              "value": 62.757
+            },
+            {
+              "year": 2019,
+              "value": 62.994
+            },
+            {
+              "year": 2020,
+              "value": 62.274
+            },
+            {
+              "year": 2021,
+              "value": 62.55
+            },
+            {
+              "year": 2022,
+              "value": 63.794
+            },
+            {
+              "year": 2023,
+              "value": 64.266
+            },
+            {
+              "year": 2024,
+              "value": 64.465
+            },
+            {
+              "year": 2025,
+              "value": 64.351
+            }
+          ]
         },
         "WLD": {
           "year": 2025,
@@ -1395,7 +7655,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 61.1329
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 61.6406
+            },
+            {
+              "year": 2016,
+              "value": 61.4846
+            },
+            {
+              "year": 2017,
+              "value": 61.2983
+            },
+            {
+              "year": 2018,
+              "value": 61.1645
+            },
+            {
+              "year": 2019,
+              "value": 61.0294
+            },
+            {
+              "year": 2020,
+              "value": 59.6448
+            },
+            {
+              "year": 2021,
+              "value": 60.3845
+            },
+            {
+              "year": 2022,
+              "value": 60.7367
+            },
+            {
+              "year": 2023,
+              "value": 61.1989
+            },
+            {
+              "year": 2024,
+              "value": 61.1329
+            },
+            {
+              "year": 2025,
+              "value": 60.9808
+            }
+          ]
         },
         "USA": {
           "year": 2025,
@@ -1403,7 +7709,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 61.959
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 62.267
+            },
+            {
+              "year": 2016,
+              "value": 62.431
+            },
+            {
+              "year": 2017,
+              "value": 62.548
+            },
+            {
+              "year": 2018,
+              "value": 62.592
+            },
+            {
+              "year": 2019,
+              "value": 62.848
+            },
+            {
+              "year": 2020,
+              "value": 61.556
+            },
+            {
+              "year": 2021,
+              "value": 61.501
+            },
+            {
+              "year": 2022,
+              "value": 61.794
+            },
+            {
+              "year": 2023,
+              "value": 62.08
+            },
+            {
+              "year": 2024,
+              "value": 61.959
+            },
+            {
+              "year": 2025,
+              "value": 61.704
+            }
+          ]
         },
         "JPN": {
           "year": 2025,
@@ -1411,7 +7763,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 63.3
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 59.499
+            },
+            {
+              "year": 2016,
+              "value": 59.986
+            },
+            {
+              "year": 2017,
+              "value": 60.444
+            },
+            {
+              "year": 2018,
+              "value": 61.446
+            },
+            {
+              "year": 2019,
+              "value": 62.008
+            },
+            {
+              "year": 2020,
+              "value": 61.947
+            },
+            {
+              "year": 2021,
+              "value": 62.053
+            },
+            {
+              "year": 2022,
+              "value": 62.502
+            },
+            {
+              "year": 2023,
+              "value": 62.9
+            },
+            {
+              "year": 2024,
+              "value": 63.3
+            },
+            {
+              "year": 2025,
+              "value": 63.448
+            }
+          ]
         },
         "CHN": {
           "year": 2025,
@@ -1419,7 +7817,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 64.91
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 69.3
+            },
+            {
+              "year": 2016,
+              "value": 68.88
+            },
+            {
+              "year": 2017,
+              "value": 68.35
+            },
+            {
+              "year": 2018,
+              "value": 67.81
+            },
+            {
+              "year": 2019,
+              "value": 67.38
+            },
+            {
+              "year": 2020,
+              "value": 65.721
+            },
+            {
+              "year": 2021,
+              "value": 67.11
+            },
+            {
+              "year": 2022,
+              "value": 65.8
+            },
+            {
+              "year": 2023,
+              "value": 65.83
+            },
+            {
+              "year": 2024,
+              "value": 64.91
+            },
+            {
+              "year": 2025,
+              "value": 64.551
+            }
+          ]
         },
         "DEU": {
           "year": 2025,
@@ -1427,7 +7871,539 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 60.921
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 60.22
+            },
+            {
+              "year": 2016,
+              "value": 60.411
+            },
+            {
+              "year": 2017,
+              "value": 60.659
+            },
+            {
+              "year": 2018,
+              "value": 60.859
+            },
+            {
+              "year": 2019,
+              "value": 61.307
+            },
+            {
+              "year": 2020,
+              "value": 60.478
+            },
+            {
+              "year": 2021,
+              "value": 60.395
+            },
+            {
+              "year": 2022,
+              "value": 60.835
+            },
+            {
+              "year": 2023,
+              "value": 61.05
+            },
+            {
+              "year": 2024,
+              "value": 60.921
+            },
+            {
+              "year": 2025,
+              "value": 60.571
+            }
+          ]
+        },
+        "GBR": {
+          "year": 2025,
+          "value": 61.369,
+          "previous": {
+            "year": 2024,
+            "value": 61.556
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 62.25
+            },
+            {
+              "year": 2016,
+              "value": 62.408
+            },
+            {
+              "year": 2017,
+              "value": 62.412
+            },
+            {
+              "year": 2018,
+              "value": 62.619
+            },
+            {
+              "year": 2019,
+              "value": 62.625
+            },
+            {
+              "year": 2020,
+              "value": 62.573
+            },
+            {
+              "year": 2021,
+              "value": 61.973
+            },
+            {
+              "year": 2022,
+              "value": 61.905
+            },
+            {
+              "year": 2023,
+              "value": 61.811
+            },
+            {
+              "year": 2024,
+              "value": 61.556
+            },
+            {
+              "year": 2025,
+              "value": 61.369
+            }
+          ]
+        },
+        "FRA": {
+          "year": 2025,
+          "value": 55.346,
+          "previous": {
+            "year": 2024,
+            "value": 55.663
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 55.621
+            },
+            {
+              "year": 2016,
+              "value": 55.399
+            },
+            {
+              "year": 2017,
+              "value": 55.258
+            },
+            {
+              "year": 2018,
+              "value": 55.3
+            },
+            {
+              "year": 2019,
+              "value": 54.939
+            },
+            {
+              "year": 2020,
+              "value": 54.271
+            },
+            {
+              "year": 2021,
+              "value": 55.552
+            },
+            {
+              "year": 2022,
+              "value": 55.835
+            },
+            {
+              "year": 2023,
+              "value": 55.938
+            },
+            {
+              "year": 2024,
+              "value": 55.663
+            },
+            {
+              "year": 2025,
+              "value": 55.346
+            }
+          ]
+        },
+        "CAN": {
+          "year": 2025,
+          "value": 64.516,
+          "previous": {
+            "year": 2024,
+            "value": 64.739
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 65.887
+            },
+            {
+              "year": 2016,
+              "value": 65.638
+            },
+            {
+              "year": 2017,
+              "value": 65.792
+            },
+            {
+              "year": 2018,
+              "value": 65.547
+            },
+            {
+              "year": 2019,
+              "value": 65.809
+            },
+            {
+              "year": 2020,
+              "value": 64.097
+            },
+            {
+              "year": 2021,
+              "value": 65.195
+            },
+            {
+              "year": 2022,
+              "value": 65.247
+            },
+            {
+              "year": 2023,
+              "value": 65.361
+            },
+            {
+              "year": 2024,
+              "value": 64.739
+            },
+            {
+              "year": 2025,
+              "value": 64.516
+            }
+          ]
+        },
+        "AUS": {
+          "year": 2025,
+          "value": 66.537,
+          "previous": {
+            "year": 2024,
+            "value": 66.719
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 65.076
+            },
+            {
+              "year": 2016,
+              "value": 64.952
+            },
+            {
+              "year": 2017,
+              "value": 65.248
+            },
+            {
+              "year": 2018,
+              "value": 65.804
+            },
+            {
+              "year": 2019,
+              "value": 66.088
+            },
+            {
+              "year": 2020,
+              "value": 65.028
+            },
+            {
+              "year": 2021,
+              "value": 66.147
+            },
+            {
+              "year": 2022,
+              "value": 66.89
+            },
+            {
+              "year": 2023,
+              "value": 67.023
+            },
+            {
+              "year": 2024,
+              "value": 66.719
+            },
+            {
+              "year": 2025,
+              "value": 66.537
+            }
+          ]
+        },
+        "IND": {
+          "year": 2025,
+          "value": 55.658,
+          "previous": {
+            "year": 2024,
+            "value": 55.639
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 53.031
+            },
+            {
+              "year": 2016,
+              "value": 52.852
+            },
+            {
+              "year": 2017,
+              "value": 52.671
+            },
+            {
+              "year": 2018,
+              "value": 52.482
+            },
+            {
+              "year": 2019,
+              "value": 52.284
+            },
+            {
+              "year": 2020,
+              "value": 51.547
+            },
+            {
+              "year": 2021,
+              "value": 52.522
+            },
+            {
+              "year": 2022,
+              "value": 53.587
+            },
+            {
+              "year": 2023,
+              "value": 54.697
+            },
+            {
+              "year": 2024,
+              "value": 55.639
+            },
+            {
+              "year": 2025,
+              "value": 55.658
+            }
+          ]
+        },
+        "BRA": {
+          "year": 2025,
+          "value": 63.139,
+          "previous": {
+            "year": 2024,
+            "value": 63.339
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 64.275
+            },
+            {
+              "year": 2016,
+              "value": 64.29
+            },
+            {
+              "year": 2017,
+              "value": 64.525
+            },
+            {
+              "year": 2018,
+              "value": 64.501
+            },
+            {
+              "year": 2019,
+              "value": 64.887
+            },
+            {
+              "year": 2020,
+              "value": 60.479
+            },
+            {
+              "year": 2021,
+              "value": 62.456
+            },
+            {
+              "year": 2022,
+              "value": 63.527
+            },
+            {
+              "year": 2023,
+              "value": 62.915
+            },
+            {
+              "year": 2024,
+              "value": 63.339
+            },
+            {
+              "year": 2025,
+              "value": 63.139
+            }
+          ]
+        },
+        "SGP": {
+          "year": 2025,
+          "value": 69.673,
+          "previous": {
+            "year": 2024,
+            "value": 69.202
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 69.53
+            },
+            {
+              "year": 2016,
+              "value": 69.244
+            },
+            {
+              "year": 2017,
+              "value": 68.943
+            },
+            {
+              "year": 2018,
+              "value": 68.581
+            },
+            {
+              "year": 2019,
+              "value": 68.986
+            },
+            {
+              "year": 2020,
+              "value": 68.712
+            },
+            {
+              "year": 2021,
+              "value": 70.686
+            },
+            {
+              "year": 2022,
+              "value": 69.734
+            },
+            {
+              "year": 2023,
+              "value": 69.394
+            },
+            {
+              "year": 2024,
+              "value": 69.202
+            },
+            {
+              "year": 2025,
+              "value": 69.673
+            }
+          ]
+        },
+        "IDN": {
+          "year": 2025,
+          "value": 67.965,
+          "previous": {
+            "year": 2024,
+            "value": 67.927
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 66.578
+            },
+            {
+              "year": 2016,
+              "value": 66.314
+            },
+            {
+              "year": 2017,
+              "value": 66.694
+            },
+            {
+              "year": 2018,
+              "value": 67.652
+            },
+            {
+              "year": 2019,
+              "value": 68.238
+            },
+            {
+              "year": 2020,
+              "value": 67.401
+            },
+            {
+              "year": 2021,
+              "value": 65.868
+            },
+            {
+              "year": 2022,
+              "value": 67.018
+            },
+            {
+              "year": 2023,
+              "value": 67.899
+            },
+            {
+              "year": 2024,
+              "value": 67.927
+            },
+            {
+              "year": 2025,
+              "value": 67.965
+            }
+          ]
+        },
+        "VNM": {
+          "year": 2025,
+          "value": 72.778,
+          "previous": {
+            "year": 2024,
+            "value": 73.134
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 77.43
+            },
+            {
+              "year": 2016,
+              "value": 76.965
+            },
+            {
+              "year": 2017,
+              "value": 77.2
+            },
+            {
+              "year": 2018,
+              "value": 77.482
+            },
+            {
+              "year": 2019,
+              "value": 76.615
+            },
+            {
+              "year": 2020,
+              "value": 74.367
+            },
+            {
+              "year": 2021,
+              "value": 73.738
+            },
+            {
+              "year": 2022,
+              "value": 74.484
+            },
+            {
+              "year": 2023,
+              "value": 73.545
+            },
+            {
+              "year": 2024,
+              "value": 73.134
+            },
+            {
+              "year": 2025,
+              "value": 72.778
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -1475,7 +8451,9 @@ export const indicatorSnapshot = {
           "year": 2025,
           "value": 64.351
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "female-participation": {
       "countries": {
@@ -1485,7 +8463,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 56.826
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 52.391
+            },
+            {
+              "year": 2016,
+              "value": 52.568
+            },
+            {
+              "year": 2017,
+              "value": 53.073
+            },
+            {
+              "year": 2018,
+              "value": 53.224
+            },
+            {
+              "year": 2019,
+              "value": 53.772
+            },
+            {
+              "year": 2020,
+              "value": 53.137
+            },
+            {
+              "year": 2021,
+              "value": 53.65
+            },
+            {
+              "year": 2022,
+              "value": 55.03
+            },
+            {
+              "year": 2023,
+              "value": 56.038
+            },
+            {
+              "year": 2024,
+              "value": 56.826
+            },
+            {
+              "year": 2025,
+              "value": 56.782
+            }
+          ]
         },
         "WLD": {
           "year": 2025,
@@ -1493,7 +8517,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 49.0779
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 48.5461
+            },
+            {
+              "year": 2016,
+              "value": 48.463
+            },
+            {
+              "year": 2017,
+              "value": 48.3735
+            },
+            {
+              "year": 2018,
+              "value": 48.3049
+            },
+            {
+              "year": 2019,
+              "value": 48.2841
+            },
+            {
+              "year": 2020,
+              "value": 46.9798
+            },
+            {
+              "year": 2021,
+              "value": 47.8917
+            },
+            {
+              "year": 2022,
+              "value": 48.3157
+            },
+            {
+              "year": 2023,
+              "value": 49.0291
+            },
+            {
+              "year": 2024,
+              "value": 49.0779
+            },
+            {
+              "year": 2025,
+              "value": 48.9389
+            }
+          ]
         },
         "USA": {
           "year": 2025,
@@ -1501,7 +8571,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 56.561
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 55.938
+            },
+            {
+              "year": 2016,
+              "value": 56.095
+            },
+            {
+              "year": 2017,
+              "value": 56.395
+            },
+            {
+              "year": 2018,
+              "value": 56.471
+            },
+            {
+              "year": 2019,
+              "value": 56.868
+            },
+            {
+              "year": 2020,
+              "value": 55.704
+            },
+            {
+              "year": 2021,
+              "value": 55.632
+            },
+            {
+              "year": 2022,
+              "value": 56.029
+            },
+            {
+              "year": 2023,
+              "value": 56.602
+            },
+            {
+              "year": 2024,
+              "value": 56.561
+            },
+            {
+              "year": 2025,
+              "value": 56.343
+            }
+          ]
         },
         "JPN": {
           "year": 2025,
@@ -1509,7 +8625,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 55.596
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 49.41
+            },
+            {
+              "year": 2016,
+              "value": 50.208
+            },
+            {
+              "year": 2017,
+              "value": 51.031
+            },
+            {
+              "year": 2018,
+              "value": 52.368
+            },
+            {
+              "year": 2019,
+              "value": 53.24
+            },
+            {
+              "year": 2020,
+              "value": 53.09
+            },
+            {
+              "year": 2021,
+              "value": 53.46
+            },
+            {
+              "year": 2022,
+              "value": 54.173
+            },
+            {
+              "year": 2023,
+              "value": 54.847
+            },
+            {
+              "year": 2024,
+              "value": 55.596
+            },
+            {
+              "year": 2025,
+              "value": 55.905
+            }
+          ]
         },
         "CHN": {
           "year": 2025,
@@ -1517,7 +8679,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 59.448
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 62.605
+            },
+            {
+              "year": 2016,
+              "value": 62.326
+            },
+            {
+              "year": 2017,
+              "value": 61.957
+            },
+            {
+              "year": 2018,
+              "value": 61.585
+            },
+            {
+              "year": 2019,
+              "value": 61.305
+            },
+            {
+              "year": 2020,
+              "value": 59.711
+            },
+            {
+              "year": 2021,
+              "value": 61.182
+            },
+            {
+              "year": 2022,
+              "value": 60.097
+            },
+            {
+              "year": 2023,
+              "value": 60.216
+            },
+            {
+              "year": 2024,
+              "value": 59.448
+            },
+            {
+              "year": 2025,
+              "value": 59.148
+            }
+          ]
         },
         "DEU": {
           "year": 2025,
@@ -1525,7 +8733,539 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 55.622
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 54.441
+            },
+            {
+              "year": 2016,
+              "value": 54.808
+            },
+            {
+              "year": 2017,
+              "value": 55.138
+            },
+            {
+              "year": 2018,
+              "value": 55.211
+            },
+            {
+              "year": 2019,
+              "value": 55.709
+            },
+            {
+              "year": 2020,
+              "value": 55.113
+            },
+            {
+              "year": 2021,
+              "value": 55.018
+            },
+            {
+              "year": 2022,
+              "value": 55.538
+            },
+            {
+              "year": 2023,
+              "value": 55.821
+            },
+            {
+              "year": 2024,
+              "value": 55.622
+            },
+            {
+              "year": 2025,
+              "value": 55.288
+            }
+          ]
+        },
+        "GBR": {
+          "year": 2025,
+          "value": 57.333,
+          "previous": {
+            "year": 2024,
+            "value": 57.489
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 56.722
+            },
+            {
+              "year": 2016,
+              "value": 57.074
+            },
+            {
+              "year": 2017,
+              "value": 57.273
+            },
+            {
+              "year": 2018,
+              "value": 57.525
+            },
+            {
+              "year": 2019,
+              "value": 58.037
+            },
+            {
+              "year": 2020,
+              "value": 58.277
+            },
+            {
+              "year": 2021,
+              "value": 58.02
+            },
+            {
+              "year": 2022,
+              "value": 57.703
+            },
+            {
+              "year": 2023,
+              "value": 57.38
+            },
+            {
+              "year": 2024,
+              "value": 57.489
+            },
+            {
+              "year": 2025,
+              "value": 57.333
+            }
+          ]
+        },
+        "FRA": {
+          "year": 2025,
+          "value": 51.48,
+          "previous": {
+            "year": 2024,
+            "value": 51.773
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 50.957
+            },
+            {
+              "year": 2016,
+              "value": 50.83
+            },
+            {
+              "year": 2017,
+              "value": 50.625
+            },
+            {
+              "year": 2018,
+              "value": 50.813
+            },
+            {
+              "year": 2019,
+              "value": 50.615
+            },
+            {
+              "year": 2020,
+              "value": 50.05
+            },
+            {
+              "year": 2021,
+              "value": 51.605
+            },
+            {
+              "year": 2022,
+              "value": 51.862
+            },
+            {
+              "year": 2023,
+              "value": 52.108
+            },
+            {
+              "year": 2024,
+              "value": 51.773
+            },
+            {
+              "year": 2025,
+              "value": 51.48
+            }
+          ]
+        },
+        "CAN": {
+          "year": 2025,
+          "value": 60.204,
+          "previous": {
+            "year": 2024,
+            "value": 60.415
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 60.969
+            },
+            {
+              "year": 2016,
+              "value": 60.879
+            },
+            {
+              "year": 2017,
+              "value": 61.072
+            },
+            {
+              "year": 2018,
+              "value": 60.965
+            },
+            {
+              "year": 2019,
+              "value": 61.253
+            },
+            {
+              "year": 2020,
+              "value": 59.379
+            },
+            {
+              "year": 2021,
+              "value": 60.634
+            },
+            {
+              "year": 2022,
+              "value": 61.049
+            },
+            {
+              "year": 2023,
+              "value": 61.134
+            },
+            {
+              "year": 2024,
+              "value": 60.415
+            },
+            {
+              "year": 2025,
+              "value": 60.204
+            }
+          ]
+        },
+        "AUS": {
+          "year": 2025,
+          "value": 62.513,
+          "previous": {
+            "year": 2024,
+            "value": 62.647
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 59.151
+            },
+            {
+              "year": 2016,
+              "value": 59.381
+            },
+            {
+              "year": 2017,
+              "value": 59.877
+            },
+            {
+              "year": 2018,
+              "value": 60.628
+            },
+            {
+              "year": 2019,
+              "value": 61.031
+            },
+            {
+              "year": 2020,
+              "value": 60.136
+            },
+            {
+              "year": 2021,
+              "value": 61.516
+            },
+            {
+              "year": 2022,
+              "value": 62.524
+            },
+            {
+              "year": 2023,
+              "value": 62.576
+            },
+            {
+              "year": 2024,
+              "value": 62.647
+            },
+            {
+              "year": 2025,
+              "value": 62.513
+            }
+          ]
+        },
+        "IND": {
+          "year": 2025,
+          "value": 32.425,
+          "previous": {
+            "year": 2024,
+            "value": 32.415
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 26.582
+            },
+            {
+              "year": 2016,
+              "value": 26.575
+            },
+            {
+              "year": 2017,
+              "value": 26.578
+            },
+            {
+              "year": 2018,
+              "value": 26.568
+            },
+            {
+              "year": 2019,
+              "value": 26.539
+            },
+            {
+              "year": 2020,
+              "value": 25.998
+            },
+            {
+              "year": 2021,
+              "value": 27.724
+            },
+            {
+              "year": 2022,
+              "value": 29.348
+            },
+            {
+              "year": 2023,
+              "value": 30.984
+            },
+            {
+              "year": 2024,
+              "value": 32.415
+            },
+            {
+              "year": 2025,
+              "value": 32.425
+            }
+          ]
+        },
+        "BRA": {
+          "year": 2025,
+          "value": 53.411,
+          "previous": {
+            "year": 2024,
+            "value": 53.576
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 53.323
+            },
+            {
+              "year": 2016,
+              "value": 53.522
+            },
+            {
+              "year": 2017,
+              "value": 54.353
+            },
+            {
+              "year": 2018,
+              "value": 54.581
+            },
+            {
+              "year": 2019,
+              "value": 55.306
+            },
+            {
+              "year": 2020,
+              "value": 50.338
+            },
+            {
+              "year": 2021,
+              "value": 52.482
+            },
+            {
+              "year": 2022,
+              "value": 53.864
+            },
+            {
+              "year": 2023,
+              "value": 53.205
+            },
+            {
+              "year": 2024,
+              "value": 53.576
+            },
+            {
+              "year": 2025,
+              "value": 53.411
+            }
+          ]
+        },
+        "SGP": {
+          "year": 2025,
+          "value": 63.569,
+          "previous": {
+            "year": 2024,
+            "value": 63.136
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 61.305
+            },
+            {
+              "year": 2016,
+              "value": 61.313
+            },
+            {
+              "year": 2017,
+              "value": 60.807
+            },
+            {
+              "year": 2018,
+              "value": 60.889
+            },
+            {
+              "year": 2019,
+              "value": 61.822
+            },
+            {
+              "year": 2020,
+              "value": 61.72
+            },
+            {
+              "year": 2021,
+              "value": 64.409
+            },
+            {
+              "year": 2022,
+              "value": 62.921
+            },
+            {
+              "year": 2023,
+              "value": 63.299
+            },
+            {
+              "year": 2024,
+              "value": 63.136
+            },
+            {
+              "year": 2025,
+              "value": 63.569
+            }
+          ]
+        },
+        "IDN": {
+          "year": 2025,
+          "value": 53.72,
+          "previous": {
+            "year": 2024,
+            "value": 53.588
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 50.772
+            },
+            {
+              "year": 2016,
+              "value": 50.949
+            },
+            {
+              "year": 2017,
+              "value": 51.943
+            },
+            {
+              "year": 2018,
+              "value": 53.131
+            },
+            {
+              "year": 2019,
+              "value": 53.949
+            },
+            {
+              "year": 2020,
+              "value": 53.203
+            },
+            {
+              "year": 2021,
+              "value": 52.069
+            },
+            {
+              "year": 2022,
+              "value": 52.562
+            },
+            {
+              "year": 2023,
+              "value": 53.487
+            },
+            {
+              "year": 2024,
+              "value": 53.588
+            },
+            {
+              "year": 2025,
+              "value": 53.72
+            }
+          ]
+        },
+        "VNM": {
+          "year": 2025,
+          "value": 68.551,
+          "previous": {
+            "year": 2024,
+            "value": 68.905
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 72.863
+            },
+            {
+              "year": 2016,
+              "value": 72.53
+            },
+            {
+              "year": 2017,
+              "value": 72.575
+            },
+            {
+              "year": 2018,
+              "value": 72.897
+            },
+            {
+              "year": 2019,
+              "value": 71.511
+            },
+            {
+              "year": 2020,
+              "value": 69.095
+            },
+            {
+              "year": 2021,
+              "value": 69.107
+            },
+            {
+              "year": 2022,
+              "value": 69.878
+            },
+            {
+              "year": 2023,
+              "value": 69.215
+            },
+            {
+              "year": 2024,
+              "value": 68.905
+            },
+            {
+              "year": 2025,
+              "value": 68.551
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -1573,7 +9313,9 @@ export const indicatorSnapshot = {
           "year": 2025,
           "value": 56.782
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "youth-unemployment": {
       "countries": {
@@ -1583,7 +9325,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 6.434
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 9.899
+            },
+            {
+              "year": 2016,
+              "value": 10.145
+            },
+            {
+              "year": 2017,
+              "value": 9.781
+            },
+            {
+              "year": 2018,
+              "value": 10.12
+            },
+            {
+              "year": 2019,
+              "value": 9.827
+            },
+            {
+              "year": 2020,
+              "value": 10.143
+            },
+            {
+              "year": 2021,
+              "value": 8.055
+            },
+            {
+              "year": 2022,
+              "value": 6.638
+            },
+            {
+              "year": 2023,
+              "value": 5.405
+            },
+            {
+              "year": 2024,
+              "value": 6.434
+            },
+            {
+              "year": 2025,
+              "value": 6.695
+            }
+          ]
         },
         "WLD": {
           "year": 2025,
@@ -1591,7 +9379,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 13.3003
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 15.9582
+            },
+            {
+              "year": 2016,
+              "value": 16.0428
+            },
+            {
+              "year": 2017,
+              "value": 16.0758
+            },
+            {
+              "year": 2018,
+              "value": 15.8904
+            },
+            {
+              "year": 2019,
+              "value": 15.2545
+            },
+            {
+              "year": 2020,
+              "value": 17.0992
+            },
+            {
+              "year": 2021,
+              "value": 15.6616
+            },
+            {
+              "year": 2022,
+              "value": 14.1343
+            },
+            {
+              "year": 2023,
+              "value": 13.3669
+            },
+            {
+              "year": 2024,
+              "value": 13.3003
+            },
+            {
+              "year": 2025,
+              "value": 13.4088
+            }
+          ]
         },
         "USA": {
           "year": 2025,
@@ -1599,7 +9433,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 8.92
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 11.634
+            },
+            {
+              "year": 2016,
+              "value": 10.432
+            },
+            {
+              "year": 2017,
+              "value": 9.238
+            },
+            {
+              "year": 2018,
+              "value": 8.607
+            },
+            {
+              "year": 2019,
+              "value": 8.375
+            },
+            {
+              "year": 2020,
+              "value": 14.891
+            },
+            {
+              "year": 2021,
+              "value": 9.704
+            },
+            {
+              "year": 2022,
+              "value": 8.105
+            },
+            {
+              "year": 2023,
+              "value": 7.953
+            },
+            {
+              "year": 2024,
+              "value": 8.92
+            },
+            {
+              "year": 2025,
+              "value": 9.34
+            }
+          ]
         },
         "JPN": {
           "year": 2025,
@@ -1607,7 +9487,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 3.93
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 5.471
+            },
+            {
+              "year": 2016,
+              "value": 5.12
+            },
+            {
+              "year": 2017,
+              "value": 4.611
+            },
+            {
+              "year": 2018,
+              "value": 3.668
+            },
+            {
+              "year": 2019,
+              "value": 3.938
+            },
+            {
+              "year": 2020,
+              "value": 4.679
+            },
+            {
+              "year": 2021,
+              "value": 4.707
+            },
+            {
+              "year": 2022,
+              "value": 4.434
+            },
+            {
+              "year": 2023,
+              "value": 4.116
+            },
+            {
+              "year": 2024,
+              "value": 3.93
+            },
+            {
+              "year": 2025,
+              "value": 3.898
+            }
+          ]
         },
         "CHN": {
           "year": 2025,
@@ -1615,7 +9541,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 15.044
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 10.68
+            },
+            {
+              "year": 2016,
+              "value": 10.574
+            },
+            {
+              "year": 2017,
+              "value": 10.431
+            },
+            {
+              "year": 2018,
+              "value": 9.674
+            },
+            {
+              "year": 2019,
+              "value": 10.681
+            },
+            {
+              "year": 2020,
+              "value": 12.65
+            },
+            {
+              "year": 2021,
+              "value": 12.404
+            },
+            {
+              "year": 2022,
+              "value": 14.673
+            },
+            {
+              "year": 2023,
+              "value": 15.562
+            },
+            {
+              "year": 2024,
+              "value": 15.044
+            },
+            {
+              "year": 2025,
+              "value": 15.795
+            }
+          ]
         },
         "DEU": {
           "year": 2025,
@@ -1623,7 +9595,539 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 6.604
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 7.328
+            },
+            {
+              "year": 2016,
+              "value": 7.079
+            },
+            {
+              "year": 2017,
+              "value": 6.77
+            },
+            {
+              "year": 2018,
+              "value": 6.22
+            },
+            {
+              "year": 2019,
+              "value": 5.859
+            },
+            {
+              "year": 2020,
+              "value": 7.862
+            },
+            {
+              "year": 2021,
+              "value": 6.665
+            },
+            {
+              "year": 2022,
+              "value": 6.049
+            },
+            {
+              "year": 2023,
+              "value": 6.02
+            },
+            {
+              "year": 2024,
+              "value": 6.604
+            },
+            {
+              "year": 2025,
+              "value": 6.862
+            }
+          ]
+        },
+        "GBR": {
+          "year": 2025,
+          "value": 14.647,
+          "previous": {
+            "year": 2024,
+            "value": 14.316
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 15.177
+            },
+            {
+              "year": 2016,
+              "value": 13.205
+            },
+            {
+              "year": 2017,
+              "value": 12.519
+            },
+            {
+              "year": 2018,
+              "value": 11.647
+            },
+            {
+              "year": 2019,
+              "value": 10.688
+            },
+            {
+              "year": 2020,
+              "value": 13.365
+            },
+            {
+              "year": 2021,
+              "value": 12.891
+            },
+            {
+              "year": 2022,
+              "value": 10.589
+            },
+            {
+              "year": 2023,
+              "value": 11.944
+            },
+            {
+              "year": 2024,
+              "value": 14.316
+            },
+            {
+              "year": 2025,
+              "value": 14.647
+            }
+          ]
+        },
+        "FRA": {
+          "year": 2025,
+          "value": 18.89,
+          "previous": {
+            "year": 2024,
+            "value": 18.603
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 25.262
+            },
+            {
+              "year": 2016,
+              "value": 24.938
+            },
+            {
+              "year": 2017,
+              "value": 22.572
+            },
+            {
+              "year": 2018,
+              "value": 20.953
+            },
+            {
+              "year": 2019,
+              "value": 19.929
+            },
+            {
+              "year": 2020,
+              "value": 20.398
+            },
+            {
+              "year": 2021,
+              "value": 19.252
+            },
+            {
+              "year": 2022,
+              "value": 17.856
+            },
+            {
+              "year": 2023,
+              "value": 17.419
+            },
+            {
+              "year": 2024,
+              "value": 18.603
+            },
+            {
+              "year": 2025,
+              "value": 18.89
+            }
+          ]
+        },
+        "CAN": {
+          "year": 2025,
+          "value": 13.8,
+          "previous": {
+            "year": 2024,
+            "value": 13.276
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 12.759
+            },
+            {
+              "year": 2016,
+              "value": 12.597
+            },
+            {
+              "year": 2017,
+              "value": 11.236
+            },
+            {
+              "year": 2018,
+              "value": 10.709
+            },
+            {
+              "year": 2019,
+              "value": 10.744
+            },
+            {
+              "year": 2020,
+              "value": 20.125
+            },
+            {
+              "year": 2021,
+              "value": 13.557
+            },
+            {
+              "year": 2022,
+              "value": 10.082
+            },
+            {
+              "year": 2023,
+              "value": 10.806
+            },
+            {
+              "year": 2024,
+              "value": 13.276
+            },
+            {
+              "year": 2025,
+              "value": 13.8
+            }
+          ]
+        },
+        "AUS": {
+          "year": 2025,
+          "value": 9.61,
+          "previous": {
+            "year": 2024,
+            "value": 9.408
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 13.11
+            },
+            {
+              "year": 2016,
+              "value": 12.642
+            },
+            {
+              "year": 2017,
+              "value": 12.592
+            },
+            {
+              "year": 2018,
+              "value": 11.935
+            },
+            {
+              "year": 2019,
+              "value": 11.452
+            },
+            {
+              "year": 2020,
+              "value": 14.142
+            },
+            {
+              "year": 2021,
+              "value": 11.134
+            },
+            {
+              "year": 2022,
+              "value": 8.468
+            },
+            {
+              "year": 2023,
+              "value": 8.388
+            },
+            {
+              "year": 2024,
+              "value": 9.408
+            },
+            {
+              "year": 2025,
+              "value": 9.61
+            }
+          ]
+        },
+        "IND": {
+          "year": 2025,
+          "value": 16.022,
+          "previous": {
+            "year": 2024,
+            "value": 15.746
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 24.959
+            },
+            {
+              "year": 2016,
+              "value": 25.23
+            },
+            {
+              "year": 2017,
+              "value": 25.591
+            },
+            {
+              "year": 2018,
+              "value": 26.003
+            },
+            {
+              "year": 2019,
+              "value": 22.947
+            },
+            {
+              "year": 2020,
+              "value": 24.666
+            },
+            {
+              "year": 2021,
+              "value": 20.824
+            },
+            {
+              "year": 2022,
+              "value": 17.732
+            },
+            {
+              "year": 2023,
+              "value": 15.595
+            },
+            {
+              "year": 2024,
+              "value": 15.746
+            },
+            {
+              "year": 2025,
+              "value": 16.022
+            }
+          ]
+        },
+        "BRA": {
+          "year": 2025,
+          "value": 13.981,
+          "previous": {
+            "year": 2024,
+            "value": 15.674
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 19.493
+            },
+            {
+              "year": 2016,
+              "value": 26.596
+            },
+            {
+              "year": 2017,
+              "value": 28.593
+            },
+            {
+              "year": 2018,
+              "value": 27.958
+            },
+            {
+              "year": 2019,
+              "value": 27.098
+            },
+            {
+              "year": 2020,
+              "value": 30.267
+            },
+            {
+              "year": 2021,
+              "value": 28.311
+            },
+            {
+              "year": 2022,
+              "value": 20.732
+            },
+            {
+              "year": 2023,
+              "value": 17.938
+            },
+            {
+              "year": 2024,
+              "value": 15.674
+            },
+            {
+              "year": 2025,
+              "value": 13.981
+            }
+          ]
+        },
+        "SGP": {
+          "year": 2025,
+          "value": 6.781,
+          "previous": {
+            "year": 2024,
+            "value": 6.329
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 8.894
+            },
+            {
+              "year": 2016,
+              "value": 8.723
+            },
+            {
+              "year": 2017,
+              "value": 9.338
+            },
+            {
+              "year": 2018,
+              "value": 8.437
+            },
+            {
+              "year": 2019,
+              "value": 7.629
+            },
+            {
+              "year": 2020,
+              "value": 10.558
+            },
+            {
+              "year": 2021,
+              "value": 9.499
+            },
+            {
+              "year": 2022,
+              "value": 7.924
+            },
+            {
+              "year": 2023,
+              "value": 8.515
+            },
+            {
+              "year": 2024,
+              "value": 6.329
+            },
+            {
+              "year": 2025,
+              "value": 6.781
+            }
+          ]
+        },
+        "IDN": {
+          "year": 2025,
+          "value": 12.977,
+          "previous": {
+            "year": 2024,
+            "value": 13.075
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 17.224
+            },
+            {
+              "year": 2016,
+              "value": 15.997
+            },
+            {
+              "year": 2017,
+              "value": 14.553
+            },
+            {
+              "year": 2018,
+              "value": 16.369
+            },
+            {
+              "year": 2019,
+              "value": 13.577
+            },
+            {
+              "year": 2020,
+              "value": 14.773
+            },
+            {
+              "year": 2021,
+              "value": 13.8
+            },
+            {
+              "year": 2022,
+              "value": 14.054
+            },
+            {
+              "year": 2023,
+              "value": 13.015
+            },
+            {
+              "year": 2024,
+              "value": 13.075
+            },
+            {
+              "year": 2025,
+              "value": 12.977
+            }
+          ]
+        },
+        "VNM": {
+          "year": 2025,
+          "value": 6.165,
+          "previous": {
+            "year": 2024,
+            "value": 6.338
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 6.267
+            },
+            {
+              "year": 2016,
+              "value": 6.763
+            },
+            {
+              "year": 2017,
+              "value": 7.124
+            },
+            {
+              "year": 2018,
+              "value": 4.648
+            },
+            {
+              "year": 2019,
+              "value": 5.624
+            },
+            {
+              "year": 2020,
+              "value": 6.546
+            },
+            {
+              "year": 2021,
+              "value": 6.903
+            },
+            {
+              "year": 2022,
+              "value": 6.097
+            },
+            {
+              "year": 2023,
+              "value": 6.441
+            },
+            {
+              "year": 2024,
+              "value": 6.338
+            },
+            {
+              "year": 2025,
+              "value": 6.165
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -1671,7 +10175,9 @@ export const indicatorSnapshot = {
           "year": 2025,
           "value": 6.695
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "health-spending": {
       "countries": {
@@ -1681,7 +10187,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 8.5651
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 6.462
+            },
+            {
+              "year": 2016,
+              "value": 6.6357
+            },
+            {
+              "year": 2017,
+              "value": 6.7983
+            },
+            {
+              "year": 2018,
+              "value": 7.1422
+            },
+            {
+              "year": 2019,
+              "value": 7.694
+            },
+            {
+              "year": 2020,
+              "value": 8.0272
+            },
+            {
+              "year": 2021,
+              "value": 8.3441
+            },
+            {
+              "year": 2022,
+              "value": 8.8595
+            },
+            {
+              "year": 2023,
+              "value": 8.5651
+            },
+            {
+              "year": 2024,
+              "value": 8.6766
+            }
+          ]
         },
         "WLD": {
           "year": 2023,
@@ -1689,7 +10237,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 10.0058
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 9.665
+            },
+            {
+              "year": 2016,
+              "value": 9.786
+            },
+            {
+              "year": 2017,
+              "value": 9.6657
+            },
+            {
+              "year": 2018,
+              "value": 9.5753
+            },
+            {
+              "year": 2019,
+              "value": 9.6908
+            },
+            {
+              "year": 2020,
+              "value": 10.7456
+            },
+            {
+              "year": 2021,
+              "value": 10.293
+            },
+            {
+              "year": 2022,
+              "value": 10.0058
+            },
+            {
+              "year": 2023,
+              "value": 10.0604
+            }
+          ]
         },
         "USA": {
           "year": 2023,
@@ -1697,7 +10283,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 16.5288
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 16.4016
+            },
+            {
+              "year": 2016,
+              "value": 16.692
+            },
+            {
+              "year": 2017,
+              "value": 16.6383
+            },
+            {
+              "year": 2018,
+              "value": 16.5131
+            },
+            {
+              "year": 2019,
+              "value": 16.5449
+            },
+            {
+              "year": 2020,
+              "value": 18.516
+            },
+            {
+              "year": 2021,
+              "value": 17.3521
+            },
+            {
+              "year": 2022,
+              "value": 16.5288
+            },
+            {
+              "year": 2023,
+              "value": 16.6941
+            }
+          ]
         },
         "JPN": {
           "year": 2023,
@@ -1705,7 +10329,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 12.3228
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 10.7497
+            },
+            {
+              "year": 2016,
+              "value": 10.6589
+            },
+            {
+              "year": 2017,
+              "value": 10.6563
+            },
+            {
+              "year": 2018,
+              "value": 10.7399
+            },
+            {
+              "year": 2019,
+              "value": 10.97
+            },
+            {
+              "year": 2020,
+              "value": 11.4497
+            },
+            {
+              "year": 2021,
+              "value": 12.0811
+            },
+            {
+              "year": 2022,
+              "value": 12.3228
+            },
+            {
+              "year": 2023,
+              "value": 10.7398
+            }
+          ]
         },
         "CHN": {
           "year": 2023,
@@ -1713,7 +10375,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 5.8808
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 4.8537
+            },
+            {
+              "year": 2016,
+              "value": 4.8834
+            },
+            {
+              "year": 2017,
+              "value": 4.9695
+            },
+            {
+              "year": 2018,
+              "value": 5.0693
+            },
+            {
+              "year": 2019,
+              "value": 5.2652
+            },
+            {
+              "year": 2020,
+              "value": 5.5044
+            },
+            {
+              "year": 2021,
+              "value": 5.2559
+            },
+            {
+              "year": 2022,
+              "value": 5.8808
+            },
+            {
+              "year": 2023,
+              "value": 5.9439
+            }
+          ]
         },
         "DEU": {
           "year": 2024,
@@ -1721,7 +10421,475 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 11.7443
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 10.9232
+            },
+            {
+              "year": 2016,
+              "value": 10.9713
+            },
+            {
+              "year": 2017,
+              "value": 11.0509
+            },
+            {
+              "year": 2018,
+              "value": 11.1838
+            },
+            {
+              "year": 2019,
+              "value": 11.4281
+            },
+            {
+              "year": 2020,
+              "value": 12.4678
+            },
+            {
+              "year": 2021,
+              "value": 12.724
+            },
+            {
+              "year": 2022,
+              "value": 12.4471
+            },
+            {
+              "year": 2023,
+              "value": 11.7443
+            },
+            {
+              "year": 2024,
+              "value": 12.2666
+            }
+          ]
+        },
+        "GBR": {
+          "year": 2024,
+          "value": 11.1334,
+          "previous": {
+            "year": 2023,
+            "value": 10.9913
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 9.9404
+            },
+            {
+              "year": 2016,
+              "value": 9.8709
+            },
+            {
+              "year": 2017,
+              "value": 9.7047
+            },
+            {
+              "year": 2018,
+              "value": 9.795
+            },
+            {
+              "year": 2019,
+              "value": 9.9795
+            },
+            {
+              "year": 2020,
+              "value": 12.1039
+            },
+            {
+              "year": 2021,
+              "value": 12.0835
+            },
+            {
+              "year": 2022,
+              "value": 11.0968
+            },
+            {
+              "year": 2023,
+              "value": 10.9913
+            },
+            {
+              "year": 2024,
+              "value": 11.1334
+            }
+          ]
+        },
+        "FRA": {
+          "year": 2024,
+          "value": 11.5353,
+          "previous": {
+            "year": 2023,
+            "value": 11.5197
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 11.5003
+            },
+            {
+              "year": 2016,
+              "value": 11.5704
+            },
+            {
+              "year": 2017,
+              "value": 11.4494
+            },
+            {
+              "year": 2018,
+              "value": 11.3085
+            },
+            {
+              "year": 2019,
+              "value": 11.1706
+            },
+            {
+              "year": 2020,
+              "value": 12.1295
+            },
+            {
+              "year": 2021,
+              "value": 12.2489
+            },
+            {
+              "year": 2022,
+              "value": 11.8289
+            },
+            {
+              "year": 2023,
+              "value": 11.5197
+            },
+            {
+              "year": 2024,
+              "value": 11.5353
+            }
+          ]
+        },
+        "CAN": {
+          "year": 2024,
+          "value": 11.3096,
+          "previous": {
+            "year": 2023,
+            "value": 11.1869
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 10.764
+            },
+            {
+              "year": 2016,
+              "value": 11.0563
+            },
+            {
+              "year": 2017,
+              "value": 10.9242
+            },
+            {
+              "year": 2018,
+              "value": 10.9226
+            },
+            {
+              "year": 2019,
+              "value": 11.0482
+            },
+            {
+              "year": 2020,
+              "value": 13.0173
+            },
+            {
+              "year": 2021,
+              "value": 12.3811
+            },
+            {
+              "year": 2022,
+              "value": 11.0812
+            },
+            {
+              "year": 2023,
+              "value": 11.1869
+            },
+            {
+              "year": 2024,
+              "value": 11.3096
+            }
+          ]
+        },
+        "AUS": {
+          "year": 2023,
+          "value": 10.3985,
+          "previous": {
+            "year": 2022,
+            "value": 9.8923
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 10.1364
+            },
+            {
+              "year": 2016,
+              "value": 10.0896
+            },
+            {
+              "year": 2017,
+              "value": 10.1088
+            },
+            {
+              "year": 2018,
+              "value": 10.0891
+            },
+            {
+              "year": 2019,
+              "value": 10.2542
+            },
+            {
+              "year": 2020,
+              "value": 10.7032
+            },
+            {
+              "year": 2021,
+              "value": 10.5161
+            },
+            {
+              "year": 2022,
+              "value": 9.8923
+            },
+            {
+              "year": 2023,
+              "value": 10.3985
+            }
+          ]
+        },
+        "IND": {
+          "year": 2023,
+          "value": 3.3394,
+          "previous": {
+            "year": 2022,
+            "value": 3.3962
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3.5957
+            },
+            {
+              "year": 2016,
+              "value": 3.5043
+            },
+            {
+              "year": 2017,
+              "value": 2.936
+            },
+            {
+              "year": 2018,
+              "value": 2.8585
+            },
+            {
+              "year": 2019,
+              "value": 2.953
+            },
+            {
+              "year": 2020,
+              "value": 3.3415
+            },
+            {
+              "year": 2021,
+              "value": 3.3468
+            },
+            {
+              "year": 2022,
+              "value": 3.3962
+            },
+            {
+              "year": 2023,
+              "value": 3.3394
+            }
+          ]
+        },
+        "BRA": {
+          "year": 2023,
+          "value": 9.7309,
+          "previous": {
+            "year": 2022,
+            "value": 9.3874
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 8.9093
+            },
+            {
+              "year": 2016,
+              "value": 9.169
+            },
+            {
+              "year": 2017,
+              "value": 9.4713
+            },
+            {
+              "year": 2018,
+              "value": 9.4648
+            },
+            {
+              "year": 2019,
+              "value": 9.6145
+            },
+            {
+              "year": 2020,
+              "value": 9.6233
+            },
+            {
+              "year": 2021,
+              "value": 9.6365
+            },
+            {
+              "year": 2022,
+              "value": 9.3874
+            },
+            {
+              "year": 2023,
+              "value": 9.7309
+            }
+          ]
+        },
+        "SGP": {
+          "year": 2023,
+          "value": 4.4916,
+          "previous": {
+            "year": 2022,
+            "value": 4.3312
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 4.1806
+            },
+            {
+              "year": 2016,
+              "value": 4.3799
+            },
+            {
+              "year": 2017,
+              "value": 4.3598
+            },
+            {
+              "year": 2018,
+              "value": 4.0728
+            },
+            {
+              "year": 2019,
+              "value": 4.4075
+            },
+            {
+              "year": 2020,
+              "value": 5.7002
+            },
+            {
+              "year": 2021,
+              "value": 5.146
+            },
+            {
+              "year": 2022,
+              "value": 4.3312
+            },
+            {
+              "year": 2023,
+              "value": 4.4916
+            }
+          ]
+        },
+        "IDN": {
+          "year": 2023,
+          "value": 2.7024,
+          "previous": {
+            "year": 2022,
+            "value": 2.6939
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.9243
+            },
+            {
+              "year": 2016,
+              "value": 3.0215
+            },
+            {
+              "year": 2017,
+              "value": 2.9042
+            },
+            {
+              "year": 2018,
+              "value": 2.8676
+            },
+            {
+              "year": 2019,
+              "value": 2.8786
+            },
+            {
+              "year": 2020,
+              "value": 3.4207
+            },
+            {
+              "year": 2021,
+              "value": 3.7063
+            },
+            {
+              "year": 2022,
+              "value": 2.6939
+            },
+            {
+              "year": 2023,
+              "value": 2.7024
+            }
+          ]
+        },
+        "VNM": {
+          "year": 2023,
+          "value": 4.5611,
+          "previous": {
+            "year": 2022,
+            "value": 4.5381
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 4.7114
+            },
+            {
+              "year": 2016,
+              "value": 4.8699
+            },
+            {
+              "year": 2017,
+              "value": 4.9901
+            },
+            {
+              "year": 2018,
+              "value": 5.0268
+            },
+            {
+              "year": 2019,
+              "value": 4.9741
+            },
+            {
+              "year": 2020,
+              "value": 4.3322
+            },
+            {
+              "year": 2021,
+              "value": 4.5379
+            },
+            {
+              "year": 2022,
+              "value": 4.5381
+            },
+            {
+              "year": 2023,
+              "value": 4.5611
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -1765,7 +10933,9 @@ export const indicatorSnapshot = {
           "year": 2024,
           "value": 8.6766
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "infant-mortality": {
       "countries": {
@@ -1775,7 +10945,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 2.4
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.9
+            },
+            {
+              "year": 2016,
+              "value": 2.8
+            },
+            {
+              "year": 2017,
+              "value": 2.7
+            },
+            {
+              "year": 2018,
+              "value": 2.6
+            },
+            {
+              "year": 2019,
+              "value": 2.6
+            },
+            {
+              "year": 2020,
+              "value": 2.5
+            },
+            {
+              "year": 2021,
+              "value": 2.5
+            },
+            {
+              "year": 2022,
+              "value": 2.4
+            },
+            {
+              "year": 2023,
+              "value": 2.4
+            },
+            {
+              "year": 2024,
+              "value": 2.3
+            }
+          ]
         },
         "WLD": {
           "year": 2024,
@@ -1783,7 +10995,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 28.4
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 31.5
+            },
+            {
+              "year": 2016,
+              "value": 30.6
+            },
+            {
+              "year": 2017,
+              "value": 30
+            },
+            {
+              "year": 2018,
+              "value": 29.6
+            },
+            {
+              "year": 2019,
+              "value": 29.2
+            },
+            {
+              "year": 2020,
+              "value": 29.1
+            },
+            {
+              "year": 2021,
+              "value": 29.3
+            },
+            {
+              "year": 2022,
+              "value": 29.3
+            },
+            {
+              "year": 2023,
+              "value": 28.4
+            },
+            {
+              "year": 2024,
+              "value": 27.7
+            }
+          ]
         },
         "USA": {
           "year": 2024,
@@ -1791,7 +11045,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 5.5
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 5.8
+            },
+            {
+              "year": 2016,
+              "value": 5.7
+            },
+            {
+              "year": 2017,
+              "value": 5.6
+            },
+            {
+              "year": 2018,
+              "value": 5.6
+            },
+            {
+              "year": 2019,
+              "value": 5.5
+            },
+            {
+              "year": 2020,
+              "value": 5.5
+            },
+            {
+              "year": 2021,
+              "value": 5.5
+            },
+            {
+              "year": 2022,
+              "value": 5.5
+            },
+            {
+              "year": 2023,
+              "value": 5.5
+            },
+            {
+              "year": 2024,
+              "value": 5.5
+            }
+          ]
         },
         "JPN": {
           "year": 2024,
@@ -1799,7 +11095,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 1.8
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2
+            },
+            {
+              "year": 2016,
+              "value": 2
+            },
+            {
+              "year": 2017,
+              "value": 1.9
+            },
+            {
+              "year": 2018,
+              "value": 1.9
+            },
+            {
+              "year": 2019,
+              "value": 1.8
+            },
+            {
+              "year": 2020,
+              "value": 1.8
+            },
+            {
+              "year": 2021,
+              "value": 1.8
+            },
+            {
+              "year": 2022,
+              "value": 1.8
+            },
+            {
+              "year": 2023,
+              "value": 1.8
+            },
+            {
+              "year": 2024,
+              "value": 1.8
+            }
+          ]
         },
         "CHN": {
           "year": 2024,
@@ -1807,7 +11145,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 4.4
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 8.2
+            },
+            {
+              "year": 2016,
+              "value": 7.6
+            },
+            {
+              "year": 2017,
+              "value": 7
+            },
+            {
+              "year": 2018,
+              "value": 6.4
+            },
+            {
+              "year": 2019,
+              "value": 6
+            },
+            {
+              "year": 2020,
+              "value": 5.5
+            },
+            {
+              "year": 2021,
+              "value": 5.1
+            },
+            {
+              "year": 2022,
+              "value": 4.8
+            },
+            {
+              "year": 2023,
+              "value": 4.4
+            },
+            {
+              "year": 2024,
+              "value": 4.1
+            }
+          ]
         },
         "DEU": {
           "year": 2024,
@@ -1815,7 +11195,499 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 3.1
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3.3
+            },
+            {
+              "year": 2016,
+              "value": 3.3
+            },
+            {
+              "year": 2017,
+              "value": 3.2
+            },
+            {
+              "year": 2018,
+              "value": 3.2
+            },
+            {
+              "year": 2019,
+              "value": 3.1
+            },
+            {
+              "year": 2020,
+              "value": 3.1
+            },
+            {
+              "year": 2021,
+              "value": 3.1
+            },
+            {
+              "year": 2022,
+              "value": 3.1
+            },
+            {
+              "year": 2023,
+              "value": 3.1
+            },
+            {
+              "year": 2024,
+              "value": 3.1
+            }
+          ]
+        },
+        "GBR": {
+          "year": 2024,
+          "value": 4.1,
+          "previous": {
+            "year": 2023,
+            "value": 4.1
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3.9
+            },
+            {
+              "year": 2016,
+              "value": 3.8
+            },
+            {
+              "year": 2017,
+              "value": 3.8
+            },
+            {
+              "year": 2018,
+              "value": 3.8
+            },
+            {
+              "year": 2019,
+              "value": 3.8
+            },
+            {
+              "year": 2020,
+              "value": 3.9
+            },
+            {
+              "year": 2021,
+              "value": 3.9
+            },
+            {
+              "year": 2022,
+              "value": 4
+            },
+            {
+              "year": 2023,
+              "value": 4.1
+            },
+            {
+              "year": 2024,
+              "value": 4.1
+            }
+          ]
+        },
+        "FRA": {
+          "year": 2024,
+          "value": 3.4,
+          "previous": {
+            "year": 2023,
+            "value": 3.4
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3.2
+            },
+            {
+              "year": 2016,
+              "value": 3.2
+            },
+            {
+              "year": 2017,
+              "value": 3.3
+            },
+            {
+              "year": 2018,
+              "value": 3.3
+            },
+            {
+              "year": 2019,
+              "value": 3.3
+            },
+            {
+              "year": 2020,
+              "value": 3.3
+            },
+            {
+              "year": 2021,
+              "value": 3.4
+            },
+            {
+              "year": 2022,
+              "value": 3.4
+            },
+            {
+              "year": 2023,
+              "value": 3.4
+            },
+            {
+              "year": 2024,
+              "value": 3.4
+            }
+          ]
+        },
+        "CAN": {
+          "year": 2024,
+          "value": 4.7,
+          "previous": {
+            "year": 2023,
+            "value": 4.7
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 4.6
+            },
+            {
+              "year": 2016,
+              "value": 4.6
+            },
+            {
+              "year": 2017,
+              "value": 4.5
+            },
+            {
+              "year": 2018,
+              "value": 4.5
+            },
+            {
+              "year": 2019,
+              "value": 4.5
+            },
+            {
+              "year": 2020,
+              "value": 4.5
+            },
+            {
+              "year": 2021,
+              "value": 4.6
+            },
+            {
+              "year": 2022,
+              "value": 4.6
+            },
+            {
+              "year": 2023,
+              "value": 4.7
+            },
+            {
+              "year": 2024,
+              "value": 4.7
+            }
+          ]
+        },
+        "AUS": {
+          "year": 2024,
+          "value": 3.1,
+          "previous": {
+            "year": 2023,
+            "value": 3.1
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3.3
+            },
+            {
+              "year": 2016,
+              "value": 3.2
+            },
+            {
+              "year": 2017,
+              "value": 3.2
+            },
+            {
+              "year": 2018,
+              "value": 3.2
+            },
+            {
+              "year": 2019,
+              "value": 3.2
+            },
+            {
+              "year": 2020,
+              "value": 3.2
+            },
+            {
+              "year": 2021,
+              "value": 3.2
+            },
+            {
+              "year": 2022,
+              "value": 3.2
+            },
+            {
+              "year": 2023,
+              "value": 3.1
+            },
+            {
+              "year": 2024,
+              "value": 3.1
+            }
+          ]
+        },
+        "IND": {
+          "year": 2024,
+          "value": 23.3,
+          "previous": {
+            "year": 2023,
+            "value": 24.5
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 36.3
+            },
+            {
+              "year": 2016,
+              "value": 34.6
+            },
+            {
+              "year": 2017,
+              "value": 32.9
+            },
+            {
+              "year": 2018,
+              "value": 31.3
+            },
+            {
+              "year": 2019,
+              "value": 29.8
+            },
+            {
+              "year": 2020,
+              "value": 28.3
+            },
+            {
+              "year": 2021,
+              "value": 27
+            },
+            {
+              "year": 2022,
+              "value": 25.7
+            },
+            {
+              "year": 2023,
+              "value": 24.5
+            },
+            {
+              "year": 2024,
+              "value": 23.3
+            }
+          ]
+        },
+        "BRA": {
+          "year": 2024,
+          "value": 12.3,
+          "previous": {
+            "year": 2023,
+            "value": 12.4
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 13.7
+            },
+            {
+              "year": 2016,
+              "value": 14.6
+            },
+            {
+              "year": 2017,
+              "value": 13.3
+            },
+            {
+              "year": 2018,
+              "value": 13.1
+            },
+            {
+              "year": 2019,
+              "value": 12.9
+            },
+            {
+              "year": 2020,
+              "value": 12.8
+            },
+            {
+              "year": 2021,
+              "value": 12.7
+            },
+            {
+              "year": 2022,
+              "value": 12.6
+            },
+            {
+              "year": 2023,
+              "value": 12.4
+            },
+            {
+              "year": 2024,
+              "value": 12.3
+            }
+          ]
+        },
+        "SGP": {
+          "year": 2024,
+          "value": 2.2,
+          "previous": {
+            "year": 2023,
+            "value": 2.1
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.2
+            },
+            {
+              "year": 2016,
+              "value": 2.1
+            },
+            {
+              "year": 2017,
+              "value": 2.1
+            },
+            {
+              "year": 2018,
+              "value": 2
+            },
+            {
+              "year": 2019,
+              "value": 2
+            },
+            {
+              "year": 2020,
+              "value": 2
+            },
+            {
+              "year": 2021,
+              "value": 2
+            },
+            {
+              "year": 2022,
+              "value": 2
+            },
+            {
+              "year": 2023,
+              "value": 2.1
+            },
+            {
+              "year": 2024,
+              "value": 2.2
+            }
+          ]
+        },
+        "IDN": {
+          "year": 2024,
+          "value": 15.2,
+          "previous": {
+            "year": 2023,
+            "value": 15.7
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 21.9
+            },
+            {
+              "year": 2016,
+              "value": 21
+            },
+            {
+              "year": 2017,
+              "value": 20.1
+            },
+            {
+              "year": 2018,
+              "value": 19.3
+            },
+            {
+              "year": 2019,
+              "value": 18.5
+            },
+            {
+              "year": 2020,
+              "value": 17.7
+            },
+            {
+              "year": 2021,
+              "value": 17
+            },
+            {
+              "year": 2022,
+              "value": 16.3
+            },
+            {
+              "year": 2023,
+              "value": 15.7
+            },
+            {
+              "year": 2024,
+              "value": 15.2
+            }
+          ]
+        },
+        "VNM": {
+          "year": 2024,
+          "value": 12,
+          "previous": {
+            "year": 2023,
+            "value": 12.4
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 15.5
+            },
+            {
+              "year": 2016,
+              "value": 15.2
+            },
+            {
+              "year": 2017,
+              "value": 14.9
+            },
+            {
+              "year": 2018,
+              "value": 14.5
+            },
+            {
+              "year": 2019,
+              "value": 14.1
+            },
+            {
+              "year": 2020,
+              "value": 13.7
+            },
+            {
+              "year": 2021,
+              "value": 13.3
+            },
+            {
+              "year": 2022,
+              "value": 12.9
+            },
+            {
+              "year": 2023,
+              "value": 12.4
+            },
+            {
+              "year": 2024,
+              "value": 12
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -1859,7 +11731,9 @@ export const indicatorSnapshot = {
           "year": 2024,
           "value": 2.3
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "physicians": {
       "countries": {
@@ -1869,11 +11743,51 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2021,
             "value": 2.517
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.242
+            },
+            {
+              "year": 2016,
+              "value": 2.29
+            },
+            {
+              "year": 2017,
+              "value": 2.343
+            },
+            {
+              "year": 2018,
+              "value": 2.386
+            },
+            {
+              "year": 2019,
+              "value": 2.458
+            },
+            {
+              "year": 2020,
+              "value": 2.507
+            },
+            {
+              "year": 2021,
+              "value": 2.517
+            },
+            {
+              "year": 2022,
+              "value": 2.61
+            }
+          ]
         },
         "WLD": {
           "year": 2022,
-          "value": 1.8609
+          "value": 1.8609,
+          "history": [
+            {
+              "year": 2022,
+              "value": 1.8609
+            }
+          ]
         },
         "USA": {
           "year": 2022,
@@ -1881,7 +11795,29 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2021,
             "value": 3.575
-          }
+          },
+          "history": [
+            {
+              "year": 2018,
+              "value": 2.548
+            },
+            {
+              "year": 2019,
+              "value": 3.482
+            },
+            {
+              "year": 2020,
+              "value": 3.518
+            },
+            {
+              "year": 2021,
+              "value": 3.575
+            },
+            {
+              "year": 2022,
+              "value": 3.681
+            }
+          ]
         },
         "JPN": {
           "year": 2022,
@@ -1889,7 +11825,25 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 2.592
-          }
+          },
+          "history": [
+            {
+              "year": 2016,
+              "value": 2.423
+            },
+            {
+              "year": 2018,
+              "value": 2.485
+            },
+            {
+              "year": 2020,
+              "value": 2.592
+            },
+            {
+              "year": 2022,
+              "value": 2.649
+            }
+          ]
         },
         "CHN": {
           "year": 2022,
@@ -1897,7 +11851,41 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2021,
             "value": 2.517
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.797
+            },
+            {
+              "year": 2016,
+              "value": 1.888
+            },
+            {
+              "year": 2017,
+              "value": 2.003
+            },
+            {
+              "year": 2018,
+              "value": 2.122
+            },
+            {
+              "year": 2019,
+              "value": 2.255
+            },
+            {
+              "year": 2020,
+              "value": 2.385
+            },
+            {
+              "year": 2021,
+              "value": 2.517
+            },
+            {
+              "year": 2022,
+              "value": 3.112
+            }
+          ]
         },
         "DEU": {
           "year": 2022,
@@ -1905,7 +11893,395 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2021,
             "value": 4.503
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 4.12
+            },
+            {
+              "year": 2016,
+              "value": 4.166
+            },
+            {
+              "year": 2017,
+              "value": 4.226
+            },
+            {
+              "year": 2018,
+              "value": 4.287
+            },
+            {
+              "year": 2019,
+              "value": 4.373
+            },
+            {
+              "year": 2020,
+              "value": 4.443
+            },
+            {
+              "year": 2021,
+              "value": 4.503
+            },
+            {
+              "year": 2022,
+              "value": 4.534
+            }
+          ]
+        },
+        "GBR": {
+          "year": 2023,
+          "value": 3.301,
+          "previous": {
+            "year": 2022,
+            "value": 3.143
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.767
+            },
+            {
+              "year": 2016,
+              "value": 2.773
+            },
+            {
+              "year": 2017,
+              "value": 2.802
+            },
+            {
+              "year": 2018,
+              "value": 2.828
+            },
+            {
+              "year": 2019,
+              "value": 2.932
+            },
+            {
+              "year": 2020,
+              "value": 3.028
+            },
+            {
+              "year": 2021,
+              "value": 3.16
+            },
+            {
+              "year": 2022,
+              "value": 3.143
+            },
+            {
+              "year": 2023,
+              "value": 3.301
+            }
+          ]
+        },
+        "FRA": {
+          "year": 2022,
+          "value": 3.281,
+          "previous": {
+            "year": 2021,
+            "value": 3.264
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3.184
+            },
+            {
+              "year": 2016,
+              "value": 3.2
+            },
+            {
+              "year": 2017,
+              "value": 3.217
+            },
+            {
+              "year": 2018,
+              "value": 3.214
+            },
+            {
+              "year": 2019,
+              "value": 3.243
+            },
+            {
+              "year": 2020,
+              "value": 3.252
+            },
+            {
+              "year": 2021,
+              "value": 3.264
+            },
+            {
+              "year": 2022,
+              "value": 3.281
+            }
+          ]
+        },
+        "CAN": {
+          "year": 2023,
+          "value": 2.819,
+          "previous": {
+            "year": 2022,
+            "value": 2.814
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.5388
+            },
+            {
+              "year": 2016,
+              "value": 2.3105
+            },
+            {
+              "year": 2017,
+              "value": 2.6102
+            },
+            {
+              "year": 2018,
+              "value": 2.411
+            },
+            {
+              "year": 2019,
+              "value": 2.418
+            },
+            {
+              "year": 2020,
+              "value": 2.415
+            },
+            {
+              "year": 2021,
+              "value": 2.444
+            },
+            {
+              "year": 2022,
+              "value": 2.814
+            },
+            {
+              "year": 2023,
+              "value": 2.819
+            }
+          ]
+        },
+        "AUS": {
+          "year": 2022,
+          "value": 4.086,
+          "previous": {
+            "year": 2021,
+            "value": 3.976
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3.486
+            },
+            {
+              "year": 2016,
+              "value": 3.557
+            },
+            {
+              "year": 2017,
+              "value": 3.656
+            },
+            {
+              "year": 2018,
+              "value": 3.726
+            },
+            {
+              "year": 2019,
+              "value": 3.808
+            },
+            {
+              "year": 2020,
+              "value": 3.895
+            },
+            {
+              "year": 2021,
+              "value": 3.976
+            },
+            {
+              "year": 2022,
+              "value": 4.086
+            }
+          ]
+        },
+        "IND": {
+          "year": 2020,
+          "value": 0.723,
+          "previous": {
+            "year": 2019,
+            "value": 0.889
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.723
+            },
+            {
+              "year": 2016,
+              "value": 0.748
+            },
+            {
+              "year": 2017,
+              "value": 0.766
+            },
+            {
+              "year": 2018,
+              "value": 0.84
+            },
+            {
+              "year": 2019,
+              "value": 0.889
+            },
+            {
+              "year": 2020,
+              "value": 0.723
+            }
+          ]
+        },
+        "BRA": {
+          "year": 2023,
+          "value": 2.357,
+          "previous": {
+            "year": 2021,
+            "value": 2.191
+          },
+          "history": [
+            {
+              "year": 2017,
+              "value": 2.198
+            },
+            {
+              "year": 2019,
+              "value": 2.351
+            },
+            {
+              "year": 2021,
+              "value": 2.191
+            },
+            {
+              "year": 2023,
+              "value": 2.357
+            }
+          ]
+        },
+        "SGP": {
+          "year": 2022,
+          "value": 2.834,
+          "previous": {
+            "year": 2021,
+            "value": 2.781
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.255
+            },
+            {
+              "year": 2016,
+              "value": 2.325
+            },
+            {
+              "year": 2017,
+              "value": 2.389
+            },
+            {
+              "year": 2018,
+              "value": 2.443
+            },
+            {
+              "year": 2019,
+              "value": 2.519
+            },
+            {
+              "year": 2020,
+              "value": 2.638
+            },
+            {
+              "year": 2021,
+              "value": 2.781
+            },
+            {
+              "year": 2022,
+              "value": 2.834
+            }
+          ]
+        },
+        "IDN": {
+          "year": 2023,
+          "value": 0.524,
+          "previous": {
+            "year": 2022,
+            "value": 0.681
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.27
+            },
+            {
+              "year": 2017,
+              "value": 0.373
+            },
+            {
+              "year": 2018,
+              "value": 0.421
+            },
+            {
+              "year": 2019,
+              "value": 0.462
+            },
+            {
+              "year": 2020,
+              "value": 0.62
+            },
+            {
+              "year": 2021,
+              "value": 0.688
+            },
+            {
+              "year": 2022,
+              "value": 0.681
+            },
+            {
+              "year": 2023,
+              "value": 0.524
+            }
+          ]
+        },
+        "VNM": {
+          "year": 2021,
+          "value": 1.107,
+          "previous": {
+            "year": 2020,
+            "value": 0.856
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.795
+            },
+            {
+              "year": 2016,
+              "value": 0.825
+            },
+            {
+              "year": 2018,
+              "value": 0.881
+            },
+            {
+              "year": 2019,
+              "value": 0.99
+            },
+            {
+              "year": 2020,
+              "value": 0.856
+            },
+            {
+              "year": 2021,
+              "value": 1.107
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -1941,7 +12317,9 @@ export const indicatorSnapshot = {
           "year": 2022,
           "value": 2.61
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "under-five-mortality": {
       "countries": {
@@ -1951,7 +12329,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 2.9
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3.5
+            },
+            {
+              "year": 2016,
+              "value": 3.4
+            },
+            {
+              "year": 2017,
+              "value": 3.3
+            },
+            {
+              "year": 2018,
+              "value": 3.2
+            },
+            {
+              "year": 2019,
+              "value": 3.1
+            },
+            {
+              "year": 2020,
+              "value": 3.1
+            },
+            {
+              "year": 2021,
+              "value": 3
+            },
+            {
+              "year": 2022,
+              "value": 2.9
+            },
+            {
+              "year": 2023,
+              "value": 2.9
+            },
+            {
+              "year": 2024,
+              "value": 2.8
+            }
+          ]
         },
         "WLD": {
           "year": 2024,
@@ -1959,7 +12379,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 38.3
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 42.9
+            },
+            {
+              "year": 2016,
+              "value": 41.7
+            },
+            {
+              "year": 2017,
+              "value": 40.9
+            },
+            {
+              "year": 2018,
+              "value": 40
+            },
+            {
+              "year": 2019,
+              "value": 39.6
+            },
+            {
+              "year": 2020,
+              "value": 39.2
+            },
+            {
+              "year": 2021,
+              "value": 39.6
+            },
+            {
+              "year": 2022,
+              "value": 40
+            },
+            {
+              "year": 2023,
+              "value": 38.3
+            },
+            {
+              "year": 2024,
+              "value": 37.4
+            }
+          ]
         },
         "USA": {
           "year": 2024,
@@ -1967,7 +12429,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 6.5
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 6.8
+            },
+            {
+              "year": 2016,
+              "value": 6.7
+            },
+            {
+              "year": 2017,
+              "value": 6.6
+            },
+            {
+              "year": 2018,
+              "value": 6.5
+            },
+            {
+              "year": 2019,
+              "value": 6.5
+            },
+            {
+              "year": 2020,
+              "value": 6.5
+            },
+            {
+              "year": 2021,
+              "value": 6.5
+            },
+            {
+              "year": 2022,
+              "value": 6.5
+            },
+            {
+              "year": 2023,
+              "value": 6.5
+            },
+            {
+              "year": 2024,
+              "value": 6.5
+            }
+          ]
         },
         "JPN": {
           "year": 2024,
@@ -1975,7 +12479,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 2.4
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.8
+            },
+            {
+              "year": 2016,
+              "value": 2.7
+            },
+            {
+              "year": 2017,
+              "value": 2.6
+            },
+            {
+              "year": 2018,
+              "value": 2.5
+            },
+            {
+              "year": 2019,
+              "value": 2.5
+            },
+            {
+              "year": 2020,
+              "value": 2.4
+            },
+            {
+              "year": 2021,
+              "value": 2.4
+            },
+            {
+              "year": 2022,
+              "value": 2.4
+            },
+            {
+              "year": 2023,
+              "value": 2.4
+            },
+            {
+              "year": 2024,
+              "value": 2.4
+            }
+          ]
         },
         "CHN": {
           "year": 2024,
@@ -1983,7 +12529,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 6.1
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 10.7
+            },
+            {
+              "year": 2016,
+              "value": 10
+            },
+            {
+              "year": 2017,
+              "value": 9.3
+            },
+            {
+              "year": 2018,
+              "value": 8.6
+            },
+            {
+              "year": 2019,
+              "value": 8
+            },
+            {
+              "year": 2020,
+              "value": 7.5
+            },
+            {
+              "year": 2021,
+              "value": 7
+            },
+            {
+              "year": 2022,
+              "value": 6.6
+            },
+            {
+              "year": 2023,
+              "value": 6.1
+            },
+            {
+              "year": 2024,
+              "value": 5.7
+            }
+          ]
         },
         "DEU": {
           "year": 2024,
@@ -1991,7 +12579,499 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 3.7
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3.9
+            },
+            {
+              "year": 2016,
+              "value": 3.9
+            },
+            {
+              "year": 2017,
+              "value": 3.8
+            },
+            {
+              "year": 2018,
+              "value": 3.8
+            },
+            {
+              "year": 2019,
+              "value": 3.7
+            },
+            {
+              "year": 2020,
+              "value": 3.7
+            },
+            {
+              "year": 2021,
+              "value": 3.7
+            },
+            {
+              "year": 2022,
+              "value": 3.7
+            },
+            {
+              "year": 2023,
+              "value": 3.7
+            },
+            {
+              "year": 2024,
+              "value": 3.7
+            }
+          ]
+        },
+        "GBR": {
+          "year": 2024,
+          "value": 4.7,
+          "previous": {
+            "year": 2023,
+            "value": 4.6
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 4.5
+            },
+            {
+              "year": 2016,
+              "value": 4.4
+            },
+            {
+              "year": 2017,
+              "value": 4.4
+            },
+            {
+              "year": 2018,
+              "value": 4.4
+            },
+            {
+              "year": 2019,
+              "value": 4.4
+            },
+            {
+              "year": 2020,
+              "value": 4.4
+            },
+            {
+              "year": 2021,
+              "value": 4.4
+            },
+            {
+              "year": 2022,
+              "value": 4.5
+            },
+            {
+              "year": 2023,
+              "value": 4.6
+            },
+            {
+              "year": 2024,
+              "value": 4.7
+            }
+          ]
+        },
+        "FRA": {
+          "year": 2024,
+          "value": 4.3,
+          "previous": {
+            "year": 2023,
+            "value": 4.3
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 4.2
+            },
+            {
+              "year": 2016,
+              "value": 4.2
+            },
+            {
+              "year": 2017,
+              "value": 4.2
+            },
+            {
+              "year": 2018,
+              "value": 4.2
+            },
+            {
+              "year": 2019,
+              "value": 4.2
+            },
+            {
+              "year": 2020,
+              "value": 4.2
+            },
+            {
+              "year": 2021,
+              "value": 4.3
+            },
+            {
+              "year": 2022,
+              "value": 4.3
+            },
+            {
+              "year": 2023,
+              "value": 4.3
+            },
+            {
+              "year": 2024,
+              "value": 4.3
+            }
+          ]
+        },
+        "CAN": {
+          "year": 2024,
+          "value": 5.4,
+          "previous": {
+            "year": 2023,
+            "value": 5.4
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 5.3
+            },
+            {
+              "year": 2016,
+              "value": 5.3
+            },
+            {
+              "year": 2017,
+              "value": 5.2
+            },
+            {
+              "year": 2018,
+              "value": 5.2
+            },
+            {
+              "year": 2019,
+              "value": 5.2
+            },
+            {
+              "year": 2020,
+              "value": 5.2
+            },
+            {
+              "year": 2021,
+              "value": 5.2
+            },
+            {
+              "year": 2022,
+              "value": 5.3
+            },
+            {
+              "year": 2023,
+              "value": 5.4
+            },
+            {
+              "year": 2024,
+              "value": 5.4
+            }
+          ]
+        },
+        "AUS": {
+          "year": 2024,
+          "value": 3.6,
+          "previous": {
+            "year": 2023,
+            "value": 3.7
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3.9
+            },
+            {
+              "year": 2016,
+              "value": 3.8
+            },
+            {
+              "year": 2017,
+              "value": 3.8
+            },
+            {
+              "year": 2018,
+              "value": 3.8
+            },
+            {
+              "year": 2019,
+              "value": 3.8
+            },
+            {
+              "year": 2020,
+              "value": 3.8
+            },
+            {
+              "year": 2021,
+              "value": 3.7
+            },
+            {
+              "year": 2022,
+              "value": 3.7
+            },
+            {
+              "year": 2023,
+              "value": 3.7
+            },
+            {
+              "year": 2024,
+              "value": 3.6
+            }
+          ]
+        },
+        "IND": {
+          "year": 2024,
+          "value": 26.6,
+          "previous": {
+            "year": 2023,
+            "value": 28
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 43.7
+            },
+            {
+              "year": 2016,
+              "value": 41.3
+            },
+            {
+              "year": 2017,
+              "value": 39
+            },
+            {
+              "year": 2018,
+              "value": 36.9
+            },
+            {
+              "year": 2019,
+              "value": 34.9
+            },
+            {
+              "year": 2020,
+              "value": 33
+            },
+            {
+              "year": 2021,
+              "value": 31.2
+            },
+            {
+              "year": 2022,
+              "value": 29.5
+            },
+            {
+              "year": 2023,
+              "value": 28
+            },
+            {
+              "year": 2024,
+              "value": 26.6
+            }
+          ]
+        },
+        "BRA": {
+          "year": 2024,
+          "value": 14.2,
+          "previous": {
+            "year": 2023,
+            "value": 14.4
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 16
+            },
+            {
+              "year": 2016,
+              "value": 16.8
+            },
+            {
+              "year": 2017,
+              "value": 15.4
+            },
+            {
+              "year": 2018,
+              "value": 15.2
+            },
+            {
+              "year": 2019,
+              "value": 15
+            },
+            {
+              "year": 2020,
+              "value": 14.9
+            },
+            {
+              "year": 2021,
+              "value": 14.7
+            },
+            {
+              "year": 2022,
+              "value": 14.6
+            },
+            {
+              "year": 2023,
+              "value": 14.4
+            },
+            {
+              "year": 2024,
+              "value": 14.2
+            }
+          ]
+        },
+        "SGP": {
+          "year": 2024,
+          "value": 2.7,
+          "previous": {
+            "year": 2023,
+            "value": 2.6
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.7
+            },
+            {
+              "year": 2016,
+              "value": 2.6
+            },
+            {
+              "year": 2017,
+              "value": 2.6
+            },
+            {
+              "year": 2018,
+              "value": 2.5
+            },
+            {
+              "year": 2019,
+              "value": 2.5
+            },
+            {
+              "year": 2020,
+              "value": 2.4
+            },
+            {
+              "year": 2021,
+              "value": 2.4
+            },
+            {
+              "year": 2022,
+              "value": 2.5
+            },
+            {
+              "year": 2023,
+              "value": 2.6
+            },
+            {
+              "year": 2024,
+              "value": 2.7
+            }
+          ]
+        },
+        "IDN": {
+          "year": 2024,
+          "value": 17.7,
+          "previous": {
+            "year": 2023,
+            "value": 18.4
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 26.1
+            },
+            {
+              "year": 2016,
+              "value": 25
+            },
+            {
+              "year": 2017,
+              "value": 23.8
+            },
+            {
+              "year": 2018,
+              "value": 22.8
+            },
+            {
+              "year": 2019,
+              "value": 21.8
+            },
+            {
+              "year": 2020,
+              "value": 20.8
+            },
+            {
+              "year": 2021,
+              "value": 19.9
+            },
+            {
+              "year": 2022,
+              "value": 19.1
+            },
+            {
+              "year": 2023,
+              "value": 18.4
+            },
+            {
+              "year": 2024,
+              "value": 17.7
+            }
+          ]
+        },
+        "VNM": {
+          "year": 2024,
+          "value": 17.3,
+          "previous": {
+            "year": 2023,
+            "value": 17.8
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 21.6
+            },
+            {
+              "year": 2016,
+              "value": 21.3
+            },
+            {
+              "year": 2017,
+              "value": 20.9
+            },
+            {
+              "year": 2018,
+              "value": 20.5
+            },
+            {
+              "year": 2019,
+              "value": 20
+            },
+            {
+              "year": 2020,
+              "value": 19.5
+            },
+            {
+              "year": 2021,
+              "value": 18.9
+            },
+            {
+              "year": 2022,
+              "value": 18.4
+            },
+            {
+              "year": 2023,
+              "value": 17.8
+            },
+            {
+              "year": 2024,
+              "value": 17.3
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -2035,7 +13115,9 @@ export const indicatorSnapshot = {
           "year": 2024,
           "value": 2.8
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "tertiary-enrollment": {
       "countries": {
@@ -2045,7 +13127,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 106.7092
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 93.9677
+            },
+            {
+              "year": 2016,
+              "value": 93.6577
+            },
+            {
+              "year": 2017,
+              "value": 93.723
+            },
+            {
+              "year": 2018,
+              "value": 93.3282
+            },
+            {
+              "year": 2019,
+              "value": 93.9989
+            },
+            {
+              "year": 2020,
+              "value": 96.8768
+            },
+            {
+              "year": 2021,
+              "value": 100.3599
+            },
+            {
+              "year": 2022,
+              "value": 102.8131
+            },
+            {
+              "year": 2023,
+              "value": 106.7092
+            },
+            {
+              "year": 2024,
+              "value": 111.8533
+            }
+          ]
         },
         "WLD": {
           "year": 2024,
@@ -2053,7 +13177,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 43.1979
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 36.6131
+            },
+            {
+              "year": 2016,
+              "value": 37.1432
+            },
+            {
+              "year": 2017,
+              "value": 37.4994
+            },
+            {
+              "year": 2018,
+              "value": 37.8525
+            },
+            {
+              "year": 2019,
+              "value": 38.6689
+            },
+            {
+              "year": 2020,
+              "value": 39.7074
+            },
+            {
+              "year": 2021,
+              "value": 41.0742
+            },
+            {
+              "year": 2022,
+              "value": 42.0466
+            },
+            {
+              "year": 2023,
+              "value": 43.1979
+            },
+            {
+              "year": 2024,
+              "value": 43.6151
+            }
+          ]
         },
         "USA": {
           "year": 2022,
@@ -2061,7 +13227,41 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2021,
             "value": 84.8551
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 88.8894
+            },
+            {
+              "year": 2016,
+              "value": 88.8351
+            },
+            {
+              "year": 2017,
+              "value": 88.1674
+            },
+            {
+              "year": 2018,
+              "value": 88.2992
+            },
+            {
+              "year": 2019,
+              "value": 87.8887
+            },
+            {
+              "year": 2020,
+              "value": 87.5677
+            },
+            {
+              "year": 2021,
+              "value": 84.8551
+            },
+            {
+              "year": 2022,
+              "value": 79.3619
+            }
+          ]
         },
         "JPN": {
           "year": 2023,
@@ -2069,7 +13269,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 63.3752
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 62.4498
+            },
+            {
+              "year": 2016,
+              "value": 62.4975
+            },
+            {
+              "year": 2017,
+              "value": 63.2875
+            },
+            {
+              "year": 2018,
+              "value": 62.6059
+            },
+            {
+              "year": 2019,
+              "value": 62.4008
+            },
+            {
+              "year": 2020,
+              "value": 62.2987
+            },
+            {
+              "year": 2021,
+              "value": 62.0412
+            },
+            {
+              "year": 2022,
+              "value": 63.3752
+            },
+            {
+              "year": 2023,
+              "value": 64.4908
+            }
+          ]
         },
         "CHN": {
           "year": 2024,
@@ -2077,7 +13315,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 74.5933
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 47.1193
+            },
+            {
+              "year": 2016,
+              "value": 49.3091
+            },
+            {
+              "year": 2017,
+              "value": 51.0679
+            },
+            {
+              "year": 2018,
+              "value": 53.3988
+            },
+            {
+              "year": 2019,
+              "value": 56.6051
+            },
+            {
+              "year": 2020,
+              "value": 61.6125
+            },
+            {
+              "year": 2021,
+              "value": 66.8186
+            },
+            {
+              "year": 2022,
+              "value": 71.5799
+            },
+            {
+              "year": 2023,
+              "value": 74.5933
+            },
+            {
+              "year": 2024,
+              "value": 76.8758
+            }
+          ]
         },
         "DEU": {
           "year": 2024,
@@ -2085,7 +13365,471 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 78.5947
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 68.2329
+            },
+            {
+              "year": 2016,
+              "value": 67.9464
+            },
+            {
+              "year": 2017,
+              "value": 68.4692
+            },
+            {
+              "year": 2018,
+              "value": 69.1634
+            },
+            {
+              "year": 2019,
+              "value": 72.7051
+            },
+            {
+              "year": 2020,
+              "value": 72.3894
+            },
+            {
+              "year": 2021,
+              "value": 75.6655
+            },
+            {
+              "year": 2022,
+              "value": 77.3657
+            },
+            {
+              "year": 2023,
+              "value": 78.5947
+            },
+            {
+              "year": 2024,
+              "value": 76.7097
+            }
+          ]
+        },
+        "GBR": {
+          "year": 2023,
+          "value": 80.4146,
+          "previous": {
+            "year": 2022,
+            "value": 79.7695
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 56.4461
+            },
+            {
+              "year": 2016,
+              "value": 58.0839
+            },
+            {
+              "year": 2017,
+              "value": 59.6282
+            },
+            {
+              "year": 2018,
+              "value": 61.1378
+            },
+            {
+              "year": 2019,
+              "value": 65.512
+            },
+            {
+              "year": 2020,
+              "value": 69.4077
+            },
+            {
+              "year": 2021,
+              "value": 76.7544
+            },
+            {
+              "year": 2022,
+              "value": 79.7695
+            },
+            {
+              "year": 2023,
+              "value": 80.4146
+            }
+          ]
+        },
+        "FRA": {
+          "year": 2024,
+          "value": 71.5347,
+          "previous": {
+            "year": 2023,
+            "value": 70.4536
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 62.7859
+            },
+            {
+              "year": 2016,
+              "value": 64.7277
+            },
+            {
+              "year": 2017,
+              "value": 65.8022
+            },
+            {
+              "year": 2018,
+              "value": 67.5435
+            },
+            {
+              "year": 2019,
+              "value": 67.7331
+            },
+            {
+              "year": 2020,
+              "value": 68.8709
+            },
+            {
+              "year": 2021,
+              "value": 69.9398
+            },
+            {
+              "year": 2022,
+              "value": 71.5107
+            },
+            {
+              "year": 2023,
+              "value": 70.4536
+            },
+            {
+              "year": 2024,
+              "value": 71.5347
+            }
+          ]
+        },
+        "CAN": {
+          "year": 2023,
+          "value": 76.2667,
+          "previous": {
+            "year": 2022,
+            "value": 78.8488
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 67.2691
+            },
+            {
+              "year": 2016,
+              "value": 69.2459
+            },
+            {
+              "year": 2017,
+              "value": 70.2687
+            },
+            {
+              "year": 2018,
+              "value": 69.3507
+            },
+            {
+              "year": 2019,
+              "value": 73.1129
+            },
+            {
+              "year": 2020,
+              "value": 75.2389
+            },
+            {
+              "year": 2021,
+              "value": 79.7657
+            },
+            {
+              "year": 2022,
+              "value": 78.8488
+            },
+            {
+              "year": 2023,
+              "value": 76.2667
+            }
+          ]
+        },
+        "AUS": {
+          "year": 2024,
+          "value": 108.422,
+          "previous": {
+            "year": 2023,
+            "value": 104.6484
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 119.6794
+            },
+            {
+              "year": 2016,
+              "value": 119.6828
+            },
+            {
+              "year": 2017,
+              "value": 109.9933
+            },
+            {
+              "year": 2018,
+              "value": 103.3221
+            },
+            {
+              "year": 2019,
+              "value": 109.7596
+            },
+            {
+              "year": 2020,
+              "value": 110.1392
+            },
+            {
+              "year": 2021,
+              "value": 112.6883
+            },
+            {
+              "year": 2022,
+              "value": 106.2408
+            },
+            {
+              "year": 2023,
+              "value": 104.6484
+            },
+            {
+              "year": 2024,
+              "value": 108.422
+            }
+          ]
+        },
+        "IND": {
+          "year": 2025,
+          "value": 34.4465,
+          "previous": {
+            "year": 2024,
+            "value": 34.4185
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 27.2846
+            },
+            {
+              "year": 2016,
+              "value": 27.3044
+            },
+            {
+              "year": 2017,
+              "value": 27.9091
+            },
+            {
+              "year": 2018,
+              "value": 28.5317
+            },
+            {
+              "year": 2019,
+              "value": 29.0234
+            },
+            {
+              "year": 2020,
+              "value": 29.8196
+            },
+            {
+              "year": 2021,
+              "value": 31.5742
+            },
+            {
+              "year": 2022,
+              "value": 32.6703
+            },
+            {
+              "year": 2023,
+              "value": 34.2394
+            },
+            {
+              "year": 2024,
+              "value": 34.4185
+            },
+            {
+              "year": 2025,
+              "value": 34.4465
+            }
+          ]
+        },
+        "BRA": {
+          "year": 2024,
+          "value": 69.7318,
+          "previous": {
+            "year": 2022,
+            "value": 61.0001
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 49.0805
+            },
+            {
+              "year": 2016,
+              "value": 48.9666
+            },
+            {
+              "year": 2017,
+              "value": 50.7326
+            },
+            {
+              "year": 2018,
+              "value": 52.0571
+            },
+            {
+              "year": 2019,
+              "value": 53.6215
+            },
+            {
+              "year": 2020,
+              "value": 55.5291
+            },
+            {
+              "year": 2021,
+              "value": 57.6312
+            },
+            {
+              "year": 2022,
+              "value": 61.0001
+            },
+            {
+              "year": 2024,
+              "value": 69.7318
+            }
+          ]
+        },
+        "SGP": {
+          "year": 2023,
+          "value": 97.2887,
+          "previous": {
+            "year": 2022,
+            "value": 98.0222
+          },
+          "history": [
+            {
+              "year": 2016,
+              "value": 83.941
+            },
+            {
+              "year": 2017,
+              "value": 84.7929
+            },
+            {
+              "year": 2018,
+              "value": 88.8864
+            },
+            {
+              "year": 2019,
+              "value": 91.089
+            },
+            {
+              "year": 2020,
+              "value": 93.1348
+            },
+            {
+              "year": 2021,
+              "value": 97.0989
+            },
+            {
+              "year": 2022,
+              "value": 98.0222
+            },
+            {
+              "year": 2023,
+              "value": 97.2887
+            }
+          ]
+        },
+        "IDN": {
+          "year": 2023,
+          "value": 44.8813,
+          "previous": {
+            "year": 2022,
+            "value": 42.326
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 32.459
+            },
+            {
+              "year": 2016,
+              "value": 34.8307
+            },
+            {
+              "year": 2017,
+              "value": 35.967
+            },
+            {
+              "year": 2018,
+              "value": 36.1495
+            },
+            {
+              "year": 2019,
+              "value": 37.3231
+            },
+            {
+              "year": 2020,
+              "value": 38.1651
+            },
+            {
+              "year": 2021,
+              "value": 40.6293
+            },
+            {
+              "year": 2022,
+              "value": 42.326
+            },
+            {
+              "year": 2023,
+              "value": 44.8813
+            }
+          ]
+        },
+        "VNM": {
+          "year": 2024,
+          "value": 37.5924,
+          "previous": {
+            "year": 2023,
+            "value": 32.8415
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 29.7251
+            },
+            {
+              "year": 2016,
+              "value": 29.0812
+            },
+            {
+              "year": 2017,
+              "value": 25.9526
+            },
+            {
+              "year": 2019,
+              "value": 30.2241
+            },
+            {
+              "year": 2021,
+              "value": 41.9555
+            },
+            {
+              "year": 2022,
+              "value": 44.7537
+            },
+            {
+              "year": 2023,
+              "value": 32.8415
+            },
+            {
+              "year": 2024,
+              "value": 37.5924
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -2129,7 +13873,9 @@ export const indicatorSnapshot = {
           "year": 2024,
           "value": 111.8533
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "research-development": {
       "countries": {
@@ -2139,7 +13885,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 4.8475
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3.7891
+            },
+            {
+              "year": 2016,
+              "value": 3.7864
+            },
+            {
+              "year": 2017,
+              "value": 4.0734
+            },
+            {
+              "year": 2018,
+              "value": 4.2716
+            },
+            {
+              "year": 2019,
+              "value": 4.3638
+            },
+            {
+              "year": 2020,
+              "value": 4.5214
+            },
+            {
+              "year": 2021,
+              "value": 4.5967
+            },
+            {
+              "year": 2022,
+              "value": 4.8475
+            },
+            {
+              "year": 2023,
+              "value": 4.9435
+            }
+          ]
         },
         "WLD": {
           "year": 2023,
@@ -2147,7 +13931,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 2.5712
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.1043
+            },
+            {
+              "year": 2016,
+              "value": 2.1487
+            },
+            {
+              "year": 2017,
+              "value": 2.142
+            },
+            {
+              "year": 2018,
+              "value": 2.2182
+            },
+            {
+              "year": 2019,
+              "value": 2.2634
+            },
+            {
+              "year": 2020,
+              "value": 2.4561
+            },
+            {
+              "year": 2021,
+              "value": 2.5228
+            },
+            {
+              "year": 2022,
+              "value": 2.5712
+            },
+            {
+              "year": 2023,
+              "value": 2.5974
+            }
+          ]
         },
         "USA": {
           "year": 2023,
@@ -2155,7 +13977,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 3.4874
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.7733
+            },
+            {
+              "year": 2016,
+              "value": 2.8368
+            },
+            {
+              "year": 2017,
+              "value": 2.8832
+            },
+            {
+              "year": 2018,
+              "value": 2.9896
+            },
+            {
+              "year": 2019,
+              "value": 3.143
+            },
+            {
+              "year": 2020,
+              "value": 3.4179
+            },
+            {
+              "year": 2021,
+              "value": 3.4689
+            },
+            {
+              "year": 2022,
+              "value": 3.4874
+            },
+            {
+              "year": 2023,
+              "value": 3.4472
+            }
+          ]
         },
         "JPN": {
           "year": 2023,
@@ -2163,7 +14023,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 3.4005
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3.2407
+            },
+            {
+              "year": 2016,
+              "value": 3.1067
+            },
+            {
+              "year": 2017,
+              "value": 3.1664
+            },
+            {
+              "year": 2018,
+              "value": 3.2192
+            },
+            {
+              "year": 2019,
+              "value": 3.2182
+            },
+            {
+              "year": 2020,
+              "value": 3.2656
+            },
+            {
+              "year": 2021,
+              "value": 3.2738
+            },
+            {
+              "year": 2022,
+              "value": 3.4005
+            },
+            {
+              "year": 2023,
+              "value": 3.4413
+            }
+          ]
         },
         "CHN": {
           "year": 2023,
@@ -2171,7 +14069,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 2.4945
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.017
+            },
+            {
+              "year": 2016,
+              "value": 2.0595
+            },
+            {
+              "year": 2017,
+              "value": 2.0777
+            },
+            {
+              "year": 2018,
+              "value": 2.1023
+            },
+            {
+              "year": 2019,
+              "value": 2.2014
+            },
+            {
+              "year": 2020,
+              "value": 2.3571
+            },
+            {
+              "year": 2021,
+              "value": 2.3817
+            },
+            {
+              "year": 2022,
+              "value": 2.4945
+            },
+            {
+              "year": 2023,
+              "value": 2.5773
+            }
+          ]
         },
         "DEU": {
           "year": 2023,
@@ -2179,7 +14115,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 3.071
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.8773
+            },
+            {
+              "year": 2016,
+              "value": 2.8839
+            },
+            {
+              "year": 2017,
+              "value": 2.9886
+            },
+            {
+              "year": 2018,
+              "value": 3.0506
+            },
+            {
+              "year": 2019,
+              "value": 3.1126
+            },
+            {
+              "year": 2020,
+              "value": 3.0897
+            },
+            {
+              "year": 2021,
+              "value": 3.0786
+            },
+            {
+              "year": 2022,
+              "value": 3.071
+            },
+            {
+              "year": 2023,
+              "value": 3.1539
+            }
+          ]
         },
         "GBR": {
           "year": 2023,
@@ -2187,7 +14161,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 2.7522
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.2757
+            },
+            {
+              "year": 2016,
+              "value": 2.3205
+            },
+            {
+              "year": 2017,
+              "value": 2.326
+            },
+            {
+              "year": 2018,
+              "value": 2.7089
+            },
+            {
+              "year": 2019,
+              "value": 2.6707
+            },
+            {
+              "year": 2020,
+              "value": 2.9399
+            },
+            {
+              "year": 2021,
+              "value": 2.8997
+            },
+            {
+              "year": 2022,
+              "value": 2.7522
+            },
+            {
+              "year": 2023,
+              "value": 2.6761
+            }
+          ]
         },
         "FRA": {
           "year": 2023,
@@ -2195,7 +14207,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 2.2194
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.224
+            },
+            {
+              "year": 2016,
+              "value": 2.2247
+            },
+            {
+              "year": 2017,
+              "value": 2.2042
+            },
+            {
+              "year": 2018,
+              "value": 2.2041
+            },
+            {
+              "year": 2019,
+              "value": 2.1967
+            },
+            {
+              "year": 2020,
+              "value": 2.2742
+            },
+            {
+              "year": 2021,
+              "value": 2.2128
+            },
+            {
+              "year": 2022,
+              "value": 2.2194
+            },
+            {
+              "year": 2023,
+              "value": 2.1783
+            }
+          ]
         },
         "CAN": {
           "year": 2024,
@@ -2203,7 +14253,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 1.8105
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.6936
+            },
+            {
+              "year": 2016,
+              "value": 1.729
+            },
+            {
+              "year": 2017,
+              "value": 1.687
+            },
+            {
+              "year": 2018,
+              "value": 1.7372
+            },
+            {
+              "year": 2019,
+              "value": 1.7558
+            },
+            {
+              "year": 2020,
+              "value": 1.9341
+            },
+            {
+              "year": 2021,
+              "value": 1.8706
+            },
+            {
+              "year": 2022,
+              "value": 1.8129
+            },
+            {
+              "year": 2023,
+              "value": 1.8105
+            },
+            {
+              "year": 2024,
+              "value": 1.7908
+            }
+          ]
         },
         "AUS": {
           "year": 2021,
@@ -2211,7 +14303,25 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2019,
             "value": 1.8283
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.9197
+            },
+            {
+              "year": 2017,
+              "value": 1.881
+            },
+            {
+              "year": 2019,
+              "value": 1.8283
+            },
+            {
+              "year": 2021,
+              "value": 1.8578
+            }
+          ]
         },
         "IND": {
           "year": 2020,
@@ -2219,7 +14329,33 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2019,
             "value": 0.6594
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.6931
+            },
+            {
+              "year": 2016,
+              "value": 0.6698
+            },
+            {
+              "year": 2017,
+              "value": 0.666
+            },
+            {
+              "year": 2018,
+              "value": 0.66
+            },
+            {
+              "year": 2019,
+              "value": 0.6594
+            },
+            {
+              "year": 2020,
+              "value": 0.6456
+            }
+          ]
         },
         "BRA": {
           "year": 2023,
@@ -2227,7 +14363,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 1.1887
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.2846
+            },
+            {
+              "year": 2016,
+              "value": 1.1958
+            },
+            {
+              "year": 2017,
+              "value": 1.1175
+            },
+            {
+              "year": 2018,
+              "value": 1.1502
+            },
+            {
+              "year": 2019,
+              "value": 1.1511
+            },
+            {
+              "year": 2020,
+              "value": 1.2191
+            },
+            {
+              "year": 2021,
+              "value": 1.1337
+            },
+            {
+              "year": 2022,
+              "value": 1.1887
+            },
+            {
+              "year": 2023,
+              "value": 1.1938
+            }
+          ]
         },
         "SGP": {
           "year": 2022,
@@ -2235,7 +14409,41 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2021,
             "value": 1.9376
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.1745
+            },
+            {
+              "year": 2016,
+              "value": 2.0689
+            },
+            {
+              "year": 2017,
+              "value": 1.8968
+            },
+            {
+              "year": 2018,
+              "value": 1.8084
+            },
+            {
+              "year": 2019,
+              "value": 1.8885
+            },
+            {
+              "year": 2020,
+              "value": 2.1598
+            },
+            {
+              "year": 2021,
+              "value": 1.9376
+            },
+            {
+              "year": 2022,
+              "value": 1.8082
+            }
+          ]
         },
         "IDN": {
           "year": 2020,
@@ -2243,7 +14451,29 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2019,
             "value": 0.2713
-          }
+          },
+          "history": [
+            {
+              "year": 2016,
+              "value": 0.2454
+            },
+            {
+              "year": 2017,
+              "value": 0.2381
+            },
+            {
+              "year": 2018,
+              "value": 0.2263
+            },
+            {
+              "year": 2019,
+              "value": 0.2713
+            },
+            {
+              "year": 2020,
+              "value": 0.2807
+            }
+          ]
         },
         "VNM": {
           "year": 2023,
@@ -2251,7 +14481,29 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2021,
             "value": 0.4249
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.3563
+            },
+            {
+              "year": 2017,
+              "value": 0.419
+            },
+            {
+              "year": 2019,
+              "value": 0.4165
+            },
+            {
+              "year": 2021,
+              "value": 0.4249
+            },
+            {
+              "year": 2023,
+              "value": 0.4146
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -2291,7 +14543,9 @@ export const indicatorSnapshot = {
           "year": 2023,
           "value": 4.9435
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "internet-use": {
       "countries": {
@@ -2301,7 +14555,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 97.416
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 89.8963
+            },
+            {
+              "year": 2016,
+              "value": 92.843
+            },
+            {
+              "year": 2017,
+              "value": 95.0694
+            },
+            {
+              "year": 2018,
+              "value": 96.0229
+            },
+            {
+              "year": 2019,
+              "value": 96.1576
+            },
+            {
+              "year": 2020,
+              "value": 96.5051
+            },
+            {
+              "year": 2021,
+              "value": 97.5713
+            },
+            {
+              "year": 2022,
+              "value": 97.1686
+            },
+            {
+              "year": 2023,
+              "value": 97.416
+            },
+            {
+              "year": 2024,
+              "value": 97.8956
+            }
+          ]
         },
         "WLD": {
           "year": 2025,
@@ -2309,7 +14605,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 71.2
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 39.9
+            },
+            {
+              "year": 2016,
+              "value": 43.6
+            },
+            {
+              "year": 2017,
+              "value": 46.3
+            },
+            {
+              "year": 2018,
+              "value": 49.4
+            },
+            {
+              "year": 2019,
+              "value": 53.9
+            },
+            {
+              "year": 2020,
+              "value": 60.1
+            },
+            {
+              "year": 2021,
+              "value": 63.8
+            },
+            {
+              "year": 2022,
+              "value": 67
+            },
+            {
+              "year": 2023,
+              "value": 69.2
+            },
+            {
+              "year": 2024,
+              "value": 71.2
+            },
+            {
+              "year": 2025,
+              "value": 73.6
+            }
+          ]
         },
         "USA": {
           "year": 2024,
@@ -2317,7 +14659,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 93.5256
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 74.5542
+            },
+            {
+              "year": 2016,
+              "value": 85.5444
+            },
+            {
+              "year": 2017,
+              "value": 87.2749
+            },
+            {
+              "year": 2018,
+              "value": 88.4989
+            },
+            {
+              "year": 2019,
+              "value": 89.4303
+            },
+            {
+              "year": 2020,
+              "value": 90.3447
+            },
+            {
+              "year": 2021,
+              "value": 91.2684
+            },
+            {
+              "year": 2022,
+              "value": 92.7285
+            },
+            {
+              "year": 2023,
+              "value": 93.5256
+            },
+            {
+              "year": 2024,
+              "value": 94.6938
+            }
+          ]
         },
         "JPN": {
           "year": 2024,
@@ -2325,7 +14709,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 85.0099
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 91.058
+            },
+            {
+              "year": 2016,
+              "value": 93.1827
+            },
+            {
+              "year": 2017,
+              "value": 91.7265
+            },
+            {
+              "year": 2018,
+              "value": 88.7464
+            },
+            {
+              "year": 2019,
+              "value": 92.7304
+            },
+            {
+              "year": 2020,
+              "value": 90.2195
+            },
+            {
+              "year": 2021,
+              "value": 82.9141
+            },
+            {
+              "year": 2022,
+              "value": 84.9234
+            },
+            {
+              "year": 2023,
+              "value": 85.0099
+            },
+            {
+              "year": 2024,
+              "value": 85.5415
+            }
+          ]
         },
         "CHN": {
           "year": 2025,
@@ -2333,7 +14759,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 92
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 50.3
+            },
+            {
+              "year": 2016,
+              "value": 53.2
+            },
+            {
+              "year": 2017,
+              "value": 54.3
+            },
+            {
+              "year": 2018,
+              "value": 65.3584
+            },
+            {
+              "year": 2019,
+              "value": 64.0809
+            },
+            {
+              "year": 2020,
+              "value": 70.0528
+            },
+            {
+              "year": 2021,
+              "value": 73.0532
+            },
+            {
+              "year": 2022,
+              "value": 75.6113
+            },
+            {
+              "year": 2023,
+              "value": 90.6
+            },
+            {
+              "year": 2024,
+              "value": 92
+            },
+            {
+              "year": 2025,
+              "value": 91.6
+            }
+          ]
         },
         "DEU": {
           "year": 2024,
@@ -2341,7 +14813,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 92.4764
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 87.5898
+            },
+            {
+              "year": 2016,
+              "value": 84.1652
+            },
+            {
+              "year": 2017,
+              "value": 84.3942
+            },
+            {
+              "year": 2018,
+              "value": 87.0371
+            },
+            {
+              "year": 2019,
+              "value": 88.1345
+            },
+            {
+              "year": 2020,
+              "value": 89.8129
+            },
+            {
+              "year": 2021,
+              "value": 91.4306
+            },
+            {
+              "year": 2022,
+              "value": 91.6298
+            },
+            {
+              "year": 2023,
+              "value": 92.4764
+            },
+            {
+              "year": 2024,
+              "value": 93.5
+            }
+          ]
         },
         "GBR": {
           "year": 2024,
@@ -2349,7 +14863,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 95.4472
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 92.0003
+            },
+            {
+              "year": 2016,
+              "value": 94.7758
+            },
+            {
+              "year": 2017,
+              "value": 90.4246
+            },
+            {
+              "year": 2018,
+              "value": 90.692
+            },
+            {
+              "year": 2019,
+              "value": 92.5166
+            },
+            {
+              "year": 2020,
+              "value": 94.8182
+            },
+            {
+              "year": 2021,
+              "value": 96.1965
+            },
+            {
+              "year": 2022,
+              "value": 95.4653
+            },
+            {
+              "year": 2023,
+              "value": 95.4472
+            },
+            {
+              "year": 2024,
+              "value": 95.4721
+            }
+          ]
         },
         "FRA": {
           "year": 2024,
@@ -2357,7 +14913,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 86.8364
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 78.006
+            },
+            {
+              "year": 2016,
+              "value": 79.2698
+            },
+            {
+              "year": 2017,
+              "value": 80.5025
+            },
+            {
+              "year": 2018,
+              "value": 82.0432
+            },
+            {
+              "year": 2019,
+              "value": 83.3397
+            },
+            {
+              "year": 2020,
+              "value": 84.7064
+            },
+            {
+              "year": 2021,
+              "value": 86.0955
+            },
+            {
+              "year": 2022,
+              "value": 85.3333
+            },
+            {
+              "year": 2023,
+              "value": 86.8364
+            },
+            {
+              "year": 2024,
+              "value": 88.6538
+            }
+          ]
         },
         "CAN": {
           "year": 2024,
@@ -2365,7 +14963,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 94.1453
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 90
+            },
+            {
+              "year": 2016,
+              "value": 91.16
+            },
+            {
+              "year": 2017,
+              "value": 92.7014
+            },
+            {
+              "year": 2018,
+              "value": 94.64
+            },
+            {
+              "year": 2019,
+              "value": 91.9129
+            },
+            {
+              "year": 2020,
+              "value": 92.3
+            },
+            {
+              "year": 2021,
+              "value": 93.9371
+            },
+            {
+              "year": 2022,
+              "value": 94
+            },
+            {
+              "year": 2023,
+              "value": 94.1453
+            },
+            {
+              "year": 2024,
+              "value": 94.3533
+            }
+          ]
         },
         "AUS": {
           "year": 2024,
@@ -2373,7 +15013,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 96.1161
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 84.5605
+            },
+            {
+              "year": 2016,
+              "value": 86.54
+            },
+            {
+              "year": 2017,
+              "value": 86.545
+            },
+            {
+              "year": 2018,
+              "value": 90.0082
+            },
+            {
+              "year": 2019,
+              "value": 93.6099
+            },
+            {
+              "year": 2020,
+              "value": 94.6935
+            },
+            {
+              "year": 2021,
+              "value": 96.9722
+            },
+            {
+              "year": 2022,
+              "value": 96.1194
+            },
+            {
+              "year": 2023,
+              "value": 96.1161
+            },
+            {
+              "year": 2024,
+              "value": 96.1314
+            }
+          ]
         },
         "IND": {
           "year": 2025,
@@ -2381,7 +15063,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 64.9435
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 14.9
+            },
+            {
+              "year": 2016,
+              "value": 16.5
+            },
+            {
+              "year": 2017,
+              "value": 18.2
+            },
+            {
+              "year": 2018,
+              "value": 20.0813
+            },
+            {
+              "year": 2019,
+              "value": 29.5235
+            },
+            {
+              "year": 2020,
+              "value": 43.4054
+            },
+            {
+              "year": 2021,
+              "value": 49.2581
+            },
+            {
+              "year": 2022,
+              "value": 55.9
+            },
+            {
+              "year": 2023,
+              "value": 60.2523
+            },
+            {
+              "year": 2024,
+              "value": 64.9435
+            },
+            {
+              "year": 2025,
+              "value": 70
+            }
+          ]
         },
         "BRA": {
           "year": 2024,
@@ -2389,7 +15117,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 84.1506
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 58.328
+            },
+            {
+              "year": 2016,
+              "value": 60.8725
+            },
+            {
+              "year": 2017,
+              "value": 67.4713
+            },
+            {
+              "year": 2018,
+              "value": 70.4343
+            },
+            {
+              "year": 2019,
+              "value": 73.9124
+            },
+            {
+              "year": 2020,
+              "value": 81.3427
+            },
+            {
+              "year": 2021,
+              "value": 80.6899
+            },
+            {
+              "year": 2022,
+              "value": 80.5278
+            },
+            {
+              "year": 2023,
+              "value": 84.1506
+            },
+            {
+              "year": 2024,
+              "value": 84.4635
+            }
+          ]
         },
         "SGP": {
           "year": 2024,
@@ -2397,7 +15167,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 94.2852
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 79.013
+            },
+            {
+              "year": 2016,
+              "value": 84.4523
+            },
+            {
+              "year": 2017,
+              "value": 84.4523
+            },
+            {
+              "year": 2018,
+              "value": 88.1656
+            },
+            {
+              "year": 2019,
+              "value": 88.9493
+            },
+            {
+              "year": 2020,
+              "value": 92.0043
+            },
+            {
+              "year": 2021,
+              "value": 96.9247
+            },
+            {
+              "year": 2022,
+              "value": 95.9539
+            },
+            {
+              "year": 2023,
+              "value": 94.2852
+            },
+            {
+              "year": 2024,
+              "value": 94.3776
+            }
+          ]
         },
         "IDN": {
           "year": 2024,
@@ -2405,7 +15217,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 69.2084
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 22.0627
+            },
+            {
+              "year": 2016,
+              "value": 25.4474
+            },
+            {
+              "year": 2017,
+              "value": 32.3358
+            },
+            {
+              "year": 2018,
+              "value": 39.9046
+            },
+            {
+              "year": 2019,
+              "value": 47.6906
+            },
+            {
+              "year": 2020,
+              "value": 53.7265
+            },
+            {
+              "year": 2021,
+              "value": 62.1045
+            },
+            {
+              "year": 2022,
+              "value": 66.4846
+            },
+            {
+              "year": 2023,
+              "value": 69.2084
+            },
+            {
+              "year": 2024,
+              "value": 72.7808
+            }
+          ]
         },
         "VNM": {
           "year": 2024,
@@ -2413,7 +15267,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 78.08
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 45
+            },
+            {
+              "year": 2016,
+              "value": 53
+            },
+            {
+              "year": 2017,
+              "value": 58.14
+            },
+            {
+              "year": 2018,
+              "value": 69.8479
+            },
+            {
+              "year": 2019,
+              "value": 68.6616
+            },
+            {
+              "year": 2020,
+              "value": 70.3
+            },
+            {
+              "year": 2021,
+              "value": 74.21
+            },
+            {
+              "year": 2022,
+              "value": 78.59
+            },
+            {
+              "year": 2023,
+              "value": 78.08
+            },
+            {
+              "year": 2024,
+              "value": 84.15
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -2457,7 +15353,9 @@ export const indicatorSnapshot = {
           "year": 2024,
           "value": 97.8956
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "high-tech-exports": {
       "countries": {
@@ -2467,7 +15365,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 30.2763
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 31.2119
+            },
+            {
+              "year": 2016,
+              "value": 30.525
+            },
+            {
+              "year": 2017,
+              "value": 32.5463
+            },
+            {
+              "year": 2018,
+              "value": 36.3912
+            },
+            {
+              "year": 2019,
+              "value": 32.4051
+            },
+            {
+              "year": 2020,
+              "value": 35.6022
+            },
+            {
+              "year": 2021,
+              "value": 36.0145
+            },
+            {
+              "year": 2022,
+              "value": 36.1183
+            },
+            {
+              "year": 2023,
+              "value": 30.2763
+            },
+            {
+              "year": 2024,
+              "value": 36.2583
+            }
+          ]
         },
         "WLD": {
           "year": 2024,
@@ -2475,7 +15415,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 22.971
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 19.9525
+            },
+            {
+              "year": 2016,
+              "value": 20.097
+            },
+            {
+              "year": 2017,
+              "value": 20.5594
+            },
+            {
+              "year": 2018,
+              "value": 20.515
+            },
+            {
+              "year": 2019,
+              "value": 20.7366
+            },
+            {
+              "year": 2020,
+              "value": 21.8427
+            },
+            {
+              "year": 2021,
+              "value": 21.5461
+            },
+            {
+              "year": 2022,
+              "value": 22.9133
+            },
+            {
+              "year": 2023,
+              "value": 22.971
+            },
+            {
+              "year": 2024,
+              "value": 24.7171
+            }
+          ]
         },
         "USA": {
           "year": 2024,
@@ -2483,7 +15465,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 21.846
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 21.3904
+            },
+            {
+              "year": 2016,
+              "value": 22.4193
+            },
+            {
+              "year": 2017,
+              "value": 19.266
+            },
+            {
+              "year": 2018,
+              "value": 18.4843
+            },
+            {
+              "year": 2019,
+              "value": 18.6854
+            },
+            {
+              "year": 2020,
+              "value": 19.494
+            },
+            {
+              "year": 2021,
+              "value": 19.9015
+            },
+            {
+              "year": 2022,
+              "value": 20.579
+            },
+            {
+              "year": 2023,
+              "value": 21.846
+            },
+            {
+              "year": 2024,
+              "value": 24.323
+            }
+          ]
         },
         "JPN": {
           "year": 2024,
@@ -2491,7 +15515,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 17.1028
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 18.0455
+            },
+            {
+              "year": 2016,
+              "value": 17.6204
+            },
+            {
+              "year": 2017,
+              "value": 17.5943
+            },
+            {
+              "year": 2018,
+              "value": 17.2971
+            },
+            {
+              "year": 2019,
+              "value": 17.0304
+            },
+            {
+              "year": 2020,
+              "value": 18.6333
+            },
+            {
+              "year": 2021,
+              "value": 18.004
+            },
+            {
+              "year": 2022,
+              "value": 18.2593
+            },
+            {
+              "year": 2023,
+              "value": 17.1028
+            },
+            {
+              "year": 2024,
+              "value": 17.5547
+            }
+          ]
         },
         "CHN": {
           "year": 2024,
@@ -2499,7 +15565,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 26.5682
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 30.4313
+            },
+            {
+              "year": 2016,
+              "value": 30.2545
+            },
+            {
+              "year": 2017,
+              "value": 30.9119
+            },
+            {
+              "year": 2018,
+              "value": 31.5481
+            },
+            {
+              "year": 2019,
+              "value": 30.8186
+            },
+            {
+              "year": 2020,
+              "value": 31.2766
+            },
+            {
+              "year": 2021,
+              "value": 30.2191
+            },
+            {
+              "year": 2022,
+              "value": 27.7651
+            },
+            {
+              "year": 2023,
+              "value": 26.5682
+            },
+            {
+              "year": 2024,
+              "value": 26.2777
+            }
+          ]
         },
         "DEU": {
           "year": 2024,
@@ -2507,7 +15615,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 17.7818
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 17.8244
+            },
+            {
+              "year": 2016,
+              "value": 18.0827
+            },
+            {
+              "year": 2017,
+              "value": 15.8506
+            },
+            {
+              "year": 2018,
+              "value": 15.7474
+            },
+            {
+              "year": 2019,
+              "value": 16.3869
+            },
+            {
+              "year": 2020,
+              "value": 15.5032
+            },
+            {
+              "year": 2021,
+              "value": 15.3851
+            },
+            {
+              "year": 2022,
+              "value": 17.4982
+            },
+            {
+              "year": 2023,
+              "value": 17.7818
+            },
+            {
+              "year": 2024,
+              "value": 17.9773
+            }
+          ]
         },
         "GBR": {
           "year": 2024,
@@ -2515,7 +15665,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 28.8917
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 22.3336
+            },
+            {
+              "year": 2016,
+              "value": 23.5591
+            },
+            {
+              "year": 2017,
+              "value": 22.6195
+            },
+            {
+              "year": 2018,
+              "value": 22.3331
+            },
+            {
+              "year": 2019,
+              "value": 23.0942
+            },
+            {
+              "year": 2020,
+              "value": 23.0074
+            },
+            {
+              "year": 2021,
+              "value": 23.8654
+            },
+            {
+              "year": 2022,
+              "value": 27.1598
+            },
+            {
+              "year": 2023,
+              "value": 28.8917
+            },
+            {
+              "year": 2024,
+              "value": 29.2333
+            }
+          ]
         },
         "FRA": {
           "year": 2024,
@@ -2523,7 +15715,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 22.3835
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 28.2117
+            },
+            {
+              "year": 2016,
+              "value": 27.9332
+            },
+            {
+              "year": 2017,
+              "value": 26.018
+            },
+            {
+              "year": 2018,
+              "value": 25.9348
+            },
+            {
+              "year": 2019,
+              "value": 26.9266
+            },
+            {
+              "year": 2020,
+              "value": 21.192
+            },
+            {
+              "year": 2021,
+              "value": 22.305
+            },
+            {
+              "year": 2022,
+              "value": 21.9265
+            },
+            {
+              "year": 2023,
+              "value": 22.3835
+            },
+            {
+              "year": 2024,
+              "value": 23.1371
+            }
+          ]
         },
         "CAN": {
           "year": 2024,
@@ -2531,7 +15765,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 16.3718
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 14.8287
+            },
+            {
+              "year": 2016,
+              "value": 14.0996
+            },
+            {
+              "year": 2017,
+              "value": 14.3488
+            },
+            {
+              "year": 2018,
+              "value": 15.4223
+            },
+            {
+              "year": 2019,
+              "value": 17.1309
+            },
+            {
+              "year": 2020,
+              "value": 16.7587
+            },
+            {
+              "year": 2021,
+              "value": 16.3376
+            },
+            {
+              "year": 2022,
+              "value": 15.149
+            },
+            {
+              "year": 2023,
+              "value": 16.3718
+            },
+            {
+              "year": 2024,
+              "value": 16.7779
+            }
+          ]
         },
         "AUS": {
           "year": 2024,
@@ -2539,7 +15815,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 25.2583
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 19.6921
+            },
+            {
+              "year": 2016,
+              "value": 20.6275
+            },
+            {
+              "year": 2017,
+              "value": 18.0968
+            },
+            {
+              "year": 2018,
+              "value": 18.1371
+            },
+            {
+              "year": 2019,
+              "value": 21.2199
+            },
+            {
+              "year": 2020,
+              "value": 21.4758
+            },
+            {
+              "year": 2021,
+              "value": 22.3941
+            },
+            {
+              "year": 2022,
+              "value": 25.8319
+            },
+            {
+              "year": 2023,
+              "value": 25.2583
+            },
+            {
+              "year": 2024,
+              "value": 25.1586
+            }
+          ]
         },
         "IND": {
           "year": 2024,
@@ -2547,7 +15865,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 14.9343
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 8.0248
+            },
+            {
+              "year": 2016,
+              "value": 7.6633
+            },
+            {
+              "year": 2017,
+              "value": 7.3621
+            },
+            {
+              "year": 2018,
+              "value": 9.0415
+            },
+            {
+              "year": 2019,
+              "value": 10.2237
+            },
+            {
+              "year": 2020,
+              "value": 11.0326
+            },
+            {
+              "year": 2021,
+              "value": 10.2126
+            },
+            {
+              "year": 2022,
+              "value": 12.6823
+            },
+            {
+              "year": 2023,
+              "value": 14.9343
+            },
+            {
+              "year": 2024,
+              "value": 18.5724
+            }
+          ]
         },
         "BRA": {
           "year": 2024,
@@ -2555,7 +15915,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 9.8491
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 14.4859
+            },
+            {
+              "year": 2016,
+              "value": 16.0002
+            },
+            {
+              "year": 2017,
+              "value": 14.3119
+            },
+            {
+              "year": 2018,
+              "value": 14.7442
+            },
+            {
+              "year": 2019,
+              "value": 14.0668
+            },
+            {
+              "year": 2020,
+              "value": 11.3501
+            },
+            {
+              "year": 2021,
+              "value": 9.0016
+            },
+            {
+              "year": 2022,
+              "value": 9.1113
+            },
+            {
+              "year": 2023,
+              "value": 9.8491
+            },
+            {
+              "year": 2024,
+              "value": 11.1104
+            }
+          ]
         },
         "SGP": {
           "year": 2024,
@@ -2563,7 +15965,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 56.1384
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 52.2175
+            },
+            {
+              "year": 2016,
+              "value": 52.2327
+            },
+            {
+              "year": 2017,
+              "value": 53.072
+            },
+            {
+              "year": 2018,
+              "value": 51.5723
+            },
+            {
+              "year": 2019,
+              "value": 51.8166
+            },
+            {
+              "year": 2020,
+              "value": 55.2616
+            },
+            {
+              "year": 2021,
+              "value": 54.9723
+            },
+            {
+              "year": 2022,
+              "value": 56.8269
+            },
+            {
+              "year": 2023,
+              "value": 56.1384
+            },
+            {
+              "year": 2024,
+              "value": 59.4298
+            }
+          ]
         },
         "IDN": {
           "year": 2024,
@@ -2571,7 +16015,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 9.0831
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 8.8899
+            },
+            {
+              "year": 2016,
+              "value": 7.9986
+            },
+            {
+              "year": 2017,
+              "value": 8.4463
+            },
+            {
+              "year": 2018,
+              "value": 8.213
+            },
+            {
+              "year": 2019,
+              "value": 8.0921
+            },
+            {
+              "year": 2020,
+              "value": 8.4247
+            },
+            {
+              "year": 2021,
+              "value": 7.2013
+            },
+            {
+              "year": 2022,
+              "value": 8.3082
+            },
+            {
+              "year": 2023,
+              "value": 9.0831
+            },
+            {
+              "year": 2024,
+              "value": 8.711
+            }
+          ]
         },
         "VNM": {
           "year": 2023,
@@ -2579,7 +16065,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 42.6892
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 36.3691
+            },
+            {
+              "year": 2016,
+              "value": 38.057
+            },
+            {
+              "year": 2017,
+              "value": 41.7381
+            },
+            {
+              "year": 2018,
+              "value": 40.7502
+            },
+            {
+              "year": 2019,
+              "value": 40.4334
+            },
+            {
+              "year": 2020,
+              "value": 41.7401
+            },
+            {
+              "year": 2021,
+              "value": 41.5396
+            },
+            {
+              "year": 2022,
+              "value": 42.6892
+            },
+            {
+              "year": 2023,
+              "value": 44.2569
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -2623,7 +16147,9 @@ export const indicatorSnapshot = {
           "year": 2024,
           "value": 36.2583
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "co2-per-capita": {
       "countries": {
@@ -2633,7 +16159,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 11.4163
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 12.6198
+            },
+            {
+              "year": 2016,
+              "value": 12.6678
+            },
+            {
+              "year": 2017,
+              "value": 12.9529
+            },
+            {
+              "year": 2018,
+              "value": 13.1917
+            },
+            {
+              "year": 2019,
+              "value": 12.6532
+            },
+            {
+              "year": 2020,
+              "value": 11.9094
+            },
+            {
+              "year": 2021,
+              "value": 12.3387
+            },
+            {
+              "year": 2022,
+              "value": 11.8737
+            },
+            {
+              "year": 2023,
+              "value": 11.4163
+            },
+            {
+              "year": 2024,
+              "value": 11.3623
+            }
+          ]
         },
         "WLD": {
           "year": 2024,
@@ -2641,7 +16209,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 4.6776
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 4.6983
+            },
+            {
+              "year": 2016,
+              "value": 4.65
+            },
+            {
+              "year": 2017,
+              "value": 4.6722
+            },
+            {
+              "year": 2018,
+              "value": 4.7349
+            },
+            {
+              "year": 2019,
+              "value": 4.7012
+            },
+            {
+              "year": 2020,
+              "value": 4.4745
+            },
+            {
+              "year": 2021,
+              "value": 4.6848
+            },
+            {
+              "year": 2022,
+              "value": 4.6679
+            },
+            {
+              "year": 2023,
+              "value": 4.6776
+            },
+            {
+              "year": 2024,
+              "value": 4.6938
+            }
+          ]
         },
         "USA": {
           "year": 2024,
@@ -2649,7 +16259,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 13.714
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 15.9501
+            },
+            {
+              "year": 2016,
+              "value": 15.5045
+            },
+            {
+              "year": 2017,
+              "value": 15.1847
+            },
+            {
+              "year": 2018,
+              "value": 15.5796
+            },
+            {
+              "year": 2019,
+              "value": 15.044
+            },
+            {
+              "year": 2020,
+              "value": 13.4716
+            },
+            {
+              "year": 2021,
+              "value": 14.3161
+            },
+            {
+              "year": 2022,
+              "value": 14.4186
+            },
+            {
+              "year": 2023,
+              "value": 13.714
+            },
+            {
+              "year": 2024,
+              "value": 13.6239
+            }
+          ]
         },
         "JPN": {
           "year": 2024,
@@ -2657,7 +16309,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 8.0506
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 9.6946
+            },
+            {
+              "year": 2016,
+              "value": 9.6687
+            },
+            {
+              "year": 2017,
+              "value": 9.5528
+            },
+            {
+              "year": 2018,
+              "value": 9.1721
+            },
+            {
+              "year": 2019,
+              "value": 8.8746
+            },
+            {
+              "year": 2020,
+              "value": 8.3971
+            },
+            {
+              "year": 2021,
+              "value": 8.5948
+            },
+            {
+              "year": 2022,
+              "value": 8.3956
+            },
+            {
+              "year": 2023,
+              "value": 8.0506
+            },
+            {
+              "year": 2024,
+              "value": 7.8424
+            }
+          ]
         },
         "CHN": {
           "year": 2024,
@@ -2665,7 +16359,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 9.2303
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 7.7906
+            },
+            {
+              "year": 2016,
+              "value": 7.7632
+            },
+            {
+              "year": 2017,
+              "value": 7.878
+            },
+            {
+              "year": 2018,
+              "value": 8.2177
+            },
+            {
+              "year": 2019,
+              "value": 8.3915
+            },
+            {
+              "year": 2020,
+              "value": 8.4786
+            },
+            {
+              "year": 2021,
+              "value": 8.8872
+            },
+            {
+              "year": 2022,
+              "value": 8.8648
+            },
+            {
+              "year": 2023,
+              "value": 9.2303
+            },
+            {
+              "year": 2024,
+              "value": 9.3151
+            }
+          ]
         },
         "DEU": {
           "year": 2024,
@@ -2673,7 +16409,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 7.0798
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 9.6088
+            },
+            {
+              "year": 2016,
+              "value": 9.5842
+            },
+            {
+              "year": 2017,
+              "value": 9.3698
+            },
+            {
+              "year": 2018,
+              "value": 9.0066
+            },
+            {
+              "year": 2019,
+              "value": 8.3822
+            },
+            {
+              "year": 2020,
+              "value": 7.721
+            },
+            {
+              "year": 2021,
+              "value": 8.0613
+            },
+            {
+              "year": 2022,
+              "value": 7.9118
+            },
+            {
+              "year": 2023,
+              "value": 7.0798
+            },
+            {
+              "year": 2024,
+              "value": 6.944
+            }
+          ]
         },
         "GBR": {
           "year": 2024,
@@ -2681,7 +16459,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 4.4478
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 6.3897
+            },
+            {
+              "year": 2016,
+              "value": 5.973
+            },
+            {
+              "year": 2017,
+              "value": 5.7715
+            },
+            {
+              "year": 2018,
+              "value": 5.6404
+            },
+            {
+              "year": 2019,
+              "value": 5.3883
+            },
+            {
+              "year": 2020,
+              "value": 4.7902
+            },
+            {
+              "year": 2021,
+              "value": 5.0452
+            },
+            {
+              "year": 2022,
+              "value": 4.8051
+            },
+            {
+              "year": 2023,
+              "value": 4.4478
+            },
+            {
+              "year": 2024,
+              "value": 4.2208
+            }
+          ]
         },
         "FRA": {
           "year": 2024,
@@ -2689,7 +16509,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 4.156
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 4.9912
+            },
+            {
+              "year": 2016,
+              "value": 5.0173
+            },
+            {
+              "year": 2017,
+              "value": 5.0616
+            },
+            {
+              "year": 2018,
+              "value": 4.8922
+            },
+            {
+              "year": 2019,
+              "value": 4.7921
+            },
+            {
+              "year": 2020,
+              "value": 4.2468
+            },
+            {
+              "year": 2021,
+              "value": 4.6682
+            },
+            {
+              "year": 2022,
+              "value": 4.5125
+            },
+            {
+              "year": 2023,
+              "value": 4.156
+            },
+            {
+              "year": 2024,
+              "value": 4.0036
+            }
+          ]
         },
         "CAN": {
           "year": 2024,
@@ -2697,7 +16559,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 14.16
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 16.087
+            },
+            {
+              "year": 2016,
+              "value": 15.8982
+            },
+            {
+              "year": 2017,
+              "value": 16.1962
+            },
+            {
+              "year": 2018,
+              "value": 16.5239
+            },
+            {
+              "year": 2019,
+              "value": 16.1909
+            },
+            {
+              "year": 2020,
+              "value": 14.4219
+            },
+            {
+              "year": 2021,
+              "value": 14.6898
+            },
+            {
+              "year": 2022,
+              "value": 14.7839
+            },
+            {
+              "year": 2023,
+              "value": 14.16
+            },
+            {
+              "year": 2024,
+              "value": 14.0073
+            }
+          ]
         },
         "AUS": {
           "year": 2024,
@@ -2705,7 +16609,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 14.1597
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 16.822
+            },
+            {
+              "year": 2016,
+              "value": 16.8912
+            },
+            {
+              "year": 2017,
+              "value": 16.7209
+            },
+            {
+              "year": 2018,
+              "value": 16.394
+            },
+            {
+              "year": 2019,
+              "value": 16.1007
+            },
+            {
+              "year": 2020,
+              "value": 15.3044
+            },
+            {
+              "year": 2021,
+              "value": 14.9787
+            },
+            {
+              "year": 2022,
+              "value": 14.5305
+            },
+            {
+              "year": 2023,
+              "value": 14.1597
+            },
+            {
+              "year": 2024,
+              "value": 14.0987
+            }
+          ]
         },
         "IND": {
           "year": 2024,
@@ -2713,7 +16659,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 2.0962
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.7155
+            },
+            {
+              "year": 2016,
+              "value": 1.7203
+            },
+            {
+              "year": 2017,
+              "value": 1.7955
+            },
+            {
+              "year": 2018,
+              "value": 1.8599
+            },
+            {
+              "year": 2019,
+              "value": 1.8369
+            },
+            {
+              "year": 2020,
+              "value": 1.6804
+            },
+            {
+              "year": 2021,
+              "value": 1.837
+            },
+            {
+              "year": 2022,
+              "value": 1.9693
+            },
+            {
+              "year": 2023,
+              "value": 2.0962
+            },
+            {
+              "year": 2024,
+              "value": 2.1737
+            }
+          ]
         },
         "BRA": {
           "year": 2024,
@@ -2721,7 +16709,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 2.2745
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.5682
+            },
+            {
+              "year": 2016,
+              "value": 2.3753
+            },
+            {
+              "year": 2017,
+              "value": 2.4169
+            },
+            {
+              "year": 2018,
+              "value": 2.2856
+            },
+            {
+              "year": 2019,
+              "value": 2.2587
+            },
+            {
+              "year": 2020,
+              "value": 2.1466
+            },
+            {
+              "year": 2021,
+              "value": 2.4158
+            },
+            {
+              "year": 2022,
+              "value": 2.2789
+            },
+            {
+              "year": 2023,
+              "value": 2.2745
+            },
+            {
+              "year": 2024,
+              "value": 2.3183
+            }
+          ]
         },
         "SGP": {
           "year": 2024,
@@ -2729,7 +16759,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 9.4803
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 9.9683
+            },
+            {
+              "year": 2016,
+              "value": 9.4471
+            },
+            {
+              "year": 2017,
+              "value": 10.1364
+            },
+            {
+              "year": 2018,
+              "value": 9.6143
+            },
+            {
+              "year": 2019,
+              "value": 9.7987
+            },
+            {
+              "year": 2020,
+              "value": 9.4757
+            },
+            {
+              "year": 2021,
+              "value": 10.2168
+            },
+            {
+              "year": 2022,
+              "value": 9.9958
+            },
+            {
+              "year": 2023,
+              "value": 9.4803
+            },
+            {
+              "year": 2024,
+              "value": 9.7514
+            }
+          ]
         },
         "IDN": {
           "year": 2024,
@@ -2737,7 +16809,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 2.7475
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.9572
+            },
+            {
+              "year": 2016,
+              "value": 1.9163
+            },
+            {
+              "year": 2017,
+              "value": 2.0039
+            },
+            {
+              "year": 2018,
+              "value": 2.2095
+            },
+            {
+              "year": 2019,
+              "value": 2.3398
+            },
+            {
+              "year": 2020,
+              "value": 2.1698
+            },
+            {
+              "year": 2021,
+              "value": 2.2499
+            },
+            {
+              "year": 2022,
+              "value": 2.5919
+            },
+            {
+              "year": 2023,
+              "value": 2.7475
+            },
+            {
+              "year": 2024,
+              "value": 2.865
+            }
+          ]
         },
         "VNM": {
           "year": 2024,
@@ -2745,7 +16859,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 3.8935
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.1634
+            },
+            {
+              "year": 2016,
+              "value": 2.3809
+            },
+            {
+              "year": 2017,
+              "value": 2.4087
+            },
+            {
+              "year": 2018,
+              "value": 2.9313
+            },
+            {
+              "year": 2019,
+              "value": 3.4632
+            },
+            {
+              "year": 2020,
+              "value": 3.5515
+            },
+            {
+              "year": 2021,
+              "value": 3.3979
+            },
+            {
+              "year": 2022,
+              "value": 3.451
+            },
+            {
+              "year": 2023,
+              "value": 3.8935
+            },
+            {
+              "year": 2024,
+              "value": 4.2661
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -2789,7 +16945,9 @@ export const indicatorSnapshot = {
           "year": 2024,
           "value": 11.3623
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "renewable-energy": {
       "countries": {
@@ -2799,7 +16957,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 3.6
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.7
+            },
+            {
+              "year": 2016,
+              "value": 2.6
+            },
+            {
+              "year": 2017,
+              "value": 2.8
+            },
+            {
+              "year": 2018,
+              "value": 3.2
+            },
+            {
+              "year": 2019,
+              "value": 3.2
+            },
+            {
+              "year": 2020,
+              "value": 3.6
+            },
+            {
+              "year": 2021,
+              "value": 3.6
+            }
+          ]
         },
         "WLD": {
           "year": 2020,
@@ -2807,7 +16995,33 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2019,
             "value": 18.5752
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 17.4035
+            },
+            {
+              "year": 2016,
+              "value": 17.6281
+            },
+            {
+              "year": 2017,
+              "value": 17.8542
+            },
+            {
+              "year": 2018,
+              "value": 18.1052
+            },
+            {
+              "year": 2019,
+              "value": 18.5752
+            },
+            {
+              "year": 2020,
+              "value": 19.7356
+            }
+          ]
         },
         "USA": {
           "year": 2021,
@@ -2815,7 +17029,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 11
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 8.9
+            },
+            {
+              "year": 2016,
+              "value": 9.3
+            },
+            {
+              "year": 2017,
+              "value": 9.7
+            },
+            {
+              "year": 2018,
+              "value": 9.9
+            },
+            {
+              "year": 2019,
+              "value": 10.2
+            },
+            {
+              "year": 2020,
+              "value": 11
+            },
+            {
+              "year": 2021,
+              "value": 10.9
+            }
+          ]
         },
         "JPN": {
           "year": 2021,
@@ -2823,7 +17067,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 8.5
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 6.2
+            },
+            {
+              "year": 2016,
+              "value": 6.4
+            },
+            {
+              "year": 2017,
+              "value": 6.9
+            },
+            {
+              "year": 2018,
+              "value": 7.3
+            },
+            {
+              "year": 2019,
+              "value": 7.8
+            },
+            {
+              "year": 2020,
+              "value": 8.5
+            },
+            {
+              "year": 2021,
+              "value": 8.8
+            }
+          ]
         },
         "CHN": {
           "year": 2021,
@@ -2831,7 +17105,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 14.9
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 12.2
+            },
+            {
+              "year": 2016,
+              "value": 12.6
+            },
+            {
+              "year": 2017,
+              "value": 13.1
+            },
+            {
+              "year": 2018,
+              "value": 13.5
+            },
+            {
+              "year": 2019,
+              "value": 14.3
+            },
+            {
+              "year": 2020,
+              "value": 14.9
+            },
+            {
+              "year": 2021,
+              "value": 15.2
+            }
+          ]
         },
         "DEU": {
           "year": 2021,
@@ -2839,7 +17143,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 18.5
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 14.6
+            },
+            {
+              "year": 2016,
+              "value": 14.2
+            },
+            {
+              "year": 2017,
+              "value": 15.2
+            },
+            {
+              "year": 2018,
+              "value": 16
+            },
+            {
+              "year": 2019,
+              "value": 17.1
+            },
+            {
+              "year": 2020,
+              "value": 18.5
+            },
+            {
+              "year": 2021,
+              "value": 17.6
+            }
+          ]
         },
         "GBR": {
           "year": 2021,
@@ -2847,7 +17181,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 13.6
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 7.7
+            },
+            {
+              "year": 2016,
+              "value": 7.7
+            },
+            {
+              "year": 2017,
+              "value": 8.8
+            },
+            {
+              "year": 2018,
+              "value": 10.2
+            },
+            {
+              "year": 2019,
+              "value": 11.4
+            },
+            {
+              "year": 2020,
+              "value": 13.6
+            },
+            {
+              "year": 2021,
+              "value": 12.2
+            }
+          ]
         },
         "FRA": {
           "year": 2021,
@@ -2855,7 +17219,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 16.8
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 13.3
+            },
+            {
+              "year": 2016,
+              "value": 14.2
+            },
+            {
+              "year": 2017,
+              "value": 14.1
+            },
+            {
+              "year": 2018,
+              "value": 15.2
+            },
+            {
+              "year": 2019,
+              "value": 15.5
+            },
+            {
+              "year": 2020,
+              "value": 16.8
+            },
+            {
+              "year": 2021,
+              "value": 16.2
+            }
+          ]
         },
         "CAN": {
           "year": 2021,
@@ -2863,7 +17257,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 23.9
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 22.3
+            },
+            {
+              "year": 2016,
+              "value": 22.1
+            },
+            {
+              "year": 2017,
+              "value": 22.8
+            },
+            {
+              "year": 2018,
+              "value": 22.3
+            },
+            {
+              "year": 2019,
+              "value": 22.4
+            },
+            {
+              "year": 2020,
+              "value": 23.9
+            },
+            {
+              "year": 2021,
+              "value": 23.8
+            }
+          ]
         },
         "AUS": {
           "year": 2021,
@@ -2871,7 +17295,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 11.2
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 9.4
+            },
+            {
+              "year": 2016,
+              "value": 9.6
+            },
+            {
+              "year": 2017,
+              "value": 9.9
+            },
+            {
+              "year": 2018,
+              "value": 9.8
+            },
+            {
+              "year": 2019,
+              "value": 10.3
+            },
+            {
+              "year": 2020,
+              "value": 11.2
+            },
+            {
+              "year": 2021,
+              "value": 12.3
+            }
+          ]
         },
         "IND": {
           "year": 2021,
@@ -2879,7 +17333,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 36.1
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 33.4
+            },
+            {
+              "year": 2016,
+              "value": 33
+            },
+            {
+              "year": 2017,
+              "value": 32.5
+            },
+            {
+              "year": 2018,
+              "value": 32.9
+            },
+            {
+              "year": 2019,
+              "value": 33.5
+            },
+            {
+              "year": 2020,
+              "value": 36.1
+            },
+            {
+              "year": 2021,
+              "value": 34.9
+            }
+          ]
         },
         "BRA": {
           "year": 2021,
@@ -2887,7 +17371,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 50
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 43.7
+            },
+            {
+              "year": 2016,
+              "value": 45.4
+            },
+            {
+              "year": 2017,
+              "value": 45.3
+            },
+            {
+              "year": 2018,
+              "value": 46.9
+            },
+            {
+              "year": 2019,
+              "value": 47.5
+            },
+            {
+              "year": 2020,
+              "value": 50
+            },
+            {
+              "year": 2021,
+              "value": 46.5
+            }
+          ]
         },
         "SGP": {
           "year": 2021,
@@ -2895,7 +17409,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 0.9
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.7
+            },
+            {
+              "year": 2016,
+              "value": 0.7
+            },
+            {
+              "year": 2017,
+              "value": 0.7
+            },
+            {
+              "year": 2018,
+              "value": 0.8
+            },
+            {
+              "year": 2019,
+              "value": 0.9
+            },
+            {
+              "year": 2020,
+              "value": 0.9
+            },
+            {
+              "year": 2021,
+              "value": 1.1
+            }
+          ]
         },
         "IDN": {
           "year": 2021,
@@ -2903,7 +17447,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 21.9
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 26.6
+            },
+            {
+              "year": 2016,
+              "value": 27.8
+            },
+            {
+              "year": 2017,
+              "value": 25.2
+            },
+            {
+              "year": 2018,
+              "value": 22
+            },
+            {
+              "year": 2019,
+              "value": 19.8
+            },
+            {
+              "year": 2020,
+              "value": 21.9
+            },
+            {
+              "year": 2021,
+              "value": 20.2
+            }
+          ]
         },
         "VNM": {
           "year": 2021,
@@ -2911,7 +17485,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 18.9
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 27.8
+            },
+            {
+              "year": 2016,
+              "value": 26.8
+            },
+            {
+              "year": 2017,
+              "value": 28.3
+            },
+            {
+              "year": 2018,
+              "value": 24.3
+            },
+            {
+              "year": 2019,
+              "value": 20.4
+            },
+            {
+              "year": 2020,
+              "value": 18.9
+            },
+            {
+              "year": 2021,
+              "value": 24.2
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -2943,7 +17547,9 @@ export const indicatorSnapshot = {
           "year": 2021,
           "value": 3.6
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "energy-use": {
       "countries": {
@@ -2953,7 +17559,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 5336.9249
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 5239.0035
+            },
+            {
+              "year": 2016,
+              "value": 5390.8404
+            },
+            {
+              "year": 2017,
+              "value": 5467.8222
+            },
+            {
+              "year": 2018,
+              "value": 5531.7796
+            },
+            {
+              "year": 2019,
+              "value": 5334.6739
+            },
+            {
+              "year": 2020,
+              "value": 5195.9101
+            },
+            {
+              "year": 2021,
+              "value": 5513.6283
+            },
+            {
+              "year": 2022,
+              "value": 5411.9748
+            },
+            {
+              "year": 2023,
+              "value": 5336.9249
+            },
+            {
+              "year": 2024,
+              "value": 5438.7904
+            }
+          ]
         },
         "WLD": {
           "year": 2023,
@@ -2961,7 +17609,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 1852.6195
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1790.6567
+            },
+            {
+              "year": 2016,
+              "value": 1786.1168
+            },
+            {
+              "year": 2017,
+              "value": 1804.7451
+            },
+            {
+              "year": 2018,
+              "value": 1827.8406
+            },
+            {
+              "year": 2019,
+              "value": 1829.8371
+            },
+            {
+              "year": 2020,
+              "value": 1763.0301
+            },
+            {
+              "year": 2021,
+              "value": 1852.5443
+            },
+            {
+              "year": 2022,
+              "value": 1852.6195
+            },
+            {
+              "year": 2023,
+              "value": 1866.4338
+            }
+          ]
         },
         "USA": {
           "year": 2024,
@@ -2969,7 +17655,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 6364.4673
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 6789.6473
+            },
+            {
+              "year": 2016,
+              "value": 6663.4963
+            },
+            {
+              "year": 2017,
+              "value": 6590.8351
+            },
+            {
+              "year": 2018,
+              "value": 6738.2727
+            },
+            {
+              "year": 2019,
+              "value": 6700.9303
+            },
+            {
+              "year": 2020,
+              "value": 6141.5241
+            },
+            {
+              "year": 2021,
+              "value": 6445.8262
+            },
+            {
+              "year": 2022,
+              "value": 6512.0982
+            },
+            {
+              "year": 2023,
+              "value": 6364.4673
+            },
+            {
+              "year": 2024,
+              "value": 6361.4447
+            }
+          ]
         },
         "JPN": {
           "year": 2024,
@@ -2977,7 +17705,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 3039.1413
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3400.5927
+            },
+            {
+              "year": 2016,
+              "value": 3370.8878
+            },
+            {
+              "year": 2017,
+              "value": 3391.0504
+            },
+            {
+              "year": 2018,
+              "value": 3343.0541
+            },
+            {
+              "year": 2019,
+              "value": 3261.6202
+            },
+            {
+              "year": 2020,
+              "value": 3046.8548
+            },
+            {
+              "year": 2021,
+              "value": 3196.0397
+            },
+            {
+              "year": 2022,
+              "value": 3129.6586
+            },
+            {
+              "year": 2023,
+              "value": 3039.1413
+            },
+            {
+              "year": 2024,
+              "value": 3005.899
+            }
+          ]
         },
         "CHN": {
           "year": 2023,
@@ -2985,7 +17755,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 2676.482
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2175.1544
+            },
+            {
+              "year": 2016,
+              "value": 2149.2048
+            },
+            {
+              "year": 2017,
+              "value": 2215.9114
+            },
+            {
+              "year": 2018,
+              "value": 2310.8776
+            },
+            {
+              "year": 2019,
+              "value": 2397.9687
+            },
+            {
+              "year": 2020,
+              "value": 2465.9695
+            },
+            {
+              "year": 2021,
+              "value": 2623.7996
+            },
+            {
+              "year": 2022,
+              "value": 2676.482
+            },
+            {
+              "year": 2023,
+              "value": 2850.9415
+            }
+          ]
         },
         "DEU": {
           "year": 2024,
@@ -2993,7 +17801,483 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 2928.1966
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3780.8503
+            },
+            {
+              "year": 2016,
+              "value": 3765.218
+            },
+            {
+              "year": 2017,
+              "value": 3763.194
+            },
+            {
+              "year": 2018,
+              "value": 3659.2292
+            },
+            {
+              "year": 2019,
+              "value": 3570.8816
+            },
+            {
+              "year": 2020,
+              "value": 3349.1993
+            },
+            {
+              "year": 2021,
+              "value": 3467.0306
+            },
+            {
+              "year": 2022,
+              "value": 3261.8564
+            },
+            {
+              "year": 2023,
+              "value": 2928.1966
+            },
+            {
+              "year": 2024,
+              "value": 2824.5901
+            }
+          ]
+        },
+        "GBR": {
+          "year": 2024,
+          "value": 2069.3792,
+          "previous": {
+            "year": 2023,
+            "value": 2126.5528
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2774.8395
+            },
+            {
+              "year": 2016,
+              "value": 2697.0211
+            },
+            {
+              "year": 2017,
+              "value": 2659.0764
+            },
+            {
+              "year": 2018,
+              "value": 2632.2301
+            },
+            {
+              "year": 2019,
+              "value": 2516.0867
+            },
+            {
+              "year": 2020,
+              "value": 2317.5474
+            },
+            {
+              "year": 2021,
+              "value": 2377.4766
+            },
+            {
+              "year": 2022,
+              "value": 2253.3028
+            },
+            {
+              "year": 2023,
+              "value": 2126.5528
+            },
+            {
+              "year": 2024,
+              "value": 2069.3792
+            }
+          ]
+        },
+        "FRA": {
+          "year": 2024,
+          "value": 3184.7895,
+          "previous": {
+            "year": 2023,
+            "value": 3136.1224
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3799.1926
+            },
+            {
+              "year": 2016,
+              "value": 3718.1705
+            },
+            {
+              "year": 2017,
+              "value": 3705.4111
+            },
+            {
+              "year": 2018,
+              "value": 3669.3707
+            },
+            {
+              "year": 2019,
+              "value": 3605.5319
+            },
+            {
+              "year": 2020,
+              "value": 3228.4892
+            },
+            {
+              "year": 2021,
+              "value": 3469.834
+            },
+            {
+              "year": 2022,
+              "value": 3100.1898
+            },
+            {
+              "year": 2023,
+              "value": 3136.1224
+            },
+            {
+              "year": 2024,
+              "value": 3184.7895
+            }
+          ]
+        },
+        "CAN": {
+          "year": 2024,
+          "value": 7160.671,
+          "previous": {
+            "year": 2023,
+            "value": 7342.3676
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 7690.4082
+            },
+            {
+              "year": 2016,
+              "value": 7944.5079
+            },
+            {
+              "year": 2017,
+              "value": 8175.1904
+            },
+            {
+              "year": 2018,
+              "value": 8161.7797
+            },
+            {
+              "year": 2019,
+              "value": 8125.5812
+            },
+            {
+              "year": 2020,
+              "value": 7495.0793
+            },
+            {
+              "year": 2021,
+              "value": 7524.8636
+            },
+            {
+              "year": 2022,
+              "value": 7575.2586
+            },
+            {
+              "year": 2023,
+              "value": 7342.3676
+            },
+            {
+              "year": 2024,
+              "value": 7160.671
+            }
+          ]
+        },
+        "AUS": {
+          "year": 2024,
+          "value": 4750.5997,
+          "previous": {
+            "year": 2023,
+            "value": 4927.6489
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 5318.6668
+            },
+            {
+              "year": 2016,
+              "value": 5216.9887
+            },
+            {
+              "year": 2017,
+              "value": 5162.4589
+            },
+            {
+              "year": 2018,
+              "value": 5086.3738
+            },
+            {
+              "year": 2019,
+              "value": 5231.5747
+            },
+            {
+              "year": 2020,
+              "value": 5159.0364
+            },
+            {
+              "year": 2021,
+              "value": 5006.4431
+            },
+            {
+              "year": 2022,
+              "value": 4942.1637
+            },
+            {
+              "year": 2023,
+              "value": 4927.6489
+            },
+            {
+              "year": 2024,
+              "value": 4750.5997
+            }
+          ]
+        },
+        "IND": {
+          "year": 2023,
+          "value": 763.1979,
+          "previous": {
+            "year": 2022,
+            "value": 727.9022
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 622.3399
+            },
+            {
+              "year": 2016,
+              "value": 627.2735
+            },
+            {
+              "year": 2017,
+              "value": 648.0147
+            },
+            {
+              "year": 2018,
+              "value": 668.3034
+            },
+            {
+              "year": 2019,
+              "value": 666.9773
+            },
+            {
+              "year": 2020,
+              "value": 632.2398
+            },
+            {
+              "year": 2021,
+              "value": 676.8143
+            },
+            {
+              "year": 2022,
+              "value": 727.9022
+            },
+            {
+              "year": 2023,
+              "value": 763.1979
+            }
+          ]
+        },
+        "BRA": {
+          "year": 2024,
+          "value": 1511.6238,
+          "previous": {
+            "year": 2023,
+            "value": 1481.2244
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1482.0206
+            },
+            {
+              "year": 2016,
+              "value": 1414.8979
+            },
+            {
+              "year": 2017,
+              "value": 1431.9595
+            },
+            {
+              "year": 2018,
+              "value": 1403.4023
+            },
+            {
+              "year": 2019,
+              "value": 1415.8348
+            },
+            {
+              "year": 2020,
+              "value": 1379.2465
+            },
+            {
+              "year": 2021,
+              "value": 1430.3935
+            },
+            {
+              "year": 2022,
+              "value": 1432.7274
+            },
+            {
+              "year": 2023,
+              "value": 1481.2244
+            },
+            {
+              "year": 2024,
+              "value": 1511.6238
+            }
+          ]
+        },
+        "SGP": {
+          "year": 2023,
+          "value": 5282.7637,
+          "previous": {
+            "year": 2022,
+            "value": 5785.0437
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 5242.6504
+            },
+            {
+              "year": 2016,
+              "value": 5449.4199
+            },
+            {
+              "year": 2017,
+              "value": 5799.3953
+            },
+            {
+              "year": 2018,
+              "value": 5692.6656
+            },
+            {
+              "year": 2019,
+              "value": 5565.9152
+            },
+            {
+              "year": 2020,
+              "value": 5538.1237
+            },
+            {
+              "year": 2021,
+              "value": 5966.3276
+            },
+            {
+              "year": 2022,
+              "value": 5785.0437
+            },
+            {
+              "year": 2023,
+              "value": 5282.7637
+            }
+          ]
+        },
+        "IDN": {
+          "year": 2023,
+          "value": 982.4149,
+          "previous": {
+            "year": 2022,
+            "value": 958.6494
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 704.2482
+            },
+            {
+              "year": 2016,
+              "value": 724.4165
+            },
+            {
+              "year": 2017,
+              "value": 761.4104
+            },
+            {
+              "year": 2018,
+              "value": 832.3619
+            },
+            {
+              "year": 2019,
+              "value": 850.7377
+            },
+            {
+              "year": 2020,
+              "value": 856.0962
+            },
+            {
+              "year": 2021,
+              "value": 902.2336
+            },
+            {
+              "year": 2022,
+              "value": 958.6494
+            },
+            {
+              "year": 2023,
+              "value": 982.4149
+            }
+          ]
+        },
+        "VNM": {
+          "year": 2023,
+          "value": 1018.0694,
+          "previous": {
+            "year": 2022,
+            "value": 1023.0571
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 679.4459
+            },
+            {
+              "year": 2016,
+              "value": 738.8795
+            },
+            {
+              "year": 2017,
+              "value": 757.48
+            },
+            {
+              "year": 2018,
+              "value": 885.6468
+            },
+            {
+              "year": 2019,
+              "value": 987.2715
+            },
+            {
+              "year": 2020,
+              "value": 991.2812
+            },
+            {
+              "year": 2021,
+              "value": 962.1995
+            },
+            {
+              "year": 2022,
+              "value": 1023.0571
+            },
+            {
+              "year": 2023,
+              "value": 1018.0694
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -3037,7 +18321,9 @@ export const indicatorSnapshot = {
           "year": 2024,
           "value": 5438.7904
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "pm25": {
       "countries": {
@@ -3047,7 +18333,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 23.4408
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 24.4994
+            },
+            {
+              "year": 2016,
+              "value": 24.1466
+            },
+            {
+              "year": 2017,
+              "value": 22.0903
+            },
+            {
+              "year": 2018,
+              "value": 21.488
+            },
+            {
+              "year": 2019,
+              "value": 21.9796
+            },
+            {
+              "year": 2020,
+              "value": 20.9984
+            },
+            {
+              "year": 2021,
+              "value": 21.5453
+            },
+            {
+              "year": 2022,
+              "value": 23.4408
+            },
+            {
+              "year": 2023,
+              "value": 21.894
+            }
+          ]
         },
         "WLD": {
           "year": 2023,
@@ -3055,7 +18379,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 32.7321
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 36.5359
+            },
+            {
+              "year": 2016,
+              "value": 35.4772
+            },
+            {
+              "year": 2017,
+              "value": 35.0145
+            },
+            {
+              "year": 2018,
+              "value": 34.7426
+            },
+            {
+              "year": 2019,
+              "value": 33.3845
+            },
+            {
+              "year": 2020,
+              "value": 32.5018
+            },
+            {
+              "year": 2021,
+              "value": 33.1988
+            },
+            {
+              "year": 2022,
+              "value": 32.7321
+            },
+            {
+              "year": 2023,
+              "value": 32.8724
+            }
+          ]
         },
         "USA": {
           "year": 2023,
@@ -3063,7 +18425,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 7.4282
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 8.0524
+            },
+            {
+              "year": 2016,
+              "value": 7.3842
+            },
+            {
+              "year": 2017,
+              "value": 7.6934
+            },
+            {
+              "year": 2018,
+              "value": 7.7575
+            },
+            {
+              "year": 2019,
+              "value": 7.2692
+            },
+            {
+              "year": 2020,
+              "value": 7.7351
+            },
+            {
+              "year": 2021,
+              "value": 8.2314
+            },
+            {
+              "year": 2022,
+              "value": 7.4282
+            },
+            {
+              "year": 2023,
+              "value": 6.968
+            }
+          ]
         },
         "JPN": {
           "year": 2023,
@@ -3071,7 +18471,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 12.4368
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 13.4624
+            },
+            {
+              "year": 2016,
+              "value": 12.3115
+            },
+            {
+              "year": 2017,
+              "value": 12.1938
+            },
+            {
+              "year": 2018,
+              "value": 12.406
+            },
+            {
+              "year": 2019,
+              "value": 11.997
+            },
+            {
+              "year": 2020,
+              "value": 11.236
+            },
+            {
+              "year": 2021,
+              "value": 11.541
+            },
+            {
+              "year": 2022,
+              "value": 12.4368
+            },
+            {
+              "year": 2023,
+              "value": 11.4519
+            }
+          ]
         },
         "CHN": {
           "year": 2023,
@@ -3079,7 +18517,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 31.8958
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 49.4732
+            },
+            {
+              "year": 2016,
+              "value": 45.2806
+            },
+            {
+              "year": 2017,
+              "value": 43.0911
+            },
+            {
+              "year": 2018,
+              "value": 38.5058
+            },
+            {
+              "year": 2019,
+              "value": 37.2024
+            },
+            {
+              "year": 2020,
+              "value": 33.6907
+            },
+            {
+              "year": 2021,
+              "value": 31.9185
+            },
+            {
+              "year": 2022,
+              "value": 31.8958
+            },
+            {
+              "year": 2023,
+              "value": 31.9916
+            }
+          ]
         },
         "DEU": {
           "year": 2023,
@@ -3087,7 +18563,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 9.6488
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 12.1341
+            },
+            {
+              "year": 2016,
+              "value": 11.7952
+            },
+            {
+              "year": 2017,
+              "value": 11.9004
+            },
+            {
+              "year": 2018,
+              "value": 12.2725
+            },
+            {
+              "year": 2019,
+              "value": 9.9577
+            },
+            {
+              "year": 2020,
+              "value": 9.0609
+            },
+            {
+              "year": 2021,
+              "value": 9.9041
+            },
+            {
+              "year": 2022,
+              "value": 9.6488
+            },
+            {
+              "year": 2023,
+              "value": 8.8122
+            }
+          ]
         },
         "GBR": {
           "year": 2023,
@@ -3095,7 +18609,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 10.0166
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 10.4985
+            },
+            {
+              "year": 2016,
+              "value": 10.6631
+            },
+            {
+              "year": 2017,
+              "value": 10.365
+            },
+            {
+              "year": 2018,
+              "value": 10.6059
+            },
+            {
+              "year": 2019,
+              "value": 10.2891
+            },
+            {
+              "year": 2020,
+              "value": 9.5217
+            },
+            {
+              "year": 2021,
+              "value": 9.9958
+            },
+            {
+              "year": 2022,
+              "value": 10.0166
+            },
+            {
+              "year": 2023,
+              "value": 9.4628
+            }
+          ]
         },
         "FRA": {
           "year": 2023,
@@ -3103,7 +18655,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 10.3837
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 12.0482
+            },
+            {
+              "year": 2016,
+              "value": 11.0378
+            },
+            {
+              "year": 2017,
+              "value": 10.6191
+            },
+            {
+              "year": 2018,
+              "value": 10.5108
+            },
+            {
+              "year": 2019,
+              "value": 9.4182
+            },
+            {
+              "year": 2020,
+              "value": 8.778
+            },
+            {
+              "year": 2021,
+              "value": 9.9363
+            },
+            {
+              "year": 2022,
+              "value": 10.3837
+            },
+            {
+              "year": 2023,
+              "value": 8.2274
+            }
+          ]
         },
         "CAN": {
           "year": 2023,
@@ -3111,7 +18701,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 6.3895
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 7.3895
+            },
+            {
+              "year": 2016,
+              "value": 6.1742
+            },
+            {
+              "year": 2017,
+              "value": 6.9121
+            },
+            {
+              "year": 2018,
+              "value": 7.1379
+            },
+            {
+              "year": 2019,
+              "value": 6.4464
+            },
+            {
+              "year": 2020,
+              "value": 6.0264
+            },
+            {
+              "year": 2021,
+              "value": 7.8377
+            },
+            {
+              "year": 2022,
+              "value": 6.3895
+            },
+            {
+              "year": 2023,
+              "value": 6.5504
+            }
+          ]
         },
         "AUS": {
           "year": 2023,
@@ -3119,7 +18747,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 5.3027
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 5.892
+            },
+            {
+              "year": 2016,
+              "value": 5.8249
+            },
+            {
+              "year": 2017,
+              "value": 5.8243
+            },
+            {
+              "year": 2018,
+              "value": 6.054
+            },
+            {
+              "year": 2019,
+              "value": 9.3273
+            },
+            {
+              "year": 2020,
+              "value": 6.813
+            },
+            {
+              "year": 2021,
+              "value": 5.4819
+            },
+            {
+              "year": 2022,
+              "value": 5.3027
+            },
+            {
+              "year": 2023,
+              "value": 6.4147
+            }
+          ]
         },
         "IND": {
           "year": 2023,
@@ -3127,7 +18793,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 50.6577
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 51.4356
+            },
+            {
+              "year": 2016,
+              "value": 54.4219
+            },
+            {
+              "year": 2017,
+              "value": 55.1724
+            },
+            {
+              "year": 2018,
+              "value": 56.6795
+            },
+            {
+              "year": 2019,
+              "value": 53.5981
+            },
+            {
+              "year": 2020,
+              "value": 52.1934
+            },
+            {
+              "year": 2021,
+              "value": 55.6235
+            },
+            {
+              "year": 2022,
+              "value": 50.6577
+            },
+            {
+              "year": 2023,
+              "value": 54.0522
+            }
+          ]
         },
         "BRA": {
           "year": 2023,
@@ -3135,7 +18839,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 14.9461
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 14.1058
+            },
+            {
+              "year": 2016,
+              "value": 13.4896
+            },
+            {
+              "year": 2017,
+              "value": 13.605
+            },
+            {
+              "year": 2018,
+              "value": 13.3317
+            },
+            {
+              "year": 2019,
+              "value": 13.8131
+            },
+            {
+              "year": 2020,
+              "value": 13.6658
+            },
+            {
+              "year": 2021,
+              "value": 13.687
+            },
+            {
+              "year": 2022,
+              "value": 14.9461
+            },
+            {
+              "year": 2023,
+              "value": 13.3827
+            }
+          ]
         },
         "SGP": {
           "year": 2023,
@@ -3143,7 +18885,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 15.0925
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 26.7935
+            },
+            {
+              "year": 2016,
+              "value": 15.1593
+            },
+            {
+              "year": 2017,
+              "value": 14.3993
+            },
+            {
+              "year": 2018,
+              "value": 16.0291
+            },
+            {
+              "year": 2019,
+              "value": 18.8678
+            },
+            {
+              "year": 2020,
+              "value": 12.2426
+            },
+            {
+              "year": 2021,
+              "value": 13.8184
+            },
+            {
+              "year": 2022,
+              "value": 15.0925
+            },
+            {
+              "year": 2023,
+              "value": 15.1427
+            }
+          ]
         },
         "IDN": {
           "year": 2023,
@@ -3151,7 +18931,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 19.7659
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 25.6063
+            },
+            {
+              "year": 2016,
+              "value": 20.9556
+            },
+            {
+              "year": 2017,
+              "value": 17.8028
+            },
+            {
+              "year": 2018,
+              "value": 20.3645
+            },
+            {
+              "year": 2019,
+              "value": 23.9729
+            },
+            {
+              "year": 2020,
+              "value": 18.8647
+            },
+            {
+              "year": 2021,
+              "value": 19.9851
+            },
+            {
+              "year": 2022,
+              "value": 19.7659
+            },
+            {
+              "year": 2023,
+              "value": 20.8445
+            }
+          ]
         },
         "VNM": {
           "year": 2023,
@@ -3159,7 +18977,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 25.5235
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 26.4371
+            },
+            {
+              "year": 2016,
+              "value": 27.4655
+            },
+            {
+              "year": 2017,
+              "value": 27.3674
+            },
+            {
+              "year": 2018,
+              "value": 26.2842
+            },
+            {
+              "year": 2019,
+              "value": 27.2258
+            },
+            {
+              "year": 2020,
+              "value": 25.2818
+            },
+            {
+              "year": 2021,
+              "value": 25.235
+            },
+            {
+              "year": 2022,
+              "value": 25.5235
+            },
+            {
+              "year": 2023,
+              "value": 24.7845
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -3199,7 +19055,9 @@ export const indicatorSnapshot = {
           "year": 2023,
           "value": 21.894
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "gini": {
       "countries": {
@@ -3209,7 +19067,33 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 32.7
-          }
+          },
+          "history": [
+            {
+              "year": 2016,
+              "value": 35.2
+            },
+            {
+              "year": 2017,
+              "value": 34.9
+            },
+            {
+              "year": 2018,
+              "value": 33.7
+            },
+            {
+              "year": 2019,
+              "value": 33.2
+            },
+            {
+              "year": 2020,
+              "value": 32.7
+            },
+            {
+              "year": 2021,
+              "value": 32.9
+            }
+          ]
         },
         "USA": {
           "year": 2024,
@@ -3217,7 +19101,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 41.8
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 41.5
+            },
+            {
+              "year": 2016,
+              "value": 41.3
+            },
+            {
+              "year": 2017,
+              "value": 41.4
+            },
+            {
+              "year": 2018,
+              "value": 41.8
+            },
+            {
+              "year": 2019,
+              "value": 41.9
+            },
+            {
+              "year": 2020,
+              "value": 40
+            },
+            {
+              "year": 2021,
+              "value": 39.7
+            },
+            {
+              "year": 2022,
+              "value": 41.7
+            },
+            {
+              "year": 2023,
+              "value": 41.8
+            },
+            {
+              "year": 2024,
+              "value": 41.8
+            }
+          ]
         },
         "JPN": {
           "year": 2020,
@@ -3225,7 +19151,33 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2019,
             "value": 33
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 30.7
+            },
+            {
+              "year": 2016,
+              "value": 31.8
+            },
+            {
+              "year": 2017,
+              "value": 31.8
+            },
+            {
+              "year": 2018,
+              "value": 32.9
+            },
+            {
+              "year": 2019,
+              "value": 33
+            },
+            {
+              "year": 2020,
+              "value": 32.3
+            }
+          ]
         },
         "CHN": {
           "year": 2022,
@@ -3233,7 +19185,41 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2021,
             "value": 35.7
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 38.6
+            },
+            {
+              "year": 2016,
+              "value": 38.5
+            },
+            {
+              "year": 2017,
+              "value": 39.1
+            },
+            {
+              "year": 2018,
+              "value": 38.5
+            },
+            {
+              "year": 2019,
+              "value": 38.2
+            },
+            {
+              "year": 2020,
+              "value": 37.1
+            },
+            {
+              "year": 2021,
+              "value": 35.7
+            },
+            {
+              "year": 2022,
+              "value": 36
+            }
+          ]
         },
         "DEU": {
           "year": 2022,
@@ -3241,7 +19227,329 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2021,
             "value": 33.6
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 31.4
+            },
+            {
+              "year": 2016,
+              "value": 31.3
+            },
+            {
+              "year": 2017,
+              "value": 31.3
+            },
+            {
+              "year": 2018,
+              "value": 31.9
+            },
+            {
+              "year": 2019,
+              "value": 32.2
+            },
+            {
+              "year": 2020,
+              "value": 32.5
+            },
+            {
+              "year": 2021,
+              "value": 33.6
+            },
+            {
+              "year": 2022,
+              "value": 33.7
+            }
+          ]
+        },
+        "GBR": {
+          "year": 2021,
+          "value": 32.4,
+          "previous": {
+            "year": 2020,
+            "value": 32.7
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 33.3
+            },
+            {
+              "year": 2016,
+              "value": 33.1
+            },
+            {
+              "year": 2017,
+              "value": 32.6
+            },
+            {
+              "year": 2018,
+              "value": 33.7
+            },
+            {
+              "year": 2019,
+              "value": 32.8
+            },
+            {
+              "year": 2020,
+              "value": 32.7
+            },
+            {
+              "year": 2021,
+              "value": 32.4
+            }
+          ]
+        },
+        "FRA": {
+          "year": 2023,
+          "value": 31.8,
+          "previous": {
+            "year": 2022,
+            "value": 31.2
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 32.7
+            },
+            {
+              "year": 2016,
+              "value": 31.9
+            },
+            {
+              "year": 2017,
+              "value": 31.6
+            },
+            {
+              "year": 2018,
+              "value": 32.4
+            },
+            {
+              "year": 2019,
+              "value": 31.2
+            },
+            {
+              "year": 2020,
+              "value": 30.7
+            },
+            {
+              "year": 2021,
+              "value": 31.5
+            },
+            {
+              "year": 2022,
+              "value": 31.2
+            },
+            {
+              "year": 2023,
+              "value": 31.8
+            }
+          ]
+        },
+        "CAN": {
+          "year": 2022,
+          "value": 31.5,
+          "previous": {
+            "year": 2021,
+            "value": 31.1
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 33.7
+            },
+            {
+              "year": 2016,
+              "value": 32.7
+            },
+            {
+              "year": 2017,
+              "value": 33.3
+            },
+            {
+              "year": 2018,
+              "value": 32.5
+            },
+            {
+              "year": 2019,
+              "value": 31.8
+            },
+            {
+              "year": 2020,
+              "value": 29.9
+            },
+            {
+              "year": 2021,
+              "value": 31.1
+            },
+            {
+              "year": 2022,
+              "value": 31.5
+            }
+          ]
+        },
+        "AUS": {
+          "year": 2020,
+          "value": 33.8,
+          "previous": {
+            "year": 2018,
+            "value": 34.3
+          },
+          "history": [
+            {
+              "year": 2016,
+              "value": 33.7
+            },
+            {
+              "year": 2018,
+              "value": 34.3
+            },
+            {
+              "year": 2020,
+              "value": 33.8
+            }
+          ]
+        },
+        "IND": {
+          "year": 2022,
+          "value": 25.5,
+          "history": [
+            {
+              "year": 2022,
+              "value": 25.5
+            }
+          ]
+        },
+        "BRA": {
+          "year": 2024,
+          "value": 50.3,
+          "previous": {
+            "year": 2023,
+            "value": 51.5
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 51.9
+            },
+            {
+              "year": 2016,
+              "value": 53.4
+            },
+            {
+              "year": 2017,
+              "value": 53.3
+            },
+            {
+              "year": 2018,
+              "value": 53.9
+            },
+            {
+              "year": 2019,
+              "value": 53.5
+            },
+            {
+              "year": 2020,
+              "value": 48.8
+            },
+            {
+              "year": 2021,
+              "value": 52.9
+            },
+            {
+              "year": 2022,
+              "value": 51.9
+            },
+            {
+              "year": 2023,
+              "value": 51.5
+            },
+            {
+              "year": 2024,
+              "value": 50.3
+            }
+          ]
+        },
+        "IDN": {
+          "year": 2025,
+          "value": 34.4,
+          "previous": {
+            "year": 2024,
+            "value": 34.9
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 38.2
+            },
+            {
+              "year": 2016,
+              "value": 36.9
+            },
+            {
+              "year": 2017,
+              "value": 36.4
+            },
+            {
+              "year": 2018,
+              "value": 36.3
+            },
+            {
+              "year": 2019,
+              "value": 35.4
+            },
+            {
+              "year": 2020,
+              "value": 35.3
+            },
+            {
+              "year": 2021,
+              "value": 35.5
+            },
+            {
+              "year": 2022,
+              "value": 35.5
+            },
+            {
+              "year": 2023,
+              "value": 36.1
+            },
+            {
+              "year": 2024,
+              "value": 34.9
+            },
+            {
+              "year": 2025,
+              "value": 34.4
+            }
+          ]
+        },
+        "VNM": {
+          "year": 2022,
+          "value": 36.1,
+          "previous": {
+            "year": 2020,
+            "value": 36.8
+          },
+          "history": [
+            {
+              "year": 2016,
+              "value": 35.3
+            },
+            {
+              "year": 2018,
+              "value": 35.7
+            },
+            {
+              "year": 2020,
+              "value": 36.8
+            },
+            {
+              "year": 2022,
+              "value": 36.1
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -3269,7 +19577,9 @@ export const indicatorSnapshot = {
           "year": 2021,
           "value": 32.9
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "urban-population": {
       "countries": {
@@ -3279,7 +19589,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 81.1683
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 81.6395
+            },
+            {
+              "year": 2016,
+              "value": 81.5559
+            },
+            {
+              "year": 2017,
+              "value": 81.471
+            },
+            {
+              "year": 2018,
+              "value": 81.3824
+            },
+            {
+              "year": 2019,
+              "value": 81.2901
+            },
+            {
+              "year": 2020,
+              "value": 81.176
+            },
+            {
+              "year": 2021,
+              "value": 81.1617
+            },
+            {
+              "year": 2022,
+              "value": 81.1625
+            },
+            {
+              "year": 2023,
+              "value": 81.1646
+            },
+            {
+              "year": 2024,
+              "value": 81.1683
+            },
+            {
+              "year": 2025,
+              "value": 81.174
+            }
+          ]
         },
         "WLD": {
           "year": 2025,
@@ -3287,7 +19643,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 57.5656
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 54.4258
+            },
+            {
+              "year": 2016,
+              "value": 54.8949
+            },
+            {
+              "year": 2017,
+              "value": 55.3198
+            },
+            {
+              "year": 2018,
+              "value": 55.7521
+            },
+            {
+              "year": 2019,
+              "value": 56.141
+            },
+            {
+              "year": 2020,
+              "value": 56.4442
+            },
+            {
+              "year": 2021,
+              "value": 56.8092
+            },
+            {
+              "year": 2022,
+              "value": 57.0723
+            },
+            {
+              "year": 2023,
+              "value": 57.3117
+            },
+            {
+              "year": 2024,
+              "value": 57.5656
+            },
+            {
+              "year": 2025,
+              "value": 57.8251
+            }
+          ]
         },
         "USA": {
           "year": 2025,
@@ -3295,7 +19697,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 80.1248
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 80.5708
+            },
+            {
+              "year": 2016,
+              "value": 80.4977
+            },
+            {
+              "year": 2017,
+              "value": 80.4019
+            },
+            {
+              "year": 2018,
+              "value": 80.2805
+            },
+            {
+              "year": 2019,
+              "value": 80.1305
+            },
+            {
+              "year": 2020,
+              "value": 79.9975
+            },
+            {
+              "year": 2021,
+              "value": 80.0075
+            },
+            {
+              "year": 2022,
+              "value": 80.0325
+            },
+            {
+              "year": 2023,
+              "value": 80.0716
+            },
+            {
+              "year": 2024,
+              "value": 80.1248
+            },
+            {
+              "year": 2025,
+              "value": 80.1922
+            }
+          ]
         },
         "JPN": {
           "year": 2025,
@@ -3303,7 +19751,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 92.1902
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 91.3533
+            },
+            {
+              "year": 2016,
+              "value": 91.4541
+            },
+            {
+              "year": 2017,
+              "value": 91.5498
+            },
+            {
+              "year": 2018,
+              "value": 91.6377
+            },
+            {
+              "year": 2019,
+              "value": 91.7164
+            },
+            {
+              "year": 2020,
+              "value": 91.781
+            },
+            {
+              "year": 2021,
+              "value": 91.8741
+            },
+            {
+              "year": 2022,
+              "value": 91.9777
+            },
+            {
+              "year": 2023,
+              "value": 92.0827
+            },
+            {
+              "year": 2024,
+              "value": 92.1902
+            },
+            {
+              "year": 2025,
+              "value": 92.3001
+            }
+          ]
         },
         "CHN": {
           "year": 2025,
@@ -3311,7 +19805,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 65.8947
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 57.3298
+            },
+            {
+              "year": 2016,
+              "value": 58.8399
+            },
+            {
+              "year": 2017,
+              "value": 60.2403
+            },
+            {
+              "year": 2018,
+              "value": 61.5002
+            },
+            {
+              "year": 2019,
+              "value": 62.7099
+            },
+            {
+              "year": 2020,
+              "value": 63.5234
+            },
+            {
+              "year": 2021,
+              "value": 64.7211
+            },
+            {
+              "year": 2022,
+              "value": 65.2176
+            },
+            {
+              "year": 2023,
+              "value": 65.5301
+            },
+            {
+              "year": 2024,
+              "value": 65.8947
+            },
+            {
+              "year": 2025,
+              "value": 66.343
+            }
+          ]
         },
         "DEU": {
           "year": 2025,
@@ -3319,7 +19859,539 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 82.0211
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 80.6974
+            },
+            {
+              "year": 2016,
+              "value": 80.8348
+            },
+            {
+              "year": 2017,
+              "value": 80.9843
+            },
+            {
+              "year": 2018,
+              "value": 81.1423
+            },
+            {
+              "year": 2019,
+              "value": 81.3054
+            },
+            {
+              "year": 2020,
+              "value": 81.47
+            },
+            {
+              "year": 2021,
+              "value": 81.6326
+            },
+            {
+              "year": 2022,
+              "value": 81.7868
+            },
+            {
+              "year": 2023,
+              "value": 81.9034
+            },
+            {
+              "year": 2024,
+              "value": 82.0211
+            },
+            {
+              "year": 2025,
+              "value": 82.1382
+            }
+          ]
+        },
+        "GBR": {
+          "year": 2025,
+          "value": 83.3236,
+          "previous": {
+            "year": 2024,
+            "value": 83.243
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 81.8244
+            },
+            {
+              "year": 2016,
+              "value": 82.023
+            },
+            {
+              "year": 2017,
+              "value": 82.2307
+            },
+            {
+              "year": 2018,
+              "value": 82.4466
+            },
+            {
+              "year": 2019,
+              "value": 82.6699
+            },
+            {
+              "year": 2020,
+              "value": 82.9
+            },
+            {
+              "year": 2021,
+              "value": 82.9886
+            },
+            {
+              "year": 2022,
+              "value": 83.0754
+            },
+            {
+              "year": 2023,
+              "value": 83.1602
+            },
+            {
+              "year": 2024,
+              "value": 83.243
+            },
+            {
+              "year": 2025,
+              "value": 83.3236
+            }
+          ]
+        },
+        "FRA": {
+          "year": 2025,
+          "value": 78.845,
+          "previous": {
+            "year": 2024,
+            "value": 78.8
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 77.7611
+            },
+            {
+              "year": 2016,
+              "value": 78.5999
+            },
+            {
+              "year": 2017,
+              "value": 78.6468
+            },
+            {
+              "year": 2018,
+              "value": 78.6714
+            },
+            {
+              "year": 2019,
+              "value": 78.6891
+            },
+            {
+              "year": 2020,
+              "value": 78.7119
+            },
+            {
+              "year": 2021,
+              "value": 78.7365
+            },
+            {
+              "year": 2022,
+              "value": 78.7592
+            },
+            {
+              "year": 2023,
+              "value": 78.7804
+            },
+            {
+              "year": 2024,
+              "value": 78.8
+            },
+            {
+              "year": 2025,
+              "value": 78.845
+            }
+          ]
+        },
+        "CAN": {
+          "year": 2025,
+          "value": 82.8757,
+          "previous": {
+            "year": 2024,
+            "value": 82.7003
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 81.2466
+            },
+            {
+              "year": 2016,
+              "value": 81.3023
+            },
+            {
+              "year": 2017,
+              "value": 81.4019
+            },
+            {
+              "year": 2018,
+              "value": 81.55
+            },
+            {
+              "year": 2019,
+              "value": 81.7364
+            },
+            {
+              "year": 2020,
+              "value": 81.951
+            },
+            {
+              "year": 2021,
+              "value": 82.1779
+            },
+            {
+              "year": 2022,
+              "value": 82.3501
+            },
+            {
+              "year": 2023,
+              "value": 82.5251
+            },
+            {
+              "year": 2024,
+              "value": 82.7003
+            },
+            {
+              "year": 2025,
+              "value": 82.8757
+            }
+          ]
+        },
+        "AUS": {
+          "year": 2025,
+          "value": 87.7193,
+          "previous": {
+            "year": 2024,
+            "value": 87.6021
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 86.8779
+            },
+            {
+              "year": 2016,
+              "value": 87.0166
+            },
+            {
+              "year": 2017,
+              "value": 87.1281
+            },
+            {
+              "year": 2018,
+              "value": 87.2268
+            },
+            {
+              "year": 2019,
+              "value": 87.302
+            },
+            {
+              "year": 2020,
+              "value": 87.2713
+            },
+            {
+              "year": 2021,
+              "value": 87.2353
+            },
+            {
+              "year": 2022,
+              "value": 87.3343
+            },
+            {
+              "year": 2023,
+              "value": 87.4867
+            },
+            {
+              "year": 2024,
+              "value": 87.6021
+            },
+            {
+              "year": 2025,
+              "value": 87.7193
+            }
+          ]
+        },
+        "IND": {
+          "year": 2025,
+          "value": 35.6892,
+          "previous": {
+            "year": 2024,
+            "value": 35.3789
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 32.5473
+            },
+            {
+              "year": 2016,
+              "value": 32.8651
+            },
+            {
+              "year": 2017,
+              "value": 33.1821
+            },
+            {
+              "year": 2018,
+              "value": 33.4984
+            },
+            {
+              "year": 2019,
+              "value": 33.814
+            },
+            {
+              "year": 2020,
+              "value": 34.1287
+            },
+            {
+              "year": 2021,
+              "value": 34.4426
+            },
+            {
+              "year": 2022,
+              "value": 34.7556
+            },
+            {
+              "year": 2023,
+              "value": 35.0677
+            },
+            {
+              "year": 2024,
+              "value": 35.3789
+            },
+            {
+              "year": 2025,
+              "value": 35.6892
+            }
+          ]
+        },
+        "BRA": {
+          "year": 2025,
+          "value": 88.1773,
+          "previous": {
+            "year": 2024,
+            "value": 87.8959
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 85.6936
+            },
+            {
+              "year": 2016,
+              "value": 85.9487
+            },
+            {
+              "year": 2017,
+              "value": 86.1983
+            },
+            {
+              "year": 2018,
+              "value": 86.4421
+            },
+            {
+              "year": 2019,
+              "value": 86.6798
+            },
+            {
+              "year": 2020,
+              "value": 86.9112
+            },
+            {
+              "year": 2021,
+              "value": 87.1361
+            },
+            {
+              "year": 2022,
+              "value": 87.3496
+            },
+            {
+              "year": 2023,
+              "value": 87.616
+            },
+            {
+              "year": 2024,
+              "value": 87.8959
+            },
+            {
+              "year": 2025,
+              "value": 88.1773
+            }
+          ]
+        },
+        "SGP": {
+          "year": 2025,
+          "value": 100,
+          "previous": {
+            "year": 2024,
+            "value": 100
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 100
+            },
+            {
+              "year": 2016,
+              "value": 100
+            },
+            {
+              "year": 2017,
+              "value": 100
+            },
+            {
+              "year": 2018,
+              "value": 100
+            },
+            {
+              "year": 2019,
+              "value": 100
+            },
+            {
+              "year": 2020,
+              "value": 100
+            },
+            {
+              "year": 2021,
+              "value": 100
+            },
+            {
+              "year": 2022,
+              "value": 100
+            },
+            {
+              "year": 2023,
+              "value": 100
+            },
+            {
+              "year": 2024,
+              "value": 100
+            },
+            {
+              "year": 2025,
+              "value": 100
+            }
+          ]
+        },
+        "IDN": {
+          "year": 2025,
+          "value": 59.3929,
+          "previous": {
+            "year": 2024,
+            "value": 58.751
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 53.1721
+            },
+            {
+              "year": 2016,
+              "value": 53.8126
+            },
+            {
+              "year": 2017,
+              "value": 54.4541
+            },
+            {
+              "year": 2018,
+              "value": 55.0957
+            },
+            {
+              "year": 2019,
+              "value": 55.7382
+            },
+            {
+              "year": 2020,
+              "value": 56.2785
+            },
+            {
+              "year": 2021,
+              "value": 56.8762
+            },
+            {
+              "year": 2022,
+              "value": 57.4935
+            },
+            {
+              "year": 2023,
+              "value": 58.1179
+            },
+            {
+              "year": 2024,
+              "value": 58.751
+            },
+            {
+              "year": 2025,
+              "value": 59.3929
+            }
+          ]
+        },
+        "VNM": {
+          "year": 2025,
+          "value": 38.8299,
+          "previous": {
+            "year": 2024,
+            "value": 38.4901
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 32.3811
+            },
+            {
+              "year": 2016,
+              "value": 32.8476
+            },
+            {
+              "year": 2017,
+              "value": 33.3626
+            },
+            {
+              "year": 2018,
+              "value": 33.941
+            },
+            {
+              "year": 2019,
+              "value": 34.6239
+            },
+            {
+              "year": 2020,
+              "value": 35.5707
+            },
+            {
+              "year": 2021,
+              "value": 36.6541
+            },
+            {
+              "year": 2022,
+              "value": 37.5479
+            },
+            {
+              "year": 2023,
+              "value": 38.1299
+            },
+            {
+              "year": 2024,
+              "value": 38.4901
+            },
+            {
+              "year": 2025,
+              "value": 38.8299
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -3367,7 +20439,9 @@ export const indicatorSnapshot = {
           "year": 2025,
           "value": 81.174
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "fixed-broadband": {
       "countries": {
@@ -3377,7 +20451,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 46.5676
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 39.276
+            },
+            {
+              "year": 2016,
+              "value": 40.0712
+            },
+            {
+              "year": 2017,
+              "value": 41.1681
+            },
+            {
+              "year": 2018,
+              "value": 41.219
+            },
+            {
+              "year": 2019,
+              "value": 42.0374
+            },
+            {
+              "year": 2020,
+              "value": 43.0541
+            },
+            {
+              "year": 2021,
+              "value": 44.2526
+            },
+            {
+              "year": 2022,
+              "value": 45.4542
+            },
+            {
+              "year": 2023,
+              "value": 46.5676
+            },
+            {
+              "year": 2024,
+              "value": 47.8015
+            }
+          ]
         },
         "WLD": {
           "year": 2025,
@@ -3385,7 +20501,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 19.31
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 11.3
+            },
+            {
+              "year": 2016,
+              "value": 12.2
+            },
+            {
+              "year": 2017,
+              "value": 13.5
+            },
+            {
+              "year": 2018,
+              "value": 14
+            },
+            {
+              "year": 2019,
+              "value": 14.7
+            },
+            {
+              "year": 2020,
+              "value": 15.58
+            },
+            {
+              "year": 2021,
+              "value": 16.74
+            },
+            {
+              "year": 2022,
+              "value": 17.73
+            },
+            {
+              "year": 2023,
+              "value": 18.58
+            },
+            {
+              "year": 2024,
+              "value": 19.31
+            },
+            {
+              "year": 2025,
+              "value": 20.11
+            }
+          ]
         },
         "USA": {
           "year": 2024,
@@ -3393,7 +20555,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 38.0939
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 31.3412
+            },
+            {
+              "year": 2016,
+              "value": 32.1144
+            },
+            {
+              "year": 2017,
+              "value": 32.5703
+            },
+            {
+              "year": 2018,
+              "value": 33.0559
+            },
+            {
+              "year": 2019,
+              "value": 33.8352
+            },
+            {
+              "year": 2020,
+              "value": 35.7157
+            },
+            {
+              "year": 2021,
+              "value": 37.0074
+            },
+            {
+              "year": 2022,
+              "value": 37.4888
+            },
+            {
+              "year": 2023,
+              "value": 38.0939
+            },
+            {
+              "year": 2024,
+              "value": 38.8572
+            }
+          ]
         },
         "JPN": {
           "year": 2023,
@@ -3401,7 +20605,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 36.8414
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 30.542
+            },
+            {
+              "year": 2016,
+              "value": 31.3036
+            },
+            {
+              "year": 2017,
+              "value": 31.8991
+            },
+            {
+              "year": 2018,
+              "value": 32.6965
+            },
+            {
+              "year": 2019,
+              "value": 33.5459
+            },
+            {
+              "year": 2020,
+              "value": 34.8371
+            },
+            {
+              "year": 2021,
+              "value": 35.9392
+            },
+            {
+              "year": 2022,
+              "value": 36.8414
+            },
+            {
+              "year": 2023,
+              "value": 38.6312
+            }
+          ]
         },
         "CHN": {
           "year": 2024,
@@ -3409,7 +20651,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 44.7289
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 19.8438
+            },
+            {
+              "year": 2016,
+              "value": 22.9761
+            },
+            {
+              "year": 2017,
+              "value": 27.9101
+            },
+            {
+              "year": 2018,
+              "value": 28.7089
+            },
+            {
+              "year": 2019,
+              "value": 31.5611
+            },
+            {
+              "year": 2020,
+              "value": 33.907
+            },
+            {
+              "year": 2021,
+              "value": 37.5612
+            },
+            {
+              "year": 2022,
+              "value": 41.3736
+            },
+            {
+              "year": 2023,
+              "value": 44.7289
+            },
+            {
+              "year": 2024,
+              "value": 47.1934
+            }
+          ]
         },
         "DEU": {
           "year": 2024,
@@ -3417,7 +20701,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 45.3805
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 37.4127
+            },
+            {
+              "year": 2016,
+              "value": 38.4991
+            },
+            {
+              "year": 2017,
+              "value": 39.9888
+            },
+            {
+              "year": 2018,
+              "value": 40.9651
+            },
+            {
+              "year": 2019,
+              "value": 42.1156
+            },
+            {
+              "year": 2020,
+              "value": 43.3049
+            },
+            {
+              "year": 2021,
+              "value": 44.0643
+            },
+            {
+              "year": 2022,
+              "value": 44.6186
+            },
+            {
+              "year": 2023,
+              "value": 45.3805
+            },
+            {
+              "year": 2024,
+              "value": 45.6069
+            }
+          ]
         },
         "GBR": {
           "year": 2024,
@@ -3425,7 +20751,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 41.4368
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 37.7215
+            },
+            {
+              "year": 2016,
+              "value": 38.6589
+            },
+            {
+              "year": 2017,
+              "value": 39.2489
+            },
+            {
+              "year": 2018,
+              "value": 39.8294
+            },
+            {
+              "year": 2019,
+              "value": 40.0228
+            },
+            {
+              "year": 2020,
+              "value": 40.5775
+            },
+            {
+              "year": 2021,
+              "value": 41.1135
+            },
+            {
+              "year": 2022,
+              "value": 41.2867
+            },
+            {
+              "year": 2023,
+              "value": 41.4368
+            },
+            {
+              "year": 2024,
+              "value": 42.1648
+            }
+          ]
         },
         "FRA": {
           "year": 2024,
@@ -3433,7 +20801,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 48.6688
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 41.3871
+            },
+            {
+              "year": 2016,
+              "value": 42.5278
+            },
+            {
+              "year": 2017,
+              "value": 43.6243
+            },
+            {
+              "year": 2018,
+              "value": 44.4142
+            },
+            {
+              "year": 2019,
+              "value": 45.2765
+            },
+            {
+              "year": 2020,
+              "value": 46.4712
+            },
+            {
+              "year": 2021,
+              "value": 47.6442
+            },
+            {
+              "year": 2022,
+              "value": 48.2502
+            },
+            {
+              "year": 2023,
+              "value": 48.6688
+            },
+            {
+              "year": 2024,
+              "value": 48.9252
+            }
+          ]
         },
         "CAN": {
           "year": 2024,
@@ -3441,7 +20851,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 42.5242
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 36.4699
+            },
+            {
+              "year": 2016,
+              "value": 36.8233
+            },
+            {
+              "year": 2017,
+              "value": 37.8277
+            },
+            {
+              "year": 2018,
+              "value": 38.7334
+            },
+            {
+              "year": 2019,
+              "value": 40.0768
+            },
+            {
+              "year": 2020,
+              "value": 40.795
+            },
+            {
+              "year": 2021,
+              "value": 41.6931
+            },
+            {
+              "year": 2022,
+              "value": 42.1792
+            },
+            {
+              "year": 2023,
+              "value": 42.5242
+            },
+            {
+              "year": 2024,
+              "value": 42.5238
+            }
+          ]
         },
         "AUS": {
           "year": 2024,
@@ -3449,7 +20901,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 36.6274
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 28.5118
+            },
+            {
+              "year": 2016,
+              "value": 30.3083
+            },
+            {
+              "year": 2017,
+              "value": 32.0326
+            },
+            {
+              "year": 2018,
+              "value": 33.5486
+            },
+            {
+              "year": 2019,
+              "value": 34.5434
+            },
+            {
+              "year": 2020,
+              "value": 35.3468
+            },
+            {
+              "year": 2021,
+              "value": 35.836
+            },
+            {
+              "year": 2022,
+              "value": 36.3933
+            },
+            {
+              "year": 2023,
+              "value": 36.6274
+            },
+            {
+              "year": 2024,
+              "value": 36.4788
+            }
+          ]
         },
         "IND": {
           "year": 2024,
@@ -3457,7 +20951,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 2.7453
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.2758
+            },
+            {
+              "year": 2016,
+              "value": 1.388
+            },
+            {
+              "year": 2017,
+              "value": 1.3133
+            },
+            {
+              "year": 2018,
+              "value": 1.3218
+            },
+            {
+              "year": 2019,
+              "value": 1.3791
+            },
+            {
+              "year": 2020,
+              "value": 1.6362
+            },
+            {
+              "year": 2021,
+              "value": 1.9488
+            },
+            {
+              "year": 2022,
+              "value": 2.3523
+            },
+            {
+              "year": 2023,
+              "value": 2.7453
+            },
+            {
+              "year": 2024,
+              "value": 3.1505
+            }
+          ]
         },
         "BRA": {
           "year": 2024,
@@ -3465,7 +21001,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 22.4192
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 12.6354
+            },
+            {
+              "year": 2016,
+              "value": 13.2177
+            },
+            {
+              "year": 2017,
+              "value": 14.1218
+            },
+            {
+              "year": 2018,
+              "value": 15.1538
+            },
+            {
+              "year": 2019,
+              "value": 15.8622
+            },
+            {
+              "year": 2020,
+              "value": 17.4181
+            },
+            {
+              "year": 2021,
+              "value": 19.8363
+            },
+            {
+              "year": 2022,
+              "value": 20.9534
+            },
+            {
+              "year": 2023,
+              "value": 22.4192
+            },
+            {
+              "year": 2024,
+              "value": 24.0792
+            }
+          ]
         },
         "SGP": {
           "year": 2024,
@@ -3473,7 +21051,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 27.4344
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 26.8979
+            },
+            {
+              "year": 2016,
+              "value": 28.5393
+            },
+            {
+              "year": 2017,
+              "value": 26.3326
+            },
+            {
+              "year": 2018,
+              "value": 26.5087
+            },
+            {
+              "year": 2019,
+              "value": 26.5276
+            },
+            {
+              "year": 2020,
+              "value": 26.8623
+            },
+            {
+              "year": 2021,
+              "value": 27.5211
+            },
+            {
+              "year": 2022,
+              "value": 27.551
+            },
+            {
+              "year": 2023,
+              "value": 27.4344
+            },
+            {
+              "year": 2024,
+              "value": 27.8137
+            }
+          ]
         },
         "IDN": {
           "year": 2024,
@@ -3481,7 +21101,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 4.8166
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.5214
+            },
+            {
+              "year": 2016,
+              "value": 1.9754
+            },
+            {
+              "year": 2017,
+              "value": 2.325
+            },
+            {
+              "year": 2018,
+              "value": 3.2873
+            },
+            {
+              "year": 2019,
+              "value": 3.7742
+            },
+            {
+              "year": 2020,
+              "value": 3.9299
+            },
+            {
+              "year": 2021,
+              "value": 4.4875
+            },
+            {
+              "year": 2022,
+              "value": 4.8215
+            },
+            {
+              "year": 2023,
+              "value": 4.8166
+            },
+            {
+              "year": 2024,
+              "value": 4.922
+            }
+          ]
         },
         "VNM": {
           "year": 2024,
@@ -3489,7 +21151,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 22.6807
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 8.2497
+            },
+            {
+              "year": 2016,
+              "value": 9.679
+            },
+            {
+              "year": 2017,
+              "value": 11.841
+            },
+            {
+              "year": 2018,
+              "value": 13.5025
+            },
+            {
+              "year": 2019,
+              "value": 15.2329
+            },
+            {
+              "year": 2020,
+              "value": 17.0263
+            },
+            {
+              "year": 2021,
+              "value": 19.5362
+            },
+            {
+              "year": 2022,
+              "value": 21.3681
+            },
+            {
+              "year": 2023,
+              "value": 22.6807
+            },
+            {
+              "year": 2024,
+              "value": 23.7113
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -3533,7 +21237,9 @@ export const indicatorSnapshot = {
           "year": 2024,
           "value": 47.8015
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "women-parliament": {
       "countries": {
@@ -3543,7 +21249,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 20
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 16.3333
+            },
+            {
+              "year": 2016,
+              "value": 17
+            },
+            {
+              "year": 2017,
+              "value": 17
+            },
+            {
+              "year": 2018,
+              "value": 17
+            },
+            {
+              "year": 2019,
+              "value": 16.6667
+            },
+            {
+              "year": 2020,
+              "value": 19
+            },
+            {
+              "year": 2021,
+              "value": 19
+            },
+            {
+              "year": 2022,
+              "value": 18.6441
+            },
+            {
+              "year": 2023,
+              "value": 19.0635
+            },
+            {
+              "year": 2024,
+              "value": 20
+            },
+            {
+              "year": 2025,
+              "value": 20.3333
+            }
+          ]
         },
         "WLD": {
           "year": 2025,
@@ -3551,7 +21303,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 27.0345
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 22.8493
+            },
+            {
+              "year": 2016,
+              "value": 23.0914
+            },
+            {
+              "year": 2017,
+              "value": 23.5903
+            },
+            {
+              "year": 2018,
+              "value": 24.0979
+            },
+            {
+              "year": 2019,
+              "value": 24.6366
+            },
+            {
+              "year": 2020,
+              "value": 25.5804
+            },
+            {
+              "year": 2021,
+              "value": 26.1285
+            },
+            {
+              "year": 2022,
+              "value": 26.4676
+            },
+            {
+              "year": 2023,
+              "value": 26.7357
+            },
+            {
+              "year": 2024,
+              "value": 27.0345
+            },
+            {
+              "year": 2025,
+              "value": 27.2486
+            }
+          ]
         },
         "USA": {
           "year": 2025,
@@ -3559,7 +21357,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 28.7356
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 19.3548
+            },
+            {
+              "year": 2016,
+              "value": 19.1686
+            },
+            {
+              "year": 2017,
+              "value": 19.3548
+            },
+            {
+              "year": 2018,
+              "value": 23.5023
+            },
+            {
+              "year": 2019,
+              "value": 23.4339
+            },
+            {
+              "year": 2020,
+              "value": 27.4648
+            },
+            {
+              "year": 2021,
+              "value": 27.6498
+            },
+            {
+              "year": 2022,
+              "value": 28.7037
+            },
+            {
+              "year": 2023,
+              "value": 28.9655
+            },
+            {
+              "year": 2024,
+              "value": 28.7356
+            },
+            {
+              "year": 2025,
+              "value": 28.9352
+            }
+          ]
         },
         "JPN": {
           "year": 2025,
@@ -3567,7 +21411,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 15.6989
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 9.4737
+            },
+            {
+              "year": 2016,
+              "value": 9.4737
+            },
+            {
+              "year": 2017,
+              "value": 10.1075
+            },
+            {
+              "year": 2018,
+              "value": 10.1075
+            },
+            {
+              "year": 2019,
+              "value": 10.1075
+            },
+            {
+              "year": 2020,
+              "value": 9.8925
+            },
+            {
+              "year": 2021,
+              "value": 9.6774
+            },
+            {
+              "year": 2022,
+              "value": 9.9138
+            },
+            {
+              "year": 2023,
+              "value": 10.3448
+            },
+            {
+              "year": 2024,
+              "value": 15.6989
+            },
+            {
+              "year": 2025,
+              "value": 15.6989
+            }
+          ]
         },
         "CHN": {
           "year": 2025,
@@ -3575,7 +21465,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 26.5368
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 23.6228
+            },
+            {
+              "year": 2016,
+              "value": 23.6228
+            },
+            {
+              "year": 2017,
+              "value": 24.2476
+            },
+            {
+              "year": 2018,
+              "value": 24.8993
+            },
+            {
+              "year": 2019,
+              "value": 24.9412
+            },
+            {
+              "year": 2020,
+              "value": 24.9412
+            },
+            {
+              "year": 2021,
+              "value": 24.9412
+            },
+            {
+              "year": 2022,
+              "value": 24.9412
+            },
+            {
+              "year": 2023,
+              "value": 26.5368
+            },
+            {
+              "year": 2024,
+              "value": 26.5368
+            },
+            {
+              "year": 2025,
+              "value": 26.5368
+            }
+          ]
         },
         "DEU": {
           "year": 2025,
@@ -3583,7 +21519,539 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 35.3261
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 36.4501
+            },
+            {
+              "year": 2016,
+              "value": 36.4501
+            },
+            {
+              "year": 2017,
+              "value": 30.7475
+            },
+            {
+              "year": 2018,
+              "value": 30.7475
+            },
+            {
+              "year": 2019,
+              "value": 30.8886
+            },
+            {
+              "year": 2020,
+              "value": 31.1707
+            },
+            {
+              "year": 2021,
+              "value": 34.9185
+            },
+            {
+              "year": 2022,
+              "value": 34.9185
+            },
+            {
+              "year": 2023,
+              "value": 35.1902
+            },
+            {
+              "year": 2024,
+              "value": 35.3261
+            },
+            {
+              "year": 2025,
+              "value": 32.381
+            }
+          ]
+        },
+        "GBR": {
+          "year": 2025,
+          "value": 40.4615,
+          "previous": {
+            "year": 2024,
+            "value": 40.4615
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 29.3846
+            },
+            {
+              "year": 2016,
+              "value": 29.584
+            },
+            {
+              "year": 2017,
+              "value": 32
+            },
+            {
+              "year": 2018,
+              "value": 32.1538
+            },
+            {
+              "year": 2019,
+              "value": 32
+            },
+            {
+              "year": 2020,
+              "value": 33.8462
+            },
+            {
+              "year": 2021,
+              "value": 34.2593
+            },
+            {
+              "year": 2022,
+              "value": 34.5679
+            },
+            {
+              "year": 2023,
+              "value": 34.6154
+            },
+            {
+              "year": 2024,
+              "value": 40.4615
+            },
+            {
+              "year": 2025,
+              "value": 40.4615
+            }
+          ]
+        },
+        "FRA": {
+          "year": 2025,
+          "value": 36.1739,
+          "previous": {
+            "year": 2024,
+            "value": 36.0485
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 26.1698
+            },
+            {
+              "year": 2016,
+              "value": 26.1698
+            },
+            {
+              "year": 2017,
+              "value": 38.9948
+            },
+            {
+              "year": 2018,
+              "value": 39.5833
+            },
+            {
+              "year": 2019,
+              "value": 39.688
+            },
+            {
+              "year": 2020,
+              "value": 39.5147
+            },
+            {
+              "year": 2021,
+              "value": 39.5147
+            },
+            {
+              "year": 2022,
+              "value": 37.2617
+            },
+            {
+              "year": 2023,
+              "value": 37.7816
+            },
+            {
+              "year": 2024,
+              "value": 36.0485
+            },
+            {
+              "year": 2025,
+              "value": 36.1739
+            }
+          ]
+        },
+        "CAN": {
+          "year": 2025,
+          "value": 30.3207,
+          "previous": {
+            "year": 2024,
+            "value": 30.6548
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 26.0355
+            },
+            {
+              "year": 2016,
+              "value": 26.0355
+            },
+            {
+              "year": 2017,
+              "value": 26.2687
+            },
+            {
+              "year": 2018,
+              "value": 26.9461
+            },
+            {
+              "year": 2019,
+              "value": 28.9941
+            },
+            {
+              "year": 2020,
+              "value": 28.9941
+            },
+            {
+              "year": 2021,
+              "value": 30.4734
+            },
+            {
+              "year": 2022,
+              "value": 30.4734
+            },
+            {
+              "year": 2023,
+              "value": 30.6548
+            },
+            {
+              "year": 2024,
+              "value": 30.6548
+            },
+            {
+              "year": 2025,
+              "value": 30.3207
+            }
+          ]
+        },
+        "AUS": {
+          "year": 2025,
+          "value": 46,
+          "previous": {
+            "year": 2024,
+            "value": 38
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 26.6667
+            },
+            {
+              "year": 2016,
+              "value": 28.6667
+            },
+            {
+              "year": 2017,
+              "value": 28.6667
+            },
+            {
+              "year": 2018,
+              "value": 28.6667
+            },
+            {
+              "year": 2019,
+              "value": 30.4636
+            },
+            {
+              "year": 2020,
+              "value": 30.4636
+            },
+            {
+              "year": 2021,
+              "value": 31.1258
+            },
+            {
+              "year": 2022,
+              "value": 38.4106
+            },
+            {
+              "year": 2023,
+              "value": 38.4106
+            },
+            {
+              "year": 2024,
+              "value": 38
+            },
+            {
+              "year": 2025,
+              "value": 46
+            }
+          ]
+        },
+        "IND": {
+          "year": 2025,
+          "value": 13.7868,
+          "previous": {
+            "year": 2024,
+            "value": 13.6531
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 11.9705
+            },
+            {
+              "year": 2016,
+              "value": 11.9705
+            },
+            {
+              "year": 2017,
+              "value": 11.8081
+            },
+            {
+              "year": 2018,
+              "value": 11.8081
+            },
+            {
+              "year": 2019,
+              "value": 14.3911
+            },
+            {
+              "year": 2020,
+              "value": 14.3646
+            },
+            {
+              "year": 2021,
+              "value": 14.4444
+            },
+            {
+              "year": 2022,
+              "value": 14.9446
+            },
+            {
+              "year": 2023,
+              "value": 15.2416
+            },
+            {
+              "year": 2024,
+              "value": 13.6531
+            },
+            {
+              "year": 2025,
+              "value": 13.7868
+            }
+          ]
+        },
+        "BRA": {
+          "year": 2025,
+          "value": 18.1287,
+          "previous": {
+            "year": 2024,
+            "value": 17.5439
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 9.9415
+            },
+            {
+              "year": 2016,
+              "value": 9.9415
+            },
+            {
+              "year": 2017,
+              "value": 10.7212
+            },
+            {
+              "year": 2018,
+              "value": 15.0097
+            },
+            {
+              "year": 2019,
+              "value": 15.0097
+            },
+            {
+              "year": 2020,
+              "value": 14.6199
+            },
+            {
+              "year": 2021,
+              "value": 15.2047
+            },
+            {
+              "year": 2022,
+              "value": 17.7388
+            },
+            {
+              "year": 2023,
+              "value": 17.5439
+            },
+            {
+              "year": 2024,
+              "value": 17.5439
+            },
+            {
+              "year": 2025,
+              "value": 18.1287
+            }
+          ]
+        },
+        "SGP": {
+          "year": 2025,
+          "value": 32.3232,
+          "previous": {
+            "year": 2024,
+            "value": 29.2929
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 23.913
+            },
+            {
+              "year": 2016,
+              "value": 23.7624
+            },
+            {
+              "year": 2017,
+              "value": 23
+            },
+            {
+              "year": 2018,
+              "value": 23
+            },
+            {
+              "year": 2019,
+              "value": 23
+            },
+            {
+              "year": 2020,
+              "value": 29.4737
+            },
+            {
+              "year": 2021,
+              "value": 29.8077
+            },
+            {
+              "year": 2022,
+              "value": 29.1262
+            },
+            {
+              "year": 2023,
+              "value": 29.1262
+            },
+            {
+              "year": 2024,
+              "value": 29.2929
+            },
+            {
+              "year": 2025,
+              "value": 32.3232
+            }
+          ]
+        },
+        "IDN": {
+          "year": 2025,
+          "value": 21.8966,
+          "previous": {
+            "year": 2024,
+            "value": 21.0345
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 17.1171
+            },
+            {
+              "year": 2016,
+              "value": 17.1171
+            },
+            {
+              "year": 2017,
+              "value": 19.8214
+            },
+            {
+              "year": 2018,
+              "value": 19.8214
+            },
+            {
+              "year": 2019,
+              "value": 17.3913
+            },
+            {
+              "year": 2020,
+              "value": 20.3478
+            },
+            {
+              "year": 2021,
+              "value": 21.0435
+            },
+            {
+              "year": 2022,
+              "value": 21.913
+            },
+            {
+              "year": 2023,
+              "value": 21.5652
+            },
+            {
+              "year": 2024,
+              "value": 21.0345
+            },
+            {
+              "year": 2025,
+              "value": 21.8966
+            }
+          ]
+        },
+        "VNM": {
+          "year": 2025,
+          "value": 31.3808,
+          "previous": {
+            "year": 2024,
+            "value": 30.6288
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 24.2972
+            },
+            {
+              "year": 2016,
+              "value": 26.7206
+            },
+            {
+              "year": 2017,
+              "value": 26.7206
+            },
+            {
+              "year": 2018,
+              "value": 26.7206
+            },
+            {
+              "year": 2019,
+              "value": 26.7206
+            },
+            {
+              "year": 2020,
+              "value": 26.7206
+            },
+            {
+              "year": 2021,
+              "value": 30.2605
+            },
+            {
+              "year": 2022,
+              "value": 30.2605
+            },
+            {
+              "year": 2023,
+              "value": 30.2605
+            },
+            {
+              "year": 2024,
+              "value": 30.6288
+            },
+            {
+              "year": 2025,
+              "value": 31.3808
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -3631,7 +22099,9 @@ export const indicatorSnapshot = {
           "year": 2025,
           "value": 20.3333
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "consumer-inflation": {
       "countries": {
@@ -3641,7 +22111,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 2.3217
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.7063
+            },
+            {
+              "year": 2016,
+              "value": 0.9717
+            },
+            {
+              "year": 2017,
+              "value": 1.9443
+            },
+            {
+              "year": 2018,
+              "value": 1.4758
+            },
+            {
+              "year": 2019,
+              "value": 0.383
+            },
+            {
+              "year": 2020,
+              "value": 0.5373
+            },
+            {
+              "year": 2021,
+              "value": 2.4983
+            },
+            {
+              "year": 2022,
+              "value": 5.0895
+            },
+            {
+              "year": 2023,
+              "value": 3.5975
+            },
+            {
+              "year": 2024,
+              "value": 2.3217
+            },
+            {
+              "year": 2025,
+              "value": 2.1231
+            }
+          ]
         },
         "WLD": {
           "year": 2025,
@@ -3649,7 +22165,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 3.0145
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.437
+            },
+            {
+              "year": 2016,
+              "value": 1.5969
+            },
+            {
+              "year": 2017,
+              "value": 2.2231
+            },
+            {
+              "year": 2018,
+              "value": 2.4426
+            },
+            {
+              "year": 2019,
+              "value": 2.2061
+            },
+            {
+              "year": 2020,
+              "value": 1.9051
+            },
+            {
+              "year": 2021,
+              "value": 3.4754
+            },
+            {
+              "year": 2022,
+              "value": 8.0817
+            },
+            {
+              "year": 2023,
+              "value": 5.7994
+            },
+            {
+              "year": 2024,
+              "value": 3.0145
+            },
+            {
+              "year": 2025,
+              "value": 3.0414
+            }
+          ]
         },
         "USA": {
           "year": 2024,
@@ -3657,7 +22219,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 4.1163
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.1186
+            },
+            {
+              "year": 2016,
+              "value": 1.2616
+            },
+            {
+              "year": 2017,
+              "value": 2.1301
+            },
+            {
+              "year": 2018,
+              "value": 2.4426
+            },
+            {
+              "year": 2019,
+              "value": 1.8122
+            },
+            {
+              "year": 2020,
+              "value": 1.2336
+            },
+            {
+              "year": 2021,
+              "value": 4.6979
+            },
+            {
+              "year": 2022,
+              "value": 8.0028
+            },
+            {
+              "year": 2023,
+              "value": 4.1163
+            },
+            {
+              "year": 2024,
+              "value": 2.9495
+            }
+          ]
         },
         "JPN": {
           "year": 2025,
@@ -3665,7 +22269,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 2.7385
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.7953
+            },
+            {
+              "year": 2016,
+              "value": -0.1273
+            },
+            {
+              "year": 2017,
+              "value": 0.4842
+            },
+            {
+              "year": 2018,
+              "value": 0.9891
+            },
+            {
+              "year": 2019,
+              "value": 0.4688
+            },
+            {
+              "year": 2020,
+              "value": -0.025
+            },
+            {
+              "year": 2021,
+              "value": -0.2334
+            },
+            {
+              "year": 2022,
+              "value": 2.4977
+            },
+            {
+              "year": 2023,
+              "value": 3.2681
+            },
+            {
+              "year": 2024,
+              "value": 2.7385
+            },
+            {
+              "year": 2025,
+              "value": 3.1725
+            }
+          ]
         },
         "CHN": {
           "year": 2025,
@@ -3673,7 +22323,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 0.2181
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.437
+            },
+            {
+              "year": 2016,
+              "value": 2
+            },
+            {
+              "year": 2017,
+              "value": 1.5931
+            },
+            {
+              "year": 2018,
+              "value": 2.0748
+            },
+            {
+              "year": 2019,
+              "value": 2.8992
+            },
+            {
+              "year": 2020,
+              "value": 2.4194
+            },
+            {
+              "year": 2021,
+              "value": 0.981
+            },
+            {
+              "year": 2022,
+              "value": 1.9736
+            },
+            {
+              "year": 2023,
+              "value": 0.2348
+            },
+            {
+              "year": 2024,
+              "value": 0.2181
+            },
+            {
+              "year": 2025,
+              "value": 0.0596
+            }
+          ]
         },
         "DEU": {
           "year": 2025,
@@ -3681,7 +22377,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 2.2565
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.5144
+            },
+            {
+              "year": 2016,
+              "value": 0.4917
+            },
+            {
+              "year": 2017,
+              "value": 1.5095
+            },
+            {
+              "year": 2018,
+              "value": 1.7322
+            },
+            {
+              "year": 2019,
+              "value": 1.4457
+            },
+            {
+              "year": 2020,
+              "value": 0.1449
+            },
+            {
+              "year": 2021,
+              "value": 3.0667
+            },
+            {
+              "year": 2022,
+              "value": 6.8726
+            },
+            {
+              "year": 2023,
+              "value": 5.9464
+            },
+            {
+              "year": 2024,
+              "value": 2.2565
+            },
+            {
+              "year": 2025,
+              "value": 2.1718
+            }
+          ]
         },
         "GBR": {
           "year": 2025,
@@ -3689,7 +22431,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 3.2716
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.368
+            },
+            {
+              "year": 2016,
+              "value": 1.0084
+            },
+            {
+              "year": 2017,
+              "value": 2.5578
+            },
+            {
+              "year": 2018,
+              "value": 2.2928
+            },
+            {
+              "year": 2019,
+              "value": 1.7381
+            },
+            {
+              "year": 2020,
+              "value": 0.9895
+            },
+            {
+              "year": 2021,
+              "value": 2.5184
+            },
+            {
+              "year": 2022,
+              "value": 7.922
+            },
+            {
+              "year": 2023,
+              "value": 6.794
+            },
+            {
+              "year": 2024,
+              "value": 3.2716
+            },
+            {
+              "year": 2025,
+              "value": 3.8831
+            }
+          ]
         },
         "FRA": {
           "year": 2025,
@@ -3697,7 +22485,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 1.999
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.0375
+            },
+            {
+              "year": 2016,
+              "value": 0.1833
+            },
+            {
+              "year": 2017,
+              "value": 1.0323
+            },
+            {
+              "year": 2018,
+              "value": 1.8508
+            },
+            {
+              "year": 2019,
+              "value": 1.1083
+            },
+            {
+              "year": 2020,
+              "value": 0.4765
+            },
+            {
+              "year": 2021,
+              "value": 1.6423
+            },
+            {
+              "year": 2022,
+              "value": 5.2224
+            },
+            {
+              "year": 2023,
+              "value": 4.8784
+            },
+            {
+              "year": 2024,
+              "value": 1.999
+            },
+            {
+              "year": 2025,
+              "value": 0.9438
+            }
+          ]
         },
         "CAN": {
           "year": 2025,
@@ -3705,7 +22539,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 2.3816
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.1252
+            },
+            {
+              "year": 2016,
+              "value": 1.4288
+            },
+            {
+              "year": 2017,
+              "value": 1.5969
+            },
+            {
+              "year": 2018,
+              "value": 2.2682
+            },
+            {
+              "year": 2019,
+              "value": 1.9493
+            },
+            {
+              "year": 2020,
+              "value": 0.717
+            },
+            {
+              "year": 2021,
+              "value": 3.3952
+            },
+            {
+              "year": 2022,
+              "value": 6.8028
+            },
+            {
+              "year": 2023,
+              "value": 3.879
+            },
+            {
+              "year": 2024,
+              "value": 2.3816
+            },
+            {
+              "year": 2025,
+              "value": 2.0723
+            }
+          ]
         },
         "AUS": {
           "year": 2025,
@@ -3713,7 +22593,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 3.1666
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.5084
+            },
+            {
+              "year": 2016,
+              "value": 1.277
+            },
+            {
+              "year": 2017,
+              "value": 1.9486
+            },
+            {
+              "year": 2018,
+              "value": 1.9114
+            },
+            {
+              "year": 2019,
+              "value": 1.6108
+            },
+            {
+              "year": 2020,
+              "value": 0.8469
+            },
+            {
+              "year": 2021,
+              "value": 2.8639
+            },
+            {
+              "year": 2022,
+              "value": 6.5941
+            },
+            {
+              "year": 2023,
+              "value": 5.597
+            },
+            {
+              "year": 2024,
+              "value": 3.1666
+            },
+            {
+              "year": 2025,
+              "value": 2.874
+            }
+          ]
         },
         "IND": {
           "year": 2025,
@@ -3721,7 +22647,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 4.953
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 4.907
+            },
+            {
+              "year": 2016,
+              "value": 4.9482
+            },
+            {
+              "year": 2017,
+              "value": 3.3282
+            },
+            {
+              "year": 2018,
+              "value": 3.9388
+            },
+            {
+              "year": 2019,
+              "value": 3.7295
+            },
+            {
+              "year": 2020,
+              "value": 6.6234
+            },
+            {
+              "year": 2021,
+              "value": 5.1314
+            },
+            {
+              "year": 2022,
+              "value": 6.699
+            },
+            {
+              "year": 2023,
+              "value": 5.6491
+            },
+            {
+              "year": 2024,
+              "value": 4.953
+            },
+            {
+              "year": 2025,
+              "value": 2.3988
+            }
+          ]
         },
         "BRA": {
           "year": 2025,
@@ -3729,7 +22701,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 4.3675
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 9.0299
+            },
+            {
+              "year": 2016,
+              "value": 8.7391
+            },
+            {
+              "year": 2017,
+              "value": 3.4464
+            },
+            {
+              "year": 2018,
+              "value": 3.6649
+            },
+            {
+              "year": 2019,
+              "value": 3.733
+            },
+            {
+              "year": 2020,
+              "value": 3.2118
+            },
+            {
+              "year": 2021,
+              "value": 8.3017
+            },
+            {
+              "year": 2022,
+              "value": 9.2801
+            },
+            {
+              "year": 2023,
+              "value": 4.5936
+            },
+            {
+              "year": 2024,
+              "value": 4.3675
+            },
+            {
+              "year": 2025,
+              "value": 5.0168
+            }
+          ]
         },
         "SGP": {
           "year": 2025,
@@ -3737,7 +22755,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 2.3895
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": -0.522
+            },
+            {
+              "year": 2016,
+              "value": -0.5298
+            },
+            {
+              "year": 2017,
+              "value": 0.5768
+            },
+            {
+              "year": 2018,
+              "value": 0.4388
+            },
+            {
+              "year": 2019,
+              "value": 0.5678
+            },
+            {
+              "year": 2020,
+              "value": -0.1721
+            },
+            {
+              "year": 2021,
+              "value": 2.3161
+            },
+            {
+              "year": 2022,
+              "value": 6.131
+            },
+            {
+              "year": 2023,
+              "value": 4.8337
+            },
+            {
+              "year": 2024,
+              "value": 2.3895
+            },
+            {
+              "year": 2025,
+              "value": 0.903
+            }
+          ]
         },
         "IDN": {
           "year": 2025,
@@ -3745,7 +22809,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 2.1815
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 6.3631
+            },
+            {
+              "year": 2016,
+              "value": 3.5258
+            },
+            {
+              "year": 2017,
+              "value": 3.8088
+            },
+            {
+              "year": 2018,
+              "value": 3.1983
+            },
+            {
+              "year": 2019,
+              "value": 3.0306
+            },
+            {
+              "year": 2020,
+              "value": 1.9198
+            },
+            {
+              "year": 2021,
+              "value": 1.5601
+            },
+            {
+              "year": 2022,
+              "value": 4.2095
+            },
+            {
+              "year": 2023,
+              "value": 3.6694
+            },
+            {
+              "year": 2024,
+              "value": 2.1815
+            },
+            {
+              "year": 2025,
+              "value": 1.9133
+            }
+          ]
         },
         "VNM": {
           "year": 2025,
@@ -3753,7 +22863,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 3.6211
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.6312
+            },
+            {
+              "year": 2016,
+              "value": 2.6682
+            },
+            {
+              "year": 2017,
+              "value": 3.5203
+            },
+            {
+              "year": 2018,
+              "value": 3.5396
+            },
+            {
+              "year": 2019,
+              "value": 2.7958
+            },
+            {
+              "year": 2020,
+              "value": 3.2209
+            },
+            {
+              "year": 2021,
+              "value": 1.8347
+            },
+            {
+              "year": 2022,
+              "value": 3.1565
+            },
+            {
+              "year": 2023,
+              "value": 3.2529
+            },
+            {
+              "year": 2024,
+              "value": 3.6211
+            },
+            {
+              "year": 2025,
+              "value": 3.31
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -3801,7 +22957,9 @@ export const indicatorSnapshot = {
           "year": 2025,
           "value": 2.1231
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "real-interest-rate": {
       "countries": {
@@ -3811,7 +22969,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 0.6345
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.2953
+            },
+            {
+              "year": 2016,
+              "value": 1.2787
+            },
+            {
+              "year": 2017,
+              "value": 1.429
+            },
+            {
+              "year": 2018,
+              "value": 3.0785
+            },
+            {
+              "year": 2019,
+              "value": 4.0956
+            },
+            {
+              "year": 2020,
+              "value": 1.1955
+            },
+            {
+              "year": 2021,
+              "value": -0.2872
+            },
+            {
+              "year": 2022,
+              "value": 2.4405
+            },
+            {
+              "year": 2023,
+              "value": 3.0877
+            },
+            {
+              "year": 2024,
+              "value": 0.6345
+            },
+            {
+              "year": 2025,
+              "value": 1.034
+            }
+          ]
         },
         "USA": {
           "year": 2021,
@@ -3819,7 +23023,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 2.1702
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.3105
+            },
+            {
+              "year": 2016,
+              "value": 2.5372
+            },
+            {
+              "year": 2017,
+              "value": 2.2653
+            },
+            {
+              "year": 2018,
+              "value": 2.5547
+            },
+            {
+              "year": 2019,
+              "value": 3.5731
+            },
+            {
+              "year": 2020,
+              "value": 2.1702
+            },
+            {
+              "year": 2021,
+              "value": -1.2557
+            }
+          ]
         },
         "JPN": {
           "year": 2017,
@@ -3827,7 +23061,21 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2016,
             "value": 0.4569
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": -0.9106
+            },
+            {
+              "year": 2016,
+              "value": 0.4569
+            },
+            {
+              "year": 2017,
+              "value": 0.9721
+            }
+          ]
         },
         "CHN": {
           "year": 2024,
@@ -3835,7 +23083,335 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 4.8815
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 4.2097
+            },
+            {
+              "year": 2016,
+              "value": 2.8289
+            },
+            {
+              "year": 2017,
+              "value": 0.1958
+            },
+            {
+              "year": 2018,
+              "value": 0.8536
+            },
+            {
+              "year": 2019,
+              "value": 2.994
+            },
+            {
+              "year": 2020,
+              "value": 3.7992
+            },
+            {
+              "year": 2021,
+              "value": -0.1183
+            },
+            {
+              "year": 2022,
+              "value": 2.3696
+            },
+            {
+              "year": 2023,
+              "value": 4.8815
+            },
+            {
+              "year": 2024,
+              "value": 5.1534
+            }
+          ]
+        },
+        "CAN": {
+          "year": 2017,
+          "value": 0.1256,
+          "previous": {
+            "year": 2016,
+            "value": 1.9689
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3.6745
+            },
+            {
+              "year": 2016,
+              "value": 1.9689
+            },
+            {
+              "year": 2017,
+              "value": 0.1256
+            }
+          ]
+        },
+        "AUS": {
+          "year": 2019,
+          "value": 1.5698,
+          "previous": {
+            "year": 2018,
+            "value": 3.3528
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 6.2416
+            },
+            {
+              "year": 2016,
+              "value": 6.1356
+            },
+            {
+              "year": 2017,
+              "value": 1.543
+            },
+            {
+              "year": 2018,
+              "value": 3.3528
+            },
+            {
+              "year": 2019,
+              "value": 1.5698
+            }
+          ]
+        },
+        "IND": {
+          "year": 2022,
+          "value": 5.555,
+          "previous": {
+            "year": 2021,
+            "value": 0.3169
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 7.5565
+            },
+            {
+              "year": 2016,
+              "value": 6.2327
+            },
+            {
+              "year": 2017,
+              "value": 5.3276
+            },
+            {
+              "year": 2018,
+              "value": 5.3617
+            },
+            {
+              "year": 2019,
+              "value": 6.8949
+            },
+            {
+              "year": 2020,
+              "value": 4.136
+            },
+            {
+              "year": 2021,
+              "value": 0.3169
+            },
+            {
+              "year": 2022,
+              "value": 5.555
+            }
+          ]
+        },
+        "BRA": {
+          "year": 2025,
+          "value": 37.4604,
+          "previous": {
+            "year": 2024,
+            "value": 34.7285
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 33.8323
+            },
+            {
+              "year": 2016,
+              "value": 40.6984
+            },
+            {
+              "year": 2017,
+              "value": 41.7138
+            },
+            {
+              "year": 2018,
+              "value": 33.1023
+            },
+            {
+              "year": 2019,
+              "value": 31.9031
+            },
+            {
+              "year": 2020,
+              "value": 21.1972
+            },
+            {
+              "year": 2021,
+              "value": 15.0109
+            },
+            {
+              "year": 2022,
+              "value": 28.3961
+            },
+            {
+              "year": 2023,
+              "value": 36.5545
+            },
+            {
+              "year": 2024,
+              "value": 34.7285
+            },
+            {
+              "year": 2025,
+              "value": 37.4604
+            }
+          ]
+        },
+        "SGP": {
+          "year": 2021,
+          "value": -5.2069,
+          "previous": {
+            "year": 2020,
+            "value": 7.6149
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.2102
+            },
+            {
+              "year": 2016,
+              "value": 4.6038
+            },
+            {
+              "year": 2017,
+              "value": 2.2245
+            },
+            {
+              "year": 2018,
+              "value": 1.5035
+            },
+            {
+              "year": 2019,
+              "value": 5.5952
+            },
+            {
+              "year": 2020,
+              "value": 7.6149
+            },
+            {
+              "year": 2021,
+              "value": -5.2069
+            }
+          ]
+        },
+        "IDN": {
+          "year": 2025,
+          "value": 5.9908,
+          "previous": {
+            "year": 2024,
+            "value": 7.8362
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 8.3499
+            },
+            {
+              "year": 2016,
+              "value": 9.2244
+            },
+            {
+              "year": 2017,
+              "value": 6.5016
+            },
+            {
+              "year": 2018,
+              "value": 6.4712
+            },
+            {
+              "year": 2019,
+              "value": 8.6294
+            },
+            {
+              "year": 2020,
+              "value": 9.9859
+            },
+            {
+              "year": 2021,
+              "value": 2.7532
+            },
+            {
+              "year": 2022,
+              "value": -0.9574
+            },
+            {
+              "year": 2023,
+              "value": 7.2851
+            },
+            {
+              "year": 2024,
+              "value": 7.8362
+            },
+            {
+              "year": 2025,
+              "value": 5.9908
+            }
+          ]
+        },
+        "VNM": {
+          "year": 2023,
+          "value": 7.0063,
+          "previous": {
+            "year": 2022,
+            "value": 3.4186
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 8.9883
+            },
+            {
+              "year": 2016,
+              "value": 5.0486
+            },
+            {
+              "year": 2017,
+              "value": 2.5915
+            },
+            {
+              "year": 2018,
+              "value": 3.6142
+            },
+            {
+              "year": 2019,
+              "value": 5.1593
+            },
+            {
+              "year": 2020,
+              "value": 6.0906
+            },
+            {
+              "year": 2021,
+              "value": 4.7922
+            },
+            {
+              "year": 2022,
+              "value": 3.4186
+            },
+            {
+              "year": 2023,
+              "value": 7.0063
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -3883,7 +23459,9 @@ export const indicatorSnapshot = {
           "year": 2025,
           "value": 1.034
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "private-credit": {
       "countries": {
@@ -3893,7 +23471,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 163.5156
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 125.8588
+            },
+            {
+              "year": 2016,
+              "value": 128.0407
+            },
+            {
+              "year": 2017,
+              "value": 129.5391
+            },
+            {
+              "year": 2018,
+              "value": 133.5041
+            },
+            {
+              "year": 2019,
+              "value": 142.6525
+            },
+            {
+              "year": 2020,
+              "value": 154.7479
+            },
+            {
+              "year": 2021,
+              "value": 159.9261
+            },
+            {
+              "year": 2022,
+              "value": 162.7695
+            },
+            {
+              "year": 2023,
+              "value": 163.5156
+            },
+            {
+              "year": 2024,
+              "value": 160.3472
+            }
+          ]
         },
         "WLD": {
           "year": 2024,
@@ -3901,7 +23521,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 135.9708
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 123.1119
+            },
+            {
+              "year": 2016,
+              "value": 124.5509
+            },
+            {
+              "year": 2017,
+              "value": 125.4241
+            },
+            {
+              "year": 2018,
+              "value": 124.7557
+            },
+            {
+              "year": 2019,
+              "value": 129.2856
+            },
+            {
+              "year": 2020,
+              "value": 144.7531
+            },
+            {
+              "year": 2021,
+              "value": 141.7635
+            },
+            {
+              "year": 2022,
+              "value": 134.4255
+            },
+            {
+              "year": 2023,
+              "value": 135.9708
+            },
+            {
+              "year": 2024,
+              "value": 140.3205
+            }
+          ]
         },
         "USA": {
           "year": 2025,
@@ -3909,7 +23571,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 195.8751
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 183.6322
+            },
+            {
+              "year": 2016,
+              "value": 186.3271
+            },
+            {
+              "year": 2017,
+              "value": 194.091
+            },
+            {
+              "year": 2018,
+              "value": 183.054
+            },
+            {
+              "year": 2019,
+              "value": 194.7353
+            },
+            {
+              "year": 2020,
+              "value": 217.2643
+            },
+            {
+              "year": 2021,
+              "value": 219.1259
+            },
+            {
+              "year": 2022,
+              "value": 187.0874
+            },
+            {
+              "year": 2023,
+              "value": 191.0754
+            },
+            {
+              "year": 2024,
+              "value": 195.8751
+            },
+            {
+              "year": 2025,
+              "value": 201.2661
+            }
+          ]
         },
         "JPN": {
           "year": 2025,
@@ -3917,7 +23625,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 187.068
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 159.1817
+            },
+            {
+              "year": 2016,
+              "value": 160.0349
+            },
+            {
+              "year": 2017,
+              "value": 165.0668
+            },
+            {
+              "year": 2018,
+              "value": 164.3378
+            },
+            {
+              "year": 2019,
+              "value": 172.4846
+            },
+            {
+              "year": 2020,
+              "value": 190.1183
+            },
+            {
+              "year": 2021,
+              "value": 188.2927
+            },
+            {
+              "year": 2022,
+              "value": 186.7928
+            },
+            {
+              "year": 2023,
+              "value": 186.1109
+            },
+            {
+              "year": 2024,
+              "value": 187.068
+            },
+            {
+              "year": 2025,
+              "value": 187.4066
+            }
+          ]
         },
         "CHN": {
           "year": 2024,
@@ -3925,7 +23679,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 189.6067
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 149.6288
+            },
+            {
+              "year": 2016,
+              "value": 153.1928
+            },
+            {
+              "year": 2017,
+              "value": 152.0897
+            },
+            {
+              "year": 2018,
+              "value": 154.9916
+            },
+            {
+              "year": 2019,
+              "value": 162.2076
+            },
+            {
+              "year": 2020,
+              "value": 179.1041
+            },
+            {
+              "year": 2021,
+              "value": 173.5545
+            },
+            {
+              "year": 2022,
+              "value": 181.7852
+            },
+            {
+              "year": 2023,
+              "value": 189.6067
+            },
+            {
+              "year": 2024,
+              "value": 194.3125
+            }
+          ]
         },
         "DEU": {
           "year": 2023,
@@ -3933,7 +23729,437 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 81.0792
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 76.5815
+            },
+            {
+              "year": 2016,
+              "value": 75.9887
+            },
+            {
+              "year": 2017,
+              "value": 76.0591
+            },
+            {
+              "year": 2018,
+              "value": 76.6188
+            },
+            {
+              "year": 2019,
+              "value": 77.9657
+            },
+            {
+              "year": 2020,
+              "value": 83.8094
+            },
+            {
+              "year": 2021,
+              "value": 82.7038
+            },
+            {
+              "year": 2022,
+              "value": 81.0792
+            },
+            {
+              "year": 2023,
+              "value": 77.2535
+            }
+          ]
+        },
+        "GBR": {
+          "year": 2024,
+          "value": 112.372,
+          "previous": {
+            "year": 2023,
+            "value": 117.9784
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 130.0827
+            },
+            {
+              "year": 2016,
+              "value": 131.4801
+            },
+            {
+              "year": 2017,
+              "value": 132.3332
+            },
+            {
+              "year": 2018,
+              "value": 132.7834
+            },
+            {
+              "year": 2019,
+              "value": 131.4431
+            },
+            {
+              "year": 2020,
+              "value": 145.5721
+            },
+            {
+              "year": 2021,
+              "value": 136.1616
+            },
+            {
+              "year": 2022,
+              "value": 126.1264
+            },
+            {
+              "year": 2023,
+              "value": 117.9784
+            },
+            {
+              "year": 2024,
+              "value": 112.372
+            }
+          ]
+        },
+        "FRA": {
+          "year": 2024,
+          "value": 107.5827,
+          "previous": {
+            "year": 2023,
+            "value": 112.5674
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 94.9454
+            },
+            {
+              "year": 2016,
+              "value": 97.4905
+            },
+            {
+              "year": 2017,
+              "value": 101.6178
+            },
+            {
+              "year": 2018,
+              "value": 104.6241
+            },
+            {
+              "year": 2019,
+              "value": 106.913
+            },
+            {
+              "year": 2020,
+              "value": 125.3974
+            },
+            {
+              "year": 2021,
+              "value": 120.7219
+            },
+            {
+              "year": 2022,
+              "value": 119.2904
+            },
+            {
+              "year": 2023,
+              "value": 112.5674
+            },
+            {
+              "year": 2024,
+              "value": 107.5827
+            }
+          ]
+        },
+        "AUS": {
+          "year": 2025,
+          "value": 133.7926,
+          "previous": {
+            "year": 2024,
+            "value": 129.3173
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 135.8003
+            },
+            {
+              "year": 2016,
+              "value": 142.1043
+            },
+            {
+              "year": 2017,
+              "value": 140.1081
+            },
+            {
+              "year": 2018,
+              "value": 139.4981
+            },
+            {
+              "year": 2019,
+              "value": 135.6667
+            },
+            {
+              "year": 2020,
+              "value": 141.7047
+            },
+            {
+              "year": 2021,
+              "value": 138.3396
+            },
+            {
+              "year": 2022,
+              "value": 133.6439
+            },
+            {
+              "year": 2023,
+              "value": 126.9621
+            },
+            {
+              "year": 2024,
+              "value": 129.3173
+            },
+            {
+              "year": 2025,
+              "value": 133.7926
+            }
+          ]
+        },
+        "IND": {
+          "year": 2025,
+          "value": 44.0251,
+          "previous": {
+            "year": 2024,
+            "value": 41.608
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 51.8675
+            },
+            {
+              "year": 2016,
+              "value": 38.2037
+            },
+            {
+              "year": 2017,
+              "value": 38.1707
+            },
+            {
+              "year": 2018,
+              "value": 38.8975
+            },
+            {
+              "year": 2019,
+              "value": 38.7379
+            },
+            {
+              "year": 2020,
+              "value": 40.7868
+            },
+            {
+              "year": 2021,
+              "value": 36.8921
+            },
+            {
+              "year": 2022,
+              "value": 38.186
+            },
+            {
+              "year": 2023,
+              "value": 40.8941
+            },
+            {
+              "year": 2024,
+              "value": 41.608
+            },
+            {
+              "year": 2025,
+              "value": 44.0251
+            }
+          ]
+        },
+        "BRA": {
+          "year": 2025,
+          "value": 75.103,
+          "previous": {
+            "year": 2024,
+            "value": 75.6309
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 66.8297
+            },
+            {
+              "year": 2016,
+              "value": 62.194
+            },
+            {
+              "year": 2017,
+              "value": 59.4843
+            },
+            {
+              "year": 2018,
+              "value": 60.2183
+            },
+            {
+              "year": 2019,
+              "value": 62.7905
+            },
+            {
+              "year": 2020,
+              "value": 68.6962
+            },
+            {
+              "year": 2021,
+              "value": 68.8052
+            },
+            {
+              "year": 2022,
+              "value": 70.6061
+            },
+            {
+              "year": 2023,
+              "value": 71.0755
+            },
+            {
+              "year": 2024,
+              "value": 75.6309
+            },
+            {
+              "year": 2025,
+              "value": 75.103
+            }
+          ]
+        },
+        "SGP": {
+          "year": 2020,
+          "value": 128.4329,
+          "previous": {
+            "year": 2019,
+            "value": 119.2566
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 122.4214
+            },
+            {
+              "year": 2016,
+              "value": 123.0547
+            },
+            {
+              "year": 2017,
+              "value": 120.4426
+            },
+            {
+              "year": 2018,
+              "value": 117.4399
+            },
+            {
+              "year": 2019,
+              "value": 119.2566
+            },
+            {
+              "year": 2020,
+              "value": 128.4329
+            }
+          ]
+        },
+        "IDN": {
+          "year": 2025,
+          "value": 36.2833,
+          "previous": {
+            "year": 2024,
+            "value": 36.3924
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 39.1188
+            },
+            {
+              "year": 2016,
+              "value": 39.4024
+            },
+            {
+              "year": 2017,
+              "value": 38.7323
+            },
+            {
+              "year": 2018,
+              "value": 38.8054
+            },
+            {
+              "year": 2019,
+              "value": 38.3727
+            },
+            {
+              "year": 2020,
+              "value": 38.6795
+            },
+            {
+              "year": 2021,
+              "value": 36.9908
+            },
+            {
+              "year": 2022,
+              "value": 35.2884
+            },
+            {
+              "year": 2023,
+              "value": 36.013
+            },
+            {
+              "year": 2024,
+              "value": 36.3924
+            },
+            {
+              "year": 2025,
+              "value": 36.2833
+            }
+          ]
+        },
+        "VNM": {
+          "year": 2022,
+          "value": 124.9615,
+          "previous": {
+            "year": 2021,
+            "value": 124.2829
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 90.3992
+            },
+            {
+              "year": 2016,
+              "value": 98.859
+            },
+            {
+              "year": 2017,
+              "value": 103.972
+            },
+            {
+              "year": 2018,
+              "value": 105.276
+            },
+            {
+              "year": 2019,
+              "value": 108.0319
+            },
+            {
+              "year": 2020,
+              "value": 115.5253
+            },
+            {
+              "year": 2021,
+              "value": 124.2829
+            },
+            {
+              "year": 2022,
+              "value": 124.9615
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -3977,7 +24203,9 @@ export const indicatorSnapshot = {
           "year": 2024,
           "value": 160.3472
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "broad-money": {
       "countries": {
@@ -3987,7 +24215,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 162.1029
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 129.1019
+            },
+            {
+              "year": 2016,
+              "value": 131.3379
+            },
+            {
+              "year": 2017,
+              "value": 130.8194
+            },
+            {
+              "year": 2018,
+              "value": 134.5489
+            },
+            {
+              "year": 2019,
+              "value": 142.7824
+            },
+            {
+              "year": 2020,
+              "value": 155.4475
+            },
+            {
+              "year": 2021,
+              "value": 162.6386
+            },
+            {
+              "year": 2022,
+              "value": 161.7293
+            },
+            {
+              "year": 2023,
+              "value": 162.1029
+            },
+            {
+              "year": 2024,
+              "value": 162.7136
+            }
+          ]
         },
         "WLD": {
           "year": 2024,
@@ -3995,7 +24265,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 135.5654
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 117.7381
+            },
+            {
+              "year": 2016,
+              "value": 121.6669
+            },
+            {
+              "year": 2017,
+              "value": 119.9613
+            },
+            {
+              "year": 2018,
+              "value": 120.2049
+            },
+            {
+              "year": 2019,
+              "value": 122.2835
+            },
+            {
+              "year": 2020,
+              "value": 140.0833
+            },
+            {
+              "year": 2021,
+              "value": 139.9156
+            },
+            {
+              "year": 2022,
+              "value": 136.9038
+            },
+            {
+              "year": 2023,
+              "value": 135.5654
+            },
+            {
+              "year": 2024,
+              "value": 136.1056
+            }
+          ]
         },
         "USA": {
           "year": 2025,
@@ -4003,7 +24315,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 98.7563
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 88.5495
+            },
+            {
+              "year": 2016,
+              "value": 89.4647
+            },
+            {
+              "year": 2017,
+              "value": 89.9018
+            },
+            {
+              "year": 2018,
+              "value": 88.7965
+            },
+            {
+              "year": 2019,
+              "value": 92.3006
+            },
+            {
+              "year": 2020,
+              "value": 111.2047
+            },
+            {
+              "year": 2021,
+              "value": 114.7552
+            },
+            {
+              "year": 2022,
+              "value": 103.5934
+            },
+            {
+              "year": 2023,
+              "value": 98.8153
+            },
+            {
+              "year": 2024,
+              "value": 98.7563
+            },
+            {
+              "year": 2025,
+              "value": 99.7158
+            }
+          ]
         },
         "JPN": {
           "year": 2025,
@@ -4011,7 +24369,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 256.7248
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 228.7789
+            },
+            {
+              "year": 2016,
+              "value": 234.5571
+            },
+            {
+              "year": 2017,
+              "value": 238.8061
+            },
+            {
+              "year": 2018,
+              "value": 242.6205
+            },
+            {
+              "year": 2019,
+              "value": 246.4722
+            },
+            {
+              "year": 2020,
+              "value": 273.0881
+            },
+            {
+              "year": 2021,
+              "value": 271.5742
+            },
+            {
+              "year": 2022,
+              "value": 272.3582
+            },
+            {
+              "year": 2023,
+              "value": 264.1139
+            },
+            {
+              "year": 2024,
+              "value": 256.7248
+            },
+            {
+              "year": 2025,
+              "value": 246.7781
+            }
+          ]
         },
         "CHN": {
           "year": 2024,
@@ -4019,7 +24423,375 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 222.0112
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 198.1858
+            },
+            {
+              "year": 2016,
+              "value": 203.6365
+            },
+            {
+              "year": 2017,
+              "value": 197.7587
+            },
+            {
+              "year": 2018,
+              "value": 191.5501
+            },
+            {
+              "year": 2019,
+              "value": 194.0784
+            },
+            {
+              "year": 2020,
+              "value": 207.5303
+            },
+            {
+              "year": 2021,
+              "value": 199.5684
+            },
+            {
+              "year": 2022,
+              "value": 211.9725
+            },
+            {
+              "year": 2023,
+              "value": 222.0112
+            },
+            {
+              "year": 2024,
+              "value": 227.669
+            }
+          ]
+        },
+        "GBR": {
+          "year": 2024,
+          "value": 141.9057,
+          "previous": {
+            "year": 2023,
+            "value": 145.3606
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 133.2865
+            },
+            {
+              "year": 2016,
+              "value": 139.3581
+            },
+            {
+              "year": 2017,
+              "value": 144.2657
+            },
+            {
+              "year": 2018,
+              "value": 146.7112
+            },
+            {
+              "year": 2019,
+              "value": 139.4813
+            },
+            {
+              "year": 2020,
+              "value": 162.2558
+            },
+            {
+              "year": 2021,
+              "value": 162.8748
+            },
+            {
+              "year": 2022,
+              "value": 159.191
+            },
+            {
+              "year": 2023,
+              "value": 145.3606
+            },
+            {
+              "year": 2024,
+              "value": 141.9057
+            }
+          ]
+        },
+        "AUS": {
+          "year": 2025,
+          "value": 133.1239,
+          "previous": {
+            "year": 2024,
+            "value": 129.4149
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 112.7661
+            },
+            {
+              "year": 2016,
+              "value": 117.8512
+            },
+            {
+              "year": 2017,
+              "value": 116.1826
+            },
+            {
+              "year": 2018,
+              "value": 113.5217
+            },
+            {
+              "year": 2019,
+              "value": 122.4455
+            },
+            {
+              "year": 2020,
+              "value": 136.815
+            },
+            {
+              "year": 2021,
+              "value": 138.8592
+            },
+            {
+              "year": 2022,
+              "value": 133.9914
+            },
+            {
+              "year": 2023,
+              "value": 126.286
+            },
+            {
+              "year": 2024,
+              "value": 129.4149
+            },
+            {
+              "year": 2025,
+              "value": 133.1239
+            }
+          ]
+        },
+        "IND": {
+          "year": 2021,
+          "value": 82.102,
+          "previous": {
+            "year": 2020,
+            "value": 87.6767
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 78.0119
+            },
+            {
+              "year": 2016,
+              "value": 74.5493
+            },
+            {
+              "year": 2017,
+              "value": 74.1442
+            },
+            {
+              "year": 2018,
+              "value": 74.0978
+            },
+            {
+              "year": 2019,
+              "value": 76.9819
+            },
+            {
+              "year": 2020,
+              "value": 87.6767
+            },
+            {
+              "year": 2021,
+              "value": 82.102
+            }
+          ]
+        },
+        "BRA": {
+          "year": 2025,
+          "value": 118.2299,
+          "previous": {
+            "year": 2024,
+            "value": 116.3966
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 88.0696
+            },
+            {
+              "year": 2016,
+              "value": 93.8211
+            },
+            {
+              "year": 2017,
+              "value": 93.0596
+            },
+            {
+              "year": 2018,
+              "value": 93.713
+            },
+            {
+              "year": 2019,
+              "value": 96.0579
+            },
+            {
+              "year": 2020,
+              "value": 109.1542
+            },
+            {
+              "year": 2021,
+              "value": 103.4656
+            },
+            {
+              "year": 2022,
+              "value": 104.3022
+            },
+            {
+              "year": 2023,
+              "value": 110.1845
+            },
+            {
+              "year": 2024,
+              "value": 116.3966
+            },
+            {
+              "year": 2025,
+              "value": 118.2299
+            }
+          ]
+        },
+        "SGP": {
+          "year": 2020,
+          "value": 147.7462,
+          "previous": {
+            "year": 2019,
+            "value": 123.0502
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 122.8593
+            },
+            {
+              "year": 2016,
+              "value": 126.8411
+            },
+            {
+              "year": 2017,
+              "value": 121.8279
+            },
+            {
+              "year": 2018,
+              "value": 118.2158
+            },
+            {
+              "year": 2019,
+              "value": 123.0502
+            },
+            {
+              "year": 2020,
+              "value": 147.7462
+            }
+          ]
+        },
+        "IDN": {
+          "year": 2025,
+          "value": 42.5449,
+          "previous": {
+            "year": 2024,
+            "value": 41.7663
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 39.4644
+            },
+            {
+              "year": 2016,
+              "value": 40.3571
+            },
+            {
+              "year": 2017,
+              "value": 39.8766
+            },
+            {
+              "year": 2018,
+              "value": 38.8176
+            },
+            {
+              "year": 2019,
+              "value": 38.7602
+            },
+            {
+              "year": 2020,
+              "value": 44.7179
+            },
+            {
+              "year": 2021,
+              "value": 46.3602
+            },
+            {
+              "year": 2022,
+              "value": 43.536
+            },
+            {
+              "year": 2023,
+              "value": 42.2477
+            },
+            {
+              "year": 2024,
+              "value": 41.7663
+            },
+            {
+              "year": 2025,
+              "value": 42.5449
+            }
+          ]
+        },
+        "VNM": {
+          "year": 2022,
+          "value": 136.2556,
+          "previous": {
+            "year": 2021,
+            "value": 146.158
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 111.1747
+            },
+            {
+              "year": 2016,
+              "value": 120.6403
+            },
+            {
+              "year": 2017,
+              "value": 123.5053
+            },
+            {
+              "year": 2018,
+              "value": 124.987
+            },
+            {
+              "year": 2019,
+              "value": 129.1477
+            },
+            {
+              "year": 2020,
+              "value": 140.6037
+            },
+            {
+              "year": 2021,
+              "value": 146.158
+            },
+            {
+              "year": 2022,
+              "value": 136.2556
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -4063,7 +24835,9 @@ export const indicatorSnapshot = {
           "year": 2024,
           "value": 162.7136
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "market-capitalization": {
       "countries": {
@@ -4073,7 +24847,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 83.0488
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 79.989
+            },
+            {
+              "year": 2016,
+              "value": 79.4441
+            },
+            {
+              "year": 2017,
+              "value": 103.6002
+            },
+            {
+              "year": 2018,
+              "value": 77.4957
+            },
+            {
+              "year": 2019,
+              "value": 84.7973
+            },
+            {
+              "year": 2020,
+              "value": 124.7765
+            },
+            {
+              "year": 2021,
+              "value": 114.2276
+            },
+            {
+              "year": 2022,
+              "value": 91.3939
+            },
+            {
+              "year": 2023,
+              "value": 106.6781
+            },
+            {
+              "year": 2024,
+              "value": 83.0488
+            },
+            {
+              "year": 2025,
+              "value": 147.2284
+            }
+          ]
         },
         "WLD": {
           "year": 2025,
@@ -4081,7 +24901,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 129.3628
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 93.2695
+            },
+            {
+              "year": 2016,
+              "value": 95.6082
+            },
+            {
+              "year": 2017,
+              "value": 109.4227
+            },
+            {
+              "year": 2018,
+              "value": 93.0787
+            },
+            {
+              "year": 2019,
+              "value": 107.1112
+            },
+            {
+              "year": 2020,
+              "value": 130.7909
+            },
+            {
+              "year": 2021,
+              "value": 128.944
+            },
+            {
+              "year": 2022,
+              "value": 103.8812
+            },
+            {
+              "year": 2023,
+              "value": 114.9104
+            },
+            {
+              "year": 2024,
+              "value": 129.3628
+            },
+            {
+              "year": 2025,
+              "value": 148.5394
+            }
+          ]
         },
         "USA": {
           "year": 2025,
@@ -4089,7 +24955,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 212.2522
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 137.0184
+            },
+            {
+              "year": 2016,
+              "value": 145.4524
+            },
+            {
+              "year": 2017,
+              "value": 163.78
+            },
+            {
+              "year": 2018,
+              "value": 147.3449
+            },
+            {
+              "year": 2019,
+              "value": 158.244
+            },
+            {
+              "year": 2020,
+              "value": 194.4763
+            },
+            {
+              "year": 2021,
+              "value": 204.6247
+            },
+            {
+              "year": 2022,
+              "value": 154.6673
+            },
+            {
+              "year": 2023,
+              "value": 176.1119
+            },
+            {
+              "year": 2024,
+              "value": 212.2522
+            },
+            {
+              "year": 2025,
+              "value": 224.0446
+            }
+          ]
         },
         "JPN": {
           "year": 2025,
@@ -4097,7 +25009,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 150.6126
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 107.9498
+            },
+            {
+              "year": 2016,
+              "value": 96.9658
+            },
+            {
+              "year": 2017,
+              "value": 123.5121
+            },
+            {
+              "year": 2018,
+              "value": 102.765
+            },
+            {
+              "year": 2019,
+              "value": 118.0206
+            },
+            {
+              "year": 2020,
+              "value": 129.4655
+            },
+            {
+              "year": 2021,
+              "value": 125.2275
+            },
+            {
+              "year": 2022,
+              "value": 120.9646
+            },
+            {
+              "year": 2023,
+              "value": 140.2373
+            },
+            {
+              "year": 2024,
+              "value": 150.6126
+            },
+            {
+              "year": 2025,
+              "value": 171.5956
+            }
+          ]
         },
         "CHN": {
           "year": 2025,
@@ -4105,7 +25063,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 62.7654
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 72.5836
+            },
+            {
+              "year": 2016,
+              "value": 63.903
+            },
+            {
+              "year": 2017,
+              "value": 69.4814
+            },
+            {
+              "year": 2018,
+              "value": 44.7059
+            },
+            {
+              "year": 2019,
+              "value": 58.8559
+            },
+            {
+              "year": 2020,
+              "value": 81.8647
+            },
+            {
+              "year": 2021,
+              "value": 79.3192
+            },
+            {
+              "year": 2022,
+              "value": 62.6167
+            },
+            {
+              "year": 2023,
+              "value": 59.8557
+            },
+            {
+              "year": 2024,
+              "value": 62.7654
+            },
+            {
+              "year": 2025,
+              "value": 79.5406
+            }
+          ]
         },
         "DEU": {
           "year": 2025,
@@ -4113,7 +25117,475 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 43.6284
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 50.0949
+            },
+            {
+              "year": 2016,
+              "value": 48.5198
+            },
+            {
+              "year": 2017,
+              "value": 60.08
+            },
+            {
+              "year": 2018,
+              "value": 43.2795
+            },
+            {
+              "year": 2019,
+              "value": 52.9856
+            },
+            {
+              "year": 2020,
+              "value": 57.9517
+            },
+            {
+              "year": 2021,
+              "value": 57.4719
+            },
+            {
+              "year": 2022,
+              "value": 44.9811
+            },
+            {
+              "year": 2023,
+              "value": 47.7412
+            },
+            {
+              "year": 2024,
+              "value": 43.6284
+            },
+            {
+              "year": 2025,
+              "value": 57.3882
+            }
+          ]
+        },
+        "GBR": {
+          "year": 2022,
+          "value": 97.3199,
+          "previous": {
+            "year": 2021,
+            "value": 118.9353
+          },
+          "history": [
+            {
+              "year": 2021,
+              "value": 118.9353
+            },
+            {
+              "year": 2022,
+              "value": 97.3199
+            }
+          ]
+        },
+        "FRA": {
+          "year": 2018,
+          "value": 85.0579,
+          "previous": {
+            "year": 2017,
+            "value": 106.1975
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 85.4998
+            },
+            {
+              "year": 2016,
+              "value": 87.3964
+            },
+            {
+              "year": 2017,
+              "value": 106.1975
+            },
+            {
+              "year": 2018,
+              "value": 85.0579
+            }
+          ]
+        },
+        "CAN": {
+          "year": 2025,
+          "value": 199.1996,
+          "previous": {
+            "year": 2024,
+            "value": 148.6504
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 102.37
+            },
+            {
+              "year": 2016,
+              "value": 130.4665
+            },
+            {
+              "year": 2017,
+              "value": 143.5217
+            },
+            {
+              "year": 2018,
+              "value": 112.3207
+            },
+            {
+              "year": 2019,
+              "value": 138.1579
+            },
+            {
+              "year": 2020,
+              "value": 159.5383
+            },
+            {
+              "year": 2021,
+              "value": 163.3135
+            },
+            {
+              "year": 2022,
+              "value": 125.4621
+            },
+            {
+              "year": 2023,
+              "value": 141.0882
+            },
+            {
+              "year": 2024,
+              "value": 148.6504
+            },
+            {
+              "year": 2025,
+              "value": 199.1996
+            }
+          ]
+        },
+        "AUS": {
+          "year": 2025,
+          "value": 113.8668,
+          "previous": {
+            "year": 2024,
+            "value": 98.8665
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 87.491
+            },
+            {
+              "year": 2016,
+              "value": 104.6968
+            },
+            {
+              "year": 2017,
+              "value": 113.3424
+            },
+            {
+              "year": 2018,
+              "value": 88.1139
+            },
+            {
+              "year": 2019,
+              "value": 106.3824
+            },
+            {
+              "year": 2020,
+              "value": 129.0414
+            },
+            {
+              "year": 2021,
+              "value": 120.9394
+            },
+            {
+              "year": 2022,
+              "value": 99.0295
+            },
+            {
+              "year": 2023,
+              "value": 103.1292
+            },
+            {
+              "year": 2024,
+              "value": 98.8665
+            },
+            {
+              "year": 2025,
+              "value": 113.8668
+            }
+          ]
+        },
+        "IND": {
+          "year": 2025,
+          "value": 266.9212,
+          "previous": {
+            "year": 2024,
+            "value": 136.4438
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 82.9615
+            },
+            {
+              "year": 2016,
+              "value": 76.0981
+            },
+            {
+              "year": 2017,
+              "value": 96.3988
+            },
+            {
+              "year": 2018,
+              "value": 153.1605
+            },
+            {
+              "year": 2019,
+              "value": 76.2695
+            },
+            {
+              "year": 2020,
+              "value": 95.4245
+            },
+            {
+              "year": 2021,
+              "value": 112.0213
+            },
+            {
+              "year": 2022,
+              "value": 104.2286
+            },
+            {
+              "year": 2023,
+              "value": 123.9716
+            },
+            {
+              "year": 2024,
+              "value": 136.4438
+            },
+            {
+              "year": 2025,
+              "value": 266.9212
+            }
+          ]
+        },
+        "BRA": {
+          "year": 2025,
+          "value": 38.2222,
+          "previous": {
+            "year": 2024,
+            "value": 30.1448
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 27.2184
+            },
+            {
+              "year": 2016,
+              "value": 42.2432
+            },
+            {
+              "year": 2017,
+              "value": 46.2664
+            },
+            {
+              "year": 2018,
+              "value": 47.8276
+            },
+            {
+              "year": 2019,
+              "value": 63.3838
+            },
+            {
+              "year": 2020,
+              "value": 66.9582
+            },
+            {
+              "year": 2021,
+              "value": 48.836
+            },
+            {
+              "year": 2022,
+              "value": 40.6992
+            },
+            {
+              "year": 2023,
+              "value": 45.2368
+            },
+            {
+              "year": 2024,
+              "value": 30.1448
+            },
+            {
+              "year": 2025,
+              "value": 38.2222
+            }
+          ]
+        },
+        "SGP": {
+          "year": 2025,
+          "value": 136.509,
+          "previous": {
+            "year": 2024,
+            "value": 111.3031
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 207.7789
+            },
+            {
+              "year": 2016,
+              "value": 199.6599
+            },
+            {
+              "year": 2017,
+              "value": 228.3255
+            },
+            {
+              "year": 2018,
+              "value": 181.8254
+            },
+            {
+              "year": 2019,
+              "value": 185.0373
+            },
+            {
+              "year": 2020,
+              "value": 185.8102
+            },
+            {
+              "year": 2021,
+              "value": 150.3904
+            },
+            {
+              "year": 2022,
+              "value": 120.4392
+            },
+            {
+              "year": 2023,
+              "value": 119
+            },
+            {
+              "year": 2024,
+              "value": 111.3031
+            },
+            {
+              "year": 2025,
+              "value": 136.509
+            }
+          ]
+        },
+        "IDN": {
+          "year": 2025,
+          "value": 65.6861,
+          "previous": {
+            "year": 2024,
+            "value": 54.4173
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 41.0373
+            },
+            {
+              "year": 2016,
+              "value": 45.6892
+            },
+            {
+              "year": 2017,
+              "value": 51.2679
+            },
+            {
+              "year": 2018,
+              "value": 46.7024
+            },
+            {
+              "year": 2019,
+              "value": 46.7627
+            },
+            {
+              "year": 2020,
+              "value": 46.8423
+            },
+            {
+              "year": 2021,
+              "value": 48.7675
+            },
+            {
+              "year": 2022,
+              "value": 46.2655
+            },
+            {
+              "year": 2023,
+              "value": 55.3034
+            },
+            {
+              "year": 2024,
+              "value": 54.4173
+            },
+            {
+              "year": 2025,
+              "value": 65.6861
+            }
+          ]
+        },
+        "VNM": {
+          "year": 2025,
+          "value": 61.3952,
+          "previous": {
+            "year": 2024,
+            "value": 42.9572
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 24.5484
+            },
+            {
+              "year": 2016,
+              "value": 28.4805
+            },
+            {
+              "year": 2017,
+              "value": 44.5383
+            },
+            {
+              "year": 2018,
+              "value": 42.7766
+            },
+            {
+              "year": 2019,
+              "value": 44.8065
+            },
+            {
+              "year": 2020,
+              "value": 53.6642
+            },
+            {
+              "year": 2021,
+              "value": 76.0746
+            },
+            {
+              "year": 2022,
+              "value": 41.1547
+            },
+            {
+              "year": 2023,
+              "value": 43.2956
+            },
+            {
+              "year": 2024,
+              "value": 42.9572
+            },
+            {
+              "year": 2025,
+              "value": 61.3952
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -4161,7 +25633,9 @@ export const indicatorSnapshot = {
           "year": 2025,
           "value": 147.2284
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "current-account": {
       "countries": {
@@ -4171,7 +25645,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 5.3308
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 6.8294
+            },
+            {
+              "year": 2016,
+              "value": 6.201
+            },
+            {
+              "year": 2017,
+              "value": 4.399
+            },
+            {
+              "year": 2018,
+              "value": 4.2465
+            },
+            {
+              "year": 2019,
+              "value": 3.408
+            },
+            {
+              "year": 2020,
+              "value": 4.3865
+            },
+            {
+              "year": 2021,
+              "value": 4.3185
+            },
+            {
+              "year": 2022,
+              "value": 1.2915
+            },
+            {
+              "year": 2023,
+              "value": 1.7633
+            },
+            {
+              "year": 2024,
+              "value": 5.3308
+            },
+            {
+              "year": 2025,
+              "value": 6.5721
+            }
+          ]
         },
         "USA": {
           "year": 2025,
@@ -4179,7 +25699,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": -4.0456
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": -2.2326
+            },
+            {
+              "year": 2016,
+              "value": -2.107
+            },
+            {
+              "year": 2017,
+              "value": -1.8744
+            },
+            {
+              "year": 2018,
+              "value": -2.1252
+            },
+            {
+              "year": 2019,
+              "value": -2.0518
+            },
+            {
+              "year": 2020,
+              "value": -2.7766
+            },
+            {
+              "year": 2021,
+              "value": -3.619
+            },
+            {
+              "year": 2022,
+              "value": -3.8118
+            },
+            {
+              "year": 2023,
+              "value": -3.3368
+            },
+            {
+              "year": 2024,
+              "value": -4.0456
+            },
+            {
+              "year": 2025,
+              "value": -3.627
+            }
+          ]
         },
         "JPN": {
           "year": 2025,
@@ -4187,7 +25753,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 4.622
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3.0097
+            },
+            {
+              "year": 2016,
+              "value": 3.8559
+            },
+            {
+              "year": 2017,
+              "value": 4.0325
+            },
+            {
+              "year": 2018,
+              "value": 3.4392
+            },
+            {
+              "year": 2019,
+              "value": 3.3667
+            },
+            {
+              "year": 2020,
+              "value": 2.8912
+            },
+            {
+              "year": 2021,
+              "value": 3.7606
+            },
+            {
+              "year": 2022,
+              "value": 2.0281
+            },
+            {
+              "year": 2023,
+              "value": 3.6113
+            },
+            {
+              "year": 2024,
+              "value": 4.622
+            },
+            {
+              "year": 2025,
+              "value": 4.865
+            }
+          ]
         },
         "CHN": {
           "year": 2025,
@@ -4195,7 +25807,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 2.4682
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.5975
+            },
+            {
+              "year": 2016,
+              "value": 1.6702
+            },
+            {
+              "year": 2017,
+              "value": 1.5049
+            },
+            {
+              "year": 2018,
+              "value": 0.1706
+            },
+            {
+              "year": 2019,
+              "value": 0.62
+            },
+            {
+              "year": 2020,
+              "value": 1.4918
+            },
+            {
+              "year": 2021,
+              "value": 1.634
+            },
+            {
+              "year": 2022,
+              "value": 2.2064
+            },
+            {
+              "year": 2023,
+              "value": 1.4068
+            },
+            {
+              "year": 2024,
+              "value": 2.4682
+            },
+            {
+              "year": 2025,
+              "value": 3.7697
+            }
+          ]
         },
         "DEU": {
           "year": 2025,
@@ -4203,7 +25861,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 5.8938
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 8.0967
+            },
+            {
+              "year": 2016,
+              "value": 8.9024
+            },
+            {
+              "year": 2017,
+              "value": 8.0787
+            },
+            {
+              "year": 2018,
+              "value": 8.4376
+            },
+            {
+              "year": 2019,
+              "value": 7.8747
+            },
+            {
+              "year": 2020,
+              "value": 6.3478
+            },
+            {
+              "year": 2021,
+              "value": 6.9201
+            },
+            {
+              "year": 2022,
+              "value": 4.1138
+            },
+            {
+              "year": 2023,
+              "value": 5.5033
+            },
+            {
+              "year": 2024,
+              "value": 5.8938
+            },
+            {
+              "year": 2025,
+              "value": 4.5059
+            }
+          ]
         },
         "GBR": {
           "year": 2025,
@@ -4211,7 +25915,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": -2.9596
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": -4.917
+            },
+            {
+              "year": 2016,
+              "value": -5.4628
+            },
+            {
+              "year": 2017,
+              "value": -3.4733
+            },
+            {
+              "year": 2018,
+              "value": -3.8873
+            },
+            {
+              "year": 2019,
+              "value": -2.6625
+            },
+            {
+              "year": 2020,
+              "value": -2.9288
+            },
+            {
+              "year": 2021,
+              "value": -0.7528
+            },
+            {
+              "year": 2022,
+              "value": -2.0674
+            },
+            {
+              "year": 2023,
+              "value": -3.5768
+            },
+            {
+              "year": 2024,
+              "value": -2.9596
+            },
+            {
+              "year": 2025,
+              "value": -2.4269
+            }
+          ]
         },
         "FRA": {
           "year": 2025,
@@ -4219,7 +25969,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 0.0851
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": -0.3345
+            },
+            {
+              "year": 2016,
+              "value": -0.5386
+            },
+            {
+              "year": 2017,
+              "value": -0.4746
+            },
+            {
+              "year": 2018,
+              "value": -0.7357
+            },
+            {
+              "year": 2019,
+              "value": 0.5874
+            },
+            {
+              "year": 2020,
+              "value": -2.0031
+            },
+            {
+              "year": 2021,
+              "value": 0.2442
+            },
+            {
+              "year": 2022,
+              "value": -1.4323
+            },
+            {
+              "year": 2023,
+              "value": -1.043
+            },
+            {
+              "year": 2024,
+              "value": 0.0851
+            },
+            {
+              "year": 2025,
+              "value": -0.2743
+            }
+          ]
         },
         "CAN": {
           "year": 2025,
@@ -4227,7 +26023,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": -0.4879
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": -3.514
+            },
+            {
+              "year": 2016,
+              "value": -3.0931
+            },
+            {
+              "year": 2017,
+              "value": -2.8034
+            },
+            {
+              "year": 2018,
+              "value": -2.3851
+            },
+            {
+              "year": 2019,
+              "value": -1.9517
+            },
+            {
+              "year": 2020,
+              "value": -2.0105
+            },
+            {
+              "year": 2021,
+              "value": -0.022
+            },
+            {
+              "year": 2022,
+              "value": -0.4421
+            },
+            {
+              "year": 2023,
+              "value": -0.6937
+            },
+            {
+              "year": 2024,
+              "value": -0.4879
+            },
+            {
+              "year": 2025,
+              "value": -0.9486
+            }
+          ]
         },
         "AUS": {
           "year": 2025,
@@ -4235,7 +26077,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": -2.3075
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": -4.2951
+            },
+            {
+              "year": 2016,
+              "value": -3.6021
+            },
+            {
+              "year": 2017,
+              "value": -3.0053
+            },
+            {
+              "year": 2018,
+              "value": -2.5895
+            },
+            {
+              "year": 2019,
+              "value": -0.0757
+            },
+            {
+              "year": 2020,
+              "value": 1.6427
+            },
+            {
+              "year": 2021,
+              "value": 2.4473
+            },
+            {
+              "year": 2022,
+              "value": 0.2542
+            },
+            {
+              "year": 2023,
+              "value": -0.4331
+            },
+            {
+              "year": 2024,
+              "value": -2.3075
+            },
+            {
+              "year": 2025,
+              "value": -2.6812
+            }
+          ]
         },
         "IND": {
           "year": 2025,
@@ -4243,7 +26131,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": -0.8513
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": -1.0675
+            },
+            {
+              "year": 2016,
+              "value": -0.5279
+            },
+            {
+              "year": 2017,
+              "value": -1.4395
+            },
+            {
+              "year": 2018,
+              "value": -2.427
+            },
+            {
+              "year": 2019,
+              "value": -1.0496
+            },
+            {
+              "year": 2020,
+              "value": 1.2236
+            },
+            {
+              "year": 2021,
+              "value": -1.0552
+            },
+            {
+              "year": 2022,
+              "value": -2.4324
+            },
+            {
+              "year": 2023,
+              "value": -0.9128
+            },
+            {
+              "year": 2024,
+              "value": -0.8513
+            },
+            {
+              "year": 2025,
+              "value": -0.4169
+            }
+          ]
         },
         "BRA": {
           "year": 2025,
@@ -4251,7 +26185,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": -2.988
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": -3.5184
+            },
+            {
+              "year": 2016,
+              "value": -1.7001
+            },
+            {
+              "year": 2017,
+              "value": -1.2243
+            },
+            {
+              "year": 2018,
+              "value": -2.8075
+            },
+            {
+              "year": 2019,
+              "value": -3.4143
+            },
+            {
+              "year": 2020,
+              "value": -1.641
+            },
+            {
+              "year": 2021,
+              "value": -2.3582
+            },
+            {
+              "year": 2022,
+              "value": -2.1497
+            },
+            {
+              "year": 2023,
+              "value": -1.2314
+            },
+            {
+              "year": 2024,
+              "value": -2.988
+            },
+            {
+              "year": 2025,
+              "value": -2.9263
+            }
+          ]
         },
         "SGP": {
           "year": 2025,
@@ -4259,7 +26239,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 17.2011
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 18.693
+            },
+            {
+              "year": 2016,
+              "value": 18.0266
+            },
+            {
+              "year": 2017,
+              "value": 18.4886
+            },
+            {
+              "year": 2018,
+              "value": 15.6764
+            },
+            {
+              "year": 2019,
+              "value": 15.4537
+            },
+            {
+              "year": 2020,
+              "value": 17.6975
+            },
+            {
+              "year": 2021,
+              "value": 19.2528
+            },
+            {
+              "year": 2022,
+              "value": 18.9227
+            },
+            {
+              "year": 2023,
+              "value": 16.3916
+            },
+            {
+              "year": 2024,
+              "value": 17.2011
+            },
+            {
+              "year": 2025,
+              "value": 16.7132
+            }
+          ]
         },
         "IDN": {
           "year": 2025,
@@ -4267,7 +26293,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": -0.6147
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": -2.035
+            },
+            {
+              "year": 2016,
+              "value": -1.8192
+            },
+            {
+              "year": 2017,
+              "value": -1.5947
+            },
+            {
+              "year": 2018,
+              "value": -2.9391
+            },
+            {
+              "year": 2019,
+              "value": -2.7057
+            },
+            {
+              "year": 2020,
+              "value": -0.4186
+            },
+            {
+              "year": 2021,
+              "value": 0.2959
+            },
+            {
+              "year": 2022,
+              "value": 1.0018
+            },
+            {
+              "year": 2023,
+              "value": -0.1489
+            },
+            {
+              "year": 2024,
+              "value": -0.6147
+            },
+            {
+              "year": 2025,
+              "value": -0.1053
+            }
+          ]
         },
         "VNM": {
           "year": 2024,
@@ -4275,7 +26347,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 5.9458
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": -0.8531
+            },
+            {
+              "year": 2016,
+              "value": 0.2431
+            },
+            {
+              "year": 2017,
+              "value": -0.5861
+            },
+            {
+              "year": 2018,
+              "value": 1.9024
+            },
+            {
+              "year": 2019,
+              "value": 3.9182
+            },
+            {
+              "year": 2020,
+              "value": 4.3449
+            },
+            {
+              "year": 2021,
+              "value": -1.2628
+            },
+            {
+              "year": 2022,
+              "value": 0.3391
+            },
+            {
+              "year": 2023,
+              "value": 5.9458
+            },
+            {
+              "year": 2024,
+              "value": 6.335
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -4323,7 +26437,9 @@ export const indicatorSnapshot = {
           "year": 2025,
           "value": 6.5721
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "fdi-inflows": {
       "countries": {
@@ -4333,7 +26449,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 0.6859
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.2666
+            },
+            {
+              "year": 2016,
+              "value": 0.7665
+            },
+            {
+              "year": 2017,
+              "value": 1.0474
+            },
+            {
+              "year": 2018,
+              "value": 0.6678
+            },
+            {
+              "year": 2019,
+              "value": 0.5502
+            },
+            {
+              "year": 2020,
+              "value": 0.5026
+            },
+            {
+              "year": 2021,
+              "value": 1.1358
+            },
+            {
+              "year": 2022,
+              "value": 1.3919
+            },
+            {
+              "year": 2023,
+              "value": 1.0322
+            },
+            {
+              "year": 2024,
+              "value": 0.6859
+            },
+            {
+              "year": 2025,
+              "value": 0.8441
+            }
+          ]
         },
         "WLD": {
           "year": 2025,
@@ -4341,7 +26503,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 1.3647
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3.6113
+            },
+            {
+              "year": 2016,
+              "value": 3.5221
+            },
+            {
+              "year": 2017,
+              "value": 2.7166
+            },
+            {
+              "year": 2018,
+              "value": 1.2338
+            },
+            {
+              "year": 2019,
+              "value": 2.1552
+            },
+            {
+              "year": 2020,
+              "value": 1.3362
+            },
+            {
+              "year": 2021,
+              "value": 2.5205
+            },
+            {
+              "year": 2022,
+              "value": 1.8454
+            },
+            {
+              "year": 2023,
+              "value": 0.8721
+            },
+            {
+              "year": 2024,
+              "value": 1.3647
+            },
+            {
+              "year": 2025,
+              "value": 1.263
+            }
+          ]
         },
         "USA": {
           "year": 2025,
@@ -4349,7 +26557,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 1.0139
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.7955
+            },
+            {
+              "year": 2016,
+              "value": 2.5227
+            },
+            {
+              "year": 2017,
+              "value": 1.9418
+            },
+            {
+              "year": 2018,
+              "value": 1.0395
+            },
+            {
+              "year": 2019,
+              "value": 1.467
+            },
+            {
+              "year": 2020,
+              "value": 0.6412
+            },
+            {
+              "year": 2021,
+              "value": 2.0145
+            },
+            {
+              "year": 2022,
+              "value": 1.6001
+            },
+            {
+              "year": 2023,
+              "value": 1.3014
+            },
+            {
+              "year": 2024,
+              "value": 1.0139
+            },
+            {
+              "year": 2025,
+              "value": 1.3017
+            }
+          ]
         },
         "JPN": {
           "year": 2025,
@@ -4357,7 +26611,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 0.4505
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.1158
+            },
+            {
+              "year": 2016,
+              "value": 0.8014
+            },
+            {
+              "year": 2017,
+              "value": 0.3732
+            },
+            {
+              "year": 2018,
+              "value": 0.4906
+            },
+            {
+              "year": 2019,
+              "value": 0.7618
+            },
+            {
+              "year": 2020,
+              "value": 1.2061
+            },
+            {
+              "year": 2021,
+              "value": 0.6703
+            },
+            {
+              "year": 2022,
+              "value": 1.0826
+            },
+            {
+              "year": 2023,
+              "value": 0.4563
+            },
+            {
+              "year": 2024,
+              "value": 0.4505
+            },
+            {
+              "year": 2025,
+              "value": 1.0328
+            }
+          ]
         },
         "CHN": {
           "year": 2025,
@@ -4365,7 +26665,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 0.2277
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.1496
+            },
+            {
+              "year": 2016,
+              "value": 1.5254
+            },
+            {
+              "year": 2017,
+              "value": 1.3247
+            },
+            {
+              "year": 2018,
+              "value": 1.6636
+            },
+            {
+              "year": 2019,
+              "value": 1.2855
+            },
+            {
+              "year": 2020,
+              "value": 1.6877
+            },
+            {
+              "year": 2021,
+              "value": 1.8903
+            },
+            {
+              "year": 2022,
+              "value": 1.0384
+            },
+            {
+              "year": 2023,
+              "value": 0.281
+            },
+            {
+              "year": 2024,
+              "value": 0.2277
+            },
+            {
+              "year": 2025,
+              "value": 0.4102
+            }
+          ]
         },
         "DEU": {
           "year": 2025,
@@ -4373,7 +26719,535 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 1.3368
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.8224
+            },
+            {
+              "year": 2016,
+              "value": 1.6437
+            },
+            {
+              "year": 2017,
+              "value": 2.8891
+            },
+            {
+              "year": 2018,
+              "value": 4.0008
+            },
+            {
+              "year": 2019,
+              "value": 1.9057
+            },
+            {
+              "year": 2020,
+              "value": 4.4852
+            },
+            {
+              "year": 2021,
+              "value": 2.93
+            },
+            {
+              "year": 2022,
+              "value": 1.8227
+            },
+            {
+              "year": 2023,
+              "value": 1.9921
+            },
+            {
+              "year": 2024,
+              "value": 1.3368
+            },
+            {
+              "year": 2025,
+              "value": 1.8846
+            }
+          ]
+        },
+        "GBR": {
+          "year": 2025,
+          "value": 1.9145,
+          "previous": {
+            "year": 2024,
+            "value": -0.3506
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.539
+            },
+            {
+              "year": 2016,
+              "value": 11.9999
+            },
+            {
+              "year": 2017,
+              "value": 4.6444
+            },
+            {
+              "year": 2018,
+              "value": -0.8649
+            },
+            {
+              "year": 2019,
+              "value": 0.6882
+            },
+            {
+              "year": 2020,
+              "value": 5.7704
+            },
+            {
+              "year": 2021,
+              "value": 3.2064
+            },
+            {
+              "year": 2022,
+              "value": 2.9164
+            },
+            {
+              "year": 2023,
+              "value": 0.4031
+            },
+            {
+              "year": 2024,
+              "value": -0.3506
+            },
+            {
+              "year": 2025,
+              "value": 1.9145
+            }
+          ]
+        },
+        "FRA": {
+          "year": 2025,
+          "value": 2.1693,
+          "previous": {
+            "year": 2024,
+            "value": 1.647
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.766
+            },
+            {
+              "year": 2016,
+              "value": 1.442
+            },
+            {
+              "year": 2017,
+              "value": 1.6893
+            },
+            {
+              "year": 2018,
+              "value": 2.7859
+            },
+            {
+              "year": 2019,
+              "value": 1.9649
+            },
+            {
+              "year": 2020,
+              "value": 0.7315
+            },
+            {
+              "year": 2021,
+              "value": 3.3041
+            },
+            {
+              "year": 2022,
+              "value": 4.018
+            },
+            {
+              "year": 2023,
+              "value": 0.5906
+            },
+            {
+              "year": 2024,
+              "value": 1.647
+            },
+            {
+              "year": 2025,
+              "value": 2.1693
+            }
+          ]
+        },
+        "CAN": {
+          "year": 2025,
+          "value": 2.9757,
+          "previous": {
+            "year": 2024,
+            "value": 2.7776
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3.8539
+            },
+            {
+              "year": 2016,
+              "value": 2.2383
+            },
+            {
+              "year": 2017,
+              "value": 1.5375
+            },
+            {
+              "year": 2018,
+              "value": 2.4693
+            },
+            {
+              "year": 2019,
+              "value": 2.8068
+            },
+            {
+              "year": 2020,
+              "value": 1.759
+            },
+            {
+              "year": 2021,
+              "value": 2.9762
+            },
+            {
+              "year": 2022,
+              "value": 2.3069
+            },
+            {
+              "year": 2023,
+              "value": 1.9984
+            },
+            {
+              "year": 2024,
+              "value": 2.7776
+            },
+            {
+              "year": 2025,
+              "value": 2.9757
+            }
+          ]
+        },
+        "AUS": {
+          "year": 2025,
+          "value": 2.0306,
+          "previous": {
+            "year": 2024,
+            "value": 3.0576
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3.4561
+            },
+            {
+              "year": 2016,
+              "value": 3.5466
+            },
+            {
+              "year": 2017,
+              "value": 3.6216
+            },
+            {
+              "year": 2018,
+              "value": 4.2345
+            },
+            {
+              "year": 2019,
+              "value": 2.7708
+            },
+            {
+              "year": 2020,
+              "value": 1.3483
+            },
+            {
+              "year": 2021,
+              "value": 2.0154
+            },
+            {
+              "year": 2022,
+              "value": 4.0522
+            },
+            {
+              "year": 2023,
+              "value": 2.0361
+            },
+            {
+              "year": 2024,
+              "value": 3.0576
+            },
+            {
+              "year": 2025,
+              "value": 2.0306
+            }
+          ]
+        },
+        "IND": {
+          "year": 2025,
+          "value": 0.9883,
+          "previous": {
+            "year": 2024,
+            "value": 0.7216
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.0921
+            },
+            {
+              "year": 2016,
+              "value": 1.9374
+            },
+            {
+              "year": 2017,
+              "value": 1.5073
+            },
+            {
+              "year": 2018,
+              "value": 1.5582
+            },
+            {
+              "year": 2019,
+              "value": 1.7848
+            },
+            {
+              "year": 2020,
+              "value": 2.4062
+            },
+            {
+              "year": 2021,
+              "value": 1.4122
+            },
+            {
+              "year": 2022,
+              "value": 1.5367
+            },
+            {
+              "year": 2023,
+              "value": 0.8023
+            },
+            {
+              "year": 2024,
+              "value": 0.7216
+            },
+            {
+              "year": 2025,
+              "value": 0.9883
+            }
+          ]
+        },
+        "BRA": {
+          "year": 2025,
+          "value": 3.407,
+          "previous": {
+            "year": 2024,
+            "value": 3.3896
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3.5921
+            },
+            {
+              "year": 2016,
+              "value": 4.1374
+            },
+            {
+              "year": 2017,
+              "value": 3.3383
+            },
+            {
+              "year": 2018,
+              "value": 4.0786
+            },
+            {
+              "year": 2019,
+              "value": 3.6927
+            },
+            {
+              "year": 2020,
+              "value": 2.5926
+            },
+            {
+              "year": 2021,
+              "value": 2.7798
+            },
+            {
+              "year": 2022,
+              "value": 3.868
+            },
+            {
+              "year": 2023,
+              "value": 2.8638
+            },
+            {
+              "year": 2024,
+              "value": 3.3896
+            },
+            {
+              "year": 2025,
+              "value": 3.407
+            }
+          ]
+        },
+        "SGP": {
+          "year": 2025,
+          "value": 26.3447,
+          "previous": {
+            "year": 2024,
+            "value": 23.5787
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 22.6542
+            },
+            {
+              "year": 2016,
+              "value": 20.3059
+            },
+            {
+              "year": 2017,
+              "value": 29.5741
+            },
+            {
+              "year": 2018,
+              "value": 22.7862
+            },
+            {
+              "year": 2019,
+              "value": 28.1758
+            },
+            {
+              "year": 2020,
+              "value": 22.5844
+            },
+            {
+              "year": 2021,
+              "value": 32.2625
+            },
+            {
+              "year": 2022,
+              "value": 28.0306
+            },
+            {
+              "year": 2023,
+              "value": 24.6071
+            },
+            {
+              "year": 2024,
+              "value": 23.5787
+            },
+            {
+              "year": 2025,
+              "value": 26.3447
+            }
+          ]
+        },
+        "IDN": {
+          "year": 2025,
+          "value": 1.5414,
+          "previous": {
+            "year": 2024,
+            "value": 1.7386
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.2976
+            },
+            {
+              "year": 2016,
+              "value": 0.4874
+            },
+            {
+              "year": 2017,
+              "value": 2.0195
+            },
+            {
+              "year": 2018,
+              "value": 1.8143
+            },
+            {
+              "year": 2019,
+              "value": 2.2334
+            },
+            {
+              "year": 2020,
+              "value": 1.8106
+            },
+            {
+              "year": 2021,
+              "value": 1.7879
+            },
+            {
+              "year": 2022,
+              "value": 1.8726
+            },
+            {
+              "year": 2023,
+              "value": 1.5712
+            },
+            {
+              "year": 2024,
+              "value": 1.7386
+            },
+            {
+              "year": 2025,
+              "value": 1.5414
+            }
+          ]
+        },
+        "VNM": {
+          "year": 2024,
+          "value": 4.2345,
+          "previous": {
+            "year": 2023,
+            "value": 4.2646
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 4.9319
+            },
+            {
+              "year": 2016,
+              "value": 4.9009
+            },
+            {
+              "year": 2017,
+              "value": 5.0115
+            },
+            {
+              "year": 2018,
+              "value": 4.9983
+            },
+            {
+              "year": 2019,
+              "value": 4.8211
+            },
+            {
+              "year": 2020,
+              "value": 4.5584
+            },
+            {
+              "year": 2021,
+              "value": 4.2731
+            },
+            {
+              "year": 2022,
+              "value": 4.3295
+            },
+            {
+              "year": 2023,
+              "value": 4.2646
+            },
+            {
+              "year": 2024,
+              "value": 4.2345
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -4421,7 +27295,9 @@ export const indicatorSnapshot = {
           "year": 2025,
           "value": 0.8441
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "reserve-cover": {
       "countries": {
@@ -4431,7 +27307,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 6.1983
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 7.9205
+            },
+            {
+              "year": 2016,
+              "value": 8.3885
+            },
+            {
+              "year": 2017,
+              "value": 7.5583
+            },
+            {
+              "year": 2018,
+              "value": 7.1222
+            },
+            {
+              "year": 2019,
+              "value": 7.7129
+            },
+            {
+              "year": 2020,
+              "value": 9.3521
+            },
+            {
+              "year": 2021,
+              "value": 7.5043
+            },
+            {
+              "year": 2022,
+              "value": 5.9012
+            },
+            {
+              "year": 2023,
+              "value": 6.3177
+            },
+            {
+              "year": 2024,
+              "value": 6.1983
+            },
+            {
+              "year": 2025,
+              "value": 6.4627
+            }
+          ]
         },
         "WLD": {
           "year": 2025,
@@ -4439,7 +27361,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 8.7979
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 13.0988
+            },
+            {
+              "year": 2016,
+              "value": 12.9443
+            },
+            {
+              "year": 2017,
+              "value": 12.0857
+            },
+            {
+              "year": 2018,
+              "value": 10.8015
+            },
+            {
+              "year": 2019,
+              "value": 11.0688
+            },
+            {
+              "year": 2020,
+              "value": 13.27
+            },
+            {
+              "year": 2021,
+              "value": 10.7553
+            },
+            {
+              "year": 2022,
+              "value": 9.197
+            },
+            {
+              "year": 2023,
+              "value": 9.2536
+            },
+            {
+              "year": 2024,
+              "value": 8.7979
+            },
+            {
+              "year": 2025,
+              "value": 8.8926
+            }
+          ]
         },
         "USA": {
           "year": 2025,
@@ -4447,7 +27415,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 1.9403
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.3499
+            },
+            {
+              "year": 2016,
+              "value": 1.4408
+            },
+            {
+              "year": 2017,
+              "value": 1.4841
+            },
+            {
+              "year": 2018,
+              "value": 1.36
+            },
+            {
+              "year": 2019,
+              "value": 1.5481
+            },
+            {
+              "year": 2020,
+              "value": 2.0974
+            },
+            {
+              "year": 2021,
+              "value": 1.9745
+            },
+            {
+              "year": 2022,
+              "value": 1.6797
+            },
+            {
+              "year": 2023,
+              "value": 1.7926
+            },
+            {
+              "year": 2024,
+              "value": 1.9403
+            },
+            {
+              "year": 2025,
+              "value": 2.8363
+            }
+          ]
         },
         "JPN": {
           "year": 2025,
@@ -4455,7 +27469,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 12.9547
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 16.8028
+            },
+            {
+              "year": 2016,
+              "value": 16.969
+            },
+            {
+              "year": 2017,
+              "value": 16.2733
+            },
+            {
+              "year": 2018,
+              "value": 14.6891
+            },
+            {
+              "year": 2019,
+              "value": 15.4234
+            },
+            {
+              "year": 2020,
+              "value": 18.5186
+            },
+            {
+              "year": 2021,
+              "value": 16.0722
+            },
+            {
+              "year": 2022,
+              "value": 12.3369
+            },
+            {
+              "year": 2023,
+              "value": 13.5201
+            },
+            {
+              "year": 2024,
+              "value": 12.9547
+            },
+            {
+              "year": 2025,
+              "value": 14.0094
+            }
+          ]
         },
         "CHN": {
           "year": 2025,
@@ -4463,7 +27523,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 11.0155
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 17.9358
+            },
+            {
+              "year": 2016,
+              "value": 16.7161
+            },
+            {
+              "year": 2017,
+              "value": 15.4175
+            },
+            {
+              "year": 2018,
+              "value": 13.1417
+            },
+            {
+              "year": 2019,
+              "value": 13.6333
+            },
+            {
+              "year": 2020,
+              "value": 14.497
+            },
+            {
+              "year": 2021,
+              "value": 11.4763
+            },
+            {
+              "year": 2022,
+              "value": 11.046
+            },
+            {
+              "year": 2023,
+              "value": 11.4423
+            },
+            {
+              "year": 2024,
+              "value": 11.0155
+            },
+            {
+              "year": 2025,
+              "value": 11.943
+            }
+          ]
         },
         "DEU": {
           "year": 2025,
@@ -4471,7 +27577,535 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 2.1762
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.5387
+            },
+            {
+              "year": 2016,
+              "value": 1.6242
+            },
+            {
+              "year": 2017,
+              "value": 1.6255
+            },
+            {
+              "year": 2018,
+              "value": 1.4545
+            },
+            {
+              "year": 2019,
+              "value": 1.6868
+            },
+            {
+              "year": 2020,
+              "value": 2.2194
+            },
+            {
+              "year": 2021,
+              "value": 1.9969
+            },
+            {
+              "year": 2022,
+              "value": 1.7609
+            },
+            {
+              "year": 2023,
+              "value": 1.8424
+            },
+            {
+              "year": 2024,
+              "value": 2.1762
+            },
+            {
+              "year": 2025,
+              "value": 3.1097
+            }
+          ]
+        },
+        "GBR": {
+          "year": 2025,
+          "value": 1.3877,
+          "previous": {
+            "year": 2024,
+            "value": 1.1827
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.5689
+            },
+            {
+              "year": 2016,
+              "value": 1.4959
+            },
+            {
+              "year": 2017,
+              "value": 1.5891
+            },
+            {
+              "year": 2018,
+              "value": 1.6216
+            },
+            {
+              "year": 2019,
+              "value": 1.6847
+            },
+            {
+              "year": 2020,
+              "value": 2.1161
+            },
+            {
+              "year": 2021,
+              "value": 1.9128
+            },
+            {
+              "year": 2022,
+              "value": 1.4123
+            },
+            {
+              "year": 2023,
+              "value": 1.2536
+            },
+            {
+              "year": 2024,
+              "value": 1.1827
+            },
+            {
+              "year": 2025,
+              "value": 1.3877
+            }
+          ]
+        },
+        "FRA": {
+          "year": 2025,
+          "value": 3.4514,
+          "previous": {
+            "year": 2024,
+            "value": 2.3897
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.823
+            },
+            {
+              "year": 2016,
+              "value": 1.9281
+            },
+            {
+              "year": 2017,
+              "value": 1.9097
+            },
+            {
+              "year": 2018,
+              "value": 1.8338
+            },
+            {
+              "year": 2019,
+              "value": 2.1555
+            },
+            {
+              "year": 2020,
+              "value": 2.9321
+            },
+            {
+              "year": 2021,
+              "value": 2.6532
+            },
+            {
+              "year": 2022,
+              "value": 2.2747
+            },
+            {
+              "year": 2023,
+              "value": 2.0593
+            },
+            {
+              "year": 2024,
+              "value": 2.3897
+            },
+            {
+              "year": 2025,
+              "value": 3.4514
+            }
+          ]
+        },
+        "CAN": {
+          "year": 2025,
+          "value": 1.5986,
+          "previous": {
+            "year": 2024,
+            "value": 1.5422
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.5439
+            },
+            {
+              "year": 2016,
+              "value": 1.6508
+            },
+            {
+              "year": 2017,
+              "value": 1.5959
+            },
+            {
+              "year": 2018,
+              "value": 1.435
+            },
+            {
+              "year": 2019,
+              "value": 1.4478
+            },
+            {
+              "year": 2020,
+              "value": 1.7607
+            },
+            {
+              "year": 2021,
+              "value": 1.72
+            },
+            {
+              "year": 2022,
+              "value": 1.4654
+            },
+            {
+              "year": 2023,
+              "value": 1.5571
+            },
+            {
+              "year": 2024,
+              "value": 1.5422
+            },
+            {
+              "year": 2025,
+              "value": 1.5986
+            }
+          ]
+        },
+        "AUS": {
+          "year": 2025,
+          "value": 1.5845,
+          "previous": {
+            "year": 2024,
+            "value": 1.3521
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.6013
+            },
+            {
+              "year": 2016,
+              "value": 1.8883
+            },
+            {
+              "year": 2017,
+              "value": 2.0818
+            },
+            {
+              "year": 2018,
+              "value": 1.57
+            },
+            {
+              "year": 2019,
+              "value": 1.7823
+            },
+            {
+              "year": 2020,
+              "value": 1.5961
+            },
+            {
+              "year": 2021,
+              "value": 1.7348
+            },
+            {
+              "year": 2022,
+              "value": 1.3009
+            },
+            {
+              "year": 2023,
+              "value": 1.4269
+            },
+            {
+              "year": 2024,
+              "value": 1.3521
+            },
+            {
+              "year": 2025,
+              "value": 1.5845
+            }
+          ]
+        },
+        "IND": {
+          "year": 2025,
+          "value": 7.8761,
+          "previous": {
+            "year": 2024,
+            "value": 7.5214
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 8.0031
+            },
+            {
+              "year": 2016,
+              "value": 8.4301
+            },
+            {
+              "year": 2017,
+              "value": 8.1627
+            },
+            {
+              "year": 2018,
+              "value": 6.9011
+            },
+            {
+              "year": 2019,
+              "value": 8.2737
+            },
+            {
+              "year": 2020,
+              "value": 12.9323
+            },
+            {
+              "year": 2021,
+              "value": 9.8424
+            },
+            {
+              "year": 2022,
+              "value": 7.0095
+            },
+            {
+              "year": 2023,
+              "value": 7.9724
+            },
+            {
+              "year": 2024,
+              "value": 7.5214
+            },
+            {
+              "year": 2025,
+              "value": 7.8761
+            }
+          ]
+        },
+        "BRA": {
+          "year": 2025,
+          "value": 8.4209,
+          "previous": {
+            "year": 2024,
+            "value": 7.9523
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 14.6482
+            },
+            {
+              "year": 2016,
+              "value": 16.6034
+            },
+            {
+              "year": 2017,
+              "value": 14.8647
+            },
+            {
+              "year": 2018,
+              "value": 13.2022
+            },
+            {
+              "year": 2019,
+              "value": 12.2312
+            },
+            {
+              "year": 2020,
+              "value": 14.9439
+            },
+            {
+              "year": 2021,
+              "value": 11.1402
+            },
+            {
+              "year": 2022,
+              "value": 8.3358
+            },
+            {
+              "year": 2023,
+              "value": 9.4297
+            },
+            {
+              "year": 2024,
+              "value": 7.9523
+            },
+            {
+              "year": 2025,
+              "value": 8.4209
+            }
+          ]
+        },
+        "SGP": {
+          "year": 2025,
+          "value": 4.3878,
+          "previous": {
+            "year": 2024,
+            "value": 4.1819
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 5.4163
+            },
+            {
+              "year": 2016,
+              "value": 5.5907
+            },
+            {
+              "year": 2017,
+              "value": 5.4878
+            },
+            {
+              "year": 2018,
+              "value": 4.9092
+            },
+            {
+              "year": 2019,
+              "value": 4.7984
+            },
+            {
+              "year": 2020,
+              "value": 6.5266
+            },
+            {
+              "year": 2021,
+              "value": 5.8654
+            },
+            {
+              "year": 2022,
+              "value": 3.5223
+            },
+            {
+              "year": 2023,
+              "value": 4.3123
+            },
+            {
+              "year": 2024,
+              "value": 4.1819
+            },
+            {
+              "year": 2025,
+              "value": 4.3878
+            }
+          ]
+        },
+        "IDN": {
+          "year": 2025,
+          "value": 5.5109,
+          "previous": {
+            "year": 2024,
+            "value": 5.7201
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 6.4462
+            },
+            {
+              "year": 2016,
+              "value": 7.2259
+            },
+            {
+              "year": 2017,
+              "value": 7.0872
+            },
+            {
+              "year": 2018,
+              "value": 5.5956
+            },
+            {
+              "year": 2019,
+              "value": 6.3178
+            },
+            {
+              "year": 2020,
+              "value": 8.407
+            },
+            {
+              "year": 2021,
+              "value": 6.7852
+            },
+            {
+              "year": 2022,
+              "value": 5.2132
+            },
+            {
+              "year": 2023,
+              "value": 5.7281
+            },
+            {
+              "year": 2024,
+              "value": 5.7201
+            },
+            {
+              "year": 2025,
+              "value": 5.5109
+            }
+          ]
+        },
+        "VNM": {
+          "year": 2024,
+          "value": 2.3741,
+          "previous": {
+            "year": 2023,
+            "value": 3.0176
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.8504
+            },
+            {
+              "year": 2016,
+              "value": 2.224
+            },
+            {
+              "year": 2017,
+              "value": 2.4629
+            },
+            {
+              "year": 2018,
+              "value": 2.5296
+            },
+            {
+              "year": 2019,
+              "value": 3.3668
+            },
+            {
+              "year": 2020,
+              "value": 3.9783
+            },
+            {
+              "year": 2021,
+              "value": 3.6861
+            },
+            {
+              "year": 2022,
+              "value": 2.6506
+            },
+            {
+              "year": 2023,
+              "value": 3.0176
+            },
+            {
+              "year": 2024,
+              "value": 2.3741
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -4519,7 +28153,9 @@ export const indicatorSnapshot = {
           "year": 2025,
           "value": 6.4627
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "capital-formation": {
       "countries": {
@@ -4529,7 +28165,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 29.9738
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 29.3122
+            },
+            {
+              "year": 2016,
+              "value": 29.9824
+            },
+            {
+              "year": 2017,
+              "value": 31.9653
+            },
+            {
+              "year": 2018,
+              "value": 31.2487
+            },
+            {
+              "year": 2019,
+              "value": 31.1956
+            },
+            {
+              "year": 2020,
+              "value": 31.5249
+            },
+            {
+              "year": 2021,
+              "value": 32.4929
+            },
+            {
+              "year": 2022,
+              "value": 33.3255
+            },
+            {
+              "year": 2023,
+              "value": 31.8912
+            },
+            {
+              "year": 2024,
+              "value": 29.9738
+            },
+            {
+              "year": 2025,
+              "value": 29.1311
+            }
+          ]
         },
         "WLD": {
           "year": 2024,
@@ -4537,7 +28219,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 26.6577
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 25.9245
+            },
+            {
+              "year": 2016,
+              "value": 25.6663
+            },
+            {
+              "year": 2017,
+              "value": 26.1215
+            },
+            {
+              "year": 2018,
+              "value": 26.6619
+            },
+            {
+              "year": 2019,
+              "value": 26.5641
+            },
+            {
+              "year": 2020,
+              "value": 26.4574
+            },
+            {
+              "year": 2021,
+              "value": 27.2373
+            },
+            {
+              "year": 2022,
+              "value": 27.4739
+            },
+            {
+              "year": 2023,
+              "value": 26.6577
+            },
+            {
+              "year": 2024,
+              "value": 26.2877
+            }
+          ]
         },
         "USA": {
           "year": 2024,
@@ -4545,7 +28269,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 21.5701
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 21.4152
+            },
+            {
+              "year": 2016,
+              "value": 20.888
+            },
+            {
+              "year": 2017,
+              "value": 21.1558
+            },
+            {
+              "year": 2018,
+              "value": 21.5691
+            },
+            {
+              "year": 2019,
+              "value": 21.6698
+            },
+            {
+              "year": 2020,
+              "value": 21.4377
+            },
+            {
+              "year": 2021,
+              "value": 21.4064
+            },
+            {
+              "year": 2022,
+              "value": 22.0268
+            },
+            {
+              "year": 2023,
+              "value": 21.5701
+            },
+            {
+              "year": 2024,
+              "value": 21.5326
+            }
+          ]
         },
         "JPN": {
           "year": 2024,
@@ -4553,7 +28319,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 27.7841
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 26.5521
+            },
+            {
+              "year": 2016,
+              "value": 26.24
+            },
+            {
+              "year": 2017,
+              "value": 26.6346
+            },
+            {
+              "year": 2018,
+              "value": 27.1364
+            },
+            {
+              "year": 2019,
+              "value": 27.3244
+            },
+            {
+              "year": 2020,
+              "value": 26.8865
+            },
+            {
+              "year": 2021,
+              "value": 27.3252
+            },
+            {
+              "year": 2022,
+              "value": 28.3108
+            },
+            {
+              "year": 2023,
+              "value": 27.7841
+            },
+            {
+              "year": 2024,
+              "value": 27.6792
+            }
+          ]
         },
         "CHN": {
           "year": 2024,
@@ -4561,7 +28369,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 41.1297
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 42.735
+            },
+            {
+              "year": 2016,
+              "value": 42.1386
+            },
+            {
+              "year": 2017,
+              "value": 42.5497
+            },
+            {
+              "year": 2018,
+              "value": 43.3138
+            },
+            {
+              "year": 2019,
+              "value": 42.6695
+            },
+            {
+              "year": 2020,
+              "value": 42.5724
+            },
+            {
+              "year": 2021,
+              "value": 42.6823
+            },
+            {
+              "year": 2022,
+              "value": 42.3554
+            },
+            {
+              "year": 2023,
+              "value": 41.1297
+            },
+            {
+              "year": 2024,
+              "value": 40.4815
+            }
+          ]
         },
         "DEU": {
           "year": 2025,
@@ -4569,7 +28419,539 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 21.4994
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 19.4978
+            },
+            {
+              "year": 2016,
+              "value": 19.7123
+            },
+            {
+              "year": 2017,
+              "value": 20.691
+            },
+            {
+              "year": 2018,
+              "value": 21.6504
+            },
+            {
+              "year": 2019,
+              "value": 21.3813
+            },
+            {
+              "year": 2020,
+              "value": 21.729
+            },
+            {
+              "year": 2021,
+              "value": 22.6731
+            },
+            {
+              "year": 2022,
+              "value": 23.276
+            },
+            {
+              "year": 2023,
+              "value": 21.9943
+            },
+            {
+              "year": 2024,
+              "value": 21.4994
+            },
+            {
+              "year": 2025,
+              "value": 21.9315
+            }
+          ]
+        },
+        "GBR": {
+          "year": 2025,
+          "value": 19.6884,
+          "previous": {
+            "year": 2024,
+            "value": 19.1682
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 18.4755
+            },
+            {
+              "year": 2016,
+              "value": 18.5956
+            },
+            {
+              "year": 2017,
+              "value": 19.1317
+            },
+            {
+              "year": 2018,
+              "value": 18.8761
+            },
+            {
+              "year": 2019,
+              "value": 19.0285
+            },
+            {
+              "year": 2020,
+              "value": 18.2807
+            },
+            {
+              "year": 2021,
+              "value": 18.8987
+            },
+            {
+              "year": 2022,
+              "value": 18.3469
+            },
+            {
+              "year": 2023,
+              "value": 18.4594
+            },
+            {
+              "year": 2024,
+              "value": 19.1682
+            },
+            {
+              "year": 2025,
+              "value": 19.6884
+            }
+          ]
+        },
+        "FRA": {
+          "year": 2025,
+          "value": 21.9384,
+          "previous": {
+            "year": 2024,
+            "value": 21.5139
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 21.7165
+            },
+            {
+              "year": 2016,
+              "value": 21.5979
+            },
+            {
+              "year": 2017,
+              "value": 22.1814
+            },
+            {
+              "year": 2018,
+              "value": 22.6116
+            },
+            {
+              "year": 2019,
+              "value": 23.0251
+            },
+            {
+              "year": 2020,
+              "value": 22.8044
+            },
+            {
+              "year": 2021,
+              "value": 23.4475
+            },
+            {
+              "year": 2022,
+              "value": 24.0234
+            },
+            {
+              "year": 2023,
+              "value": 22.9279
+            },
+            {
+              "year": 2024,
+              "value": 21.5139
+            },
+            {
+              "year": 2025,
+              "value": 21.9384
+            }
+          ]
+        },
+        "CAN": {
+          "year": 2025,
+          "value": 23.1544,
+          "previous": {
+            "year": 2024,
+            "value": 23.1683
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 23.8216
+            },
+            {
+              "year": 2016,
+              "value": 22.7611
+            },
+            {
+              "year": 2017,
+              "value": 23.5504
+            },
+            {
+              "year": 2018,
+              "value": 23.3773
+            },
+            {
+              "year": 2019,
+              "value": 23.0424
+            },
+            {
+              "year": 2020,
+              "value": 22.6747
+            },
+            {
+              "year": 2021,
+              "value": 24.3051
+            },
+            {
+              "year": 2022,
+              "value": 25.027
+            },
+            {
+              "year": 2023,
+              "value": 23.6376
+            },
+            {
+              "year": 2024,
+              "value": 23.1683
+            },
+            {
+              "year": 2025,
+              "value": 23.1544
+            }
+          ]
+        },
+        "AUS": {
+          "year": 2025,
+          "value": 24.461,
+          "previous": {
+            "year": 2024,
+            "value": 24.3235
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 26.1669
+            },
+            {
+              "year": 2016,
+              "value": 25.3484
+            },
+            {
+              "year": 2017,
+              "value": 24.0799
+            },
+            {
+              "year": 2018,
+              "value": 24.5546
+            },
+            {
+              "year": 2019,
+              "value": 23.2972
+            },
+            {
+              "year": 2020,
+              "value": 22.3449
+            },
+            {
+              "year": 2021,
+              "value": 22.8802
+            },
+            {
+              "year": 2022,
+              "value": 23.6998
+            },
+            {
+              "year": 2023,
+              "value": 23.8731
+            },
+            {
+              "year": 2024,
+              "value": 24.3235
+            },
+            {
+              "year": 2025,
+              "value": 24.461
+            }
+          ]
+        },
+        "IND": {
+          "year": 2025,
+          "value": 34.603,
+          "previous": {
+            "year": 2024,
+            "value": 34.3459
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 32.1167
+            },
+            {
+              "year": 2016,
+              "value": 30.1727
+            },
+            {
+              "year": 2017,
+              "value": 30.9822
+            },
+            {
+              "year": 2018,
+              "value": 32.3432
+            },
+            {
+              "year": 2019,
+              "value": 30.0962
+            },
+            {
+              "year": 2020,
+              "value": 28.9224
+            },
+            {
+              "year": 2021,
+              "value": 32.1158
+            },
+            {
+              "year": 2022,
+              "value": 34.4118
+            },
+            {
+              "year": 2023,
+              "value": 34.5047
+            },
+            {
+              "year": 2024,
+              "value": 34.3459
+            },
+            {
+              "year": 2025,
+              "value": 34.603
+            }
+          ]
+        },
+        "BRA": {
+          "year": 2025,
+          "value": 17.076,
+          "previous": {
+            "year": 2024,
+            "value": 16.9814
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 17.4116
+            },
+            {
+              "year": 2016,
+              "value": 14.9695
+            },
+            {
+              "year": 2017,
+              "value": 14.6256
+            },
+            {
+              "year": 2018,
+              "value": 15.095
+            },
+            {
+              "year": 2019,
+              "value": 15.5168
+            },
+            {
+              "year": 2020,
+              "value": 16.1158
+            },
+            {
+              "year": 2021,
+              "value": 19.5219
+            },
+            {
+              "year": 2022,
+              "value": 18.0882
+            },
+            {
+              "year": 2023,
+              "value": 15.7606
+            },
+            {
+              "year": 2024,
+              "value": 16.9814
+            },
+            {
+              "year": 2025,
+              "value": 17.076
+            }
+          ]
+        },
+        "SGP": {
+          "year": 2025,
+          "value": 22.4864,
+          "previous": {
+            "year": 2024,
+            "value": 21.8491
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 25.3532
+            },
+            {
+              "year": 2016,
+              "value": 26.3429
+            },
+            {
+              "year": 2017,
+              "value": 27.1803
+            },
+            {
+              "year": 2018,
+              "value": 24.665
+            },
+            {
+              "year": 2019,
+              "value": 24.3415
+            },
+            {
+              "year": 2020,
+              "value": 22.9305
+            },
+            {
+              "year": 2021,
+              "value": 24.1178
+            },
+            {
+              "year": 2022,
+              "value": 21.8792
+            },
+            {
+              "year": 2023,
+              "value": 21.1306
+            },
+            {
+              "year": 2024,
+              "value": 21.8491
+            },
+            {
+              "year": 2025,
+              "value": 22.4864
+            }
+          ]
+        },
+        "IDN": {
+          "year": 2025,
+          "value": 30.6187,
+          "previous": {
+            "year": 2024,
+            "value": 31.3963
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 34.0628
+            },
+            {
+              "year": 2016,
+              "value": 33.8587
+            },
+            {
+              "year": 2017,
+              "value": 33.7106
+            },
+            {
+              "year": 2018,
+              "value": 34.5706
+            },
+            {
+              "year": 2019,
+              "value": 33.7801
+            },
+            {
+              "year": 2020,
+              "value": 32.3434
+            },
+            {
+              "year": 2021,
+              "value": 31.4489
+            },
+            {
+              "year": 2022,
+              "value": 29.7453
+            },
+            {
+              "year": 2023,
+              "value": 30.3426
+            },
+            {
+              "year": 2024,
+              "value": 31.3963
+            },
+            {
+              "year": 2025,
+              "value": 30.6187
+            }
+          ]
+        },
+        "VNM": {
+          "year": 2025,
+          "value": 30.7951,
+          "previous": {
+            "year": 2024,
+            "value": 30.5847
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 32.1089
+            },
+            {
+              "year": 2016,
+              "value": 31.7245
+            },
+            {
+              "year": 2017,
+              "value": 32.3053
+            },
+            {
+              "year": 2018,
+              "value": 32.0195
+            },
+            {
+              "year": 2019,
+              "value": 31.98
+            },
+            {
+              "year": 2020,
+              "value": 31.9157
+            },
+            {
+              "year": 2021,
+              "value": 32.8956
+            },
+            {
+              "year": 2022,
+              "value": 32.3405
+            },
+            {
+              "year": 2023,
+              "value": 31.6683
+            },
+            {
+              "year": 2024,
+              "value": 30.5847
+            },
+            {
+              "year": 2025,
+              "value": 30.7951
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -4617,7 +28999,9 @@ export const indicatorSnapshot = {
           "year": 2025,
           "value": 29.1311
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "domestic-savings": {
       "countries": {
@@ -4627,7 +29011,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 34.0291
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 35.8603
+            },
+            {
+              "year": 2016,
+              "value": 36.3086
+            },
+            {
+              "year": 2017,
+              "value": 36.4709
+            },
+            {
+              "year": 2018,
+              "value": 35.4458
+            },
+            {
+              "year": 2019,
+              "value": 33.8312
+            },
+            {
+              "year": 2020,
+              "value": 35.2103
+            },
+            {
+              "year": 2021,
+              "value": 35.8643
+            },
+            {
+              "year": 2022,
+              "value": 33.3301
+            },
+            {
+              "year": 2023,
+              "value": 32.2762
+            },
+            {
+              "year": 2024,
+              "value": 34.0291
+            },
+            {
+              "year": 2025,
+              "value": 34.3304
+            }
+          ]
         },
         "WLD": {
           "year": 2024,
@@ -4635,7 +29065,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 27.3152
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 26.6842
+            },
+            {
+              "year": 2016,
+              "value": 26.3732
+            },
+            {
+              "year": 2017,
+              "value": 26.8594
+            },
+            {
+              "year": 2018,
+              "value": 27.3343
+            },
+            {
+              "year": 2019,
+              "value": 27.3071
+            },
+            {
+              "year": 2020,
+              "value": 27.0458
+            },
+            {
+              "year": 2021,
+              "value": 28.2521
+            },
+            {
+              "year": 2022,
+              "value": 28.4255
+            },
+            {
+              "year": 2023,
+              "value": 27.3152
+            },
+            {
+              "year": 2024,
+              "value": 26.872
+            }
+          ]
         },
         "USA": {
           "year": 2024,
@@ -4643,7 +29115,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 18.7422
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 18.5493
+            },
+            {
+              "year": 2016,
+              "value": 18.2117
+            },
+            {
+              "year": 2017,
+              "value": 18.3854
+            },
+            {
+              "year": 2018,
+              "value": 18.6979
+            },
+            {
+              "year": 2019,
+              "value": 18.9897
+            },
+            {
+              "year": 2020,
+              "value": 18.5439
+            },
+            {
+              "year": 2021,
+              "value": 17.827
+            },
+            {
+              "year": 2022,
+              "value": 18.4271
+            },
+            {
+              "year": 2023,
+              "value": 18.7422
+            },
+            {
+              "year": 2024,
+              "value": 18.466
+            }
+          ]
         },
         "JPN": {
           "year": 2024,
@@ -4651,7 +29165,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 26.3076
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 26.0088
+            },
+            {
+              "year": 2016,
+              "value": 27.0286
+            },
+            {
+              "year": 2017,
+              "value": 27.3774
+            },
+            {
+              "year": 2018,
+              "value": 27.1551
+            },
+            {
+              "year": 2019,
+              "value": 27.0417
+            },
+            {
+              "year": 2020,
+              "value": 26.6246
+            },
+            {
+              "year": 2021,
+              "value": 26.8237
+            },
+            {
+              "year": 2022,
+              "value": 24.7459
+            },
+            {
+              "year": 2023,
+              "value": 26.3076
+            },
+            {
+              "year": 2024,
+              "value": 26.7861
+            }
+          ]
         },
         "CHN": {
           "year": 2024,
@@ -4659,7 +29215,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 43.2426
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 45.6816
+            },
+            {
+              "year": 2016,
+              "value": 44.4372
+            },
+            {
+              "year": 2017,
+              "value": 44.5435
+            },
+            {
+              "year": 2018,
+              "value": 44.22
+            },
+            {
+              "year": 2019,
+              "value": 43.497
+            },
+            {
+              "year": 2020,
+              "value": 44.2277
+            },
+            {
+              "year": 2021,
+              "value": 45.2748
+            },
+            {
+              "year": 2022,
+              "value": 45.5601
+            },
+            {
+              "year": 2023,
+              "value": 43.2426
+            },
+            {
+              "year": 2024,
+              "value": 43.321
+            }
+          ]
         },
         "DEU": {
           "year": 2025,
@@ -4667,7 +29265,539 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 25.2768
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 26.912
+            },
+            {
+              "year": 2016,
+              "value": 26.9774
+            },
+            {
+              "year": 2017,
+              "value": 27.6421
+            },
+            {
+              "year": 2018,
+              "value": 27.5189
+            },
+            {
+              "year": 2019,
+              "value": 26.9885
+            },
+            {
+              "year": 2020,
+              "value": 27.0351
+            },
+            {
+              "year": 2021,
+              "value": 27.7932
+            },
+            {
+              "year": 2022,
+              "value": 25.7471
+            },
+            {
+              "year": 2023,
+              "value": 25.9663
+            },
+            {
+              "year": 2024,
+              "value": 25.2768
+            },
+            {
+              "year": 2025,
+              "value": 24.2882
+            }
+          ]
+        },
+        "GBR": {
+          "year": 2025,
+          "value": 18.3366,
+          "previous": {
+            "year": 2024,
+            "value": 18.3323
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 17.1086
+            },
+            {
+              "year": 2016,
+              "value": 16.8792
+            },
+            {
+              "year": 2017,
+              "value": 17.8895
+            },
+            {
+              "year": 2018,
+              "value": 17.6754
+            },
+            {
+              "year": 2019,
+              "value": 17.8307
+            },
+            {
+              "year": 2020,
+              "value": 19.0181
+            },
+            {
+              "year": 2021,
+              "value": 18.9392
+            },
+            {
+              "year": 2022,
+              "value": 17.2718
+            },
+            {
+              "year": 2023,
+              "value": 17.2916
+            },
+            {
+              "year": 2024,
+              "value": 18.3323
+            },
+            {
+              "year": 2025,
+              "value": 18.3366
+            }
+          ]
+        },
+        "FRA": {
+          "year": 2025,
+          "value": 21.5317,
+          "previous": {
+            "year": 2024,
+            "value": 21.1852
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 21.5988
+            },
+            {
+              "year": 2016,
+              "value": 21.2515
+            },
+            {
+              "year": 2017,
+              "value": 21.4092
+            },
+            {
+              "year": 2018,
+              "value": 21.6453
+            },
+            {
+              "year": 2019,
+              "value": 22.3752
+            },
+            {
+              "year": 2020,
+              "value": 21.08
+            },
+            {
+              "year": 2021,
+              "value": 22.2351
+            },
+            {
+              "year": 2022,
+              "value": 21.2924
+            },
+            {
+              "year": 2023,
+              "value": 21.2142
+            },
+            {
+              "year": 2024,
+              "value": 21.1852
+            },
+            {
+              "year": 2025,
+              "value": 21.5317
+            }
+          ]
+        },
+        "CAN": {
+          "year": 2025,
+          "value": 22.3123,
+          "previous": {
+            "year": 2024,
+            "value": 22.965
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 21.3133
+            },
+            {
+              "year": 2016,
+              "value": 20.4677
+            },
+            {
+              "year": 2017,
+              "value": 21.3206
+            },
+            {
+              "year": 2018,
+              "value": 21.4317
+            },
+            {
+              "year": 2019,
+              "value": 21.5821
+            },
+            {
+              "year": 2020,
+              "value": 20.4752
+            },
+            {
+              "year": 2021,
+              "value": 24.4232
+            },
+            {
+              "year": 2022,
+              "value": 25.5141
+            },
+            {
+              "year": 2023,
+              "value": 23.7399
+            },
+            {
+              "year": 2024,
+              "value": 22.965
+            },
+            {
+              "year": 2025,
+              "value": 22.3123
+            }
+          ]
+        },
+        "AUS": {
+          "year": 2025,
+          "value": 24.9964,
+          "previous": {
+            "year": 2024,
+            "value": 26.4212
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 24.6415
+            },
+            {
+              "year": 2016,
+              "value": 22.9413
+            },
+            {
+              "year": 2017,
+              "value": 24.3883
+            },
+            {
+              "year": 2018,
+              "value": 24.6064
+            },
+            {
+              "year": 2019,
+              "value": 25.4204
+            },
+            {
+              "year": 2020,
+              "value": 25.7214
+            },
+            {
+              "year": 2021,
+              "value": 26.6816
+            },
+            {
+              "year": 2022,
+              "value": 28.9283
+            },
+            {
+              "year": 2023,
+              "value": 28.2309
+            },
+            {
+              "year": 2024,
+              "value": 26.4212
+            },
+            {
+              "year": 2025,
+              "value": 24.9964
+            }
+          ]
+        },
+        "IND": {
+          "year": 2025,
+          "value": 32.5595,
+          "previous": {
+            "year": 2024,
+            "value": 32.8269
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 30.5644
+            },
+            {
+              "year": 2016,
+              "value": 30.3962
+            },
+            {
+              "year": 2017,
+              "value": 30.5077
+            },
+            {
+              "year": 2018,
+              "value": 29.8885
+            },
+            {
+              "year": 2019,
+              "value": 28.086
+            },
+            {
+              "year": 2020,
+              "value": 27.2894
+            },
+            {
+              "year": 2021,
+              "value": 28.5732
+            },
+            {
+              "year": 2022,
+              "value": 31.7942
+            },
+            {
+              "year": 2023,
+              "value": 32.8913
+            },
+            {
+              "year": 2024,
+              "value": 32.8269
+            },
+            {
+              "year": 2025,
+              "value": 32.5595
+            }
+          ]
+        },
+        "BRA": {
+          "year": 2025,
+          "value": 17.426,
+          "previous": {
+            "year": 2024,
+            "value": 17.2741
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 16.2584
+            },
+            {
+              "year": 2016,
+              "value": 15.3692
+            },
+            {
+              "year": 2017,
+              "value": 15.3438
+            },
+            {
+              "year": 2018,
+              "value": 15.4888
+            },
+            {
+              "year": 2019,
+              "value": 14.8724
+            },
+            {
+              "year": 2020,
+              "value": 16.7208
+            },
+            {
+              "year": 2021,
+              "value": 20.0844
+            },
+            {
+              "year": 2022,
+              "value": 18.5337
+            },
+            {
+              "year": 2023,
+              "value": 18.0331
+            },
+            {
+              "year": 2024,
+              "value": 17.2741
+            },
+            {
+              "year": 2025,
+              "value": 17.426
+            }
+          ]
+        },
+        "SGP": {
+          "year": 2025,
+          "value": 58.6593,
+          "previous": {
+            "year": 2024,
+            "value": 59.2625
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 52.651
+            },
+            {
+              "year": 2016,
+              "value": 53.4629
+            },
+            {
+              "year": 2017,
+              "value": 54.6753
+            },
+            {
+              "year": 2018,
+              "value": 55.4457
+            },
+            {
+              "year": 2019,
+              "value": 53.9012
+            },
+            {
+              "year": 2020,
+              "value": 55.6624
+            },
+            {
+              "year": 2021,
+              "value": 60.6871
+            },
+            {
+              "year": 2022,
+              "value": 62.7719
+            },
+            {
+              "year": 2023,
+              "value": 58.6448
+            },
+            {
+              "year": 2024,
+              "value": 59.2625
+            },
+            {
+              "year": 2025,
+              "value": 58.6593
+            }
+          ]
+        },
+        "IDN": {
+          "year": 2025,
+          "value": 37.2379,
+          "previous": {
+            "year": 2024,
+            "value": 36.8531
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 32.8006
+            },
+            {
+              "year": 2016,
+              "value": 32.6454
+            },
+            {
+              "year": 2017,
+              "value": 33.6039
+            },
+            {
+              "year": 2018,
+              "value": 33.9989
+            },
+            {
+              "year": 2019,
+              "value": 33.2611
+            },
+            {
+              "year": 2020,
+              "value": 31.4104
+            },
+            {
+              "year": 2021,
+              "value": 35.1242
+            },
+            {
+              "year": 2022,
+              "value": 39.2653
+            },
+            {
+              "year": 2023,
+              "value": 38.115
+            },
+            {
+              "year": 2024,
+              "value": 36.8531
+            },
+            {
+              "year": 2025,
+              "value": 37.2379
+            }
+          ]
+        },
+        "VNM": {
+          "year": 2025,
+          "value": 37.4122,
+          "previous": {
+            "year": 2024,
+            "value": 37.6004
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 30.0125
+            },
+            {
+              "year": 2016,
+              "value": 30.8646
+            },
+            {
+              "year": 2017,
+              "value": 31.8671
+            },
+            {
+              "year": 2018,
+              "value": 33.1772
+            },
+            {
+              "year": 2019,
+              "value": 33.5931
+            },
+            {
+              "year": 2020,
+              "value": 34.5541
+            },
+            {
+              "year": 2021,
+              "value": 34.8959
+            },
+            {
+              "year": 2022,
+              "value": 36.5018
+            },
+            {
+              "year": 2023,
+              "value": 37.1717
+            },
+            {
+              "year": 2024,
+              "value": 37.6004
+            },
+            {
+              "year": 2025,
+              "value": 37.4122
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -4715,7 +29845,9 @@ export const indicatorSnapshot = {
           "year": 2025,
           "value": 34.3304
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "dependency-ratio": {
       "countries": {
@@ -4725,7 +29857,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 42.5347
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 36.4601
+            },
+            {
+              "year": 2016,
+              "value": 36.4601
+            },
+            {
+              "year": 2017,
+              "value": 36.7793
+            },
+            {
+              "year": 2018,
+              "value": 37.2996
+            },
+            {
+              "year": 2019,
+              "value": 37.8814
+            },
+            {
+              "year": 2020,
+              "value": 38.7671
+            },
+            {
+              "year": 2021,
+              "value": 39.7812
+            },
+            {
+              "year": 2022,
+              "value": 40.6448
+            },
+            {
+              "year": 2023,
+              "value": 41.4544
+            },
+            {
+              "year": 2024,
+              "value": 42.5347
+            },
+            {
+              "year": 2025,
+              "value": 43.9572
+            }
+          ]
         },
         "WLD": {
           "year": 2025,
@@ -4733,7 +29911,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 54.7474
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 55.0939
+            },
+            {
+              "year": 2016,
+              "value": 55.1536
+            },
+            {
+              "year": 2017,
+              "value": 55.2578
+            },
+            {
+              "year": 2018,
+              "value": 55.3576
+            },
+            {
+              "year": 2019,
+              "value": 55.4218
+            },
+            {
+              "year": 2020,
+              "value": 55.4226
+            },
+            {
+              "year": 2021,
+              "value": 55.3168
+            },
+            {
+              "year": 2022,
+              "value": 55.1689
+            },
+            {
+              "year": 2023,
+              "value": 54.9984
+            },
+            {
+              "year": 2024,
+              "value": 54.7474
+            },
+            {
+              "year": 2025,
+              "value": 54.4613
+            }
+          ]
         },
         "USA": {
           "year": 2025,
@@ -4741,7 +29965,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 54.448
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 50.3803
+            },
+            {
+              "year": 2016,
+              "value": 50.7885
+            },
+            {
+              "year": 2017,
+              "value": 51.2358
+            },
+            {
+              "year": 2018,
+              "value": 51.6943
+            },
+            {
+              "year": 2019,
+              "value": 52.1638
+            },
+            {
+              "year": 2020,
+              "value": 52.5897
+            },
+            {
+              "year": 2021,
+              "value": 52.9517
+            },
+            {
+              "year": 2022,
+              "value": 53.3776
+            },
+            {
+              "year": 2023,
+              "value": 53.9088
+            },
+            {
+              "year": 2024,
+              "value": 54.448
+            },
+            {
+              "year": 2025,
+              "value": 55.0058
+            }
+          ]
         },
         "JPN": {
           "year": 2025,
@@ -4749,7 +30019,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 70.1168
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 66.023
+            },
+            {
+              "year": 2016,
+              "value": 67.3228
+            },
+            {
+              "year": 2017,
+              "value": 68.3095
+            },
+            {
+              "year": 2018,
+              "value": 69.023
+            },
+            {
+              "year": 2019,
+              "value": 69.4781
+            },
+            {
+              "year": 2020,
+              "value": 69.8916
+            },
+            {
+              "year": 2021,
+              "value": 70.257
+            },
+            {
+              "year": 2022,
+              "value": 70.2463
+            },
+            {
+              "year": 2023,
+              "value": 70.1001
+            },
+            {
+              "year": 2024,
+              "value": 70.1168
+            },
+            {
+              "year": 2025,
+              "value": 70.1621
+            }
+          ]
         },
         "CHN": {
           "year": 2025,
@@ -4757,7 +30073,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 44.2441
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 39.6094
+            },
+            {
+              "year": 2016,
+              "value": 40.4407
+            },
+            {
+              "year": 2017,
+              "value": 41.5109
+            },
+            {
+              "year": 2018,
+              "value": 42.5409
+            },
+            {
+              "year": 2019,
+              "value": 43.3874
+            },
+            {
+              "year": 2020,
+              "value": 44.0924
+            },
+            {
+              "year": 2021,
+              "value": 44.4828
+            },
+            {
+              "year": 2022,
+              "value": 44.7256
+            },
+            {
+              "year": 2023,
+              "value": 44.7297
+            },
+            {
+              "year": 2024,
+              "value": 44.2441
+            },
+            {
+              "year": 2025,
+              "value": 43.5106
+            }
+          ]
         },
         "DEU": {
           "year": 2025,
@@ -4765,7 +30127,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 58.997
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 52.1224
+            },
+            {
+              "year": 2016,
+              "value": 52.582
+            },
+            {
+              "year": 2017,
+              "value": 53.2583
+            },
+            {
+              "year": 2018,
+              "value": 53.8755
+            },
+            {
+              "year": 2019,
+              "value": 54.538
+            },
+            {
+              "year": 2020,
+              "value": 55.2951
+            },
+            {
+              "year": 2021,
+              "value": 56.2311
+            },
+            {
+              "year": 2022,
+              "value": 57.1621
+            },
+            {
+              "year": 2023,
+              "value": 57.9919
+            },
+            {
+              "year": 2024,
+              "value": 58.997
+            },
+            {
+              "year": 2025,
+              "value": 60.2284
+            }
+          ]
         },
         "GBR": {
           "year": 2025,
@@ -4773,7 +30181,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 57.94
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 55.4016
+            },
+            {
+              "year": 2016,
+              "value": 55.9246
+            },
+            {
+              "year": 2017,
+              "value": 56.48
+            },
+            {
+              "year": 2018,
+              "value": 57.0044
+            },
+            {
+              "year": 2019,
+              "value": 57.431
+            },
+            {
+              "year": 2020,
+              "value": 57.6594
+            },
+            {
+              "year": 2021,
+              "value": 57.613
+            },
+            {
+              "year": 2022,
+              "value": 57.6282
+            },
+            {
+              "year": 2023,
+              "value": 57.8464
+            },
+            {
+              "year": 2024,
+              "value": 57.94
+            },
+            {
+              "year": 2025,
+              "value": 57.8967
+            }
+          ]
         },
         "FRA": {
           "year": 2025,
@@ -4781,7 +30235,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 63.0037
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 58.9739
+            },
+            {
+              "year": 2016,
+              "value": 59.6623
+            },
+            {
+              "year": 2017,
+              "value": 60.2613
+            },
+            {
+              "year": 2018,
+              "value": 60.825
+            },
+            {
+              "year": 2019,
+              "value": 61.3393
+            },
+            {
+              "year": 2020,
+              "value": 61.7772
+            },
+            {
+              "year": 2021,
+              "value": 62.0639
+            },
+            {
+              "year": 2022,
+              "value": 62.3608
+            },
+            {
+              "year": 2023,
+              "value": 62.6914
+            },
+            {
+              "year": 2024,
+              "value": 63.0037
+            },
+            {
+              "year": 2025,
+              "value": 63.31
+            }
+          ]
         },
         "CAN": {
           "year": 2025,
@@ -4789,7 +30289,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 53.6356
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 47.586
+            },
+            {
+              "year": 2016,
+              "value": 48.3895
+            },
+            {
+              "year": 2017,
+              "value": 49.0981
+            },
+            {
+              "year": 2018,
+              "value": 49.7335
+            },
+            {
+              "year": 2019,
+              "value": 50.4106
+            },
+            {
+              "year": 2020,
+              "value": 51.1984
+            },
+            {
+              "year": 2021,
+              "value": 52.0342
+            },
+            {
+              "year": 2022,
+              "value": 52.6453
+            },
+            {
+              "year": 2023,
+              "value": 53.0518
+            },
+            {
+              "year": 2024,
+              "value": 53.6356
+            },
+            {
+              "year": 2025,
+              "value": 54.4179
+            }
+          ]
         },
         "AUS": {
           "year": 2025,
@@ -4797,7 +30343,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 55.2117
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 51.0633
+            },
+            {
+              "year": 2016,
+              "value": 51.6034
+            },
+            {
+              "year": 2017,
+              "value": 52.0424
+            },
+            {
+              "year": 2018,
+              "value": 52.4455
+            },
+            {
+              "year": 2019,
+              "value": 52.9198
+            },
+            {
+              "year": 2020,
+              "value": 53.6061
+            },
+            {
+              "year": 2021,
+              "value": 54.2558
+            },
+            {
+              "year": 2022,
+              "value": 54.5848
+            },
+            {
+              "year": 2023,
+              "value": 54.8331
+            },
+            {
+              "year": 2024,
+              "value": 55.2117
+            },
+            {
+              "year": 2025,
+              "value": 55.6968
+            }
+          ]
         },
         "IND": {
           "year": 2025,
@@ -4805,7 +30397,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 46.564
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 52.3977
+            },
+            {
+              "year": 2016,
+              "value": 51.5769
+            },
+            {
+              "year": 2017,
+              "value": 50.7672
+            },
+            {
+              "year": 2018,
+              "value": 50.0308
+            },
+            {
+              "year": 2019,
+              "value": 49.3781
+            },
+            {
+              "year": 2020,
+              "value": 48.7259
+            },
+            {
+              "year": 2021,
+              "value": 48.0406
+            },
+            {
+              "year": 2022,
+              "value": 47.4637
+            },
+            {
+              "year": 2023,
+              "value": 47.0132
+            },
+            {
+              "year": 2024,
+              "value": 46.564
+            },
+            {
+              "year": 2025,
+              "value": 46.1387
+            }
+          ]
         },
         "BRA": {
           "year": 2025,
@@ -4813,7 +30451,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 44.33
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 43.5936
+            },
+            {
+              "year": 2016,
+              "value": 43.4398
+            },
+            {
+              "year": 2017,
+              "value": 43.3713
+            },
+            {
+              "year": 2018,
+              "value": 43.4317
+            },
+            {
+              "year": 2019,
+              "value": 43.5397
+            },
+            {
+              "year": 2020,
+              "value": 43.5861
+            },
+            {
+              "year": 2021,
+              "value": 43.6405
+            },
+            {
+              "year": 2022,
+              "value": 43.7903
+            },
+            {
+              "year": 2023,
+              "value": 44.0291
+            },
+            {
+              "year": 2024,
+              "value": 44.33
+            },
+            {
+              "year": 2025,
+              "value": 44.6486
+            }
+          ]
         },
         "SGP": {
           "year": 2025,
@@ -4821,7 +30505,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 33.9448
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 27.6826
+            },
+            {
+              "year": 2016,
+              "value": 28.1544
+            },
+            {
+              "year": 2017,
+              "value": 28.8475
+            },
+            {
+              "year": 2018,
+              "value": 29.5555
+            },
+            {
+              "year": 2019,
+              "value": 30.1882
+            },
+            {
+              "year": 2020,
+              "value": 31.1638
+            },
+            {
+              "year": 2021,
+              "value": 32.3225
+            },
+            {
+              "year": 2022,
+              "value": 32.7954
+            },
+            {
+              "year": 2023,
+              "value": 33.1254
+            },
+            {
+              "year": 2024,
+              "value": 33.9448
+            },
+            {
+              "year": 2025,
+              "value": 34.9531
+            }
+          ]
         },
         "IDN": {
           "year": 2025,
@@ -4829,7 +30559,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 46.8136
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 49.3596
+            },
+            {
+              "year": 2016,
+              "value": 49.0806
+            },
+            {
+              "year": 2017,
+              "value": 48.8133
+            },
+            {
+              "year": 2018,
+              "value": 48.5573
+            },
+            {
+              "year": 2019,
+              "value": 48.3187
+            },
+            {
+              "year": 2020,
+              "value": 48.0217
+            },
+            {
+              "year": 2021,
+              "value": 47.628
+            },
+            {
+              "year": 2022,
+              "value": 47.2727
+            },
+            {
+              "year": 2023,
+              "value": 47.0225
+            },
+            {
+              "year": 2024,
+              "value": 46.8136
+            },
+            {
+              "year": 2025,
+              "value": 46.6061
+            }
+          ]
         },
         "VNM": {
           "year": 2025,
@@ -4837,7 +30613,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 47.6477
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 43.7681
+            },
+            {
+              "year": 2016,
+              "value": 44.3852
+            },
+            {
+              "year": 2017,
+              "value": 45.3222
+            },
+            {
+              "year": 2018,
+              "value": 46.1234
+            },
+            {
+              "year": 2019,
+              "value": 46.6054
+            },
+            {
+              "year": 2020,
+              "value": 46.9641
+            },
+            {
+              "year": 2021,
+              "value": 47.2393
+            },
+            {
+              "year": 2022,
+              "value": 47.4164
+            },
+            {
+              "year": 2023,
+              "value": 47.5514
+            },
+            {
+              "year": 2024,
+              "value": 47.6477
+            },
+            {
+              "year": 2025,
+              "value": 47.8209
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -4885,7 +30707,9 @@ export const indicatorSnapshot = {
           "year": 2025,
           "value": 43.9572
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "net-migration": {
       "countries": {
@@ -4895,7 +30719,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 75963
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 276427
+            },
+            {
+              "year": 2016,
+              "value": 91568
+            },
+            {
+              "year": 2017,
+              "value": 104029
+            },
+            {
+              "year": 2018,
+              "value": 118220
+            },
+            {
+              "year": 2019,
+              "value": 128622
+            },
+            {
+              "year": 2020,
+              "value": 112631
+            },
+            {
+              "year": 2021,
+              "value": -16778
+            },
+            {
+              "year": 2022,
+              "value": 87800
+            },
+            {
+              "year": 2023,
+              "value": 87800
+            },
+            {
+              "year": 2024,
+              "value": 75963
+            },
+            {
+              "year": 2025,
+              "value": 65731
+            }
+          ]
         },
         "WLD": {
           "year": 2025,
@@ -4903,7 +30773,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 0
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0
+            },
+            {
+              "year": 2016,
+              "value": 0
+            },
+            {
+              "year": 2017,
+              "value": 0
+            },
+            {
+              "year": 2018,
+              "value": 0
+            },
+            {
+              "year": 2019,
+              "value": 0
+            },
+            {
+              "year": 2020,
+              "value": 0
+            },
+            {
+              "year": 2021,
+              "value": 0
+            },
+            {
+              "year": 2022,
+              "value": 0
+            },
+            {
+              "year": 2023,
+              "value": 0
+            },
+            {
+              "year": 2024,
+              "value": 0
+            },
+            {
+              "year": 2025,
+              "value": 0
+            }
+          ]
         },
         "USA": {
           "year": 2025,
@@ -4911,7 +30827,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 1286132
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1722127
+            },
+            {
+              "year": 2016,
+              "value": 1889129
+            },
+            {
+              "year": 2017,
+              "value": 1864738
+            },
+            {
+              "year": 2018,
+              "value": 1764961
+            },
+            {
+              "year": 2019,
+              "value": 1774500
+            },
+            {
+              "year": 2020,
+              "value": 329769
+            },
+            {
+              "year": 2021,
+              "value": 674787
+            },
+            {
+              "year": 2022,
+              "value": 1319009
+            },
+            {
+              "year": 2023,
+              "value": 1322668
+            },
+            {
+              "year": 2024,
+              "value": 1286132
+            },
+            {
+              "year": 2025,
+              "value": 1230663
+            }
+          ]
         },
         "JPN": {
           "year": 2025,
@@ -4919,7 +30881,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 153357
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 168896
+            },
+            {
+              "year": 2016,
+              "value": 314732
+            },
+            {
+              "year": 2017,
+              "value": 322564
+            },
+            {
+              "year": 2018,
+              "value": 320601
+            },
+            {
+              "year": 2019,
+              "value": 318190
+            },
+            {
+              "year": 2020,
+              "value": 42001
+            },
+            {
+              "year": 2021,
+              "value": -34996
+            },
+            {
+              "year": 2022,
+              "value": 175003
+            },
+            {
+              "year": 2023,
+              "value": 175003
+            },
+            {
+              "year": 2024,
+              "value": 153357
+            },
+            {
+              "year": 2025,
+              "value": 140579
+            }
+          ]
         },
         "CHN": {
           "year": 2025,
@@ -4927,7 +30935,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": -318992
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": -646941
+            },
+            {
+              "year": 2016,
+              "value": -153056
+            },
+            {
+              "year": 2017,
+              "value": -94625
+            },
+            {
+              "year": 2018,
+              "value": -198206
+            },
+            {
+              "year": 2019,
+              "value": -656091
+            },
+            {
+              "year": 2020,
+              "value": -91577
+            },
+            {
+              "year": 2021,
+              "value": -379749
+            },
+            {
+              "year": 2022,
+              "value": -293846
+            },
+            {
+              "year": 2023,
+              "value": -567724
+            },
+            {
+              "year": 2024,
+              "value": -318992
+            },
+            {
+              "year": 2025,
+              "value": -268126
+            }
+          ]
         },
         "DEU": {
           "year": 2025,
@@ -4935,7 +30989,539 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 36954
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1175283
+            },
+            {
+              "year": 2016,
+              "value": 517480
+            },
+            {
+              "year": 2017,
+              "value": 452988
+            },
+            {
+              "year": 2018,
+              "value": 403908
+            },
+            {
+              "year": 2019,
+              "value": 319082
+            },
+            {
+              "year": 2020,
+              "value": 203468
+            },
+            {
+              "year": 2021,
+              "value": 310264
+            },
+            {
+              "year": 2022,
+              "value": 981552
+            },
+            {
+              "year": 2023,
+              "value": 609553
+            },
+            {
+              "year": 2024,
+              "value": 36954
+            },
+            {
+              "year": 2025,
+              "value": -334072
+            }
+          ]
+        },
+        "GBR": {
+          "year": 2025,
+          "value": 389911,
+          "previous": {
+            "year": 2024,
+            "value": 417114
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 347839
+            },
+            {
+              "year": 2016,
+              "value": 324649
+            },
+            {
+              "year": 2017,
+              "value": 272311
+            },
+            {
+              "year": 2018,
+              "value": 259744
+            },
+            {
+              "year": 2019,
+              "value": 232727
+            },
+            {
+              "year": 2020,
+              "value": 144221
+            },
+            {
+              "year": 2021,
+              "value": 462967
+            },
+            {
+              "year": 2022,
+              "value": 487029
+            },
+            {
+              "year": 2023,
+              "value": 445523
+            },
+            {
+              "year": 2024,
+              "value": 417114
+            },
+            {
+              "year": 2025,
+              "value": 389911
+            }
+          ]
+        },
+        "FRA": {
+          "year": 2025,
+          "value": 91737,
+          "previous": {
+            "year": 2024,
+            "value": 90527
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": -345
+            },
+            {
+              "year": 2016,
+              "value": 15548
+            },
+            {
+              "year": 2017,
+              "value": 102984
+            },
+            {
+              "year": 2018,
+              "value": 132925
+            },
+            {
+              "year": 2019,
+              "value": 71972
+            },
+            {
+              "year": 2020,
+              "value": 145593
+            },
+            {
+              "year": 2021,
+              "value": 131465
+            },
+            {
+              "year": 2022,
+              "value": 179377
+            },
+            {
+              "year": 2023,
+              "value": 91862
+            },
+            {
+              "year": 2024,
+              "value": 90527
+            },
+            {
+              "year": 2025,
+              "value": 91737
+            }
+          ]
+        },
+        "CAN": {
+          "year": 2025,
+          "value": 326204,
+          "previous": {
+            "year": 2024,
+            "value": 368599
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 224332
+            },
+            {
+              "year": 2016,
+              "value": 329455
+            },
+            {
+              "year": 2017,
+              "value": 372685
+            },
+            {
+              "year": 2018,
+              "value": 420224
+            },
+            {
+              "year": 2019,
+              "value": 387685
+            },
+            {
+              "year": 2020,
+              "value": 256592
+            },
+            {
+              "year": 2021,
+              "value": 198867
+            },
+            {
+              "year": 2022,
+              "value": 459988
+            },
+            {
+              "year": 2023,
+              "value": 433842
+            },
+            {
+              "year": 2024,
+              "value": 368599
+            },
+            {
+              "year": 2025,
+              "value": 326204
+            }
+          ]
+        },
+        "AUS": {
+          "year": 2025,
+          "value": 137109,
+          "previous": {
+            "year": 2024,
+            "value": 138510
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 212350
+            },
+            {
+              "year": 2016,
+              "value": 254648
+            },
+            {
+              "year": 2017,
+              "value": 255023
+            },
+            {
+              "year": 2018,
+              "value": 226412
+            },
+            {
+              "year": 2019,
+              "value": 207142
+            },
+            {
+              "year": 2020,
+              "value": 44447
+            },
+            {
+              "year": 2021,
+              "value": 116768
+            },
+            {
+              "year": 2022,
+              "value": 140972
+            },
+            {
+              "year": 2023,
+              "value": 140232
+            },
+            {
+              "year": 2024,
+              "value": 138510
+            },
+            {
+              "year": 2025,
+              "value": 137109
+            }
+          ]
+        },
+        "IND": {
+          "year": 2025,
+          "value": -495753,
+          "previous": {
+            "year": 2024,
+            "value": -630830
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": -655085
+            },
+            {
+              "year": 2016,
+              "value": 81248
+            },
+            {
+              "year": 2017,
+              "value": -251642
+            },
+            {
+              "year": 2018,
+              "value": -589794
+            },
+            {
+              "year": 2019,
+              "value": -978969
+            },
+            {
+              "year": 2020,
+              "value": -73806
+            },
+            {
+              "year": 2021,
+              "value": -348916
+            },
+            {
+              "year": 2022,
+              "value": -1353478
+            },
+            {
+              "year": 2023,
+              "value": -979179
+            },
+            {
+              "year": 2024,
+              "value": -630830
+            },
+            {
+              "year": 2025,
+              "value": -495753
+            }
+          ]
+        },
+        "BRA": {
+          "year": 2025,
+          "value": -217283,
+          "previous": {
+            "year": 2024,
+            "value": -225510
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": -173611
+            },
+            {
+              "year": 2016,
+              "value": -92989
+            },
+            {
+              "year": 2017,
+              "value": -156296
+            },
+            {
+              "year": 2018,
+              "value": -230334
+            },
+            {
+              "year": 2019,
+              "value": -129216
+            },
+            {
+              "year": 2020,
+              "value": -78437
+            },
+            {
+              "year": 2021,
+              "value": -208581
+            },
+            {
+              "year": 2022,
+              "value": -253639
+            },
+            {
+              "year": 2023,
+              "value": -240059
+            },
+            {
+              "year": 2024,
+              "value": -225510
+            },
+            {
+              "year": 2025,
+              "value": -217283
+            }
+          ]
+        },
+        "SGP": {
+          "year": 2025,
+          "value": 16892,
+          "previous": {
+            "year": 2024,
+            "value": 20011
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 41852
+            },
+            {
+              "year": 2016,
+              "value": 13737
+            },
+            {
+              "year": 2017,
+              "value": -8880
+            },
+            {
+              "year": 2018,
+              "value": 21820
+            },
+            {
+              "year": 2019,
+              "value": 870
+            },
+            {
+              "year": 2020,
+              "value": -145556
+            },
+            {
+              "year": 2021,
+              "value": -44030
+            },
+            {
+              "year": 2022,
+              "value": 214842
+            },
+            {
+              "year": 2023,
+              "value": 26996
+            },
+            {
+              "year": 2024,
+              "value": 20011
+            },
+            {
+              "year": 2025,
+              "value": 16892
+            }
+          ]
+        },
+        "IDN": {
+          "year": 2025,
+          "value": -39509,
+          "previous": {
+            "year": 2024,
+            "value": -38469
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": -28487
+            },
+            {
+              "year": 2016,
+              "value": -28991
+            },
+            {
+              "year": 2017,
+              "value": -29467
+            },
+            {
+              "year": 2018,
+              "value": -29911
+            },
+            {
+              "year": 2019,
+              "value": -30421
+            },
+            {
+              "year": 2020,
+              "value": -18743
+            },
+            {
+              "year": 2021,
+              "value": -11248
+            },
+            {
+              "year": 2022,
+              "value": -37501
+            },
+            {
+              "year": 2023,
+              "value": -37501
+            },
+            {
+              "year": 2024,
+              "value": -38469
+            },
+            {
+              "year": 2025,
+              "value": -39509
+            }
+          ]
+        },
+        "VNM": {
+          "year": 2025,
+          "value": -48171,
+          "previous": {
+            "year": 2024,
+            "value": -59645
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": -4888
+            },
+            {
+              "year": 2016,
+              "value": 167652
+            },
+            {
+              "year": 2017,
+              "value": 139245
+            },
+            {
+              "year": 2018,
+              "value": 96650
+            },
+            {
+              "year": 2019,
+              "value": -2051
+            },
+            {
+              "year": 2020,
+              "value": -6457
+            },
+            {
+              "year": 2021,
+              "value": -5418
+            },
+            {
+              "year": 2022,
+              "value": -78977
+            },
+            {
+              "year": 2023,
+              "value": -81789
+            },
+            {
+              "year": 2024,
+              "value": -59645
+            },
+            {
+              "year": 2025,
+              "value": -48171
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -4983,7 +31569,9 @@ export const indicatorSnapshot = {
           "year": 2025,
           "value": 65731
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "gdp-per-capita-ppp": {
       "countries": {
@@ -4993,7 +31581,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 55070.9386
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 44849.1068
+            },
+            {
+              "year": 2016,
+              "value": 46088.2431
+            },
+            {
+              "year": 2017,
+              "value": 47536.7899
+            },
+            {
+              "year": 2018,
+              "value": 48834.4471
+            },
+            {
+              "year": 2019,
+              "value": 49790.868
+            },
+            {
+              "year": 2020,
+              "value": 49374.0926
+            },
+            {
+              "year": 2021,
+              "value": 51718.2519
+            },
+            {
+              "year": 2022,
+              "value": 53228.6036
+            },
+            {
+              "year": 2023,
+              "value": 54029.3435
+            },
+            {
+              "year": 2024,
+              "value": 55070.9386
+            },
+            {
+              "year": 2025,
+              "value": 55697.0848
+            }
+          ]
         },
         "WLD": {
           "year": 2025,
@@ -5001,7 +31635,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 21393.1844
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 17870.9797
+            },
+            {
+              "year": 2016,
+              "value": 18234.0188
+            },
+            {
+              "year": 2017,
+              "value": 18714.5737
+            },
+            {
+              "year": 2018,
+              "value": 19189.4922
+            },
+            {
+              "year": 2019,
+              "value": 19551.0854
+            },
+            {
+              "year": 2020,
+              "value": 18812.4922
+            },
+            {
+              "year": 2021,
+              "value": 19875.5669
+            },
+            {
+              "year": 2022,
+              "value": 20421.7337
+            },
+            {
+              "year": 2023,
+              "value": 20894.8664
+            },
+            {
+              "year": 2024,
+              "value": 21393.1844
+            },
+            {
+              "year": 2025,
+              "value": 21913.5095
+            }
+          ]
         },
         "USA": {
           "year": 2025,
@@ -5009,7 +31689,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 75698.1773
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 64367.7189
+            },
+            {
+              "year": 2016,
+              "value": 65025.9856
+            },
+            {
+              "year": 2017,
+              "value": 66164.032
+            },
+            {
+              "year": 2018,
+              "value": 67728.4425
+            },
+            {
+              "year": 2019,
+              "value": 69121.458
+            },
+            {
+              "year": 2020,
+              "value": 67406.8311
+            },
+            {
+              "year": 2021,
+              "value": 71441.232
+            },
+            {
+              "year": 2022,
+              "value": 72828.7431
+            },
+            {
+              "year": 2023,
+              "value": 74351.6718
+            },
+            {
+              "year": 2024,
+              "value": 75698.1773
+            },
+            {
+              "year": 2025,
+              "value": 76931.3107
+            }
+          ]
         },
         "JPN": {
           "year": 2025,
@@ -5017,7 +31743,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 47479.8449
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 44589.3033
+            },
+            {
+              "year": 2016,
+              "value": 44926.6203
+            },
+            {
+              "year": 2017,
+              "value": 45693.3776
+            },
+            {
+              "year": 2018,
+              "value": 46133.0226
+            },
+            {
+              "year": 2019,
+              "value": 46055.3499
+            },
+            {
+              "year": 2020,
+              "value": 44212.5503
+            },
+            {
+              "year": 2021,
+              "value": 45999.4618
+            },
+            {
+              "year": 2022,
+              "value": 46819.3606
+            },
+            {
+              "year": 2023,
+              "value": 47387.2173
+            },
+            {
+              "year": 2024,
+              "value": 47479.8449
+            },
+            {
+              "year": 2025,
+              "value": 48283.3724
+            }
+          ]
         },
         "CHN": {
           "year": 2025,
@@ -5025,7 +31797,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 23841.4769
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 14857.1088
+            },
+            {
+              "year": 2016,
+              "value": 15772.8373
+            },
+            {
+              "year": 2017,
+              "value": 16758.0464
+            },
+            {
+              "year": 2018,
+              "value": 17807.0491
+            },
+            {
+              "year": 2019,
+              "value": 18820.5872
+            },
+            {
+              "year": 2020,
+              "value": 19215.1012
+            },
+            {
+              "year": 2021,
+              "value": 20843.2978
+            },
+            {
+              "year": 2022,
+              "value": 21499.3126
+            },
+            {
+              "year": 2023,
+              "value": 22687.252
+            },
+            {
+              "year": 2024,
+              "value": 23841.4769
+            },
+            {
+              "year": 2025,
+              "value": 25066.5215
+            }
+          ]
         },
         "DEU": {
           "year": 2025,
@@ -5033,7 +31851,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 62654.6023
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 59668.989
+            },
+            {
+              "year": 2016,
+              "value": 60504.5857
+            },
+            {
+              "year": 2017,
+              "value": 61965.4343
+            },
+            {
+              "year": 2018,
+              "value": 62481.1184
+            },
+            {
+              "year": 2019,
+              "value": 62949.8933
+            },
+            {
+              "year": 2020,
+              "value": 60299.5768
+            },
+            {
+              "year": 2021,
+              "value": 62630.7748
+            },
+            {
+              "year": 2022,
+              "value": 63777.9291
+            },
+            {
+              "year": 2023,
+              "value": 63140.1949
+            },
+            {
+              "year": 2024,
+              "value": 62654.6023
+            },
+            {
+              "year": 2025,
+              "value": 62823.7737
+            }
+          ]
         },
         "GBR": {
           "year": 2025,
@@ -5041,7 +31905,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 53412.0647
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 50462.833
+            },
+            {
+              "year": 2016,
+              "value": 51168.2926
+            },
+            {
+              "year": 2017,
+              "value": 52429.1276
+            },
+            {
+              "year": 2018,
+              "value": 52983.0395
+            },
+            {
+              "year": 2019,
+              "value": 53374.0928
+            },
+            {
+              "year": 2020,
+              "value": 47930.549
+            },
+            {
+              "year": 2021,
+              "value": 51840.4424
+            },
+            {
+              "year": 2022,
+              "value": 53979.7679
+            },
+            {
+              "year": 2023,
+              "value": 53423.4226
+            },
+            {
+              "year": 2024,
+              "value": 53412.0647
+            },
+            {
+              "year": 2025,
+              "value": 53993.1173
+            }
+          ]
         },
         "FRA": {
           "year": 2025,
@@ -5049,7 +31959,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 54799.3483
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 50682.8954
+            },
+            {
+              "year": 2016,
+              "value": 50984.0753
+            },
+            {
+              "year": 2017,
+              "value": 51895.5663
+            },
+            {
+              "year": 2018,
+              "value": 52560.9536
+            },
+            {
+              "year": 2019,
+              "value": 53448.5549
+            },
+            {
+              "year": 2020,
+              "value": 49311.3334
+            },
+            {
+              "year": 2021,
+              "value": 52517.3355
+            },
+            {
+              "year": 2022,
+              "value": 53673.8137
+            },
+            {
+              "year": 2023,
+              "value": 54296.7231
+            },
+            {
+              "year": 2024,
+              "value": 54799.3483
+            },
+            {
+              "year": 2025,
+              "value": 55124.5393
+            }
+          ]
         },
         "CAN": {
           "year": 2025,
@@ -5057,7 +32013,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 57534.0915
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 55660.8456
+            },
+            {
+              "year": 2016,
+              "value": 55606.133
+            },
+            {
+              "year": 2017,
+              "value": 56612.3062
+            },
+            {
+              "year": 2018,
+              "value": 57337.4683
+            },
+            {
+              "year": 2019,
+              "value": 57583.8231
+            },
+            {
+              "year": 2020,
+              "value": 54092.8577
+            },
+            {
+              "year": 2021,
+              "value": 56995.0952
+            },
+            {
+              "year": 2022,
+              "value": 58583.13
+            },
+            {
+              "year": 2023,
+              "value": 58088.3778
+            },
+            {
+              "year": 2024,
+              "value": 57534.0915
+            },
+            {
+              "year": 2025,
+              "value": 57989.5785
+            }
+          ]
         },
         "AUS": {
           "year": 2025,
@@ -5065,7 +32067,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 60309.5832
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 55879.9959
+            },
+            {
+              "year": 2016,
+              "value": 56529.9518
+            },
+            {
+              "year": 2017,
+              "value": 56881.857
+            },
+            {
+              "year": 2018,
+              "value": 57647.8455
+            },
+            {
+              "year": 2019,
+              "value": 58048.6188
+            },
+            {
+              "year": 2020,
+              "value": 57260.4651
+            },
+            {
+              "year": 2021,
+              "value": 58327.4147
+            },
+            {
+              "year": 2022,
+              "value": 60029.1329
+            },
+            {
+              "year": 2023,
+              "value": 60684.9596
+            },
+            {
+              "year": 2024,
+              "value": 60309.5832
+            },
+            {
+              "year": 2025,
+              "value": 60194.0634
+            }
+          ]
         },
         "IND": {
           "year": 2025,
@@ -5073,7 +32121,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 9416.0514
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 6301.6735
+            },
+            {
+              "year": 2016,
+              "value": 6741.1488
+            },
+            {
+              "year": 2017,
+              "value": 7116.0366
+            },
+            {
+              "year": 2018,
+              "value": 7492.6258
+            },
+            {
+              "year": 2019,
+              "value": 7702.1763
+            },
+            {
+              "year": 2020,
+              "value": 7186.8645
+            },
+            {
+              "year": 2021,
+              "value": 7818.657
+            },
+            {
+              "year": 2022,
+              "value": 8347.3848
+            },
+            {
+              "year": 2023,
+              "value": 8870.5503
+            },
+            {
+              "year": 2024,
+              "value": 9416.0514
+            },
+            {
+              "year": 2025,
+              "value": 10039.0709
+            }
+          ]
         },
         "BRA": {
           "year": 2025,
@@ -5081,7 +32175,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 19652.3655
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 18357.0691
+            },
+            {
+              "year": 2016,
+              "value": 17620.9272
+            },
+            {
+              "year": 2017,
+              "value": 17724.48
+            },
+            {
+              "year": 2018,
+              "value": 17917.7492
+            },
+            {
+              "year": 2019,
+              "value": 18018.6209
+            },
+            {
+              "year": 2020,
+              "value": 17327.5157
+            },
+            {
+              "year": 2021,
+              "value": 18075.706
+            },
+            {
+              "year": 2022,
+              "value": 18554.0462
+            },
+            {
+              "year": 2023,
+              "value": 19079.8122
+            },
+            {
+              "year": 2024,
+              "value": 19652.3655
+            },
+            {
+              "year": 2025,
+              "value": 20024.6968
+            }
+          ]
         },
         "SGP": {
           "year": 2025,
@@ -5089,7 +32229,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 134548.7641
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 109894.0413
+            },
+            {
+              "year": 2016,
+              "value": 112719.948
+            },
+            {
+              "year": 2017,
+              "value": 117492.968
+            },
+            {
+              "year": 2018,
+              "value": 120668.8887
+            },
+            {
+              "year": 2019,
+              "value": 120678.342
+            },
+            {
+              "year": 2020,
+              "value": 116684.2136
+            },
+            {
+              "year": 2021,
+              "value": 133990.1868
+            },
+            {
+              "year": 2022,
+              "value": 134828.0014
+            },
+            {
+              "year": 2023,
+              "value": 130296.8438
+            },
+            {
+              "year": 2024,
+              "value": 134548.7641
+            },
+            {
+              "year": 2025,
+              "value": 139592.6122
+            }
+          ]
         },
         "IDN": {
           "year": 2025,
@@ -5097,7 +32283,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 14470.718
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 10893.6621
+            },
+            {
+              "year": 2016,
+              "value": 11319.6634
+            },
+            {
+              "year": 2017,
+              "value": 11772.5743
+            },
+            {
+              "year": 2018,
+              "value": 12262.231
+            },
+            {
+              "year": 2019,
+              "value": 12757.7851
+            },
+            {
+              "year": 2020,
+              "value": 12388.5449
+            },
+            {
+              "year": 2021,
+              "value": 12757.0746
+            },
+            {
+              "year": 2022,
+              "value": 13334.2654
+            },
+            {
+              "year": 2023,
+              "value": 13889.9495
+            },
+            {
+              "year": 2024,
+              "value": 14470.718
+            },
+            {
+              "year": 2025,
+              "value": 15091.0089
+            }
+          ]
         },
         "VNM": {
           "year": 2025,
@@ -5105,7 +32337,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 14396.4217
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 9248.024
+            },
+            {
+              "year": 2016,
+              "value": 9743.1882
+            },
+            {
+              "year": 2017,
+              "value": 10290.5487
+            },
+            {
+              "year": 2018,
+              "value": 10936.8938
+            },
+            {
+              "year": 2019,
+              "value": 11628.6139
+            },
+            {
+              "year": 2020,
+              "value": 11851.3966
+            },
+            {
+              "year": 2021,
+              "value": 12048.902
+            },
+            {
+              "year": 2022,
+              "value": 12979.7639
+            },
+            {
+              "year": 2023,
+              "value": 13534.7998
+            },
+            {
+              "year": 2024,
+              "value": 14396.4217
+            },
+            {
+              "year": 2025,
+              "value": 15457.3499
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -5153,7 +32431,9 @@ export const indicatorSnapshot = {
           "year": 2025,
           "value": 55697.0848
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "services-share": {
       "countries": {
@@ -5163,7 +32443,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 57.5005
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 55.1117
+            },
+            {
+              "year": 2016,
+              "value": 54.9765
+            },
+            {
+              "year": 2017,
+              "value": 54.5655
+            },
+            {
+              "year": 2018,
+              "value": 55.3853
+            },
+            {
+              "year": 2019,
+              "value": 56.9368
+            },
+            {
+              "year": 2020,
+              "value": 56.9194
+            },
+            {
+              "year": 2021,
+              "value": 56.9003
+            },
+            {
+              "year": 2022,
+              "value": 58.0715
+            },
+            {
+              "year": 2023,
+              "value": 58.8846
+            },
+            {
+              "year": 2024,
+              "value": 57.5005
+            },
+            {
+              "year": 2025,
+              "value": 57.2276
+            }
+          ]
         },
         "WLD": {
           "year": 2024,
@@ -5171,7 +32497,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 63.0411
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 64.413
+            },
+            {
+              "year": 2016,
+              "value": 65.0265
+            },
+            {
+              "year": 2017,
+              "value": 64.5216
+            },
+            {
+              "year": 2018,
+              "value": 64.295
+            },
+            {
+              "year": 2019,
+              "value": 64.9084
+            },
+            {
+              "year": 2020,
+              "value": 65.4046
+            },
+            {
+              "year": 2021,
+              "value": 64.1108
+            },
+            {
+              "year": 2022,
+              "value": 62.2632
+            },
+            {
+              "year": 2023,
+              "value": 63.0411
+            },
+            {
+              "year": 2024,
+              "value": 63.3018
+            }
+          ]
         },
         "USA": {
           "year": 2021,
@@ -5179,7 +32547,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 76.9867
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 76.3691
+            },
+            {
+              "year": 2016,
+              "value": 76.9875
+            },
+            {
+              "year": 2017,
+              "value": 76.5036
+            },
+            {
+              "year": 2018,
+              "value": 76.2769
+            },
+            {
+              "year": 2019,
+              "value": 76.6114
+            },
+            {
+              "year": 2020,
+              "value": 76.9867
+            },
+            {
+              "year": 2021,
+              "value": 76.2564
+            }
+          ]
         },
         "JPN": {
           "year": 2024,
@@ -5187,7 +32585,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 70.7921
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 69.2157
+            },
+            {
+              "year": 2016,
+              "value": 69.3209
+            },
+            {
+              "year": 2017,
+              "value": 69.106
+            },
+            {
+              "year": 2018,
+              "value": 69.1197
+            },
+            {
+              "year": 2019,
+              "value": 69.5172
+            },
+            {
+              "year": 2020,
+              "value": 69.782
+            },
+            {
+              "year": 2021,
+              "value": 70.0645
+            },
+            {
+              "year": 2022,
+              "value": 71.1191
+            },
+            {
+              "year": 2023,
+              "value": 70.7921
+            },
+            {
+              "year": 2024,
+              "value": 71.4295
+            }
+          ]
         },
         "CHN": {
           "year": 2025,
@@ -5195,7 +32635,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 56.8314
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 51.7284
+            },
+            {
+              "year": 2016,
+              "value": 53.2882
+            },
+            {
+              "year": 2017,
+              "value": 53.5417
+            },
+            {
+              "year": 2018,
+              "value": 54.1052
+            },
+            {
+              "year": 2019,
+              "value": 55.2296
+            },
+            {
+              "year": 2020,
+              "value": 55.5483
+            },
+            {
+              "year": 2021,
+              "value": 54.8182
+            },
+            {
+              "year": 2022,
+              "value": 54.9576
+            },
+            {
+              "year": 2023,
+              "value": 56.338
+            },
+            {
+              "year": 2024,
+              "value": 56.8314
+            },
+            {
+              "year": 2025,
+              "value": 57.6996
+            }
+          ]
         },
         "DEU": {
           "year": 2025,
@@ -5203,7 +32689,527 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 64.0457
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 62.6076
+            },
+            {
+              "year": 2016,
+              "value": 62.3594
+            },
+            {
+              "year": 2017,
+              "value": 62.49
+            },
+            {
+              "year": 2018,
+              "value": 62.7863
+            },
+            {
+              "year": 2019,
+              "value": 63.0068
+            },
+            {
+              "year": 2020,
+              "value": 63.8751
+            },
+            {
+              "year": 2021,
+              "value": 63.5454
+            },
+            {
+              "year": 2022,
+              "value": 63.4807
+            },
+            {
+              "year": 2023,
+              "value": 63.6154
+            },
+            {
+              "year": 2024,
+              "value": 64.0457
+            },
+            {
+              "year": 2025,
+              "value": 64.4597
+            }
+          ]
+        },
+        "GBR": {
+          "year": 2025,
+          "value": 73.098,
+          "previous": {
+            "year": 2024,
+            "value": 72.5047
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 70.4682
+            },
+            {
+              "year": 2016,
+              "value": 70.9168
+            },
+            {
+              "year": 2017,
+              "value": 70.8097
+            },
+            {
+              "year": 2018,
+              "value": 70.7504
+            },
+            {
+              "year": 2019,
+              "value": 70.9761
+            },
+            {
+              "year": 2020,
+              "value": 72.1096
+            },
+            {
+              "year": 2021,
+              "value": 72.1687
+            },
+            {
+              "year": 2022,
+              "value": 72.4836
+            },
+            {
+              "year": 2023,
+              "value": 72.4232
+            },
+            {
+              "year": 2024,
+              "value": 72.5047
+            },
+            {
+              "year": 2025,
+              "value": 73.098
+            }
+          ]
+        },
+        "FRA": {
+          "year": 2025,
+          "value": 70.8515,
+          "previous": {
+            "year": 2024,
+            "value": 70.9142
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 70.309
+            },
+            {
+              "year": 2016,
+              "value": 70.603
+            },
+            {
+              "year": 2017,
+              "value": 70.3852
+            },
+            {
+              "year": 2018,
+              "value": 70.1367
+            },
+            {
+              "year": 2019,
+              "value": 70.1102
+            },
+            {
+              "year": 2020,
+              "value": 70.977
+            },
+            {
+              "year": 2021,
+              "value": 70.6736
+            },
+            {
+              "year": 2022,
+              "value": 71.7575
+            },
+            {
+              "year": 2023,
+              "value": 70.2119
+            },
+            {
+              "year": 2024,
+              "value": 70.9142
+            },
+            {
+              "year": 2025,
+              "value": 70.8515
+            }
+          ]
+        },
+        "CAN": {
+          "year": 2022,
+          "value": 64.1108,
+          "previous": {
+            "year": 2021,
+            "value": 66.1138
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 66.6639
+            },
+            {
+              "year": 2016,
+              "value": 67.64
+            },
+            {
+              "year": 2017,
+              "value": 66.7989
+            },
+            {
+              "year": 2018,
+              "value": 66.5472
+            },
+            {
+              "year": 2019,
+              "value": 67.3618
+            },
+            {
+              "year": 2020,
+              "value": 69.2732
+            },
+            {
+              "year": 2021,
+              "value": 66.1138
+            },
+            {
+              "year": 2022,
+              "value": 64.1108
+            }
+          ]
+        },
+        "AUS": {
+          "year": 2025,
+          "value": 67.493,
+          "previous": {
+            "year": 2024,
+            "value": 66.1399
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 67.1766
+            },
+            {
+              "year": 2016,
+              "value": 68.1552
+            },
+            {
+              "year": 2017,
+              "value": 66.932
+            },
+            {
+              "year": 2018,
+              "value": 66.592
+            },
+            {
+              "year": 2019,
+              "value": 66.0476
+            },
+            {
+              "year": 2020,
+              "value": 66.2547
+            },
+            {
+              "year": 2021,
+              "value": 65.7262
+            },
+            {
+              "year": 2022,
+              "value": 63.3628
+            },
+            {
+              "year": 2023,
+              "value": 63.6366
+            },
+            {
+              "year": 2024,
+              "value": 66.1399
+            },
+            {
+              "year": 2025,
+              "value": 67.493
+            }
+          ]
+        },
+        "IND": {
+          "year": 2025,
+          "value": 49.3377,
+          "previous": {
+            "year": 2024,
+            "value": 47.9706
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 47.7837
+            },
+            {
+              "year": 2016,
+              "value": 47.7494
+            },
+            {
+              "year": 2017,
+              "value": 47.6709
+            },
+            {
+              "year": 2018,
+              "value": 48.4316
+            },
+            {
+              "year": 2019,
+              "value": 50.085
+            },
+            {
+              "year": 2020,
+              "value": 47.9327
+            },
+            {
+              "year": 2021,
+              "value": 47.8472
+            },
+            {
+              "year": 2022,
+              "value": 47.1728
+            },
+            {
+              "year": 2023,
+              "value": 47.5865
+            },
+            {
+              "year": 2024,
+              "value": 47.9706
+            },
+            {
+              "year": 2025,
+              "value": 49.3377
+            }
+          ]
+        },
+        "BRA": {
+          "year": 2025,
+          "value": 59.7388,
+          "previous": {
+            "year": 2024,
+            "value": 59.1708
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 62.3079
+            },
+            {
+              "year": 2016,
+              "value": 63.2037
+            },
+            {
+              "year": 2017,
+              "value": 63.3387
+            },
+            {
+              "year": 2018,
+              "value": 62.6534
+            },
+            {
+              "year": 2019,
+              "value": 63.0678
+            },
+            {
+              "year": 2020,
+              "value": 61.4484
+            },
+            {
+              "year": 2021,
+              "value": 56.9134
+            },
+            {
+              "year": 2022,
+              "value": 58.0872
+            },
+            {
+              "year": 2023,
+              "value": 59.1789
+            },
+            {
+              "year": 2024,
+              "value": 59.1708
+            },
+            {
+              "year": 2025,
+              "value": 59.7388
+            }
+          ]
+        },
+        "SGP": {
+          "year": 2025,
+          "value": 71.5908,
+          "previous": {
+            "year": 2024,
+            "value": 73.1487
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 69.9509
+            },
+            {
+              "year": 2016,
+              "value": 70.8608
+            },
+            {
+              "year": 2017,
+              "value": 70.4928
+            },
+            {
+              "year": 2018,
+              "value": 69.495
+            },
+            {
+              "year": 2019,
+              "value": 70.9279
+            },
+            {
+              "year": 2020,
+              "value": 72.1508
+            },
+            {
+              "year": 2021,
+              "value": 70.2861
+            },
+            {
+              "year": 2022,
+              "value": 71.6492
+            },
+            {
+              "year": 2023,
+              "value": 72.7555
+            },
+            {
+              "year": 2024,
+              "value": 73.1487
+            },
+            {
+              "year": 2025,
+              "value": 71.5908
+            }
+          ]
+        },
+        "IDN": {
+          "year": 2025,
+          "value": 43.9417,
+          "previous": {
+            "year": 2024,
+            "value": 43.7709
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 43.3091
+            },
+            {
+              "year": 2016,
+              "value": 43.6417
+            },
+            {
+              "year": 2017,
+              "value": 43.6141
+            },
+            {
+              "year": 2018,
+              "value": 43.4048
+            },
+            {
+              "year": 2019,
+              "value": 44.2207
+            },
+            {
+              "year": 2020,
+              "value": 44.4134
+            },
+            {
+              "year": 2021,
+              "value": 42.8228
+            },
+            {
+              "year": 2022,
+              "value": 41.7909
+            },
+            {
+              "year": 2023,
+              "value": 42.8793
+            },
+            {
+              "year": 2024,
+              "value": 43.7709
+            },
+            {
+              "year": 2025,
+              "value": 43.9417
+            }
+          ]
+        },
+        "VNM": {
+          "year": 2025,
+          "value": 42.7438,
+          "previous": {
+            "year": 2024,
+            "value": 42.3542
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 42.193
+            },
+            {
+              "year": 2016,
+              "value": 42.8545
+            },
+            {
+              "year": 2017,
+              "value": 42.5807
+            },
+            {
+              "year": 2018,
+              "value": 42.1709
+            },
+            {
+              "year": 2019,
+              "value": 42.4687
+            },
+            {
+              "year": 2020,
+              "value": 41.8312
+            },
+            {
+              "year": 2021,
+              "value": 41.2574
+            },
+            {
+              "year": 2022,
+              "value": 41.1356
+            },
+            {
+              "year": 2023,
+              "value": 42.2803
+            },
+            {
+              "year": 2024,
+              "value": 42.3542
+            },
+            {
+              "year": 2025,
+              "value": 42.7438
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -5251,7 +33257,9 @@ export const indicatorSnapshot = {
           "year": 2025,
           "value": 57.2276
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "employment-population": {
       "countries": {
@@ -5261,7 +33269,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 62.67
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 60.361
+            },
+            {
+              "year": 2016,
+              "value": 60.34
+            },
+            {
+              "year": 2017,
+              "value": 60.612
+            },
+            {
+              "year": 2018,
+              "value": 60.357
+            },
+            {
+              "year": 2019,
+              "value": 60.635
+            },
+            {
+              "year": 2020,
+              "value": 59.826
+            },
+            {
+              "year": 2021,
+              "value": 60.274
+            },
+            {
+              "year": 2022,
+              "value": 61.971
+            },
+            {
+              "year": 2023,
+              "value": 62.547
+            },
+            {
+              "year": 2024,
+              "value": 62.67
+            },
+            {
+              "year": 2025,
+              "value": 62.624
+            }
+          ]
         },
         "WLD": {
           "year": 2025,
@@ -5269,7 +33323,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 58.1947
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 57.9431
+            },
+            {
+              "year": 2016,
+              "value": 57.8135
+            },
+            {
+              "year": 2017,
+              "value": 57.683
+            },
+            {
+              "year": 2018,
+              "value": 57.6416
+            },
+            {
+              "year": 2019,
+              "value": 57.6187
+            },
+            {
+              "year": 2020,
+              "value": 55.7156
+            },
+            {
+              "year": 2021,
+              "value": 56.7338
+            },
+            {
+              "year": 2022,
+              "value": 57.5573
+            },
+            {
+              "year": 2023,
+              "value": 58.2309
+            },
+            {
+              "year": 2024,
+              "value": 58.1947
+            },
+            {
+              "year": 2025,
+              "value": 58.059
+            }
+          ]
         },
         "USA": {
           "year": 2025,
@@ -5277,7 +33377,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 59.467
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 58.979
+            },
+            {
+              "year": 2016,
+              "value": 59.391
+            },
+            {
+              "year": 2017,
+              "value": 59.824
+            },
+            {
+              "year": 2018,
+              "value": 60.153
+            },
+            {
+              "year": 2019,
+              "value": 60.543
+            },
+            {
+              "year": 2020,
+              "value": 56.598
+            },
+            {
+              "year": 2021,
+              "value": 58.211
+            },
+            {
+              "year": 2022,
+              "value": 59.538
+            },
+            {
+              "year": 2023,
+              "value": 59.821
+            },
+            {
+              "year": 2024,
+              "value": 59.467
+            },
+            {
+              "year": 2025,
+              "value": 59.114
+            }
+          ]
         },
         "JPN": {
           "year": 2025,
@@ -5285,7 +33431,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 61.717
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 57.485
+            },
+            {
+              "year": 2016,
+              "value": 58.107
+            },
+            {
+              "year": 2017,
+              "value": 58.738
+            },
+            {
+              "year": 2018,
+              "value": 59.931
+            },
+            {
+              "year": 2019,
+              "value": 60.55
+            },
+            {
+              "year": 2020,
+              "value": 60.207
+            },
+            {
+              "year": 2021,
+              "value": 60.31
+            },
+            {
+              "year": 2022,
+              "value": 60.868
+            },
+            {
+              "year": 2023,
+              "value": 61.265
+            },
+            {
+              "year": 2024,
+              "value": 61.717
+            },
+            {
+              "year": 2025,
+              "value": 61.893
+            }
+          ]
         },
         "CHN": {
           "year": 2025,
@@ -5293,7 +33485,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 61.931
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 66.078
+            },
+            {
+              "year": 2016,
+              "value": 65.739
+            },
+            {
+              "year": 2017,
+              "value": 65.295
+            },
+            {
+              "year": 2018,
+              "value": 64.887
+            },
+            {
+              "year": 2019,
+              "value": 64.307
+            },
+            {
+              "year": 2020,
+              "value": 62.435
+            },
+            {
+              "year": 2021,
+              "value": 64.056
+            },
+            {
+              "year": 2022,
+              "value": 62.523
+            },
+            {
+              "year": 2023,
+              "value": 62.756
+            },
+            {
+              "year": 2024,
+              "value": 61.931
+            },
+            {
+              "year": 2025,
+              "value": 61.572
+            }
+          ]
         },
         "DEU": {
           "year": 2025,
@@ -5301,7 +33539,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 58.849
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 57.442
+            },
+            {
+              "year": 2016,
+              "value": 57.932
+            },
+            {
+              "year": 2017,
+              "value": 58.366
+            },
+            {
+              "year": 2018,
+              "value": 58.8
+            },
+            {
+              "year": 2019,
+              "value": 59.368
+            },
+            {
+              "year": 2020,
+              "value": 58.131
+            },
+            {
+              "year": 2021,
+              "value": 58.224
+            },
+            {
+              "year": 2022,
+              "value": 58.926
+            },
+            {
+              "year": 2023,
+              "value": 59.175
+            },
+            {
+              "year": 2024,
+              "value": 58.849
+            },
+            {
+              "year": 2025,
+              "value": 58.323
+            }
+          ]
         },
         "GBR": {
           "year": 2025,
@@ -5309,7 +33593,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 58.871
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 58.793
+            },
+            {
+              "year": 2016,
+              "value": 59.344
+            },
+            {
+              "year": 2017,
+              "value": 59.603
+            },
+            {
+              "year": 2018,
+              "value": 60.023
+            },
+            {
+              "year": 2019,
+              "value": 60.335
+            },
+            {
+              "year": 2020,
+              "value": 59.775
+            },
+            {
+              "year": 2021,
+              "value": 58.959
+            },
+            {
+              "year": 2022,
+              "value": 59.573
+            },
+            {
+              "year": 2023,
+              "value": 59.323
+            },
+            {
+              "year": 2024,
+              "value": 58.871
+            },
+            {
+              "year": 2025,
+              "value": 58.457
+            }
+          ]
         },
         "FRA": {
           "year": 2025,
@@ -5317,7 +33647,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 51.544
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 49.862
+            },
+            {
+              "year": 2016,
+              "value": 49.828
+            },
+            {
+              "year": 2017,
+              "value": 50.059
+            },
+            {
+              "year": 2018,
+              "value": 50.313
+            },
+            {
+              "year": 2019,
+              "value": 50.316
+            },
+            {
+              "year": 2020,
+              "value": 49.925
+            },
+            {
+              "year": 2021,
+              "value": 51.179
+            },
+            {
+              "year": 2022,
+              "value": 51.758
+            },
+            {
+              "year": 2023,
+              "value": 51.835
+            },
+            {
+              "year": 2024,
+              "value": 51.544
+            },
+            {
+              "year": 2025,
+              "value": 51.172
+            }
+          ]
         },
         "CAN": {
           "year": 2025,
@@ -5325,7 +33701,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 60.627
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 61.311
+            },
+            {
+              "year": 2016,
+              "value": 61.018
+            },
+            {
+              "year": 2017,
+              "value": 61.564
+            },
+            {
+              "year": 2018,
+              "value": 61.721
+            },
+            {
+              "year": 2019,
+              "value": 62.065
+            },
+            {
+              "year": 2020,
+              "value": 57.907
+            },
+            {
+              "year": 2021,
+              "value": 60.288
+            },
+            {
+              "year": 2022,
+              "value": 61.802
+            },
+            {
+              "year": 2023,
+              "value": 61.822
+            },
+            {
+              "year": 2024,
+              "value": 60.627
+            },
+            {
+              "year": 2025,
+              "value": 60.061
+            }
+          ]
         },
         "AUS": {
           "year": 2025,
@@ -5333,7 +33755,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 64.089
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 61.135
+            },
+            {
+              "year": 2016,
+              "value": 61.242
+            },
+            {
+              "year": 2017,
+              "value": 61.599
+            },
+            {
+              "year": 2018,
+              "value": 62.286
+            },
+            {
+              "year": 2019,
+              "value": 62.689
+            },
+            {
+              "year": 2020,
+              "value": 60.87
+            },
+            {
+              "year": 2021,
+              "value": 62.825
+            },
+            {
+              "year": 2022,
+              "value": 64.396
+            },
+            {
+              "year": 2023,
+              "value": 64.565
+            },
+            {
+              "year": 2024,
+              "value": 64.089
+            },
+            {
+              "year": 2025,
+              "value": 63.816
+            }
+          ]
         },
         "IND": {
           "year": 2025,
@@ -5341,7 +33809,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 53.317
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 48.985
+            },
+            {
+              "year": 2016,
+              "value": 48.83
+            },
+            {
+              "year": 2017,
+              "value": 48.655
+            },
+            {
+              "year": 2018,
+              "value": 48.466
+            },
+            {
+              "year": 2019,
+              "value": 48.88
+            },
+            {
+              "year": 2020,
+              "value": 47.496
+            },
+            {
+              "year": 2021,
+              "value": 49.171
+            },
+            {
+              "year": 2022,
+              "value": 51.003
+            },
+            {
+              "year": 2023,
+              "value": 52.415
+            },
+            {
+              "year": 2024,
+              "value": 53.317
+            },
+            {
+              "year": 2025,
+              "value": 53.31
+            }
+          ]
         },
         "BRA": {
           "year": 2025,
@@ -5349,7 +33863,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 59.031
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 58.787
+            },
+            {
+              "year": 2016,
+              "value": 56.845
+            },
+            {
+              "year": 2017,
+              "value": 56.271
+            },
+            {
+              "year": 2018,
+              "value": 56.549
+            },
+            {
+              "year": 2019,
+              "value": 57.142
+            },
+            {
+              "year": 2020,
+              "value": 52.195
+            },
+            {
+              "year": 2021,
+              "value": 54.238
+            },
+            {
+              "year": 2022,
+              "value": 57.663
+            },
+            {
+              "year": 2023,
+              "value": 57.915
+            },
+            {
+              "year": 2024,
+              "value": 59.031
+            },
+            {
+              "year": 2025,
+              "value": 59.37
+            }
+          ]
         },
         "SGP": {
           "year": 2025,
@@ -5357,7 +33917,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 67.308
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 66.895
+            },
+            {
+              "year": 2016,
+              "value": 66.419
+            },
+            {
+              "year": 2017,
+              "value": 66.047
+            },
+            {
+              "year": 2018,
+              "value": 66.103
+            },
+            {
+              "year": 2019,
+              "value": 66.847
+            },
+            {
+              "year": 2020,
+              "value": 65.895
+            },
+            {
+              "year": 2021,
+              "value": 67.406
+            },
+            {
+              "year": 2022,
+              "value": 67.23
+            },
+            {
+              "year": 2023,
+              "value": 67.004
+            },
+            {
+              "year": 2024,
+              "value": 67.308
+            },
+            {
+              "year": 2025,
+              "value": 67.709
+            }
+          ]
         },
         "IDN": {
           "year": 2025,
@@ -5365,7 +33971,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 65.685
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 63.573
+            },
+            {
+              "year": 2016,
+              "value": 63.462
+            },
+            {
+              "year": 2017,
+              "value": 64.171
+            },
+            {
+              "year": 2018,
+              "value": 64.684
+            },
+            {
+              "year": 2019,
+              "value": 65.789
+            },
+            {
+              "year": 2020,
+              "value": 64.533
+            },
+            {
+              "year": 2021,
+              "value": 63.348
+            },
+            {
+              "year": 2022,
+              "value": 64.698
+            },
+            {
+              "year": 2023,
+              "value": 65.653
+            },
+            {
+              "year": 2024,
+              "value": 65.685
+            },
+            {
+              "year": 2025,
+              "value": 65.765
+            }
+          ]
         },
         "VNM": {
           "year": 2025,
@@ -5373,7 +34025,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 71.963
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 75.999
+            },
+            {
+              "year": 2016,
+              "value": 75.542
+            },
+            {
+              "year": 2017,
+              "value": 75.753
+            },
+            {
+              "year": 2018,
+              "value": 76.582
+            },
+            {
+              "year": 2019,
+              "value": 75.327
+            },
+            {
+              "year": 2020,
+              "value": 72.803
+            },
+            {
+              "year": 2021,
+              "value": 71.981
+            },
+            {
+              "year": 2022,
+              "value": 73.314
+            },
+            {
+              "year": 2023,
+              "value": 72.335
+            },
+            {
+              "year": 2024,
+              "value": 71.963
+            },
+            {
+              "year": 2025,
+              "value": 71.67
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -5421,7 +34119,9 @@ export const indicatorSnapshot = {
           "year": 2025,
           "value": 62.624
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "female-employment-rate": {
       "countries": {
@@ -5431,7 +34131,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 55.222
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 50.567
+            },
+            {
+              "year": 2016,
+              "value": 50.708
+            },
+            {
+              "year": 2017,
+              "value": 51.224
+            },
+            {
+              "year": 2018,
+              "value": 51.259
+            },
+            {
+              "year": 2019,
+              "value": 51.846
+            },
+            {
+              "year": 2020,
+              "value": 51.017
+            },
+            {
+              "year": 2021,
+              "value": 51.643
+            },
+            {
+              "year": 2022,
+              "value": 53.361
+            },
+            {
+              "year": 2023,
+              "value": 54.512
+            },
+            {
+              "year": 2024,
+              "value": 55.222
+            },
+            {
+              "year": 2025,
+              "value": 55.254
+            }
+          ]
         },
         "WLD": {
           "year": 2025,
@@ -5439,7 +34185,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 46.633
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 45.6117
+            },
+            {
+              "year": 2016,
+              "value": 45.5488
+            },
+            {
+              "year": 2017,
+              "value": 45.5011
+            },
+            {
+              "year": 2018,
+              "value": 45.5184
+            },
+            {
+              "year": 2019,
+              "value": 45.5615
+            },
+            {
+              "year": 2020,
+              "value": 43.9073
+            },
+            {
+              "year": 2021,
+              "value": 44.9532
+            },
+            {
+              "year": 2022,
+              "value": 45.692
+            },
+            {
+              "year": 2023,
+              "value": 46.5624
+            },
+            {
+              "year": 2024,
+              "value": 46.633
+            },
+            {
+              "year": 2025,
+              "value": 46.5212
+            }
+          ]
         },
         "USA": {
           "year": 2025,
@@ -5447,7 +34239,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 54.347
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 53.043
+            },
+            {
+              "year": 2016,
+              "value": 53.411
+            },
+            {
+              "year": 2017,
+              "value": 53.966
+            },
+            {
+              "year": 2018,
+              "value": 54.304
+            },
+            {
+              "year": 2019,
+              "value": 54.816
+            },
+            {
+              "year": 2020,
+              "value": 51.05
+            },
+            {
+              "year": 2021,
+              "value": 52.733
+            },
+            {
+              "year": 2022,
+              "value": 54.005
+            },
+            {
+              "year": 2023,
+              "value": 54.649
+            },
+            {
+              "year": 2024,
+              "value": 54.347
+            },
+            {
+              "year": 2025,
+              "value": 53.989
+            }
+          ]
         },
         "JPN": {
           "year": 2025,
@@ -5455,7 +34293,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 54.295
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 47.883
+            },
+            {
+              "year": 2016,
+              "value": 48.785
+            },
+            {
+              "year": 2017,
+              "value": 49.681
+            },
+            {
+              "year": 2018,
+              "value": 51.2
+            },
+            {
+              "year": 2019,
+              "value": 52.086
+            },
+            {
+              "year": 2020,
+              "value": 51.746
+            },
+            {
+              "year": 2021,
+              "value": 52.11
+            },
+            {
+              "year": 2022,
+              "value": 52.899
+            },
+            {
+              "year": 2023,
+              "value": 53.574
+            },
+            {
+              "year": 2024,
+              "value": 54.295
+            },
+            {
+              "year": 2025,
+              "value": 54.621
+            }
+          ]
         },
         "CHN": {
           "year": 2025,
@@ -5463,7 +34347,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 57.076
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 60.078
+            },
+            {
+              "year": 2016,
+              "value": 59.859
+            },
+            {
+              "year": 2017,
+              "value": 59.552
+            },
+            {
+              "year": 2018,
+              "value": 59.279
+            },
+            {
+              "year": 2019,
+              "value": 58.877
+            },
+            {
+              "year": 2020,
+              "value": 57.118
+            },
+            {
+              "year": 2021,
+              "value": 58.763
+            },
+            {
+              "year": 2022,
+              "value": 57.496
+            },
+            {
+              "year": 2023,
+              "value": 57.772
+            },
+            {
+              "year": 2024,
+              "value": 57.076
+            },
+            {
+              "year": 2025,
+              "value": 56.779
+            }
+          ]
         },
         "DEU": {
           "year": 2025,
@@ -5471,7 +34401,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 53.881
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 52.152
+            },
+            {
+              "year": 2016,
+              "value": 52.768
+            },
+            {
+              "year": 2017,
+              "value": 53.309
+            },
+            {
+              "year": 2018,
+              "value": 53.608
+            },
+            {
+              "year": 2019,
+              "value": 54.191
+            },
+            {
+              "year": 2020,
+              "value": 53.191
+            },
+            {
+              "year": 2021,
+              "value": 53.291
+            },
+            {
+              "year": 2022,
+              "value": 53.943
+            },
+            {
+              "year": 2023,
+              "value": 54.226
+            },
+            {
+              "year": 2024,
+              "value": 53.881
+            },
+            {
+              "year": 2025,
+              "value": 53.405
+            }
+          ]
         },
         "GBR": {
           "year": 2025,
@@ -5479,7 +34455,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 55.112
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 53.673
+            },
+            {
+              "year": 2016,
+              "value": 54.359
+            },
+            {
+              "year": 2017,
+              "value": 54.774
+            },
+            {
+              "year": 2018,
+              "value": 55.187
+            },
+            {
+              "year": 2019,
+              "value": 56.029
+            },
+            {
+              "year": 2020,
+              "value": 55.855
+            },
+            {
+              "year": 2021,
+              "value": 55.336
+            },
+            {
+              "year": 2022,
+              "value": 55.619
+            },
+            {
+              "year": 2023,
+              "value": 55.267
+            },
+            {
+              "year": 2024,
+              "value": 55.112
+            },
+            {
+              "year": 2025,
+              "value": 54.807
+            }
+          ]
         },
         "FRA": {
           "year": 2025,
@@ -5487,7 +34509,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 48.022
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 45.924
+            },
+            {
+              "year": 2016,
+              "value": 45.822
+            },
+            {
+              "year": 2017,
+              "value": 45.88
+            },
+            {
+              "year": 2018,
+              "value": 46.211
+            },
+            {
+              "year": 2019,
+              "value": 46.389
+            },
+            {
+              "year": 2020,
+              "value": 46.071
+            },
+            {
+              "year": 2021,
+              "value": 47.596
+            },
+            {
+              "year": 2022,
+              "value": 48.165
+            },
+            {
+              "year": 2023,
+              "value": 48.353
+            },
+            {
+              "year": 2024,
+              "value": 48.022
+            },
+            {
+              "year": 2025,
+              "value": 47.6
+            }
+          ]
         },
         "CAN": {
           "year": 2025,
@@ -5495,7 +34563,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 56.784
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 57.125
+            },
+            {
+              "year": 2016,
+              "value": 57.059
+            },
+            {
+              "year": 2017,
+              "value": 57.453
+            },
+            {
+              "year": 2018,
+              "value": 57.595
+            },
+            {
+              "year": 2019,
+              "value": 58.029
+            },
+            {
+              "year": 2020,
+              "value": 53.725
+            },
+            {
+              "year": 2021,
+              "value": 56.184
+            },
+            {
+              "year": 2022,
+              "value": 57.913
+            },
+            {
+              "year": 2023,
+              "value": 57.919
+            },
+            {
+              "year": 2024,
+              "value": 56.784
+            },
+            {
+              "year": 2025,
+              "value": 56.255
+            }
+          ]
         },
         "AUS": {
           "year": 2025,
@@ -5503,7 +34617,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 60.249
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 55.559
+            },
+            {
+              "year": 2016,
+              "value": 55.948
+            },
+            {
+              "year": 2017,
+              "value": 56.483
+            },
+            {
+              "year": 2018,
+              "value": 57.356
+            },
+            {
+              "year": 2019,
+              "value": 57.919
+            },
+            {
+              "year": 2020,
+              "value": 56.322
+            },
+            {
+              "year": 2021,
+              "value": 58.523
+            },
+            {
+              "year": 2022,
+              "value": 60.228
+            },
+            {
+              "year": 2023,
+              "value": 60.341
+            },
+            {
+              "year": 2024,
+              "value": 60.249
+            },
+            {
+              "year": 2025,
+              "value": 59.982
+            }
+          ]
         },
         "IND": {
           "year": 2025,
@@ -5511,7 +34671,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 31.09
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 24.537
+            },
+            {
+              "year": 2016,
+              "value": 24.535
+            },
+            {
+              "year": 2017,
+              "value": 24.534
+            },
+            {
+              "year": 2018,
+              "value": 24.519
+            },
+            {
+              "year": 2019,
+              "value": 24.928
+            },
+            {
+              "year": 2020,
+              "value": 24.243
+            },
+            {
+              "year": 2021,
+              "value": 26.229
+            },
+            {
+              "year": 2022,
+              "value": 28.002
+            },
+            {
+              "year": 2023,
+              "value": 29.727
+            },
+            {
+              "year": 2024,
+              "value": 31.09
+            },
+            {
+              "year": 2025,
+              "value": 31.083
+            }
+          ]
         },
         "BRA": {
           "year": 2025,
@@ -5519,7 +34725,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 49.089
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 47.824
+            },
+            {
+              "year": 2016,
+              "value": 46.239
+            },
+            {
+              "year": 2017,
+              "value": 46.262
+            },
+            {
+              "year": 2018,
+              "value": 46.712
+            },
+            {
+              "year": 2019,
+              "value": 47.37
+            },
+            {
+              "year": 2020,
+              "value": 42.158
+            },
+            {
+              "year": 2021,
+              "value": 43.851
+            },
+            {
+              "year": 2022,
+              "value": 47.661
+            },
+            {
+              "year": 2023,
+              "value": 48.045
+            },
+            {
+              "year": 2024,
+              "value": 49.089
+            },
+            {
+              "year": 2025,
+              "value": 49.497
+            }
+          ]
         },
         "SGP": {
           "year": 2025,
@@ -5527,7 +34779,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 61.434
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 58.867
+            },
+            {
+              "year": 2016,
+              "value": 58.564
+            },
+            {
+              "year": 2017,
+              "value": 58.112
+            },
+            {
+              "year": 2018,
+              "value": 58.553
+            },
+            {
+              "year": 2019,
+              "value": 59.768
+            },
+            {
+              "year": 2020,
+              "value": 59.015
+            },
+            {
+              "year": 2021,
+              "value": 61.182
+            },
+            {
+              "year": 2022,
+              "value": 60.511
+            },
+            {
+              "year": 2023,
+              "value": 60.955
+            },
+            {
+              "year": 2024,
+              "value": 61.434
+            },
+            {
+              "year": 2025,
+              "value": 61.745
+            }
+          ]
         },
         "IDN": {
           "year": 2025,
@@ -5535,7 +34833,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 51.94
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 48.522
+            },
+            {
+              "year": 2016,
+              "value": 48.979
+            },
+            {
+              "year": 2017,
+              "value": 50.133
+            },
+            {
+              "year": 2018,
+              "value": 50.908
+            },
+            {
+              "year": 2019,
+              "value": 52.141
+            },
+            {
+              "year": 2020,
+              "value": 51.195
+            },
+            {
+              "year": 2021,
+              "value": 50.427
+            },
+            {
+              "year": 2022,
+              "value": 50.903
+            },
+            {
+              "year": 2023,
+              "value": 51.838
+            },
+            {
+              "year": 2024,
+              "value": 51.94
+            },
+            {
+              "year": 2025,
+              "value": 52.1
+            }
+          ]
         },
         "VNM": {
           "year": 2025,
@@ -5543,7 +34887,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 67.89
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 71.619
+            },
+            {
+              "year": 2016,
+              "value": 71.297
+            },
+            {
+              "year": 2017,
+              "value": 71.339
+            },
+            {
+              "year": 2018,
+              "value": 72.147
+            },
+            {
+              "year": 2019,
+              "value": 70.368
+            },
+            {
+              "year": 2020,
+              "value": 67.404
+            },
+            {
+              "year": 2021,
+              "value": 67.527
+            },
+            {
+              "year": 2022,
+              "value": 68.86
+            },
+            {
+              "year": 2023,
+              "value": 68.169
+            },
+            {
+              "year": 2024,
+              "value": 67.89
+            },
+            {
+              "year": 2025,
+              "value": 67.617
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -5591,7 +34981,9 @@ export const indicatorSnapshot = {
           "year": 2025,
           "value": 55.254
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "labor-productivity": {
       "countries": {
@@ -5601,7 +34993,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 98258.5741
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 86160.4466
+            },
+            {
+              "year": 2016,
+              "value": 88154.2543
+            },
+            {
+              "year": 2017,
+              "value": 90163.5046
+            },
+            {
+              "year": 2018,
+              "value": 92692.6222
+            },
+            {
+              "year": 2019,
+              "value": 93750.5461
+            },
+            {
+              "year": 2020,
+              "value": 93905.8653
+            },
+            {
+              "year": 2021,
+              "value": 97284.8429
+            },
+            {
+              "year": 2022,
+              "value": 96960.0306
+            },
+            {
+              "year": 2023,
+              "value": 97026.6007
+            },
+            {
+              "year": 2024,
+              "value": 98258.5741
+            },
+            {
+              "year": 2025,
+              "value": 99045.9988
+            }
+          ]
         },
         "WLD": {
           "year": 2025,
@@ -5609,7 +35047,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 49572.5987
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 42386.2467
+            },
+            {
+              "year": 2016,
+              "value": 43258.7754
+            },
+            {
+              "year": 2017,
+              "value": 44409.8013
+            },
+            {
+              "year": 2018,
+              "value": 45464.0464
+            },
+            {
+              "year": 2019,
+              "value": 46212.2281
+            },
+            {
+              "year": 2020,
+              "value": 45843.1312
+            },
+            {
+              "year": 2021,
+              "value": 47409.9215
+            },
+            {
+              "year": 2022,
+              "value": 47984.6245
+            },
+            {
+              "year": 2023,
+              "value": 48571.1283
+            },
+            {
+              "year": 2024,
+              "value": 49572.5987
+            },
+            {
+              "year": 2025,
+              "value": 50671.7228
+            }
+          ]
         },
         "USA": {
           "year": 2025,
@@ -5617,7 +35101,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 153968.8866
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 135056.2575
+            },
+            {
+              "year": 2016,
+              "value": 135282.5891
+            },
+            {
+              "year": 2017,
+              "value": 136437.6649
+            },
+            {
+              "year": 2018,
+              "value": 138638.9974
+            },
+            {
+              "year": 2019,
+              "value": 140271.5457
+            },
+            {
+              "year": 2020,
+              "value": 145940.1048
+            },
+            {
+              "year": 2021,
+              "value": 149935.5402
+            },
+            {
+              "year": 2022,
+              "value": 148959.8703
+            },
+            {
+              "year": 2023,
+              "value": 150827.8693
+            },
+            {
+              "year": 2024,
+              "value": 153968.8866
+            },
+            {
+              "year": 2025,
+              "value": 156983.22
+            }
+          ]
         },
         "JPN": {
           "year": 2025,
@@ -5625,7 +35155,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 86865.5866
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 88998.1002
+            },
+            {
+              "year": 2016,
+              "value": 88588.3724
+            },
+            {
+              "year": 2017,
+              "value": 89014.6725
+            },
+            {
+              "year": 2018,
+              "value": 87964.7691
+            },
+            {
+              "year": 2019,
+              "value": 86795.2729
+            },
+            {
+              "year": 2020,
+              "value": 83657.8558
+            },
+            {
+              "year": 2021,
+              "value": 86719.9475
+            },
+            {
+              "year": 2022,
+              "value": 87268.6309
+            },
+            {
+              "year": 2023,
+              "value": 87546.4873
+            },
+            {
+              "year": 2024,
+              "value": 86865.5866
+            },
+            {
+              "year": 2025,
+              "value": 87888.273
+            }
+          ]
         },
         "CHN": {
           "year": 2025,
@@ -5633,7 +35209,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 45833.8321
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 27526.5523
+            },
+            {
+              "year": 2016,
+              "value": 29369.0509
+            },
+            {
+              "year": 2017,
+              "value": 31434.3082
+            },
+            {
+              "year": 2018,
+              "value": 33601.8812
+            },
+            {
+              "year": 2019,
+              "value": 35777.3561
+            },
+            {
+              "year": 2020,
+              "value": 37511.2539
+            },
+            {
+              "year": 2021,
+              "value": 39480.6031
+            },
+            {
+              "year": 2022,
+              "value": 41490.0973
+            },
+            {
+              "year": 2023,
+              "value": 43341.7549
+            },
+            {
+              "year": 2024,
+              "value": 45833.8321
+            },
+            {
+              "year": 2025,
+              "value": 48125.7906
+            }
+          ]
         },
         "DEU": {
           "year": 2025,
@@ -5641,7 +35263,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 123669.3242
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 119687.83
+            },
+            {
+              "year": 2016,
+              "value": 120498.9894
+            },
+            {
+              "year": 2017,
+              "value": 122675.4639
+            },
+            {
+              "year": 2018,
+              "value": 122933.3901
+            },
+            {
+              "year": 2019,
+              "value": 122812.7889
+            },
+            {
+              "year": 2020,
+              "value": 120283.6004
+            },
+            {
+              "year": 2021,
+              "value": 124873.2565
+            },
+            {
+              "year": 2022,
+              "value": 125725.5421
+            },
+            {
+              "year": 2023,
+              "value": 123949.0052
+            },
+            {
+              "year": 2024,
+              "value": 123669.3242
+            },
+            {
+              "year": 2025,
+              "value": 125086.3452
+            }
+          ]
         },
         "GBR": {
           "year": 2025,
@@ -5649,7 +35317,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 109554.2392
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 104520.2059
+            },
+            {
+              "year": 2016,
+              "value": 105086.4558
+            },
+            {
+              "year": 2017,
+              "value": 107300.0652
+            },
+            {
+              "year": 2018,
+              "value": 107715.8643
+            },
+            {
+              "year": 2019,
+              "value": 107910.7511
+            },
+            {
+              "year": 2020,
+              "value": 97746.3728
+            },
+            {
+              "year": 2021,
+              "value": 107011.5453
+            },
+            {
+              "year": 2022,
+              "value": 110004.0206
+            },
+            {
+              "year": 2023,
+              "value": 109037.6871
+            },
+            {
+              "year": 2024,
+              "value": 109554.2392
+            },
+            {
+              "year": 2025,
+              "value": 111234.499
+            }
+          ]
         },
         "FRA": {
           "year": 2025,
@@ -5657,7 +35371,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 127331.9633
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 124330.364
+            },
+            {
+              "year": 2016,
+              "value": 124907.3299
+            },
+            {
+              "year": 2017,
+              "value": 126319.1924
+            },
+            {
+              "year": 2018,
+              "value": 127060.8634
+            },
+            {
+              "year": 2019,
+              "value": 128928.4454
+            },
+            {
+              "year": 2020,
+              "value": 119633.9856
+            },
+            {
+              "year": 2021,
+              "value": 123998.8709
+            },
+            {
+              "year": 2022,
+              "value": 124988.8567
+            },
+            {
+              "year": 2023,
+              "value": 125877.3939
+            },
+            {
+              "year": 2024,
+              "value": 127331.9633
+            },
+            {
+              "year": 2025,
+              "value": 128587.1278
+            }
+          ]
         },
         "CAN": {
           "year": 2025,
@@ -5665,7 +35425,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 111791.6612
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 108376.912
+            },
+            {
+              "year": 2016,
+              "value": 108776.0116
+            },
+            {
+              "year": 2017,
+              "value": 109696.8535
+            },
+            {
+              "year": 2018,
+              "value": 110704.656
+            },
+            {
+              "year": 2019,
+              "value": 110430.4624
+            },
+            {
+              "year": 2020,
+              "value": 111042.8273
+            },
+            {
+              "year": 2021,
+              "value": 112202.1212
+            },
+            {
+              "year": 2022,
+              "value": 112243.0956
+            },
+            {
+              "year": 2023,
+              "value": 110939.468
+            },
+            {
+              "year": 2024,
+              "value": 111791.6612
+            },
+            {
+              "year": 2025,
+              "value": 113563.2619
+            }
+          ]
         },
         "AUS": {
           "year": 2025,
@@ -5673,7 +35479,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 114538.6811
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 112709.9767
+            },
+            {
+              "year": 2016,
+              "value": 113799.9614
+            },
+            {
+              "year": 2017,
+              "value": 113779.722
+            },
+            {
+              "year": 2018,
+              "value": 113928.5263
+            },
+            {
+              "year": 2019,
+              "value": 113842.0223
+            },
+            {
+              "year": 2020,
+              "value": 115508.0417
+            },
+            {
+              "year": 2021,
+              "value": 113808.5318
+            },
+            {
+              "year": 2022,
+              "value": 114008.8608
+            },
+            {
+              "year": 2023,
+              "value": 114664.9018
+            },
+            {
+              "year": 2024,
+              "value": 114538.6811
+            },
+            {
+              "year": 2025,
+              "value": 114582.0675
+            }
+          ]
         },
         "IND": {
           "year": 2025,
@@ -5681,7 +35533,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 23429.8477
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 18096.8341
+            },
+            {
+              "year": 2016,
+              "value": 19277.2076
+            },
+            {
+              "year": 2017,
+              "value": 20270.3642
+            },
+            {
+              "year": 2018,
+              "value": 21272.9779
+            },
+            {
+              "year": 2019,
+              "value": 21535.8986
+            },
+            {
+              "year": 2020,
+              "value": 20543.8763
+            },
+            {
+              "year": 2021,
+              "value": 21460.2692
+            },
+            {
+              "year": 2022,
+              "value": 21964.7753
+            },
+            {
+              "year": 2023,
+              "value": 22582.0965
+            },
+            {
+              "year": 2024,
+              "value": 23429.8477
+            },
+            {
+              "year": 2025,
+              "value": 24842.1119
+            }
+          ]
         },
         "BRA": {
           "year": 2025,
@@ -5689,7 +35587,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 41441.0406
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 40241.3603
+            },
+            {
+              "year": 2016,
+              "value": 39749.3215
+            },
+            {
+              "year": 2017,
+              "value": 40207.0254
+            },
+            {
+              "year": 2018,
+              "value": 40287.8207
+            },
+            {
+              "year": 2019,
+              "value": 39945.5086
+            },
+            {
+              "year": 2020,
+              "value": 41893.3237
+            },
+            {
+              "year": 2021,
+              "value": 41904.8315
+            },
+            {
+              "year": 2022,
+              "value": 40322.9213
+            },
+            {
+              "year": 2023,
+              "value": 41147.6934
+            },
+            {
+              "year": 2024,
+              "value": 41441.0406
+            },
+            {
+              "year": 2025,
+              "value": 41840.0096
+            }
+          ]
         },
         "SGP": {
           "year": 2025,
@@ -5697,7 +35641,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 226351.9713
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 188139.2922
+            },
+            {
+              "year": 2016,
+              "value": 194001.6875
+            },
+            {
+              "year": 2017,
+              "value": 203131.7713
+            },
+            {
+              "year": 2018,
+              "value": 208218.8493
+            },
+            {
+              "year": 2019,
+              "value": 205644.6747
+            },
+            {
+              "year": 2020,
+              "value": 201622.5739
+            },
+            {
+              "year": 2021,
+              "value": 226321.5309
+            },
+            {
+              "year": 2022,
+              "value": 227908.3801
+            },
+            {
+              "year": 2023,
+              "value": 220446.3693
+            },
+            {
+              "year": 2024,
+              "value": 226351.9713
+            },
+            {
+              "year": 2025,
+              "value": 233454.4148
+            }
+          ]
         },
         "IDN": {
           "year": 2025,
@@ -5705,7 +35695,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 29217.2839
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 23462.4902
+            },
+            {
+              "year": 2016,
+              "value": 24358.5988
+            },
+            {
+              "year": 2017,
+              "value": 24981.549
+            },
+            {
+              "year": 2018,
+              "value": 25734.2243
+            },
+            {
+              "year": 2019,
+              "value": 26237.9727
+            },
+            {
+              "year": 2020,
+              "value": 25884.2788
+            },
+            {
+              "year": 2021,
+              "value": 27058.2835
+            },
+            {
+              "year": 2022,
+              "value": 27580.8021
+            },
+            {
+              "year": 2023,
+              "value": 28184.252
+            },
+            {
+              "year": 2024,
+              "value": 29217.2839
+            },
+            {
+              "year": 2025,
+              "value": 30291.7978
+            }
+          ]
         },
         "VNM": {
           "year": 2025,
@@ -5713,7 +35749,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 26056.726
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 16009.8087
+            },
+            {
+              "year": 2016,
+              "value": 17000.2148
+            },
+            {
+              "year": 2017,
+              "value": 17973.3796
+            },
+            {
+              "year": 2018,
+              "value": 18936.4395
+            },
+            {
+              "year": 2019,
+              "value": 20457.7304
+            },
+            {
+              "year": 2020,
+              "value": 21529.55
+            },
+            {
+              "year": 2021,
+              "value": 22082.432
+            },
+            {
+              "year": 2022,
+              "value": 23275.2479
+            },
+            {
+              "year": 2023,
+              "value": 24493.0703
+            },
+            {
+              "year": 2024,
+              "value": 26056.726
+            },
+            {
+              "year": 2025,
+              "value": 27957.3224
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -5761,7 +35843,9 @@ export const indicatorSnapshot = {
           "year": 2025,
           "value": 99045.9988
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "out-of-pocket-health": {
       "countries": {
@@ -5771,7 +35855,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 31.7538
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 37.7063
+            },
+            {
+              "year": 2016,
+              "value": 36.4847
+            },
+            {
+              "year": 2017,
+              "value": 35.7892
+            },
+            {
+              "year": 2018,
+              "value": 34.6765
+            },
+            {
+              "year": 2019,
+              "value": 32.8372
+            },
+            {
+              "year": 2020,
+              "value": 31.7962
+            },
+            {
+              "year": 2021,
+              "value": 29.7174
+            },
+            {
+              "year": 2022,
+              "value": 29.2752
+            },
+            {
+              "year": 2023,
+              "value": 31.7538
+            },
+            {
+              "year": 2024,
+              "value": 33.7382
+            }
+          ]
         },
         "WLD": {
           "year": 2023,
@@ -5779,7 +35905,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 17.2445
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 18.4412
+            },
+            {
+              "year": 2016,
+              "value": 18.1639
+            },
+            {
+              "year": 2017,
+              "value": 18.0561
+            },
+            {
+              "year": 2018,
+              "value": 18.1295
+            },
+            {
+              "year": 2019,
+              "value": 17.9676
+            },
+            {
+              "year": 2020,
+              "value": 16.4301
+            },
+            {
+              "year": 2021,
+              "value": 16.9699
+            },
+            {
+              "year": 2022,
+              "value": 17.2445
+            },
+            {
+              "year": 2023,
+              "value": 17.3301
+            }
+          ]
         },
         "USA": {
           "year": 2023,
@@ -5787,7 +35951,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 10.9688
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 11.7537
+            },
+            {
+              "year": 2016,
+              "value": 11.626
+            },
+            {
+              "year": 2017,
+              "value": 11.3488
+            },
+            {
+              "year": 2018,
+              "value": 11.3208
+            },
+            {
+              "year": 2019,
+              "value": 11.3087
+            },
+            {
+              "year": 2020,
+              "value": 10.0696
+            },
+            {
+              "year": 2021,
+              "value": 10.7296
+            },
+            {
+              "year": 2022,
+              "value": 10.9688
+            },
+            {
+              "year": 2023,
+              "value": 10.9272
+            }
+          ]
         },
         "JPN": {
           "year": 2023,
@@ -5795,7 +35997,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 11.1481
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 12.9477
+            },
+            {
+              "year": 2016,
+              "value": 12.8544
+            },
+            {
+              "year": 2017,
+              "value": 12.6549
+            },
+            {
+              "year": 2018,
+              "value": 12.9946
+            },
+            {
+              "year": 2019,
+              "value": 12.9018
+            },
+            {
+              "year": 2020,
+              "value": 11.5586
+            },
+            {
+              "year": 2021,
+              "value": 10.8197
+            },
+            {
+              "year": 2022,
+              "value": 11.1481
+            },
+            {
+              "year": 2023,
+              "value": 12.2357
+            }
+          ]
         },
         "CHN": {
           "year": 2023,
@@ -5803,7 +36043,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 31.6277
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 35.0893
+            },
+            {
+              "year": 2016,
+              "value": 35.9062
+            },
+            {
+              "year": 2017,
+              "value": 36.0504
+            },
+            {
+              "year": 2018,
+              "value": 35.7505
+            },
+            {
+              "year": 2019,
+              "value": 35.23
+            },
+            {
+              "year": 2020,
+              "value": 34.791
+            },
+            {
+              "year": 2021,
+              "value": 34.3948
+            },
+            {
+              "year": 2022,
+              "value": 31.6277
+            },
+            {
+              "year": 2023,
+              "value": 32.1735
+            }
+          ]
         },
         "DEU": {
           "year": 2024,
@@ -5811,7 +36089,475 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 11.0529
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 12.351
+            },
+            {
+              "year": 2016,
+              "value": 12.1854
+            },
+            {
+              "year": 2017,
+              "value": 12.0171
+            },
+            {
+              "year": 2018,
+              "value": 12.1757
+            },
+            {
+              "year": 2019,
+              "value": 12.3755
+            },
+            {
+              "year": 2020,
+              "value": 11.338
+            },
+            {
+              "year": 2021,
+              "value": 11.3633
+            },
+            {
+              "year": 2022,
+              "value": 10.432
+            },
+            {
+              "year": 2023,
+              "value": 11.0529
+            },
+            {
+              "year": 2024,
+              "value": 10.7067
+            }
+          ]
+        },
+        "GBR": {
+          "year": 2024,
+          "value": 14.5554,
+          "previous": {
+            "year": 2023,
+            "value": 14.6293
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 15.8656
+            },
+            {
+              "year": 2016,
+              "value": 15.6799
+            },
+            {
+              "year": 2017,
+              "value": 15.8286
+            },
+            {
+              "year": 2018,
+              "value": 16.1784
+            },
+            {
+              "year": 2019,
+              "value": 16.0368
+            },
+            {
+              "year": 2020,
+              "value": 12.4098
+            },
+            {
+              "year": 2021,
+              "value": 13.0229
+            },
+            {
+              "year": 2022,
+              "value": 14.3813
+            },
+            {
+              "year": 2023,
+              "value": 14.6293
+            },
+            {
+              "year": 2024,
+              "value": 14.5554
+            }
+          ]
+        },
+        "FRA": {
+          "year": 2024,
+          "value": 9.2274,
+          "previous": {
+            "year": 2023,
+            "value": 9.2603
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 10.9781
+            },
+            {
+              "year": 2016,
+              "value": 10.714
+            },
+            {
+              "year": 2017,
+              "value": 10.64
+            },
+            {
+              "year": 2018,
+              "value": 10.4457
+            },
+            {
+              "year": 2019,
+              "value": 10.3189
+            },
+            {
+              "year": 2020,
+              "value": 9.4238
+            },
+            {
+              "year": 2021,
+              "value": 9.1692
+            },
+            {
+              "year": 2022,
+              "value": 9.2476
+            },
+            {
+              "year": 2023,
+              "value": 9.2603
+            },
+            {
+              "year": 2024,
+              "value": 9.2274
+            }
+          ]
+        },
+        "CAN": {
+          "year": 2024,
+          "value": 15.2773,
+          "previous": {
+            "year": 2023,
+            "value": 15.2031
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 14.702
+            },
+            {
+              "year": 2016,
+              "value": 15.6068
+            },
+            {
+              "year": 2017,
+              "value": 15.8284
+            },
+            {
+              "year": 2018,
+              "value": 15.5695
+            },
+            {
+              "year": 2019,
+              "value": 15.4284
+            },
+            {
+              "year": 2020,
+              "value": 13.6504
+            },
+            {
+              "year": 2021,
+              "value": 14.2243
+            },
+            {
+              "year": 2022,
+              "value": 14.9607
+            },
+            {
+              "year": 2023,
+              "value": 15.2031
+            },
+            {
+              "year": 2024,
+              "value": 15.2773
+            }
+          ]
+        },
+        "AUS": {
+          "year": 2023,
+          "value": 15.849,
+          "previous": {
+            "year": 2022,
+            "value": 15.1327
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 16.9165
+            },
+            {
+              "year": 2016,
+              "value": 16.6335
+            },
+            {
+              "year": 2017,
+              "value": 16.3133
+            },
+            {
+              "year": 2018,
+              "value": 16.4828
+            },
+            {
+              "year": 2019,
+              "value": 15.0164
+            },
+            {
+              "year": 2020,
+              "value": 15.2349
+            },
+            {
+              "year": 2021,
+              "value": 14.4608
+            },
+            {
+              "year": 2022,
+              "value": 15.1327
+            },
+            {
+              "year": 2023,
+              "value": 15.849
+            }
+          ]
+        },
+        "IND": {
+          "year": 2023,
+          "value": 43.8851,
+          "previous": {
+            "year": 2022,
+            "value": 44.5413
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 64.6644
+            },
+            {
+              "year": 2016,
+              "value": 63.2062
+            },
+            {
+              "year": 2017,
+              "value": 55.1125
+            },
+            {
+              "year": 2018,
+              "value": 53.2299
+            },
+            {
+              "year": 2019,
+              "value": 52.0042
+            },
+            {
+              "year": 2020,
+              "value": 49.5109
+            },
+            {
+              "year": 2021,
+              "value": 45.1091
+            },
+            {
+              "year": 2022,
+              "value": 44.5413
+            },
+            {
+              "year": 2023,
+              "value": 43.8851
+            }
+          ]
+        },
+        "BRA": {
+          "year": 2023,
+          "value": 26.2307,
+          "previous": {
+            "year": 2022,
+            "value": 27.251
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 24.7074
+            },
+            {
+              "year": 2016,
+              "value": 24.4206
+            },
+            {
+              "year": 2017,
+              "value": 24.4679
+            },
+            {
+              "year": 2018,
+              "value": 24.8253
+            },
+            {
+              "year": 2019,
+              "value": 24.8798
+            },
+            {
+              "year": 2020,
+              "value": 26.0909
+            },
+            {
+              "year": 2021,
+              "value": 25.2679
+            },
+            {
+              "year": 2022,
+              "value": 27.251
+            },
+            {
+              "year": 2023,
+              "value": 26.2307
+            }
+          ]
+        },
+        "SGP": {
+          "year": 2023,
+          "value": 25.4185,
+          "previous": {
+            "year": 2022,
+            "value": 23.4841
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 33.0861
+            },
+            {
+              "year": 2016,
+              "value": 32.6235
+            },
+            {
+              "year": 2017,
+              "value": 32.0623
+            },
+            {
+              "year": 2018,
+              "value": 29.0965
+            },
+            {
+              "year": 2019,
+              "value": 28.3906
+            },
+            {
+              "year": 2020,
+              "value": 24.3582
+            },
+            {
+              "year": 2021,
+              "value": 23.4694
+            },
+            {
+              "year": 2022,
+              "value": 23.4841
+            },
+            {
+              "year": 2023,
+              "value": 25.4185
+            }
+          ]
+        },
+        "IDN": {
+          "year": 2023,
+          "value": 31.0837,
+          "previous": {
+            "year": 2022,
+            "value": 32.9629
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 42.7158
+            },
+            {
+              "year": 2016,
+              "value": 38.1241
+            },
+            {
+              "year": 2017,
+              "value": 36.1778
+            },
+            {
+              "year": 2018,
+              "value": 35.2395
+            },
+            {
+              "year": 2019,
+              "value": 34.55
+            },
+            {
+              "year": 2020,
+              "value": 31.1962
+            },
+            {
+              "year": 2021,
+              "value": 27.1673
+            },
+            {
+              "year": 2022,
+              "value": 32.9629
+            },
+            {
+              "year": 2023,
+              "value": 31.0837
+            }
+          ]
+        },
+        "VNM": {
+          "year": 2023,
+          "value": 39.2028,
+          "previous": {
+            "year": 2022,
+            "value": 39.6264
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 42.1323
+            },
+            {
+              "year": 2016,
+              "value": 41.3565
+            },
+            {
+              "year": 2017,
+              "value": 42.5879
+            },
+            {
+              "year": 2018,
+              "value": 44.581
+            },
+            {
+              "year": 2019,
+              "value": 45.1173
+            },
+            {
+              "year": 2020,
+              "value": 42.4034
+            },
+            {
+              "year": 2021,
+              "value": 40.4638
+            },
+            {
+              "year": 2022,
+              "value": 39.6264
+            },
+            {
+              "year": 2023,
+              "value": 39.2028
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -5855,7 +36601,9 @@ export const indicatorSnapshot = {
           "year": 2024,
           "value": 33.7382
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "hospital-beds": {
       "countries": {
@@ -5865,7 +36613,41 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2021,
             "value": 12.75
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 11.62
+            },
+            {
+              "year": 2016,
+              "value": 11.97
+            },
+            {
+              "year": 2017,
+              "value": 12.26
+            },
+            {
+              "year": 2018,
+              "value": 12.43
+            },
+            {
+              "year": 2019,
+              "value": 12.43
+            },
+            {
+              "year": 2020,
+              "value": 12.65
+            },
+            {
+              "year": 2021,
+              "value": 12.75
+            },
+            {
+              "year": 2022,
+              "value": 12.81
+            }
+          ]
         },
         "WLD": {
           "year": 2021,
@@ -5873,7 +36655,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 3.1321
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.9268
+            },
+            {
+              "year": 2016,
+              "value": 2.9177
+            },
+            {
+              "year": 2017,
+              "value": 2.9997
+            },
+            {
+              "year": 2018,
+              "value": 3.0669
+            },
+            {
+              "year": 2019,
+              "value": 3.0429
+            },
+            {
+              "year": 2020,
+              "value": 3.1321
+            },
+            {
+              "year": 2021,
+              "value": 3.2943
+            }
+          ]
         },
         "USA": {
           "year": 2022,
@@ -5881,7 +36693,41 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2021,
             "value": 2.7
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.75
+            },
+            {
+              "year": 2016,
+              "value": 2.72
+            },
+            {
+              "year": 2017,
+              "value": 2.8
+            },
+            {
+              "year": 2018,
+              "value": 2.76
+            },
+            {
+              "year": 2019,
+              "value": 2.72
+            },
+            {
+              "year": 2020,
+              "value": 2.71
+            },
+            {
+              "year": 2021,
+              "value": 2.7
+            },
+            {
+              "year": 2022,
+              "value": 2.68
+            }
+          ]
         },
         "JPN": {
           "year": 2022,
@@ -5889,7 +36735,41 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2021,
             "value": 12.6
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 13.15
+            },
+            {
+              "year": 2016,
+              "value": 13.09
+            },
+            {
+              "year": 2017,
+              "value": 13.01
+            },
+            {
+              "year": 2018,
+              "value": 12.93
+            },
+            {
+              "year": 2019,
+              "value": 12.79
+            },
+            {
+              "year": 2020,
+              "value": 12.62
+            },
+            {
+              "year": 2021,
+              "value": 12.6
+            },
+            {
+              "year": 2022,
+              "value": 12.59
+            }
+          ]
         },
         "CHN": {
           "year": 2023,
@@ -5897,7 +36777,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 5.38
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3.82
+            },
+            {
+              "year": 2016,
+              "value": 4.05
+            },
+            {
+              "year": 2017,
+              "value": 4.33
+            },
+            {
+              "year": 2018,
+              "value": 4.59
+            },
+            {
+              "year": 2019,
+              "value": 4.82
+            },
+            {
+              "year": 2020,
+              "value": 5
+            },
+            {
+              "year": 2021,
+              "value": 5.2
+            },
+            {
+              "year": 2022,
+              "value": 5.38
+            },
+            {
+              "year": 2023,
+              "value": 5.63
+            }
+          ]
         },
         "DEU": {
           "year": 2023,
@@ -5905,7 +36823,379 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 7.64
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 8.09
+            },
+            {
+              "year": 2016,
+              "value": 8.02
+            },
+            {
+              "year": 2017,
+              "value": 7.96
+            },
+            {
+              "year": 2018,
+              "value": 7.94
+            },
+            {
+              "year": 2019,
+              "value": 7.87
+            },
+            {
+              "year": 2020,
+              "value": 7.77
+            },
+            {
+              "year": 2021,
+              "value": 7.71
+            },
+            {
+              "year": 2022,
+              "value": 7.64
+            },
+            {
+              "year": 2023,
+              "value": 7.55
+            }
+          ]
+        },
+        "GBR": {
+          "year": 2022,
+          "value": 2.42,
+          "previous": {
+            "year": 2021,
+            "value": 2.41
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.6
+            },
+            {
+              "year": 2016,
+              "value": 2.56
+            },
+            {
+              "year": 2017,
+              "value": 2.53
+            },
+            {
+              "year": 2018,
+              "value": 2.48
+            },
+            {
+              "year": 2019,
+              "value": 2.44
+            },
+            {
+              "year": 2020,
+              "value": 2.42
+            },
+            {
+              "year": 2021,
+              "value": 2.41
+            },
+            {
+              "year": 2022,
+              "value": 2.42
+            }
+          ]
+        },
+        "FRA": {
+          "year": 2022,
+          "value": 5.65,
+          "previous": {
+            "year": 2021,
+            "value": 5.77
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 6.28
+            },
+            {
+              "year": 2016,
+              "value": 6.21
+            },
+            {
+              "year": 2017,
+              "value": 6.12
+            },
+            {
+              "year": 2018,
+              "value": 6.04
+            },
+            {
+              "year": 2019,
+              "value": 5.96
+            },
+            {
+              "year": 2020,
+              "value": 5.86
+            },
+            {
+              "year": 2021,
+              "value": 5.77
+            },
+            {
+              "year": 2022,
+              "value": 5.65
+            }
+          ]
+        },
+        "CAN": {
+          "year": 2022,
+          "value": 2.54,
+          "previous": {
+            "year": 2021,
+            "value": 2.57
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.6
+            },
+            {
+              "year": 2016,
+              "value": 2.58
+            },
+            {
+              "year": 2017,
+              "value": 2.51
+            },
+            {
+              "year": 2018,
+              "value": 2.54
+            },
+            {
+              "year": 2019,
+              "value": 2.51
+            },
+            {
+              "year": 2020,
+              "value": 2.54
+            },
+            {
+              "year": 2021,
+              "value": 2.57
+            },
+            {
+              "year": 2022,
+              "value": 2.54
+            }
+          ]
+        },
+        "AUS": {
+          "year": 2016,
+          "value": 3.82,
+          "previous": {
+            "year": 2015,
+            "value": 3.79
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3.79
+            },
+            {
+              "year": 2016,
+              "value": 3.82
+            }
+          ]
+        },
+        "IND": {
+          "year": 2021,
+          "value": 1.59,
+          "previous": {
+            "year": 2020,
+            "value": 1.61
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.7
+            },
+            {
+              "year": 2016,
+              "value": 1.68
+            },
+            {
+              "year": 2017,
+              "value": 1.66
+            },
+            {
+              "year": 2018,
+              "value": 1.64
+            },
+            {
+              "year": 2019,
+              "value": 1.62
+            },
+            {
+              "year": 2020,
+              "value": 1.61
+            },
+            {
+              "year": 2021,
+              "value": 1.59
+            }
+          ]
+        },
+        "BRA": {
+          "year": 2021,
+          "value": 2.52,
+          "previous": {
+            "year": 2020,
+            "value": 2.49
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.39
+            },
+            {
+              "year": 2016,
+              "value": 2.36
+            },
+            {
+              "year": 2017,
+              "value": 2.34
+            },
+            {
+              "year": 2018,
+              "value": 2.3
+            },
+            {
+              "year": 2019,
+              "value": 2.29
+            },
+            {
+              "year": 2020,
+              "value": 2.49
+            },
+            {
+              "year": 2021,
+              "value": 2.52
+            }
+          ]
+        },
+        "SGP": {
+          "year": 2023,
+          "value": 2.81,
+          "previous": {
+            "year": 2022,
+            "value": 2.83
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.4
+            },
+            {
+              "year": 2016,
+              "value": 2.5
+            },
+            {
+              "year": 2017,
+              "value": 2.49
+            },
+            {
+              "year": 2018,
+              "value": 2.58
+            },
+            {
+              "year": 2019,
+              "value": 2.69
+            },
+            {
+              "year": 2020,
+              "value": 2.77
+            },
+            {
+              "year": 2021,
+              "value": 2.84
+            },
+            {
+              "year": 2022,
+              "value": 2.83
+            },
+            {
+              "year": 2023,
+              "value": 2.81
+            }
+          ]
+        },
+        "IDN": {
+          "year": 2023,
+          "value": 1.37,
+          "previous": {
+            "year": 2022,
+            "value": 1.4
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.95
+            },
+            {
+              "year": 2016,
+              "value": 0.97
+            },
+            {
+              "year": 2017,
+              "value": 1.02
+            },
+            {
+              "year": 2018,
+              "value": 1.15
+            },
+            {
+              "year": 2019,
+              "value": 1.16
+            },
+            {
+              "year": 2020,
+              "value": 1.38
+            },
+            {
+              "year": 2021,
+              "value": 1.34
+            },
+            {
+              "year": 2022,
+              "value": 1.4
+            },
+            {
+              "year": 2023,
+              "value": 1.37
+            }
+          ]
+        },
+        "VNM": {
+          "year": 2017,
+          "value": 2.52,
+          "previous": {
+            "year": 2016,
+            "value": 2.47
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.51
+            },
+            {
+              "year": 2016,
+              "value": 2.47
+            },
+            {
+              "year": 2017,
+              "value": 2.52
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -5941,7 +37231,9 @@ export const indicatorSnapshot = {
           "year": 2022,
           "value": 12.81
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "resident-patents": {
       "countries": {
@@ -5951,7 +37243,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 180477
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 167275
+            },
+            {
+              "year": 2016,
+              "value": 163424
+            },
+            {
+              "year": 2017,
+              "value": 159084
+            },
+            {
+              "year": 2018,
+              "value": 162561
+            },
+            {
+              "year": 2019,
+              "value": 171603
+            },
+            {
+              "year": 2020,
+              "value": 180477
+            },
+            {
+              "year": 2021,
+              "value": 186245
+            }
+          ]
         },
         "WLD": {
           "year": 2021,
@@ -5959,7 +37281,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 2311500
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1972500
+            },
+            {
+              "year": 2016,
+              "value": 2215100
+            },
+            {
+              "year": 2017,
+              "value": 2251400
+            },
+            {
+              "year": 2018,
+              "value": 2386300
+            },
+            {
+              "year": 2019,
+              "value": 2239200
+            },
+            {
+              "year": 2020,
+              "value": 2311500
+            },
+            {
+              "year": 2021,
+              "value": 2385200
+            }
+          ]
         },
         "USA": {
           "year": 2021,
@@ -5967,7 +37319,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 269586
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 288335
+            },
+            {
+              "year": 2016,
+              "value": 295327
+            },
+            {
+              "year": 2017,
+              "value": 293904
+            },
+            {
+              "year": 2018,
+              "value": 285095
+            },
+            {
+              "year": 2019,
+              "value": 285113
+            },
+            {
+              "year": 2020,
+              "value": 269586
+            },
+            {
+              "year": 2021,
+              "value": 262244
+            }
+          ]
         },
         "JPN": {
           "year": 2021,
@@ -5975,7 +37357,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 227348
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 258839
+            },
+            {
+              "year": 2016,
+              "value": 260244
+            },
+            {
+              "year": 2017,
+              "value": 260292
+            },
+            {
+              "year": 2018,
+              "value": 253630
+            },
+            {
+              "year": 2019,
+              "value": 245372
+            },
+            {
+              "year": 2020,
+              "value": 227348
+            },
+            {
+              "year": 2021,
+              "value": 222452
+            }
+          ]
         },
         "CHN": {
           "year": 2021,
@@ -5983,7 +37395,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 1344817
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 968252
+            },
+            {
+              "year": 2016,
+              "value": 1204981
+            },
+            {
+              "year": 2017,
+              "value": 1245709
+            },
+            {
+              "year": 2018,
+              "value": 1393815
+            },
+            {
+              "year": 2019,
+              "value": 1243568
+            },
+            {
+              "year": 2020,
+              "value": 1344817
+            },
+            {
+              "year": 2021,
+              "value": 1426644
+            }
+          ]
         },
         "DEU": {
           "year": 2021,
@@ -5991,7 +37433,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 42260
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 47384
+            },
+            {
+              "year": 2016,
+              "value": 48480
+            },
+            {
+              "year": 2017,
+              "value": 47785
+            },
+            {
+              "year": 2018,
+              "value": 46617
+            },
+            {
+              "year": 2019,
+              "value": 46632
+            },
+            {
+              "year": 2020,
+              "value": 42260
+            },
+            {
+              "year": 2021,
+              "value": 39822
+            }
+          ]
         },
         "GBR": {
           "year": 2021,
@@ -5999,7 +37471,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 11990
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 14867
+            },
+            {
+              "year": 2016,
+              "value": 13876
+            },
+            {
+              "year": 2017,
+              "value": 13301
+            },
+            {
+              "year": 2018,
+              "value": 12865
+            },
+            {
+              "year": 2019,
+              "value": 12061
+            },
+            {
+              "year": 2020,
+              "value": 11990
+            },
+            {
+              "year": 2021,
+              "value": 11592
+            }
+          ]
         },
         "FRA": {
           "year": 2021,
@@ -6007,7 +37509,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 12771
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 14306
+            },
+            {
+              "year": 2016,
+              "value": 14206
+            },
+            {
+              "year": 2017,
+              "value": 14415
+            },
+            {
+              "year": 2018,
+              "value": 14303
+            },
+            {
+              "year": 2019,
+              "value": 14103
+            },
+            {
+              "year": 2020,
+              "value": 12771
+            },
+            {
+              "year": 2021,
+              "value": 13386
+            }
+          ]
         },
         "CAN": {
           "year": 2021,
@@ -6015,7 +37547,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 4452
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 4277
+            },
+            {
+              "year": 2016,
+              "value": 4078
+            },
+            {
+              "year": 2017,
+              "value": 4053
+            },
+            {
+              "year": 2018,
+              "value": 4349
+            },
+            {
+              "year": 2019,
+              "value": 4238
+            },
+            {
+              "year": 2020,
+              "value": 4452
+            },
+            {
+              "year": 2021,
+              "value": 4710
+            }
+          ]
         },
         "AUS": {
           "year": 2021,
@@ -6023,7 +37585,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 2368
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2291
+            },
+            {
+              "year": 2016,
+              "value": 2620
+            },
+            {
+              "year": 2017,
+              "value": 2503
+            },
+            {
+              "year": 2018,
+              "value": 2757
+            },
+            {
+              "year": 2019,
+              "value": 2637
+            },
+            {
+              "year": 2020,
+              "value": 2368
+            },
+            {
+              "year": 2021,
+              "value": 2966
+            }
+          ]
         },
         "IND": {
           "year": 2021,
@@ -6031,7 +37623,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 23141
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 12579
+            },
+            {
+              "year": 2016,
+              "value": 13199
+            },
+            {
+              "year": 2017,
+              "value": 14961
+            },
+            {
+              "year": 2018,
+              "value": 16289
+            },
+            {
+              "year": 2019,
+              "value": 19454
+            },
+            {
+              "year": 2020,
+              "value": 23141
+            },
+            {
+              "year": 2021,
+              "value": 26267
+            }
+          ]
         },
         "BRA": {
           "year": 2021,
@@ -6039,7 +37661,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 5280
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 4641
+            },
+            {
+              "year": 2016,
+              "value": 5200
+            },
+            {
+              "year": 2017,
+              "value": 5480
+            },
+            {
+              "year": 2018,
+              "value": 4980
+            },
+            {
+              "year": 2019,
+              "value": 5464
+            },
+            {
+              "year": 2020,
+              "value": 5280
+            },
+            {
+              "year": 2021,
+              "value": 4666
+            }
+          ]
         },
         "SGP": {
           "year": 2021,
@@ -6047,7 +37699,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 1778
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1469
+            },
+            {
+              "year": 2016,
+              "value": 1601
+            },
+            {
+              "year": 2017,
+              "value": 1609
+            },
+            {
+              "year": 2018,
+              "value": 1575
+            },
+            {
+              "year": 2019,
+              "value": 1727
+            },
+            {
+              "year": 2020,
+              "value": 1778
+            },
+            {
+              "year": 2021,
+              "value": 2024
+            }
+          ]
         },
         "IDN": {
           "year": 2021,
@@ -6055,7 +37737,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 1309
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1058
+            },
+            {
+              "year": 2016,
+              "value": 1101
+            },
+            {
+              "year": 2017,
+              "value": 2271
+            },
+            {
+              "year": 2018,
+              "value": 1407
+            },
+            {
+              "year": 2019,
+              "value": 3093
+            },
+            {
+              "year": 2020,
+              "value": 1309
+            },
+            {
+              "year": 2021,
+              "value": 1397
+            }
+          ]
         },
         "VNM": {
           "year": 2021,
@@ -6063,7 +37775,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 1021
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 582
+            },
+            {
+              "year": 2016,
+              "value": 560
+            },
+            {
+              "year": 2017,
+              "value": 592
+            },
+            {
+              "year": 2018,
+              "value": 646
+            },
+            {
+              "year": 2019,
+              "value": 720
+            },
+            {
+              "year": 2020,
+              "value": 1021
+            },
+            {
+              "year": 2021,
+              "value": 1066
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -6095,7 +37837,9 @@ export const indicatorSnapshot = {
           "year": 2021,
           "value": 186245
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "renewable-electricity": {
       "countries": {
@@ -6105,7 +37849,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 6.23
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.5985
+            },
+            {
+              "year": 2016,
+              "value": 3.5182
+            },
+            {
+              "year": 2017,
+              "value": 3.9751
+            },
+            {
+              "year": 2018,
+              "value": 4.538
+            },
+            {
+              "year": 2019,
+              "value": 5.2715
+            },
+            {
+              "year": 2020,
+              "value": 6.23
+            },
+            {
+              "year": 2021,
+              "value": 6.5883
+            }
+          ]
         },
         "WLD": {
           "year": 2021,
@@ -6113,7 +37887,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 28.0109
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 22.9821
+            },
+            {
+              "year": 2016,
+              "value": 23.8799
+            },
+            {
+              "year": 2017,
+              "value": 24.4916
+            },
+            {
+              "year": 2018,
+              "value": 25.1525
+            },
+            {
+              "year": 2019,
+              "value": 26.1494
+            },
+            {
+              "year": 2020,
+              "value": 28.0109
+            },
+            {
+              "year": 2021,
+              "value": 27.8357
+            }
+          ]
         },
         "USA": {
           "year": 2021,
@@ -6121,7 +37925,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 19.9167
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 13.6328
+            },
+            {
+              "year": 2016,
+              "value": 15.2594
+            },
+            {
+              "year": 2017,
+              "value": 17.2854
+            },
+            {
+              "year": 2018,
+              "value": 17.1629
+            },
+            {
+              "year": 2019,
+              "value": 17.9383
+            },
+            {
+              "year": 2020,
+              "value": 19.9167
+            },
+            {
+              "year": 2021,
+              "value": 20.2733
+            }
+          ]
         },
         "JPN": {
           "year": 2021,
@@ -6129,7 +37963,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 20.2924
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 14.1788
+            },
+            {
+              "year": 2016,
+              "value": 14.6994
+            },
+            {
+              "year": 2017,
+              "value": 16.1974
+            },
+            {
+              "year": 2018,
+              "value": 17.0616
+            },
+            {
+              "year": 2019,
+              "value": 18.5788
+            },
+            {
+              "year": 2020,
+              "value": 20.2924
+            },
+            {
+              "year": 2021,
+              "value": 21.1037
+            }
+          ]
         },
         "CHN": {
           "year": 2021,
@@ -6137,7 +38001,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 28.1119
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 23.8649
+            },
+            {
+              "year": 2016,
+              "value": 25.052
+            },
+            {
+              "year": 2017,
+              "value": 25.0387
+            },
+            {
+              "year": 2018,
+              "value": 25.8127
+            },
+            {
+              "year": 2019,
+              "value": 26.8897
+            },
+            {
+              "year": 2020,
+              "value": 28.1119
+            },
+            {
+              "year": 2021,
+              "value": 28.428
+            }
+          ]
         },
         "DEU": {
           "year": 2021,
@@ -6145,7 +38039,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 44.8396
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 30.0329
+            },
+            {
+              "year": 2016,
+              "value": 30.0193
+            },
+            {
+              "year": 2017,
+              "value": 34.0095
+            },
+            {
+              "year": 2018,
+              "value": 35.6372
+            },
+            {
+              "year": 2019,
+              "value": 40.5775
+            },
+            {
+              "year": 2020,
+              "value": 44.8396
+            },
+            {
+              "year": 2021,
+              "value": 39.8306
+            }
+          ]
         },
         "GBR": {
           "year": 2021,
@@ -6153,7 +38077,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 43.8837
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 25.471
+            },
+            {
+              "year": 2016,
+              "value": 25.4853
+            },
+            {
+              "year": 2017,
+              "value": 30.1545
+            },
+            {
+              "year": 2018,
+              "value": 33.7661
+            },
+            {
+              "year": 2019,
+              "value": 37.5205
+            },
+            {
+              "year": 2020,
+              "value": 43.8837
+            },
+            {
+              "year": 2021,
+              "value": 40.2
+            }
+          ]
         },
         "FRA": {
           "year": 2021,
@@ -6161,7 +38115,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 24.3566
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 16.6913
+            },
+            {
+              "year": 2016,
+              "value": 18.3955
+            },
+            {
+              "year": 2017,
+              "value": 17.3814
+            },
+            {
+              "year": 2018,
+              "value": 20.4355
+            },
+            {
+              "year": 2019,
+              "value": 20.6287
+            },
+            {
+              "year": 2020,
+              "value": 24.3566
+            },
+            {
+              "year": 2021,
+              "value": 22.8039
+            }
+          ]
         },
         "CAN": {
           "year": 2021,
@@ -6169,7 +38153,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 67.0565
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 64.1243
+            },
+            {
+              "year": 2016,
+              "value": 64.9754
+            },
+            {
+              "year": 2017,
+              "value": 66.5646
+            },
+            {
+              "year": 2018,
+              "value": 65.9484
+            },
+            {
+              "year": 2019,
+              "value": 65.8791
+            },
+            {
+              "year": 2020,
+              "value": 67.0565
+            },
+            {
+              "year": 2021,
+              "value": 67.0164
+            }
+          ]
         },
         "AUS": {
           "year": 2021,
@@ -6177,7 +38191,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 22.6003
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 13.3253
+            },
+            {
+              "year": 2016,
+              "value": 14.5836
+            },
+            {
+              "year": 2017,
+              "value": 15.6785
+            },
+            {
+              "year": 2018,
+              "value": 17.0971
+            },
+            {
+              "year": 2019,
+              "value": 19.7037
+            },
+            {
+              "year": 2020,
+              "value": 22.6003
+            },
+            {
+              "year": 2021,
+              "value": 26.6609
+            }
+          ]
         },
         "IND": {
           "year": 2021,
@@ -6185,7 +38229,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 19.7557
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 14.8949
+            },
+            {
+              "year": 2016,
+              "value": 13.5972
+            },
+            {
+              "year": 2017,
+              "value": 14.1594
+            },
+            {
+              "year": 2018,
+              "value": 15.0103
+            },
+            {
+              "year": 2019,
+              "value": 16.8275
+            },
+            {
+              "year": 2020,
+              "value": 19.7557
+            },
+            {
+              "year": 2021,
+              "value": 19.1313
+            }
+          ]
         },
         "BRA": {
           "year": 2021,
@@ -6193,7 +38267,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 83.1761
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 73.5401
+            },
+            {
+              "year": 2016,
+              "value": 79.7128
+            },
+            {
+              "year": 2017,
+              "value": 78.4182
+            },
+            {
+              "year": 2018,
+              "value": 81.5731
+            },
+            {
+              "year": 2019,
+              "value": 81.4302
+            },
+            {
+              "year": 2020,
+              "value": 83.1761
+            },
+            {
+              "year": 2021,
+              "value": 77.3753
+            }
+          ]
         },
         "SGP": {
           "year": 2021,
@@ -6201,7 +38305,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 4.0813
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 4.1797
+            },
+            {
+              "year": 2016,
+              "value": 4.5905
+            },
+            {
+              "year": 2017,
+              "value": 4.279
+            },
+            {
+              "year": 2018,
+              "value": 4.1161
+            },
+            {
+              "year": 2019,
+              "value": 4.1754
+            },
+            {
+              "year": 2020,
+              "value": 4.0813
+            },
+            {
+              "year": 2021,
+              "value": 4.0222
+            }
+          ]
         },
         "IDN": {
           "year": 2021,
@@ -6209,7 +38343,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 15.8207
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 13.6594
+            },
+            {
+              "year": 2016,
+              "value": 15.1437
+            },
+            {
+              "year": 2017,
+              "value": 15.7714
+            },
+            {
+              "year": 2018,
+              "value": 15.5999
+            },
+            {
+              "year": 2019,
+              "value": 14.5841
+            },
+            {
+              "year": 2020,
+              "value": 15.8207
+            },
+            {
+              "year": 2021,
+              "value": 15.53
+            }
+          ]
         },
         "VNM": {
           "year": 2021,
@@ -6217,7 +38381,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 35.7345
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 35.3964
+            },
+            {
+              "year": 2016,
+              "value": 36.0291
+            },
+            {
+              "year": 2017,
+              "value": 45.1716
+            },
+            {
+              "year": 2018,
+              "value": 39.526
+            },
+            {
+              "year": 2019,
+              "value": 30.8674
+            },
+            {
+              "year": 2020,
+              "value": 35.7345
+            },
+            {
+              "year": 2021,
+              "value": 41.1697
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -6249,7 +38443,9 @@ export const indicatorSnapshot = {
           "year": 2021,
           "value": 6.5883
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "energy-intensity": {
       "countries": {
@@ -6259,7 +38455,41 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2021,
             "value": 5.32
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 5.76
+            },
+            {
+              "year": 2016,
+              "value": 5.79
+            },
+            {
+              "year": 2017,
+              "value": 5.61
+            },
+            {
+              "year": 2018,
+              "value": 5.45
+            },
+            {
+              "year": 2019,
+              "value": 5.29
+            },
+            {
+              "year": 2020,
+              "value": 5.25
+            },
+            {
+              "year": 2021,
+              "value": 5.32
+            },
+            {
+              "year": 2022,
+              "value": 5.11
+            }
+          ]
         },
         "WLD": {
           "year": 2021,
@@ -6267,7 +38497,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 4.579
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 4.8556
+            },
+            {
+              "year": 2016,
+              "value": 4.75
+            },
+            {
+              "year": 2017,
+              "value": 4.6748
+            },
+            {
+              "year": 2018,
+              "value": 4.6292
+            },
+            {
+              "year": 2019,
+              "value": 4.5669
+            },
+            {
+              "year": 2020,
+              "value": 4.579
+            },
+            {
+              "year": 2021,
+              "value": 4.5449
+            }
+          ]
         },
         "USA": {
           "year": 2022,
@@ -6275,7 +38535,41 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2021,
             "value": 4.24
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 4.88
+            },
+            {
+              "year": 2016,
+              "value": 4.75
+            },
+            {
+              "year": 2017,
+              "value": 4.63
+            },
+            {
+              "year": 2018,
+              "value": 4.62
+            },
+            {
+              "year": 2019,
+              "value": 4.51
+            },
+            {
+              "year": 2020,
+              "value": 4.27
+            },
+            {
+              "year": 2021,
+              "value": 4.24
+            },
+            {
+              "year": 2022,
+              "value": 4.17
+            }
+          ]
         },
         "JPN": {
           "year": 2022,
@@ -6283,7 +38577,41 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2021,
             "value": 3.25
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3.53
+            },
+            {
+              "year": 2016,
+              "value": 3.48
+            },
+            {
+              "year": 2017,
+              "value": 3.44
+            },
+            {
+              "year": 2018,
+              "value": 3.36
+            },
+            {
+              "year": 2019,
+              "value": 3.29
+            },
+            {
+              "year": 2020,
+              "value": 3.2
+            },
+            {
+              "year": 2021,
+              "value": 3.25
+            },
+            {
+              "year": 2022,
+              "value": 3.15
+            }
+          ]
         },
         "CHN": {
           "year": 2021,
@@ -6291,7 +38619,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 6.4
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 7.24
+            },
+            {
+              "year": 2016,
+              "value": 6.74
+            },
+            {
+              "year": 2017,
+              "value": 6.54
+            },
+            {
+              "year": 2018,
+              "value": 6.42
+            },
+            {
+              "year": 2019,
+              "value": 6.33
+            },
+            {
+              "year": 2020,
+              "value": 6.4
+            },
+            {
+              "year": 2021,
+              "value": 6.3
+            }
+          ]
         },
         "DEU": {
           "year": 2022,
@@ -6299,7 +38657,41 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2021,
             "value": 2.7
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3.08
+            },
+            {
+              "year": 2016,
+              "value": 3.02
+            },
+            {
+              "year": 2017,
+              "value": 2.95
+            },
+            {
+              "year": 2018,
+              "value": 2.85
+            },
+            {
+              "year": 2019,
+              "value": 2.76
+            },
+            {
+              "year": 2020,
+              "value": 2.69
+            },
+            {
+              "year": 2021,
+              "value": 2.7
+            },
+            {
+              "year": 2022,
+              "value": 2.47
+            }
+          ]
         },
         "GBR": {
           "year": 2022,
@@ -6307,7 +38699,41 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2021,
             "value": 2.2
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.59
+            },
+            {
+              "year": 2016,
+              "value": 2.5
+            },
+            {
+              "year": 2017,
+              "value": 2.41
+            },
+            {
+              "year": 2018,
+              "value": 2.34
+            },
+            {
+              "year": 2019,
+              "value": 2.22
+            },
+            {
+              "year": 2020,
+              "value": 2.28
+            },
+            {
+              "year": 2021,
+              "value": 2.2
+            },
+            {
+              "year": 2022,
+              "value": 2.04
+            }
+          ]
         },
         "FRA": {
           "year": 2022,
@@ -6315,7 +38741,41 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2021,
             "value": 3.23
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3.65
+            },
+            {
+              "year": 2016,
+              "value": 3.54
+            },
+            {
+              "year": 2017,
+              "value": 3.46
+            },
+            {
+              "year": 2018,
+              "value": 3.37
+            },
+            {
+              "year": 2019,
+              "value": 3.26
+            },
+            {
+              "year": 2020,
+              "value": 3.18
+            },
+            {
+              "year": 2021,
+              "value": 3.23
+            },
+            {
+              "year": 2022,
+              "value": 2.83
+            }
+          ]
         },
         "CAN": {
           "year": 2022,
@@ -6323,7 +38783,41 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2021,
             "value": 6.55
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 6.75
+            },
+            {
+              "year": 2016,
+              "value": 6.96
+            },
+            {
+              "year": 2017,
+              "value": 7.03
+            },
+            {
+              "year": 2018,
+              "value": 6.94
+            },
+            {
+              "year": 2019,
+              "value": 6.86
+            },
+            {
+              "year": 2020,
+              "value": 6.73
+            },
+            {
+              "year": 2021,
+              "value": 6.55
+            },
+            {
+              "year": 2022,
+              "value": 6.44
+            }
+          ]
         },
         "AUS": {
           "year": 2022,
@@ -6331,7 +38825,41 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2021,
             "value": 4.1
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 4.53
+            },
+            {
+              "year": 2016,
+              "value": 4.4
+            },
+            {
+              "year": 2017,
+              "value": 4.46
+            },
+            {
+              "year": 2018,
+              "value": 4.37
+            },
+            {
+              "year": 2019,
+              "value": 4.36
+            },
+            {
+              "year": 2020,
+              "value": 4.44
+            },
+            {
+              "year": 2021,
+              "value": 4.1
+            },
+            {
+              "year": 2022,
+              "value": 4.12
+            }
+          ]
         },
         "IND": {
           "year": 2021,
@@ -6339,7 +38867,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 4.25
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 4.82
+            },
+            {
+              "year": 2016,
+              "value": 4.54
+            },
+            {
+              "year": 2017,
+              "value": 4.46
+            },
+            {
+              "year": 2018,
+              "value": 4.41
+            },
+            {
+              "year": 2019,
+              "value": 4.25
+            },
+            {
+              "year": 2020,
+              "value": 4.25
+            },
+            {
+              "year": 2021,
+              "value": 4.21
+            }
+          ]
         },
         "BRA": {
           "year": 2022,
@@ -6347,7 +38905,41 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2021,
             "value": 3.96
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 4.05
+            },
+            {
+              "year": 2016,
+              "value": 4.03
+            },
+            {
+              "year": 2017,
+              "value": 4.06
+            },
+            {
+              "year": 2018,
+              "value": 3.93
+            },
+            {
+              "year": 2019,
+              "value": 3.95
+            },
+            {
+              "year": 2020,
+              "value": 4
+            },
+            {
+              "year": 2021,
+              "value": 3.96
+            },
+            {
+              "year": 2022,
+              "value": 3.87
+            }
+          ]
         },
         "SGP": {
           "year": 2021,
@@ -6355,7 +38947,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 2.71
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.74
+            },
+            {
+              "year": 2016,
+              "value": 2.73
+            },
+            {
+              "year": 2017,
+              "value": 2.77
+            },
+            {
+              "year": 2018,
+              "value": 2.47
+            },
+            {
+              "year": 2019,
+              "value": 2.61
+            },
+            {
+              "year": 2020,
+              "value": 2.71
+            },
+            {
+              "year": 2021,
+              "value": 2.51
+            }
+          ]
         },
         "IDN": {
           "year": 2021,
@@ -6363,7 +38985,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 3.11
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3.26
+            },
+            {
+              "year": 2016,
+              "value": 3.18
+            },
+            {
+              "year": 2017,
+              "value": 3.14
+            },
+            {
+              "year": 2018,
+              "value": 3.24
+            },
+            {
+              "year": 2019,
+              "value": 3.19
+            },
+            {
+              "year": 2020,
+              "value": 3.11
+            },
+            {
+              "year": 2021,
+              "value": 3.04
+            }
+          ]
         },
         "VNM": {
           "year": 2021,
@@ -6371,7 +39023,37 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2020,
             "value": 4.03
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3.54
+            },
+            {
+              "year": 2016,
+              "value": 3.65
+            },
+            {
+              "year": 2017,
+              "value": 3.55
+            },
+            {
+              "year": 2018,
+              "value": 3.9
+            },
+            {
+              "year": 2019,
+              "value": 4.09
+            },
+            {
+              "year": 2020,
+              "value": 4.03
+            },
+            {
+              "year": 2021,
+              "value": 3.85
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -6407,7 +39089,9 @@ export const indicatorSnapshot = {
           "year": 2022,
           "value": 5.11
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "forest-area": {
       "countries": {
@@ -6417,7 +39101,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 64.2111
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 65.0316
+            },
+            {
+              "year": 2016,
+              "value": 64.8791
+            },
+            {
+              "year": 2017,
+              "value": 64.7831
+            },
+            {
+              "year": 2018,
+              "value": 64.6739
+            },
+            {
+              "year": 2019,
+              "value": 64.5184
+            },
+            {
+              "year": 2020,
+              "value": 64.416
+            },
+            {
+              "year": 2021,
+              "value": 64.3135
+            },
+            {
+              "year": 2022,
+              "value": 64.2111
+            },
+            {
+              "year": 2023,
+              "value": 64.1086
+            }
+          ]
         },
         "WLD": {
           "year": 2023,
@@ -6425,7 +39147,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 31.1339
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 31.3693
+            },
+            {
+              "year": 2016,
+              "value": 31.3412
+            },
+            {
+              "year": 2017,
+              "value": 31.2899
+            },
+            {
+              "year": 2018,
+              "value": 31.252
+            },
+            {
+              "year": 2019,
+              "value": 31.2123
+            },
+            {
+              "year": 2020,
+              "value": 31.1716
+            },
+            {
+              "year": 2021,
+              "value": 31.1717
+            },
+            {
+              "year": 2022,
+              "value": 31.1339
+            },
+            {
+              "year": 2023,
+              "value": 31.0952
+            }
+          ]
         },
         "USA": {
           "year": 2023,
@@ -6433,7 +39193,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 33.8669
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 33.8997
+            },
+            {
+              "year": 2016,
+              "value": 33.8997
+            },
+            {
+              "year": 2017,
+              "value": 33.8669
+            },
+            {
+              "year": 2018,
+              "value": 33.8669
+            },
+            {
+              "year": 2019,
+              "value": 33.8669
+            },
+            {
+              "year": 2020,
+              "value": 33.8669
+            },
+            {
+              "year": 2021,
+              "value": 33.8669
+            },
+            {
+              "year": 2022,
+              "value": 33.8669
+            },
+            {
+              "year": 2023,
+              "value": 33.8669
+            }
+          ]
         },
         "JPN": {
           "year": 2023,
@@ -6441,7 +39239,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 68.4088
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 68.4335
+            },
+            {
+              "year": 2016,
+              "value": 68.4225
+            },
+            {
+              "year": 2017,
+              "value": 68.4088
+            },
+            {
+              "year": 2018,
+              "value": 68.4088
+            },
+            {
+              "year": 2019,
+              "value": 68.4088
+            },
+            {
+              "year": 2020,
+              "value": 68.4088
+            },
+            {
+              "year": 2021,
+              "value": 68.4088
+            },
+            {
+              "year": 2022,
+              "value": 68.4088
+            },
+            {
+              "year": 2023,
+              "value": 68.3958
+            }
+          ]
         },
         "CHN": {
           "year": 2023,
@@ -6449,7 +39285,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 23.8317
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 22.3998
+            },
+            {
+              "year": 2016,
+              "value": 22.6305
+            },
+            {
+              "year": 2017,
+              "value": 22.8307
+            },
+            {
+              "year": 2018,
+              "value": 23.0309
+            },
+            {
+              "year": 2019,
+              "value": 23.2312
+            },
+            {
+              "year": 2020,
+              "value": 23.4313
+            },
+            {
+              "year": 2021,
+              "value": 23.6316
+            },
+            {
+              "year": 2022,
+              "value": 23.8317
+            },
+            {
+              "year": 2023,
+              "value": 24.0319
+            }
+          ]
         },
         "DEU": {
           "year": 2023,
@@ -6457,7 +39331,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 32.6855
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 32.7323
+            },
+            {
+              "year": 2016,
+              "value": 32.6855
+            },
+            {
+              "year": 2017,
+              "value": 32.6845
+            },
+            {
+              "year": 2018,
+              "value": 32.6836
+            },
+            {
+              "year": 2019,
+              "value": 32.6827
+            },
+            {
+              "year": 2020,
+              "value": 32.6827
+            },
+            {
+              "year": 2021,
+              "value": 32.6827
+            },
+            {
+              "year": 2022,
+              "value": 32.6855
+            },
+            {
+              "year": 2023,
+              "value": 32.6789
+            }
+          ]
         },
         "GBR": {
           "year": 2023,
@@ -6465,7 +39377,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 13.2555
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 13.041
+            },
+            {
+              "year": 2016,
+              "value": 13.0575
+            },
+            {
+              "year": 2017,
+              "value": 13.0782
+            },
+            {
+              "year": 2018,
+              "value": 13.1154
+            },
+            {
+              "year": 2019,
+              "value": 13.1526
+            },
+            {
+              "year": 2020,
+              "value": 13.1856
+            },
+            {
+              "year": 2021,
+              "value": 13.2215
+            },
+            {
+              "year": 2022,
+              "value": 13.2555
+            },
+            {
+              "year": 2023,
+              "value": 13.2907
+            }
+          ]
         },
         "FRA": {
           "year": 2023,
@@ -6473,7 +39423,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 32.3217
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 31.2385
+            },
+            {
+              "year": 2016,
+              "value": 31.3933
+            },
+            {
+              "year": 2017,
+              "value": 31.548
+            },
+            {
+              "year": 2018,
+              "value": 31.7028
+            },
+            {
+              "year": 2019,
+              "value": 31.8575
+            },
+            {
+              "year": 2020,
+              "value": 32.0122
+            },
+            {
+              "year": 2021,
+              "value": 32.167
+            },
+            {
+              "year": 2022,
+              "value": 32.3217
+            },
+            {
+              "year": 2023,
+              "value": 32.4765
+            }
+          ]
         },
         "CAN": {
           "year": 2023,
@@ -6481,7 +39469,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 39.4659
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 38.7164
+            },
+            {
+              "year": 2016,
+              "value": 38.712
+            },
+            {
+              "year": 2017,
+              "value": 38.7079
+            },
+            {
+              "year": 2018,
+              "value": 38.7038
+            },
+            {
+              "year": 2019,
+              "value": 38.6996
+            },
+            {
+              "year": 2020,
+              "value": 38.6955
+            },
+            {
+              "year": 2021,
+              "value": 39.4701
+            },
+            {
+              "year": 2022,
+              "value": 39.4659
+            },
+            {
+              "year": 2023,
+              "value": 39.4617
+            }
+          ]
         },
         "AUS": {
           "year": 2023,
@@ -6489,7 +39515,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 17.4213
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 17.3248
+            },
+            {
+              "year": 2016,
+              "value": 17.4255
+            },
+            {
+              "year": 2017,
+              "value": 17.4229
+            },
+            {
+              "year": 2018,
+              "value": 17.4213
+            },
+            {
+              "year": 2019,
+              "value": 17.4213
+            },
+            {
+              "year": 2020,
+              "value": 17.4213
+            },
+            {
+              "year": 2021,
+              "value": 17.4213
+            },
+            {
+              "year": 2022,
+              "value": 17.4213
+            },
+            {
+              "year": 2023,
+              "value": 17.4213
+            }
+          ]
         },
         "IND": {
           "year": 2023,
@@ -6497,7 +39561,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 24.4495
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 23.8222
+            },
+            {
+              "year": 2016,
+              "value": 23.9117
+            },
+            {
+              "year": 2017,
+              "value": 24.0015
+            },
+            {
+              "year": 2018,
+              "value": 24.091
+            },
+            {
+              "year": 2019,
+              "value": 24.1808
+            },
+            {
+              "year": 2020,
+              "value": 24.2702
+            },
+            {
+              "year": 2021,
+              "value": 24.3597
+            },
+            {
+              "year": 2022,
+              "value": 24.4495
+            },
+            {
+              "year": 2023,
+              "value": 24.539
+            }
+          ]
         },
         "BRA": {
           "year": 2023,
@@ -6505,7 +39607,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 59.1275
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 60.2867
+            },
+            {
+              "year": 2016,
+              "value": 60.071
+            },
+            {
+              "year": 2017,
+              "value": 59.8329
+            },
+            {
+              "year": 2018,
+              "value": 59.7084
+            },
+            {
+              "year": 2019,
+              "value": 59.5586
+            },
+            {
+              "year": 2020,
+              "value": 59.4175
+            },
+            {
+              "year": 2021,
+              "value": 59.2705
+            },
+            {
+              "year": 2022,
+              "value": 59.1275
+            },
+            {
+              "year": 2023,
+              "value": 58.9819
+            }
+          ]
         },
         "SGP": {
           "year": 2023,
@@ -6513,7 +39653,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 21.1838
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 23.2319
+            },
+            {
+              "year": 2016,
+              "value": 22.9697
+            },
+            {
+              "year": 2017,
+              "value": 22.6264
+            },
+            {
+              "year": 2018,
+              "value": 22.3109
+            },
+            {
+              "year": 2019,
+              "value": 21.9972
+            },
+            {
+              "year": 2020,
+              "value": 21.6852
+            },
+            {
+              "year": 2021,
+              "value": 21.4345
+            },
+            {
+              "year": 2022,
+              "value": 21.1838
+            },
+            {
+              "year": 2023,
+              "value": 20.9331
+            }
+          ]
         },
         "IDN": {
           "year": 2023,
@@ -6521,7 +39699,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 48.042
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 50.6135
+            },
+            {
+              "year": 2016,
+              "value": 50.7435
+            },
+            {
+              "year": 2017,
+              "value": 50.0393
+            },
+            {
+              "year": 2018,
+              "value": 49.7168
+            },
+            {
+              "year": 2019,
+              "value": 49.3943
+            },
+            {
+              "year": 2020,
+              "value": 49.0718
+            },
+            {
+              "year": 2021,
+              "value": 48.3619
+            },
+            {
+              "year": 2022,
+              "value": 48.042
+            },
+            {
+              "year": 2023,
+              "value": 47.722
+            }
+          ]
         },
         "VNM": {
           "year": 2023,
@@ -6529,7 +39745,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 47.2033
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 44.8712
+            },
+            {
+              "year": 2016,
+              "value": 45.8784
+            },
+            {
+              "year": 2017,
+              "value": 45.9963
+            },
+            {
+              "year": 2018,
+              "value": 46.2347
+            },
+            {
+              "year": 2019,
+              "value": 46.4768
+            },
+            {
+              "year": 2020,
+              "value": 46.719
+            },
+            {
+              "year": 2021,
+              "value": 46.9612
+            },
+            {
+              "year": 2022,
+              "value": 47.2033
+            },
+            {
+              "year": 2023,
+              "value": 47.4455
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -6569,7 +39823,9 @@ export const indicatorSnapshot = {
           "year": 2023,
           "value": 64.1086
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "mobile-subscriptions": {
       "countries": {
@@ -6579,7 +39835,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 162.1137
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 115.5954
+            },
+            {
+              "year": 2016,
+              "value": 119.4895
+            },
+            {
+              "year": 2017,
+              "value": 123.6421
+            },
+            {
+              "year": 2018,
+              "value": 128.4946
+            },
+            {
+              "year": 2019,
+              "value": 133.0798
+            },
+            {
+              "year": 2020,
+              "value": 135.9733
+            },
+            {
+              "year": 2021,
+              "value": 140.5164
+            },
+            {
+              "year": 2022,
+              "value": 148.6836
+            },
+            {
+              "year": 2023,
+              "value": 162.1137
+            },
+            {
+              "year": 2024,
+              "value": 172.5202
+            }
+          ]
         },
         "WLD": {
           "year": 2025,
@@ -6587,7 +39885,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 110.4
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 96.1
+            },
+            {
+              "year": 2016,
+              "value": 99.3
+            },
+            {
+              "year": 2017,
+              "value": 101.4
+            },
+            {
+              "year": 2018,
+              "value": 103.1
+            },
+            {
+              "year": 2019,
+              "value": 105.9
+            },
+            {
+              "year": 2020,
+              "value": 104.8
+            },
+            {
+              "year": 2021,
+              "value": 106.7
+            },
+            {
+              "year": 2022,
+              "value": 108
+            },
+            {
+              "year": 2023,
+              "value": 109.8
+            },
+            {
+              "year": 2024,
+              "value": 110.4
+            },
+            {
+              "year": 2025,
+              "value": 111.5
+            }
+          ]
         },
         "USA": {
           "year": 2024,
@@ -6595,7 +39939,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 112.4109
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 101.832
+            },
+            {
+              "year": 2016,
+              "value": 102.7519
+            },
+            {
+              "year": 2017,
+              "value": 102.3806
+            },
+            {
+              "year": 2018,
+              "value": 103.9353
+            },
+            {
+              "year": 2019,
+              "value": 105.3207
+            },
+            {
+              "year": 2020,
+              "value": 103.8552
+            },
+            {
+              "year": 2021,
+              "value": 106.3245
+            },
+            {
+              "year": 2022,
+              "value": 108.7856
+            },
+            {
+              "year": 2023,
+              "value": 112.4109
+            },
+            {
+              "year": 2024,
+              "value": 113.1905
+            }
+          ]
         },
         "JPN": {
           "year": 2023,
@@ -6603,7 +39989,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 168.6029
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 126.151
+            },
+            {
+              "year": 2016,
+              "value": 131.2149
+            },
+            {
+              "year": 2017,
+              "value": 135.9858
+            },
+            {
+              "year": 2018,
+              "value": 141.7287
+            },
+            {
+              "year": 2019,
+              "value": 147.2099
+            },
+            {
+              "year": 2020,
+              "value": 154.4322
+            },
+            {
+              "year": 2021,
+              "value": 159.5161
+            },
+            {
+              "year": 2022,
+              "value": 168.6029
+            },
+            {
+              "year": 2023,
+              "value": 178.4324
+            }
+          ]
         },
         "CHN": {
           "year": 2024,
@@ -6611,7 +40035,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 128.247
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 92.5401
+            },
+            {
+              "year": 2016,
+              "value": 97.2139
+            },
+            {
+              "year": 2017,
+              "value": 104.0732
+            },
+            {
+              "year": 2018,
+              "value": 116.2291
+            },
+            {
+              "year": 2019,
+              "value": 122.6704
+            },
+            {
+              "year": 2020,
+              "value": 120.4967
+            },
+            {
+              "year": 2021,
+              "value": 121.4919
+            },
+            {
+              "year": 2022,
+              "value": 124.1952
+            },
+            {
+              "year": 2023,
+              "value": 128.247
+            },
+            {
+              "year": 2024,
+              "value": 131.7539
+            }
+          ]
         },
         "DEU": {
           "year": 2024,
@@ -6619,7 +40085,495 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 124.6626
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 117.4012
+            },
+            {
+              "year": 2016,
+              "value": 125.024
+            },
+            {
+              "year": 2017,
+              "value": 132.0033
+            },
+            {
+              "year": 2018,
+              "value": 128.9456
+            },
+            {
+              "year": 2019,
+              "value": 128.2923
+            },
+            {
+              "year": 2020,
+              "value": 128.4248
+            },
+            {
+              "year": 2021,
+              "value": 127.1251
+            },
+            {
+              "year": 2022,
+              "value": 124.1583
+            },
+            {
+              "year": 2023,
+              "value": 124.6626
+            },
+            {
+              "year": 2024,
+              "value": 129.1509
+            }
+          ]
+        },
+        "GBR": {
+          "year": 2024,
+          "value": 121.6433,
+          "previous": {
+            "year": 2023,
+            "value": 122.7815
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 121.2117
+            },
+            {
+              "year": 2016,
+              "value": 119.7866
+            },
+            {
+              "year": 2017,
+              "value": 119.2067
+            },
+            {
+              "year": 2018,
+              "value": 118.1844
+            },
+            {
+              "year": 2019,
+              "value": 120.2501
+            },
+            {
+              "year": 2020,
+              "value": 117.3049
+            },
+            {
+              "year": 2021,
+              "value": 117.8874
+            },
+            {
+              "year": 2022,
+              "value": 119.834
+            },
+            {
+              "year": 2023,
+              "value": 122.7815
+            },
+            {
+              "year": 2024,
+              "value": 121.6433
+            }
+          ]
+        },
+        "FRA": {
+          "year": 2023,
+          "value": 116.6878,
+          "previous": {
+            "year": 2022,
+            "value": 115.9505
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 102.7184
+            },
+            {
+              "year": 2016,
+              "value": 103.8167
+            },
+            {
+              "year": 2017,
+              "value": 105.7184
+            },
+            {
+              "year": 2018,
+              "value": 107.4824
+            },
+            {
+              "year": 2019,
+              "value": 109.6008
+            },
+            {
+              "year": 2020,
+              "value": 110.3872
+            },
+            {
+              "year": 2021,
+              "value": 113.9527
+            },
+            {
+              "year": 2022,
+              "value": 115.9505
+            },
+            {
+              "year": 2023,
+              "value": 116.6878
+            }
+          ]
+        },
+        "CAN": {
+          "year": 2024,
+          "value": 94.106,
+          "previous": {
+            "year": 2023,
+            "value": 94.1497
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 82.7674
+            },
+            {
+              "year": 2016,
+              "value": 84.5919
+            },
+            {
+              "year": 2017,
+              "value": 86.1024
+            },
+            {
+              "year": 2018,
+              "value": 89.0495
+            },
+            {
+              "year": 2019,
+              "value": 90.9589
+            },
+            {
+              "year": 2020,
+              "value": 84.7748
+            },
+            {
+              "year": 2021,
+              "value": 87.4056
+            },
+            {
+              "year": 2022,
+              "value": 91.2387
+            },
+            {
+              "year": 2023,
+              "value": 94.1497
+            },
+            {
+              "year": 2024,
+              "value": 94.106
+            }
+          ]
+        },
+        "AUS": {
+          "year": 2024,
+          "value": 112.581,
+          "previous": {
+            "year": 2023,
+            "value": 112.5132
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 107.6081
+            },
+            {
+              "year": 2016,
+              "value": 109.1288
+            },
+            {
+              "year": 2017,
+              "value": 107.7998
+            },
+            {
+              "year": 2018,
+              "value": 110.0331
+            },
+            {
+              "year": 2019,
+              "value": 109.7528
+            },
+            {
+              "year": 2020,
+              "value": 104.9302
+            },
+            {
+              "year": 2021,
+              "value": 105.1185
+            },
+            {
+              "year": 2022,
+              "value": 109.4692
+            },
+            {
+              "year": 2023,
+              "value": 112.5132
+            },
+            {
+              "year": 2024,
+              "value": 112.581
+            }
+          ]
+        },
+        "IND": {
+          "year": 2024,
+          "value": 79.3527,
+          "previous": {
+            "year": 2023,
+            "value": 80.5632
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 75.3793
+            },
+            {
+              "year": 2016,
+              "value": 83.9178
+            },
+            {
+              "year": 2017,
+              "value": 85.9704
+            },
+            {
+              "year": 2018,
+              "value": 85.5501
+            },
+            {
+              "year": 2019,
+              "value": 82.8981
+            },
+            {
+              "year": 2020,
+              "value": 82.254
+            },
+            {
+              "year": 2021,
+              "value": 81.604
+            },
+            {
+              "year": 2022,
+              "value": 80.1818
+            },
+            {
+              "year": 2023,
+              "value": 80.5632
+            },
+            {
+              "year": 2024,
+              "value": 79.3527
+            }
+          ]
+        },
+        "BRA": {
+          "year": 2024,
+          "value": 101.9268,
+          "previous": {
+            "year": 2023,
+            "value": 101.0203
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 127.8362
+            },
+            {
+              "year": 2016,
+              "value": 120.1012
+            },
+            {
+              "year": 2017,
+              "value": 108.0926
+            },
+            {
+              "year": 2018,
+              "value": 101.6025
+            },
+            {
+              "year": 2019,
+              "value": 97.3747
+            },
+            {
+              "year": 2020,
+              "value": 98.6456
+            },
+            {
+              "year": 2021,
+              "value": 104.8247
+            },
+            {
+              "year": 2022,
+              "value": 101.2455
+            },
+            {
+              "year": 2023,
+              "value": 101.0203
+            },
+            {
+              "year": 2024,
+              "value": 101.9268
+            }
+          ]
+        },
+        "SGP": {
+          "year": 2024,
+          "value": 170.7826,
+          "previous": {
+            "year": 2023,
+            "value": 173.1999
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 149.0062
+            },
+            {
+              "year": 2016,
+              "value": 151.6817
+            },
+            {
+              "year": 2017,
+              "value": 149.5679
+            },
+            {
+              "year": 2018,
+              "value": 152.0738
+            },
+            {
+              "year": 2019,
+              "value": 159.3474
+            },
+            {
+              "year": 2020,
+              "value": 150.2593
+            },
+            {
+              "year": 2021,
+              "value": 157.9777
+            },
+            {
+              "year": 2022,
+              "value": 173.0053
+            },
+            {
+              "year": 2023,
+              "value": 173.1999
+            },
+            {
+              "year": 2024,
+              "value": 170.7826
+            }
+          ]
+        },
+        "IDN": {
+          "year": 2024,
+          "value": 122.5149,
+          "previous": {
+            "year": 2023,
+            "value": 125.2382
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 129.4688
+            },
+            {
+              "year": 2016,
+              "value": 145.7043
+            },
+            {
+              "year": 2017,
+              "value": 162.7825
+            },
+            {
+              "year": 2018,
+              "value": 118.3302
+            },
+            {
+              "year": 2019,
+              "value": 125.2443
+            },
+            {
+              "year": 2020,
+              "value": 129.4036
+            },
+            {
+              "year": 2021,
+              "value": 132.1994
+            },
+            {
+              "year": 2022,
+              "value": 122.873
+            },
+            {
+              "year": 2023,
+              "value": 125.2382
+            },
+            {
+              "year": 2024,
+              "value": 122.5149
+            }
+          ]
+        },
+        "VNM": {
+          "year": 2024,
+          "value": 127.6065,
+          "previous": {
+            "year": 2023,
+            "value": 130.9914
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 129.6271
+            },
+            {
+              "year": 2016,
+              "value": 128.298
+            },
+            {
+              "year": 2017,
+              "value": 126.0979
+            },
+            {
+              "year": 2018,
+              "value": 146.1378
+            },
+            {
+              "year": 2019,
+              "value": 140.1926
+            },
+            {
+              "year": 2020,
+              "value": 141.6556
+            },
+            {
+              "year": 2021,
+              "value": 136.8063
+            },
+            {
+              "year": 2022,
+              "value": 137.8524
+            },
+            {
+              "year": 2023,
+              "value": 130.9914
+            },
+            {
+              "year": 2024,
+              "value": 127.6065
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -6663,7 +40617,9 @@ export const indicatorSnapshot = {
           "year": 2024,
           "value": 172.5202
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "homicide-rate": {
       "countries": {
@@ -6673,7 +40629,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 0.4963
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.7355
+            },
+            {
+              "year": 2016,
+              "value": 0.694
+            },
+            {
+              "year": 2017,
+              "value": 0.5846
+            },
+            {
+              "year": 2018,
+              "value": 0.5984
+            },
+            {
+              "year": 2019,
+              "value": 0.5737
+            },
+            {
+              "year": 2020,
+              "value": 0.5939
+            },
+            {
+              "year": 2021,
+              "value": 0.4725
+            },
+            {
+              "year": 2022,
+              "value": 0.4963
+            },
+            {
+              "year": 2023,
+              "value": 0.4773
+            }
+          ]
         },
         "WLD": {
           "year": 2023,
@@ -6681,7 +40675,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 5.3
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 5.9
+            },
+            {
+              "year": 2016,
+              "value": 6
+            },
+            {
+              "year": 2017,
+              "value": 5.9
+            },
+            {
+              "year": 2018,
+              "value": 5.7
+            },
+            {
+              "year": 2019,
+              "value": 5.4
+            },
+            {
+              "year": 2020,
+              "value": 5.3
+            },
+            {
+              "year": 2021,
+              "value": 5.5
+            },
+            {
+              "year": 2022,
+              "value": 5.3
+            },
+            {
+              "year": 2023,
+              "value": 5.2
+            }
+          ]
         },
         "USA": {
           "year": 2023,
@@ -6689,7 +40721,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 6.5127
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 4.8702
+            },
+            {
+              "year": 2016,
+              "value": 5.2898
+            },
+            {
+              "year": 2017,
+              "value": 5.2058
+            },
+            {
+              "year": 2018,
+              "value": 4.8869
+            },
+            {
+              "year": 2019,
+              "value": 4.9347
+            },
+            {
+              "year": 2020,
+              "value": 6.3547
+            },
+            {
+              "year": 2021,
+              "value": 6.7797
+            },
+            {
+              "year": 2022,
+              "value": 6.5127
+            },
+            {
+              "year": 2023,
+              "value": 5.7634
+            }
+          ]
         },
         "JPN": {
           "year": 2023,
@@ -6697,7 +40767,45 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 0.2312
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.2852
+            },
+            {
+              "year": 2016,
+              "value": 0.2847
+            },
+            {
+              "year": 2017,
+              "value": 0.2408
+            },
+            {
+              "year": 2018,
+              "value": 0.2632
+            },
+            {
+              "year": 2019,
+              "value": 0.2518
+            },
+            {
+              "year": 2020,
+              "value": 0.2518
+            },
+            {
+              "year": 2021,
+              "value": 0.2268
+            },
+            {
+              "year": 2022,
+              "value": 0.2312
+            },
+            {
+              "year": 2023,
+              "value": 0.2292
+            }
+          ]
         },
         "CHN": {
           "year": 2020,
@@ -6705,7 +40813,33 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2019,
             "value": 0.5184
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.659
+            },
+            {
+              "year": 2016,
+              "value": 0.6149
+            },
+            {
+              "year": 2017,
+              "value": 0.5657
+            },
+            {
+              "year": 2018,
+              "value": 0.5303
+            },
+            {
+              "year": 2019,
+              "value": 0.5184
+            },
+            {
+              "year": 2020,
+              "value": 0.5019
+            }
+          ]
         },
         "DEU": {
           "year": 2023,
@@ -6713,7 +40847,365 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2022,
             "value": 0.8158
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.8309
+            },
+            {
+              "year": 2016,
+              "value": 1.1636
+            },
+            {
+              "year": 2017,
+              "value": 0.9783
+            },
+            {
+              "year": 2018,
+              "value": 0.9452
+            },
+            {
+              "year": 2019,
+              "value": 0.7456
+            },
+            {
+              "year": 2020,
+              "value": 0.9351
+            },
+            {
+              "year": 2021,
+              "value": 0.8304
+            },
+            {
+              "year": 2022,
+              "value": 0.8158
+            },
+            {
+              "year": 2023,
+              "value": 0.9107
+            }
+          ]
+        },
+        "GBR": {
+          "year": 2021,
+          "value": 1.1187,
+          "previous": {
+            "year": 2020,
+            "value": 0.9458
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.9483
+            },
+            {
+              "year": 2016,
+              "value": 1.1731
+            },
+            {
+              "year": 2017,
+              "value": 1.1755
+            },
+            {
+              "year": 2018,
+              "value": 1.0906
+            },
+            {
+              "year": 2019,
+              "value": 1.1503
+            },
+            {
+              "year": 2020,
+              "value": 0.9458
+            },
+            {
+              "year": 2021,
+              "value": 1.1187
+            }
+          ]
+        },
+        "FRA": {
+          "year": 2023,
+          "value": 1.3351,
+          "previous": {
+            "year": 2022,
+            "value": 1.2387
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.5589
+            },
+            {
+              "year": 2016,
+              "value": 1.1969
+            },
+            {
+              "year": 2017,
+              "value": 1.0875
+            },
+            {
+              "year": 2018,
+              "value": 1.0623
+            },
+            {
+              "year": 2019,
+              "value": 1.1456
+            },
+            {
+              "year": 2020,
+              "value": 1.05
+            },
+            {
+              "year": 2021,
+              "value": 1.1107
+            },
+            {
+              "year": 2022,
+              "value": 1.2387
+            },
+            {
+              "year": 2023,
+              "value": 1.3351
+            }
+          ]
+        },
+        "CAN": {
+          "year": 2023,
+          "value": 1.9797,
+          "previous": {
+            "year": 2022,
+            "value": 2.272
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.699
+            },
+            {
+              "year": 2016,
+              "value": 1.6945
+            },
+            {
+              "year": 2017,
+              "value": 1.8066
+            },
+            {
+              "year": 2018,
+              "value": 1.775
+            },
+            {
+              "year": 2019,
+              "value": 1.8236
+            },
+            {
+              "year": 2020,
+              "value": 2.0041
+            },
+            {
+              "year": 2021,
+              "value": 2.083
+            },
+            {
+              "year": 2022,
+              "value": 2.272
+            },
+            {
+              "year": 2023,
+              "value": 1.9797
+            }
+          ]
+        },
+        "AUS": {
+          "year": 2023,
+          "value": 0.8544,
+          "previous": {
+            "year": 2022,
+            "value": 0.8397
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.9855
+            },
+            {
+              "year": 2016,
+              "value": 0.933
+            },
+            {
+              "year": 2017,
+              "value": 0.841
+            },
+            {
+              "year": 2018,
+              "value": 0.8798
+            },
+            {
+              "year": 2019,
+              "value": 0.883
+            },
+            {
+              "year": 2020,
+              "value": 0.8585
+            },
+            {
+              "year": 2021,
+              "value": 0.7436
+            },
+            {
+              "year": 2022,
+              "value": 0.8397
+            },
+            {
+              "year": 2023,
+              "value": 0.8544
+            }
+          ]
+        },
+        "IND": {
+          "year": 2022,
+          "value": 2.8153,
+          "previous": {
+            "year": 2021,
+            "value": 2.9225
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3.3413
+            },
+            {
+              "year": 2016,
+              "value": 3.1489
+            },
+            {
+              "year": 2017,
+              "value": 3.0767
+            },
+            {
+              "year": 2018,
+              "value": 3.0299
+            },
+            {
+              "year": 2019,
+              "value": 2.95
+            },
+            {
+              "year": 2020,
+              "value": 2.9353
+            },
+            {
+              "year": 2021,
+              "value": 2.9225
+            },
+            {
+              "year": 2022,
+              "value": 2.8153
+            }
+          ]
+        },
+        "BRA": {
+          "year": 2023,
+          "value": 19.2753,
+          "previous": {
+            "year": 2022,
+            "value": 20.0812
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 28.8503
+            },
+            {
+              "year": 2016,
+              "value": 30.1194
+            },
+            {
+              "year": 2017,
+              "value": 31.1612
+            },
+            {
+              "year": 2018,
+              "value": 27.1606
+            },
+            {
+              "year": 2019,
+              "value": 21.2446
+            },
+            {
+              "year": 2020,
+              "value": 21.8129
+            },
+            {
+              "year": 2021,
+              "value": 20.5049
+            },
+            {
+              "year": 2022,
+              "value": 20.0812
+            },
+            {
+              "year": 2023,
+              "value": 19.2753
+            }
+          ]
+        },
+        "SGP": {
+          "year": 2023,
+          "value": 0.0691,
+          "previous": {
+            "year": 2022,
+            "value": 0.1239
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.2534
+            },
+            {
+              "year": 2016,
+              "value": 0.3227
+            },
+            {
+              "year": 2017,
+              "value": 0.1963
+            },
+            {
+              "year": 2018,
+              "value": 0.1597
+            },
+            {
+              "year": 2019,
+              "value": 0.2117
+            },
+            {
+              "year": 2020,
+              "value": 0.1779
+            },
+            {
+              "year": 2021,
+              "value": 0.1082
+            },
+            {
+              "year": 2022,
+              "value": 0.1239
+            },
+            {
+              "year": 2023,
+              "value": 0.0691
+            }
+          ]
+        },
+        "IDN": {
+          "year": 2022,
+          "value": 0.3038,
+          "history": [
+            {
+              "year": 2022,
+              "value": 0.3038
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -6753,7 +41245,9 @@ export const indicatorSnapshot = {
           "year": 2023,
           "value": 0.4773
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "imports-share": {
       "countries": {
@@ -6763,7 +41257,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 40.2843
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 34.42
+            },
+            {
+              "year": 2016,
+              "value": 31.7867
+            },
+            {
+              "year": 2017,
+              "value": 34.3433
+            },
+            {
+              "year": 2018,
+              "value": 35.2552
+            },
+            {
+              "year": 2019,
+              "value": 34.4057
+            },
+            {
+              "year": 2020,
+              "value": 30.9298
+            },
+            {
+              "year": 2021,
+              "value": 35.9675
+            },
+            {
+              "year": 2022,
+              "value": 45.2903
+            },
+            {
+              "year": 2023,
+              "value": 40.9365
+            },
+            {
+              "year": 2024,
+              "value": 40.2843
+            },
+            {
+              "year": 2025,
+              "value": 40.5986
+            }
+          ]
         },
         "WLD": {
           "year": 2025,
@@ -6771,7 +41311,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 28.1122
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 27.2962
+            },
+            {
+              "year": 2016,
+              "value": 26.3477
+            },
+            {
+              "year": 2017,
+              "value": 27.2582
+            },
+            {
+              "year": 2018,
+              "value": 28.2037
+            },
+            {
+              "year": 2019,
+              "value": 27.3994
+            },
+            {
+              "year": 2020,
+              "value": 25.3807
+            },
+            {
+              "year": 2021,
+              "value": 27.5323
+            },
+            {
+              "year": 2022,
+              "value": 29.9507
+            },
+            {
+              "year": 2023,
+              "value": 28.298
+            },
+            {
+              "year": 2024,
+              "value": 28.1122
+            },
+            {
+              "year": 2025,
+              "value": 28.4992
+            }
+          ]
         },
         "USA": {
           "year": 2024,
@@ -6779,7 +41365,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 13.8786
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 15.2771
+            },
+            {
+              "year": 2016,
+              "value": 14.5644
+            },
+            {
+              "year": 2017,
+              "value": 14.9479
+            },
+            {
+              "year": 2018,
+              "value": 15.1582
+            },
+            {
+              "year": 2019,
+              "value": 14.4693
+            },
+            {
+              "year": 2020,
+              "value": 13.0169
+            },
+            {
+              "year": 2021,
+              "value": 14.4061
+            },
+            {
+              "year": 2022,
+              "value": 15.2538
+            },
+            {
+              "year": 2023,
+              "value": 13.8786
+            },
+            {
+              "year": 2024,
+              "value": 14.0413
+            }
+          ]
         },
         "JPN": {
           "year": 2024,
@@ -6787,7 +41415,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 22.5358
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 17.6355
+            },
+            {
+              "year": 2016,
+              "value": 14.9339
+            },
+            {
+              "year": 2017,
+              "value": 16.473
+            },
+            {
+              "year": 2018,
+              "value": 17.8924
+            },
+            {
+              "year": 2019,
+              "value": 17.3205
+            },
+            {
+              "year": 2020,
+              "value": 15.3905
+            },
+            {
+              "year": 2021,
+              "value": 17.9634
+            },
+            {
+              "year": 2022,
+              "value": 24.2128
+            },
+            {
+              "year": 2023,
+              "value": 22.5358
+            },
+            {
+              "year": 2024,
+              "value": 22.873
+            }
+          ]
         },
         "CHN": {
           "year": 2025,
@@ -6795,7 +41465,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 17.5132
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 17.7581
+            },
+            {
+              "year": 2016,
+              "value": 16.9735
+            },
+            {
+              "year": 2017,
+              "value": 17.6152
+            },
+            {
+              "year": 2018,
+              "value": 18.1239
+            },
+            {
+              "year": 2019,
+              "value": 17.3146
+            },
+            {
+              "year": 2020,
+              "value": 16.0682
+            },
+            {
+              "year": 2021,
+              "value": 17.2078
+            },
+            {
+              "year": 2022,
+              "value": 17.2848
+            },
+            {
+              "year": 2023,
+              "value": 17.3368
+            },
+            {
+              "year": 2024,
+              "value": 17.5132
+            },
+            {
+              "year": 2025,
+              "value": 16.8852
+            }
+          ]
         },
         "DEU": {
           "year": 2025,
@@ -6803,7 +41519,539 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 37.6567
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 35.1712
+            },
+            {
+              "year": 2016,
+              "value": 34.3704
+            },
+            {
+              "year": 2017,
+              "value": 35.2519
+            },
+            {
+              "year": 2018,
+              "value": 36.6283
+            },
+            {
+              "year": 2019,
+              "value": 36.733
+            },
+            {
+              "year": 2020,
+              "value": 33.8137
+            },
+            {
+              "year": 2021,
+              "value": 37.3997
+            },
+            {
+              "year": 2022,
+              "value": 43.1573
+            },
+            {
+              "year": 2023,
+              "value": 38.9953
+            },
+            {
+              "year": 2024,
+              "value": 37.6567
+            },
+            {
+              "year": 2025,
+              "value": 38.078
+            }
+          ]
+        },
+        "GBR": {
+          "year": 2025,
+          "value": 31.8604,
+          "previous": {
+            "year": 2024,
+            "value": 31.7829
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 29.246
+            },
+            {
+              "year": 2016,
+              "value": 30.778
+            },
+            {
+              "year": 2017,
+              "value": 32.2161
+            },
+            {
+              "year": 2018,
+              "value": 33.0552
+            },
+            {
+              "year": 2019,
+              "value": 33.1007
+            },
+            {
+              "year": 2020,
+              "value": 29.2112
+            },
+            {
+              "year": 2021,
+              "value": 29.249
+            },
+            {
+              "year": 2022,
+              "value": 35.137
+            },
+            {
+              "year": 2023,
+              "value": 33.0801
+            },
+            {
+              "year": 2024,
+              "value": 31.7829
+            },
+            {
+              "year": 2025,
+              "value": 31.8604
+            }
+          ]
+        },
+        "FRA": {
+          "year": 2025,
+          "value": 33.7996,
+          "previous": {
+            "year": 2024,
+            "value": 34.2184
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 31.8112
+            },
+            {
+              "year": 2016,
+              "value": 31.8445
+            },
+            {
+              "year": 2017,
+              "value": 33.084
+            },
+            {
+              "year": 2018,
+              "value": 33.8843
+            },
+            {
+              "year": 2019,
+              "value": 33.5394
+            },
+            {
+              "year": 2020,
+              "value": 30.2817
+            },
+            {
+              "year": 2021,
+              "value": 32.5004
+            },
+            {
+              "year": 2022,
+              "value": 39.347
+            },
+            {
+              "year": 2023,
+              "value": 36.1699
+            },
+            {
+              "year": 2024,
+              "value": 34.2184
+            },
+            {
+              "year": 2025,
+              "value": 33.7996
+            }
+          ]
+        },
+        "CAN": {
+          "year": 2025,
+          "value": 32.1781,
+          "previous": {
+            "year": 2024,
+            "value": 32.6524
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 34.3149
+            },
+            {
+              "year": 2016,
+              "value": 33.8611
+            },
+            {
+              "year": 2017,
+              "value": 33.6466
+            },
+            {
+              "year": 2018,
+              "value": 34.2745
+            },
+            {
+              "year": 2019,
+              "value": 33.8187
+            },
+            {
+              "year": 2020,
+              "value": 31.6831
+            },
+            {
+              "year": 2021,
+              "value": 31.0718
+            },
+            {
+              "year": 2022,
+              "value": 33.232
+            },
+            {
+              "year": 2023,
+              "value": 33.2329
+            },
+            {
+              "year": 2024,
+              "value": 32.6524
+            },
+            {
+              "year": 2025,
+              "value": 32.1781
+            }
+          ]
+        },
+        "AUS": {
+          "year": 2025,
+          "value": 22.657,
+          "previous": {
+            "year": 2024,
+            "value": 22.5239
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 21.5101
+            },
+            {
+              "year": 2016,
+              "value": 21.6103
+            },
+            {
+              "year": 2017,
+              "value": 20.8636
+            },
+            {
+              "year": 2018,
+              "value": 21.7607
+            },
+            {
+              "year": 2019,
+              "value": 21.9392
+            },
+            {
+              "year": 2020,
+              "value": 20.5615
+            },
+            {
+              "year": 2021,
+              "value": 18.2004
+            },
+            {
+              "year": 2022,
+              "value": 20.2331
+            },
+            {
+              "year": 2023,
+              "value": 22.3433
+            },
+            {
+              "year": 2024,
+              "value": 22.5239
+            },
+            {
+              "year": 2025,
+              "value": 22.657
+            }
+          ]
+        },
+        "IND": {
+          "year": 2025,
+          "value": 24.0052,
+          "previous": {
+            "year": 2024,
+            "value": 23.8527
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 22.1097
+            },
+            {
+              "year": 2016,
+              "value": 20.9243
+            },
+            {
+              "year": 2017,
+              "value": 21.9507
+            },
+            {
+              "year": 2018,
+              "value": 23.6891
+            },
+            {
+              "year": 2019,
+              "value": 21.2411
+            },
+            {
+              "year": 2020,
+              "value": 19.0756
+            },
+            {
+              "year": 2021,
+              "value": 24.0239
+            },
+            {
+              "year": 2022,
+              "value": 26.6578
+            },
+            {
+              "year": 2023,
+              "value": 23.9682
+            },
+            {
+              "year": 2024,
+              "value": 23.8527
+            },
+            {
+              "year": 2025,
+              "value": 24.0052
+            }
+          ]
+        },
+        "BRA": {
+          "year": 2025,
+          "value": 17.4708,
+          "previous": {
+            "year": 2024,
+            "value": 17.6459
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 14.0534
+            },
+            {
+              "year": 2016,
+              "value": 12.067
+            },
+            {
+              "year": 2017,
+              "value": 11.8008
+            },
+            {
+              "year": 2018,
+              "value": 14.2412
+            },
+            {
+              "year": 2019,
+              "value": 14.7673
+            },
+            {
+              "year": 2020,
+              "value": 15.8485
+            },
+            {
+              "year": 2021,
+              "value": 18.5469
+            },
+            {
+              "year": 2022,
+              "value": 19.1853
+            },
+            {
+              "year": 2023,
+              "value": 15.6969
+            },
+            {
+              "year": 2024,
+              "value": 17.6459
+            },
+            {
+              "year": 2025,
+              "value": 17.4708
+            }
+          ]
+        },
+        "SGP": {
+          "year": 2025,
+          "value": 142.4545,
+          "previous": {
+            "year": 2024,
+            "value": 138.6435
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 151.0868
+            },
+            {
+              "year": 2016,
+              "value": 137.5425
+            },
+            {
+              "year": 2017,
+              "value": 144.4279
+            },
+            {
+              "year": 2018,
+              "value": 148.0128
+            },
+            {
+              "year": 2019,
+              "value": 147.451
+            },
+            {
+              "year": 2020,
+              "value": 149.9006
+            },
+            {
+              "year": 2021,
+              "value": 145.374
+            },
+            {
+              "year": 2022,
+              "value": 145.2363
+            },
+            {
+              "year": 2023,
+              "value": 143.2712
+            },
+            {
+              "year": 2024,
+              "value": 138.6435
+            },
+            {
+              "year": 2025,
+              "value": 142.4545
+            }
+          ]
+        },
+        "IDN": {
+          "year": 2025,
+          "value": 20.5447,
+          "previous": {
+            "year": 2024,
+            "value": 20.5003
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 20.7775
+            },
+            {
+              "year": 2016,
+              "value": 18.3323
+            },
+            {
+              "year": 2017,
+              "value": 19.1782
+            },
+            {
+              "year": 2018,
+              "value": 22.0716
+            },
+            {
+              "year": 2019,
+              "value": 19.0362
+            },
+            {
+              "year": 2020,
+              "value": 15.641
+            },
+            {
+              "year": 2021,
+              "value": 18.7882
+            },
+            {
+              "year": 2022,
+              "value": 20.9618
+            },
+            {
+              "year": 2023,
+              "value": 19.6519
+            },
+            {
+              "year": 2024,
+              "value": 20.5003
+            },
+            {
+              "year": 2025,
+              "value": 20.5447
+            }
+          ]
+        },
+        "VNM": {
+          "year": 2025,
+          "value": 92.0924,
+          "previous": {
+            "year": 2024,
+            "value": 83.719
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 71.9914
+            },
+            {
+              "year": 2016,
+              "value": 71.3022
+            },
+            {
+              "year": 2017,
+              "value": 79.2176
+            },
+            {
+              "year": 2018,
+              "value": 80.2405
+            },
+            {
+              "year": 2019,
+              "value": 79.5466
+            },
+            {
+              "year": 2020,
+              "value": 78.8643
+            },
+            {
+              "year": 2021,
+              "value": 92.8256
+            },
+            {
+              "year": 2022,
+              "value": 89.7335
+            },
+            {
+              "year": 2023,
+              "value": 78.2589
+            },
+            {
+              "year": 2024,
+              "value": 83.719
+            },
+            {
+              "year": 2025,
+              "value": 92.0924
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -6851,7 +42099,9 @@ export const indicatorSnapshot = {
           "year": 2025,
           "value": 40.5986
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "exports-share": {
       "countries": {
@@ -6861,7 +42111,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 44.3582
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 40.9681
+            },
+            {
+              "year": 2016,
+              "value": 38.113
+            },
+            {
+              "year": 2017,
+              "value": 38.8489
+            },
+            {
+              "year": 2018,
+              "value": 39.4523
+            },
+            {
+              "year": 2019,
+              "value": 37.0413
+            },
+            {
+              "year": 2020,
+              "value": 34.6152
+            },
+            {
+              "year": 2021,
+              "value": 39.3388
+            },
+            {
+              "year": 2022,
+              "value": 45.2949
+            },
+            {
+              "year": 2023,
+              "value": 41.3215
+            },
+            {
+              "year": 2024,
+              "value": 44.3582
+            },
+            {
+              "year": 2025,
+              "value": 45.763
+            }
+          ]
         },
         "WLD": {
           "year": 2025,
@@ -6869,7 +42165,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 29.0778
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 28.0496
+            },
+            {
+              "year": 2016,
+              "value": 27.0845
+            },
+            {
+              "year": 2017,
+              "value": 28.0049
+            },
+            {
+              "year": 2018,
+              "value": 28.8776
+            },
+            {
+              "year": 2019,
+              "value": 27.9428
+            },
+            {
+              "year": 2020,
+              "value": 26.0289
+            },
+            {
+              "year": 2021,
+              "value": 28.464
+            },
+            {
+              "year": 2022,
+              "value": 30.7214
+            },
+            {
+              "year": 2023,
+              "value": 29.0719
+            },
+            {
+              "year": 2024,
+              "value": 29.0778
+            },
+            {
+              "year": 2025,
+              "value": 29.4808
+            }
+          ]
         },
         "USA": {
           "year": 2024,
@@ -6877,7 +42219,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 11.0507
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 12.4111
+            },
+            {
+              "year": 2016,
+              "value": 11.8882
+            },
+            {
+              "year": 2017,
+              "value": 12.1775
+            },
+            {
+              "year": 2018,
+              "value": 12.2871
+            },
+            {
+              "year": 2019,
+              "value": 11.7892
+            },
+            {
+              "year": 2020,
+              "value": 10.1231
+            },
+            {
+              "year": 2021,
+              "value": 10.8267
+            },
+            {
+              "year": 2022,
+              "value": 11.6541
+            },
+            {
+              "year": 2023,
+              "value": 11.0507
+            },
+            {
+              "year": 2024,
+              "value": 10.9747
+            }
+          ]
         },
         "JPN": {
           "year": 2024,
@@ -6885,7 +42269,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 21.0593
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 17.0921
+            },
+            {
+              "year": 2016,
+              "value": 15.7224
+            },
+            {
+              "year": 2017,
+              "value": 17.2158
+            },
+            {
+              "year": 2018,
+              "value": 17.9111
+            },
+            {
+              "year": 2019,
+              "value": 17.0378
+            },
+            {
+              "year": 2020,
+              "value": 15.1287
+            },
+            {
+              "year": 2021,
+              "value": 17.462
+            },
+            {
+              "year": 2022,
+              "value": 20.6479
+            },
+            {
+              "year": 2023,
+              "value": 21.0593
+            },
+            {
+              "year": 2024,
+              "value": 21.9799
+            }
+          ]
         },
         "CHN": {
           "year": 2025,
@@ -6893,7 +42319,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 20.4428
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 20.9391
+            },
+            {
+              "year": 2016,
+              "value": 19.2037
+            },
+            {
+              "year": 2017,
+              "value": 19.3356
+            },
+            {
+              "year": 2018,
+              "value": 18.7705
+            },
+            {
+              "year": 2019,
+              "value": 18.1398
+            },
+            {
+              "year": 2020,
+              "value": 18.2696
+            },
+            {
+              "year": 2021,
+              "value": 19.4351
+            },
+            {
+              "year": 2022,
+              "value": 20.2278
+            },
+            {
+              "year": 2023,
+              "value": 19.4023
+            },
+            {
+              "year": 2024,
+              "value": 20.4428
+            },
+            {
+              "year": 2025,
+              "value": 21.0712
+            }
+          ]
         },
         "DEU": {
           "year": 2025,
@@ -6901,7 +42373,539 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 41.4341
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 42.5854
+            },
+            {
+              "year": 2016,
+              "value": 41.6355
+            },
+            {
+              "year": 2017,
+              "value": 42.203
+            },
+            {
+              "year": 2018,
+              "value": 42.4969
+            },
+            {
+              "year": 2019,
+              "value": 42.3402
+            },
+            {
+              "year": 2020,
+              "value": 39.1198
+            },
+            {
+              "year": 2021,
+              "value": 42.5198
+            },
+            {
+              "year": 2022,
+              "value": 45.6284
+            },
+            {
+              "year": 2023,
+              "value": 42.9673
+            },
+            {
+              "year": 2024,
+              "value": 41.4341
+            },
+            {
+              "year": 2025,
+              "value": 40.4348
+            }
+          ]
+        },
+        "GBR": {
+          "year": 2025,
+          "value": 30.597,
+          "previous": {
+            "year": 2024,
+            "value": 31.0561
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 27.8791
+            },
+            {
+              "year": 2016,
+              "value": 29.0616
+            },
+            {
+              "year": 2017,
+              "value": 30.9738
+            },
+            {
+              "year": 2018,
+              "value": 31.8545
+            },
+            {
+              "year": 2019,
+              "value": 31.9029
+            },
+            {
+              "year": 2020,
+              "value": 29.9487
+            },
+            {
+              "year": 2021,
+              "value": 29.2894
+            },
+            {
+              "year": 2022,
+              "value": 34.0619
+            },
+            {
+              "year": 2023,
+              "value": 31.9123
+            },
+            {
+              "year": 2024,
+              "value": 31.0561
+            },
+            {
+              "year": 2025,
+              "value": 30.597
+            }
+          ]
+        },
+        "FRA": {
+          "year": 2025,
+          "value": 33.3928,
+          "previous": {
+            "year": 2024,
+            "value": 33.8898
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 31.6935
+            },
+            {
+              "year": 2016,
+              "value": 31.4982
+            },
+            {
+              "year": 2017,
+              "value": 32.3118
+            },
+            {
+              "year": 2018,
+              "value": 32.918
+            },
+            {
+              "year": 2019,
+              "value": 32.8895
+            },
+            {
+              "year": 2020,
+              "value": 28.5572
+            },
+            {
+              "year": 2021,
+              "value": 31.288
+            },
+            {
+              "year": 2022,
+              "value": 36.616
+            },
+            {
+              "year": 2023,
+              "value": 34.4563
+            },
+            {
+              "year": 2024,
+              "value": 33.8898
+            },
+            {
+              "year": 2025,
+              "value": 33.3928
+            }
+          ]
+        },
+        "CAN": {
+          "year": 2025,
+          "value": 31.3324,
+          "previous": {
+            "year": 2024,
+            "value": 32.4691
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 31.8499
+            },
+            {
+              "year": 2016,
+              "value": 31.5025
+            },
+            {
+              "year": 2017,
+              "value": 31.4543
+            },
+            {
+              "year": 2018,
+              "value": 32.3254
+            },
+            {
+              "year": 2019,
+              "value": 32.3526
+            },
+            {
+              "year": 2020,
+              "value": 29.4736
+            },
+            {
+              "year": 2021,
+              "value": 31.1751
+            },
+            {
+              "year": 2022,
+              "value": 33.7212
+            },
+            {
+              "year": 2023,
+              "value": 33.3417
+            },
+            {
+              "year": 2024,
+              "value": 32.4691
+            },
+            {
+              "year": 2025,
+              "value": 31.3324
+            }
+          ]
+        },
+        "AUS": {
+          "year": 2025,
+          "value": 23.2444,
+          "previous": {
+            "year": 2024,
+            "value": 24.6215
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 19.9846
+            },
+            {
+              "year": 2016,
+              "value": 19.2031
+            },
+            {
+              "year": 2017,
+              "value": 21.1718
+            },
+            {
+              "year": 2018,
+              "value": 21.8126
+            },
+            {
+              "year": 2019,
+              "value": 24.0625
+            },
+            {
+              "year": 2020,
+              "value": 23.938
+            },
+            {
+              "year": 2021,
+              "value": 22.0018
+            },
+            {
+              "year": 2022,
+              "value": 25.4615
+            },
+            {
+              "year": 2023,
+              "value": 26.7011
+            },
+            {
+              "year": 2024,
+              "value": 24.6215
+            },
+            {
+              "year": 2025,
+              "value": 23.2444
+            }
+          ]
+        },
+        "IND": {
+          "year": 2025,
+          "value": 22.263,
+          "previous": {
+            "year": 2024,
+            "value": 22.064
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 19.8132
+            },
+            {
+              "year": 2016,
+              "value": 19.1582
+            },
+            {
+              "year": 2017,
+              "value": 18.7918
+            },
+            {
+              "year": 2018,
+              "value": 19.9278
+            },
+            {
+              "year": 2019,
+              "value": 18.6643
+            },
+            {
+              "year": 2020,
+              "value": 18.6825
+            },
+            {
+              "year": 2021,
+              "value": 21.3992
+            },
+            {
+              "year": 2022,
+              "value": 24.0402
+            },
+            {
+              "year": 2023,
+              "value": 22.3548
+            },
+            {
+              "year": 2024,
+              "value": 22.064
+            },
+            {
+              "year": 2025,
+              "value": 22.263
+            }
+          ]
+        },
+        "BRA": {
+          "year": 2025,
+          "value": 17.8207,
+          "previous": {
+            "year": 2024,
+            "value": 17.9386
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 12.9002
+            },
+            {
+              "year": 2016,
+              "value": 12.4667
+            },
+            {
+              "year": 2017,
+              "value": 12.519
+            },
+            {
+              "year": 2018,
+              "value": 14.635
+            },
+            {
+              "year": 2019,
+              "value": 14.1229
+            },
+            {
+              "year": 2020,
+              "value": 16.4536
+            },
+            {
+              "year": 2021,
+              "value": 19.1094
+            },
+            {
+              "year": 2022,
+              "value": 19.6308
+            },
+            {
+              "year": 2023,
+              "value": 17.9693
+            },
+            {
+              "year": 2024,
+              "value": 17.9386
+            },
+            {
+              "year": 2025,
+              "value": 17.8207
+            }
+          ]
+        },
+        "SGP": {
+          "year": 2025,
+          "value": 177.8515,
+          "previous": {
+            "year": 2024,
+            "value": 174.6559
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 178.3846
+            },
+            {
+              "year": 2016,
+              "value": 163.7963
+            },
+            {
+              "year": 2017,
+              "value": 170.9735
+            },
+            {
+              "year": 2018,
+              "value": 177.713
+            },
+            {
+              "year": 2019,
+              "value": 176.819
+            },
+            {
+              "year": 2020,
+              "value": 181.18
+            },
+            {
+              "year": 2021,
+              "value": 181.1593
+            },
+            {
+              "year": 2022,
+              "value": 185.0107
+            },
+            {
+              "year": 2023,
+              "value": 180.43
+            },
+            {
+              "year": 2024,
+              "value": 174.6559
+            },
+            {
+              "year": 2025,
+              "value": 177.8515
+            }
+          ]
+        },
+        "IDN": {
+          "year": 2025,
+          "value": 22.8465,
+          "previous": {
+            "year": 2024,
+            "value": 22.3096
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 21.1602
+            },
+            {
+              "year": 2016,
+              "value": 19.089
+            },
+            {
+              "year": 2017,
+              "value": 20.1773
+            },
+            {
+              "year": 2018,
+              "value": 21.0027
+            },
+            {
+              "year": 2019,
+              "value": 18.5915
+            },
+            {
+              "year": 2020,
+              "value": 17.3312
+            },
+            {
+              "year": 2021,
+              "value": 21.4166
+            },
+            {
+              "year": 2022,
+              "value": 24.5029
+            },
+            {
+              "year": 2023,
+              "value": 21.8086
+            },
+            {
+              "year": 2024,
+              "value": 22.3096
+            },
+            {
+              "year": 2025,
+              "value": 22.8465
+            }
+          ]
+        },
+        "VNM": {
+          "year": 2025,
+          "value": 98.2444,
+          "previous": {
+            "year": 2024,
+            "value": 90.1663
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 72.9229
+            },
+            {
+              "year": 2016,
+              "value": 74.1073
+            },
+            {
+              "year": 2017,
+              "value": 81.7625
+            },
+            {
+              "year": 2018,
+              "value": 84.4235
+            },
+            {
+              "year": 2019,
+              "value": 85.1576
+            },
+            {
+              "year": 2020,
+              "value": 84.3816
+            },
+            {
+              "year": 2021,
+              "value": 93.8502
+            },
+            {
+              "year": 2022,
+              "value": 93.4201
+            },
+            {
+              "year": 2023,
+              "value": 86.7367
+            },
+            {
+              "year": 2024,
+              "value": 90.1663
+            },
+            {
+              "year": 2025,
+              "value": 98.2444
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -6949,7 +42953,9 @@ export const indicatorSnapshot = {
           "year": 2025,
           "value": 45.763
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "fdi-outflows": {
       "countries": {
@@ -6959,7 +42965,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 2.6515
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.5389
+            },
+            {
+              "year": 2016,
+              "value": 1.8928
+            },
+            {
+              "year": 2017,
+              "value": 1.9921
+            },
+            {
+              "year": 2018,
+              "value": 2.0951
+            },
+            {
+              "year": 2019,
+              "value": 2.0125
+            },
+            {
+              "year": 2020,
+              "value": 1.9972
+            },
+            {
+              "year": 2021,
+              "value": 3.398
+            },
+            {
+              "year": 2022,
+              "value": 3.6568
+            },
+            {
+              "year": 2023,
+              "value": 1.7439
+            },
+            {
+              "year": 2024,
+              "value": 2.6515
+            },
+            {
+              "year": 2025,
+              "value": 2.202
+            }
+          ]
         },
         "WLD": {
           "year": 2025,
@@ -6967,7 +43019,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 1.5007
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 2.8727
+            },
+            {
+              "year": 2016,
+              "value": 2.8568
+            },
+            {
+              "year": 2017,
+              "value": 2.5411
+            },
+            {
+              "year": 2018,
+              "value": 1.0147
+            },
+            {
+              "year": 2019,
+              "value": 1.7389
+            },
+            {
+              "year": 2020,
+              "value": 1.1311
+            },
+            {
+              "year": 2021,
+              "value": 2.5503
+            },
+            {
+              "year": 2022,
+              "value": 2.1427
+            },
+            {
+              "year": 2023,
+              "value": 1.0063
+            },
+            {
+              "year": 2024,
+              "value": 1.5007
+            },
+            {
+              "year": 2025,
+              "value": 1.3977
+            }
+          ]
         },
         "USA": {
           "year": 2025,
@@ -6975,7 +43073,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 1.0996
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.6511
+            },
+            {
+              "year": 2016,
+              "value": 1.5943
+            },
+            {
+              "year": 2017,
+              "value": 2.0876
+            },
+            {
+              "year": 2018,
+              "value": -0.6328
+            },
+            {
+              "year": 2019,
+              "value": 0.5336
+            },
+            {
+              "year": 2020,
+              "value": 1.3208
+            },
+            {
+              "year": 2021,
+              "value": 1.4421
+            },
+            {
+              "year": 2022,
+              "value": 1.4924
+            },
+            {
+              "year": 2023,
+              "value": 1.2624
+            },
+            {
+              "year": 2024,
+              "value": 1.0996
+            },
+            {
+              "year": 2025,
+              "value": 1.3722
+            }
+          ]
         },
         "JPN": {
           "year": 2025,
@@ -6983,7 +43127,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 4.9513
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3.0525
+            },
+            {
+              "year": 2016,
+              "value": 3.4951
+            },
+            {
+              "year": 2017,
+              "value": 3.4486
+            },
+            {
+              "year": 2018,
+              "value": 3.1084
+            },
+            {
+              "year": 2019,
+              "value": 4.9237
+            },
+            {
+              "year": 2020,
+              "value": 2.8929
+            },
+            {
+              "year": 2021,
+              "value": 4.0125
+            },
+            {
+              "year": 2022,
+              "value": 3.9331
+            },
+            {
+              "year": 2023,
+              "value": 4.4932
+            },
+            {
+              "year": 2024,
+              "value": 4.9513
+            },
+            {
+              "year": 2025,
+              "value": 4.9098
+            }
+          ]
         },
         "CHN": {
           "year": 2025,
@@ -6991,7 +43181,53 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 1.0262
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.5459
+            },
+            {
+              "year": 2016,
+              "value": 1.8892
+            },
+            {
+              "year": 2017,
+              "value": 1.103
+            },
+            {
+              "year": 2018,
+              "value": 1.0109
+            },
+            {
+              "year": 2019,
+              "value": 0.9403
+            },
+            {
+              "year": 2020,
+              "value": 1.0251
+            },
+            {
+              "year": 2021,
+              "value": 0.9823
+            },
+            {
+              "year": 2022,
+              "value": 1.1468
+            },
+            {
+              "year": 2023,
+              "value": 1.2352
+            },
+            {
+              "year": 2024,
+              "value": 1.0262
+            },
+            {
+              "year": 2025,
+              "value": 0.8063
+            }
+          ]
         },
         "DEU": {
           "year": 2025,
@@ -6999,7 +43235,535 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2024,
             "value": 1.8575
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3.482
+            },
+            {
+              "year": 2016,
+              "value": 3.2955
+            },
+            {
+              "year": 2017,
+              "value": 3.9568
+            },
+            {
+              "year": 2018,
+              "value": 5.2504
+            },
+            {
+              "year": 2019,
+              "value": 4.327
+            },
+            {
+              "year": 2020,
+              "value": 3.6756
+            },
+            {
+              "year": 2021,
+              "value": 4.9298
+            },
+            {
+              "year": 2022,
+              "value": 3.8147
+            },
+            {
+              "year": 2023,
+              "value": 2.5467
+            },
+            {
+              "year": 2024,
+              "value": 1.8575
+            },
+            {
+              "year": 2025,
+              "value": 2.1407
+            }
+          ]
+        },
+        "GBR": {
+          "year": 2025,
+          "value": 2.1717,
+          "previous": {
+            "year": 2024,
+            "value": -1.9618
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": -2.043
+            },
+            {
+              "year": 2016,
+              "value": 1.2158
+            },
+            {
+              "year": 2017,
+              "value": 6.3741
+            },
+            {
+              "year": 2018,
+              "value": -0.9883
+            },
+            {
+              "year": 2019,
+              "value": -0.7476
+            },
+            {
+              "year": 2020,
+              "value": 0.6016
+            },
+            {
+              "year": 2021,
+              "value": 4.173
+            },
+            {
+              "year": 2022,
+              "value": 4.5148
+            },
+            {
+              "year": 2023,
+              "value": 0.8831
+            },
+            {
+              "year": 2024,
+              "value": -1.9618
+            },
+            {
+              "year": 2025,
+              "value": 2.1717
+            }
+          ]
+        },
+        "FRA": {
+          "year": 2025,
+          "value": 2.3845,
+          "previous": {
+            "year": 2024,
+            "value": 1.3202
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 3.2452
+            },
+            {
+              "year": 2016,
+              "value": 2.9478
+            },
+            {
+              "year": 2017,
+              "value": 1.8814
+            },
+            {
+              "year": 2018,
+              "value": 5.0299
+            },
+            {
+              "year": 2019,
+              "value": 3.1102
+            },
+            {
+              "year": 2020,
+              "value": 1.0853
+            },
+            {
+              "year": 2021,
+              "value": 3.9851
+            },
+            {
+              "year": 2022,
+              "value": 3.6851
+            },
+            {
+              "year": 2023,
+              "value": 2.2905
+            },
+            {
+              "year": 2024,
+              "value": 1.3202
+            },
+            {
+              "year": 2025,
+              "value": 2.3845
+            }
+          ]
+        },
+        "CAN": {
+          "year": 2025,
+          "value": 2.4644,
+          "previous": {
+            "year": 2024,
+            "value": 3.9397
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 5.3912
+            },
+            {
+              "year": 2016,
+              "value": 4.4245
+            },
+            {
+              "year": 2017,
+              "value": 4.7408
+            },
+            {
+              "year": 2018,
+              "value": 3.6376
+            },
+            {
+              "year": 2019,
+              "value": 4.3532
+            },
+            {
+              "year": 2020,
+              "value": 2.8646
+            },
+            {
+              "year": 2021,
+              "value": 5.1785
+            },
+            {
+              "year": 2022,
+              "value": 4.0384
+            },
+            {
+              "year": 2023,
+              "value": 4.175
+            },
+            {
+              "year": 2024,
+              "value": 3.9397
+            },
+            {
+              "year": 2025,
+              "value": 2.4644
+            }
+          ]
+        },
+        "AUS": {
+          "year": 2025,
+          "value": -0.2529,
+          "previous": {
+            "year": 2024,
+            "value": 0.793
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.6087
+            },
+            {
+              "year": 2016,
+              "value": -0.2566
+            },
+            {
+              "year": 2017,
+              "value": 0.7517
+            },
+            {
+              "year": 2018,
+              "value": 0.072
+            },
+            {
+              "year": 2019,
+              "value": 0.6364
+            },
+            {
+              "year": 2020,
+              "value": 0.5549
+            },
+            {
+              "year": 2021,
+              "value": 0.5926
+            },
+            {
+              "year": 2022,
+              "value": 7.5105
+            },
+            {
+              "year": 2023,
+              "value": 0.7674
+            },
+            {
+              "year": 2024,
+              "value": 0.793
+            },
+            {
+              "year": 2025,
+              "value": -0.2529
+            }
+          ]
+        },
+        "IND": {
+          "year": 2025,
+          "value": 0.9022,
+          "previous": {
+            "year": 2024,
+            "value": 0.6448
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.3572
+            },
+            {
+              "year": 2016,
+              "value": 0.2199
+            },
+            {
+              "year": 2017,
+              "value": 0.4183
+            },
+            {
+              "year": 2018,
+              "value": 0.4224
+            },
+            {
+              "year": 2019,
+              "value": 0.4634
+            },
+            {
+              "year": 2020,
+              "value": 0.4158
+            },
+            {
+              "year": 2021,
+              "value": 0.5443
+            },
+            {
+              "year": 2022,
+              "value": 0.4472
+            },
+            {
+              "year": 2023,
+              "value": 0.3964
+            },
+            {
+              "year": 2024,
+              "value": 0.6448
+            },
+            {
+              "year": 2025,
+              "value": 0.9022
+            }
+          ]
+        },
+        "BRA": {
+          "year": 2025,
+          "value": 1.3235,
+          "previous": {
+            "year": 2024,
+            "value": 1.205
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.1739
+            },
+            {
+              "year": 2016,
+              "value": 0.8183
+            },
+            {
+              "year": 2017,
+              "value": 1.0342
+            },
+            {
+              "year": 2018,
+              "value": 0.1056
+            },
+            {
+              "year": 2019,
+              "value": 1.2182
+            },
+            {
+              "year": 2020,
+              "value": -0.2349
+            },
+            {
+              "year": 2021,
+              "value": 0.972
+            },
+            {
+              "year": 2022,
+              "value": 1.7088
+            },
+            {
+              "year": 2023,
+              "value": 1.1477
+            },
+            {
+              "year": 2024,
+              "value": 1.205
+            },
+            {
+              "year": 2025,
+              "value": 1.3235
+            }
+          ]
+        },
+        "SGP": {
+          "year": 2025,
+          "value": 15.5998,
+          "previous": {
+            "year": 2024,
+            "value": 11.1036
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 14.6829
+            },
+            {
+              "year": 2016,
+              "value": 12.4324
+            },
+            {
+              "year": 2017,
+              "value": 18.8523
+            },
+            {
+              "year": 2018,
+              "value": 6.1514
+            },
+            {
+              "year": 2019,
+              "value": 18.3681
+            },
+            {
+              "year": 2020,
+              "value": 12.1712
+            },
+            {
+              "year": 2021,
+              "value": 17.2168
+            },
+            {
+              "year": 2022,
+              "value": 12.6501
+            },
+            {
+              "year": 2023,
+              "value": 10.0091
+            },
+            {
+              "year": 2024,
+              "value": 11.1036
+            },
+            {
+              "year": 2025,
+              "value": 15.5998
+            }
+          ]
+        },
+        "IDN": {
+          "year": 2025,
+          "value": 0.5485,
+          "previous": {
+            "year": 2024,
+            "value": 0.6011
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 1.0541
+            },
+            {
+              "year": 2016,
+              "value": -1.2442
+            },
+            {
+              "year": 2017,
+              "value": 0.1977
+            },
+            {
+              "year": 2018,
+              "value": 0.614
+            },
+            {
+              "year": 2019,
+              "value": 0.3988
+            },
+            {
+              "year": 2020,
+              "value": 0.4752
+            },
+            {
+              "year": 2021,
+              "value": 0.3309
+            },
+            {
+              "year": 2022,
+              "value": 0.503
+            },
+            {
+              "year": 2023,
+              "value": 0.5197
+            },
+            {
+              "year": 2024,
+              "value": 0.6011
+            },
+            {
+              "year": 2025,
+              "value": 0.5485
+            }
+          ]
+        },
+        "VNM": {
+          "year": 2024,
+          "value": 0.126,
+          "previous": {
+            "year": 2023,
+            "value": -0.3573
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 0.4598
+            },
+            {
+              "year": 2016,
+              "value": 0.389
+            },
+            {
+              "year": 2017,
+              "value": 0.1706
+            },
+            {
+              "year": 2018,
+              "value": 0.1928
+            },
+            {
+              "year": 2019,
+              "value": 0.1451
+            },
+            {
+              "year": 2020,
+              "value": 0.1096
+            },
+            {
+              "year": 2021,
+              "value": 0.087
+            },
+            {
+              "year": 2022,
+              "value": 0.6468
+            },
+            {
+              "year": 2023,
+              "value": -0.3573
+            },
+            {
+              "year": 2024,
+              "value": 0.126
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -7047,7 +43811,9 @@ export const indicatorSnapshot = {
           "year": 2025,
           "value": 2.202
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "tax-revenue": {
       "countries": {
@@ -7057,7 +43823,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 14.5991
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 12.5326
+            },
+            {
+              "year": 2016,
+              "value": 13.2783
+            },
+            {
+              "year": 2017,
+              "value": 13.7555
+            },
+            {
+              "year": 2018,
+              "value": 14.6943
+            },
+            {
+              "year": 2019,
+              "value": 14.3348
+            },
+            {
+              "year": 2020,
+              "value": 14.0112
+            },
+            {
+              "year": 2021,
+              "value": 15.6674
+            },
+            {
+              "year": 2022,
+              "value": 17.1587
+            },
+            {
+              "year": 2023,
+              "value": 14.5991
+            },
+            {
+              "year": 2024,
+              "value": 13.2937
+            }
+          ]
         },
         "WLD": {
           "year": 2024,
@@ -7065,7 +43873,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 13.8913
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 13.9991
+            },
+            {
+              "year": 2016,
+              "value": 13.8805
+            },
+            {
+              "year": 2017,
+              "value": 14.1648
+            },
+            {
+              "year": 2018,
+              "value": 13.8555
+            },
+            {
+              "year": 2019,
+              "value": 13.7681
+            },
+            {
+              "year": 2020,
+              "value": 13.664
+            },
+            {
+              "year": 2021,
+              "value": 14.3327
+            },
+            {
+              "year": 2022,
+              "value": 14.501
+            },
+            {
+              "year": 2023,
+              "value": 13.8913
+            },
+            {
+              "year": 2024,
+              "value": 13.8199
+            }
+          ]
         },
         "USA": {
           "year": 2024,
@@ -7073,7 +43923,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 10.6178
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 11.1828
+            },
+            {
+              "year": 2016,
+              "value": 10.8545
+            },
+            {
+              "year": 2017,
+              "value": 11.5039
+            },
+            {
+              "year": 2018,
+              "value": 9.9295
+            },
+            {
+              "year": 2019,
+              "value": 9.8848
+            },
+            {
+              "year": 2020,
+              "value": 10.144
+            },
+            {
+              "year": 2021,
+              "value": 11.3903
+            },
+            {
+              "year": 2022,
+              "value": 12.611
+            },
+            {
+              "year": 2023,
+              "value": 10.6178
+            },
+            {
+              "year": 2024,
+              "value": 10.7695
+            }
+          ]
         },
         "CHN": {
           "year": 2024,
@@ -7081,7 +43973,49 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 7.6382
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 9.1947
+            },
+            {
+              "year": 2016,
+              "value": 8.9456
+            },
+            {
+              "year": 2017,
+              "value": 9.2487
+            },
+            {
+              "year": 2018,
+              "value": 8.8909
+            },
+            {
+              "year": 2019,
+              "value": 8.3294
+            },
+            {
+              "year": 2020,
+              "value": 7.9241
+            },
+            {
+              "year": 2021,
+              "value": 7.7983
+            },
+            {
+              "year": 2022,
+              "value": 7.518
+            },
+            {
+              "year": 2023,
+              "value": 7.6382
+            },
+            {
+              "year": 2024,
+              "value": 7.0181
+            }
+          ]
         },
         "DEU": {
           "year": 2024,
@@ -7089,7 +44023,371 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2023,
             "value": 10.6875
-          }
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 11.9885
+            },
+            {
+              "year": 2016,
+              "value": 11.8345
+            },
+            {
+              "year": 2017,
+              "value": 11.9735
+            },
+            {
+              "year": 2018,
+              "value": 11.9511
+            },
+            {
+              "year": 2019,
+              "value": 11.9025
+            },
+            {
+              "year": 2020,
+              "value": 11.1649
+            },
+            {
+              "year": 2021,
+              "value": 11.4694
+            },
+            {
+              "year": 2022,
+              "value": 11.256
+            },
+            {
+              "year": 2023,
+              "value": 10.6875
+            },
+            {
+              "year": 2024,
+              "value": 10.8908
+            }
+          ]
+        },
+        "GBR": {
+          "year": 2024,
+          "value": 26.889,
+          "previous": {
+            "year": 2023,
+            "value": 26.8737
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 24.9162
+            },
+            {
+              "year": 2016,
+              "value": 25.289
+            },
+            {
+              "year": 2017,
+              "value": 25.4175
+            },
+            {
+              "year": 2018,
+              "value": 25.3266
+            },
+            {
+              "year": 2019,
+              "value": 24.9144
+            },
+            {
+              "year": 2020,
+              "value": 24.5434
+            },
+            {
+              "year": 2021,
+              "value": 25.9911
+            },
+            {
+              "year": 2022,
+              "value": 26.5536
+            },
+            {
+              "year": 2023,
+              "value": 26.8737
+            },
+            {
+              "year": 2024,
+              "value": 26.889
+            }
+          ]
+        },
+        "FRA": {
+          "year": 2024,
+          "value": 22.7785,
+          "previous": {
+            "year": 2023,
+            "value": 23.1762
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 23.2974
+            },
+            {
+              "year": 2016,
+              "value": 23.1463
+            },
+            {
+              "year": 2017,
+              "value": 23.7863
+            },
+            {
+              "year": 2018,
+              "value": 24.3099
+            },
+            {
+              "year": 2019,
+              "value": 24.6605
+            },
+            {
+              "year": 2020,
+              "value": 24.7888
+            },
+            {
+              "year": 2021,
+              "value": 23.9794
+            },
+            {
+              "year": 2022,
+              "value": 24.5496
+            },
+            {
+              "year": 2023,
+              "value": 23.1762
+            },
+            {
+              "year": 2024,
+              "value": 22.7785
+            }
+          ]
+        },
+        "CAN": {
+          "year": 2024,
+          "value": 13.7146,
+          "previous": {
+            "year": 2023,
+            "value": 13.7378
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 12.3898
+            },
+            {
+              "year": 2016,
+              "value": 12.4966
+            },
+            {
+              "year": 2017,
+              "value": 12.612
+            },
+            {
+              "year": 2018,
+              "value": 13.0577
+            },
+            {
+              "year": 2019,
+              "value": 12.7417
+            },
+            {
+              "year": 2020,
+              "value": 13.5186
+            },
+            {
+              "year": 2021,
+              "value": 13.9963
+            },
+            {
+              "year": 2022,
+              "value": 13.6967
+            },
+            {
+              "year": 2023,
+              "value": 13.7378
+            },
+            {
+              "year": 2024,
+              "value": 13.7146
+            }
+          ]
+        },
+        "AUS": {
+          "year": 2022,
+          "value": 23.5615,
+          "previous": {
+            "year": 2021,
+            "value": 23.0039
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 21.7852
+            },
+            {
+              "year": 2016,
+              "value": 22.1882
+            },
+            {
+              "year": 2017,
+              "value": 22.0222
+            },
+            {
+              "year": 2018,
+              "value": 23.122
+            },
+            {
+              "year": 2019,
+              "value": 23.3143
+            },
+            {
+              "year": 2020,
+              "value": 22.5075
+            },
+            {
+              "year": 2021,
+              "value": 23.0039
+            },
+            {
+              "year": 2022,
+              "value": 23.5615
+            }
+          ]
+        },
+        "IND": {
+          "year": 2022,
+          "value": 6.9337,
+          "previous": {
+            "year": 2018,
+            "value": 12.0174
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 10.5697
+            },
+            {
+              "year": 2016,
+              "value": 11.1477
+            },
+            {
+              "year": 2017,
+              "value": 11.3874
+            },
+            {
+              "year": 2018,
+              "value": 12.0174
+            },
+            {
+              "year": 2022,
+              "value": 6.9337
+            }
+          ]
+        },
+        "BRA": {
+          "year": 2024,
+          "value": 15.4102,
+          "previous": {
+            "year": 2023,
+            "value": 14.0419
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 13.6296
+            },
+            {
+              "year": 2016,
+              "value": 13.7104
+            },
+            {
+              "year": 2017,
+              "value": 13.6052
+            },
+            {
+              "year": 2018,
+              "value": 13.9401
+            },
+            {
+              "year": 2019,
+              "value": 13.7377
+            },
+            {
+              "year": 2020,
+              "value": 12.7194
+            },
+            {
+              "year": 2021,
+              "value": 14.1367
+            },
+            {
+              "year": 2022,
+              "value": 14.7258
+            },
+            {
+              "year": 2023,
+              "value": 14.0419
+            },
+            {
+              "year": 2024,
+              "value": 15.4102
+            }
+          ]
+        },
+        "SGP": {
+          "year": 2024,
+          "value": 13.5603,
+          "previous": {
+            "year": 2023,
+            "value": 13.7388
+          },
+          "history": [
+            {
+              "year": 2015,
+              "value": 13.1398
+            },
+            {
+              "year": 2016,
+              "value": 13.2379
+            },
+            {
+              "year": 2017,
+              "value": 13.9277
+            },
+            {
+              "year": 2018,
+              "value": 12.9758
+            },
+            {
+              "year": 2019,
+              "value": 13.1541
+            },
+            {
+              "year": 2020,
+              "value": 12.6685
+            },
+            {
+              "year": 2021,
+              "value": 12.6096
+            },
+            {
+              "year": 2022,
+              "value": 11.664
+            },
+            {
+              "year": 2023,
+              "value": 13.7388
+            },
+            {
+              "year": 2024,
+              "value": 13.5603
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -7133,7 +44431,9 @@ export const indicatorSnapshot = {
           "year": 2024,
           "value": 13.2937
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     },
     "logistics-performance": {
       "countries": {
@@ -7143,7 +44443,21 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2018,
             "value": 3.61
-          }
+          },
+          "history": [
+            {
+              "year": 2016,
+              "value": 3.7171
+            },
+            {
+              "year": 2018,
+              "value": 3.61
+            },
+            {
+              "year": 2022,
+              "value": 3.8
+            }
+          ]
         },
         "WLD": {
           "year": 2022,
@@ -7151,7 +44465,21 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2018,
             "value": 2.8663
-          }
+          },
+          "history": [
+            {
+              "year": 2016,
+              "value": 2.8837
+            },
+            {
+              "year": 2018,
+              "value": 2.8663
+            },
+            {
+              "year": 2022,
+              "value": 3
+            }
+          ]
         },
         "USA": {
           "year": 2022,
@@ -7159,7 +44487,21 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2018,
             "value": 3.89
-          }
+          },
+          "history": [
+            {
+              "year": 2016,
+              "value": 3.9922
+            },
+            {
+              "year": 2018,
+              "value": 3.89
+            },
+            {
+              "year": 2022,
+              "value": 3.8
+            }
+          ]
         },
         "JPN": {
           "year": 2022,
@@ -7167,7 +44509,21 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2018,
             "value": 4.03
-          }
+          },
+          "history": [
+            {
+              "year": 2016,
+              "value": 3.9705
+            },
+            {
+              "year": 2018,
+              "value": 4.03
+            },
+            {
+              "year": 2022,
+              "value": 3.9
+            }
+          ]
         },
         "CHN": {
           "year": 2022,
@@ -7175,7 +44531,21 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2018,
             "value": 3.61
-          }
+          },
+          "history": [
+            {
+              "year": 2016,
+              "value": 3.6611
+            },
+            {
+              "year": 2018,
+              "value": 3.61
+            },
+            {
+              "year": 2022,
+              "value": 3.7
+            }
+          ]
         },
         "DEU": {
           "year": 2022,
@@ -7183,7 +44553,219 @@ export const indicatorSnapshot = {
           "previous": {
             "year": 2018,
             "value": 4.2
-          }
+          },
+          "history": [
+            {
+              "year": 2016,
+              "value": 4.226
+            },
+            {
+              "year": 2018,
+              "value": 4.2
+            },
+            {
+              "year": 2022,
+              "value": 4.1
+            }
+          ]
+        },
+        "GBR": {
+          "year": 2022,
+          "value": 3.7,
+          "previous": {
+            "year": 2018,
+            "value": 3.99
+          },
+          "history": [
+            {
+              "year": 2016,
+              "value": 4.0697
+            },
+            {
+              "year": 2018,
+              "value": 3.99
+            },
+            {
+              "year": 2022,
+              "value": 3.7
+            }
+          ]
+        },
+        "FRA": {
+          "year": 2022,
+          "value": 3.9,
+          "previous": {
+            "year": 2018,
+            "value": 3.84
+          },
+          "history": [
+            {
+              "year": 2016,
+              "value": 3.901
+            },
+            {
+              "year": 2018,
+              "value": 3.84
+            },
+            {
+              "year": 2022,
+              "value": 3.9
+            }
+          ]
+        },
+        "CAN": {
+          "year": 2022,
+          "value": 4,
+          "previous": {
+            "year": 2018,
+            "value": 3.73
+          },
+          "history": [
+            {
+              "year": 2016,
+              "value": 3.9307
+            },
+            {
+              "year": 2018,
+              "value": 3.73
+            },
+            {
+              "year": 2022,
+              "value": 4
+            }
+          ]
+        },
+        "AUS": {
+          "year": 2022,
+          "value": 3.7,
+          "previous": {
+            "year": 2018,
+            "value": 3.75
+          },
+          "history": [
+            {
+              "year": 2016,
+              "value": 3.7934
+            },
+            {
+              "year": 2018,
+              "value": 3.75
+            },
+            {
+              "year": 2022,
+              "value": 3.7
+            }
+          ]
+        },
+        "IND": {
+          "year": 2022,
+          "value": 3.4,
+          "previous": {
+            "year": 2018,
+            "value": 3.18
+          },
+          "history": [
+            {
+              "year": 2016,
+              "value": 3.42
+            },
+            {
+              "year": 2018,
+              "value": 3.18
+            },
+            {
+              "year": 2022,
+              "value": 3.4
+            }
+          ]
+        },
+        "BRA": {
+          "year": 2022,
+          "value": 3.2,
+          "previous": {
+            "year": 2018,
+            "value": 2.99
+          },
+          "history": [
+            {
+              "year": 2016,
+              "value": 3.088
+            },
+            {
+              "year": 2018,
+              "value": 2.99
+            },
+            {
+              "year": 2022,
+              "value": 3.2
+            }
+          ]
+        },
+        "SGP": {
+          "year": 2022,
+          "value": 4.3,
+          "previous": {
+            "year": 2018,
+            "value": 4
+          },
+          "history": [
+            {
+              "year": 2016,
+              "value": 4.1436
+            },
+            {
+              "year": 2018,
+              "value": 4
+            },
+            {
+              "year": 2022,
+              "value": 4.3
+            }
+          ]
+        },
+        "IDN": {
+          "year": 2022,
+          "value": 3,
+          "previous": {
+            "year": 2018,
+            "value": 3.15
+          },
+          "history": [
+            {
+              "year": 2016,
+              "value": 2.9845
+            },
+            {
+              "year": 2018,
+              "value": 3.15
+            },
+            {
+              "year": 2022,
+              "value": 3
+            }
+          ]
+        },
+        "VNM": {
+          "year": 2022,
+          "value": 3.3,
+          "previous": {
+            "year": 2018,
+            "value": 3.27
+          },
+          "history": [
+            {
+              "year": 2016,
+              "value": 2.9766
+            },
+            {
+              "year": 2018,
+              "value": 3.27
+            },
+            {
+              "year": 2022,
+              "value": 3.3
+            }
+          ]
         }
       },
       "koreaTrend": [
@@ -7199,7 +44781,9 @@ export const indicatorSnapshot = {
           "year": 2022,
           "value": 3.8
         }
-      ]
+      ],
+      "collectionStatus": "success",
+      "sourceUpdatedAt": "2026-07-13"
     }
   }
 };

@@ -8,9 +8,9 @@
       content="최신 시장 데이터와 한국 경제 흐름을 기준시각과 함께 정리하는 대시보드"
     />
     <meta name="theme-color" content="#f6f7f8" />
-    <link rel="manifest" href="/manifest.json?v=87" />
+    <link rel="manifest" href="/manifest.json" />
     <link rel="icon" href="/assets/econest-icon.png" type="image/png" />
-    <link rel="stylesheet" href="/styles.css?v=87" />
+    <link rel="stylesheet" href="/styles.css" />
     <title>keefe's society</title>
   </head>
   <body>
@@ -40,7 +40,6 @@
         <button class="chapter-tab" type="button" data-chapter="korea" aria-selected="false">한국</button>
         <button class="chapter-tab" type="button" data-chapter="indicators" aria-selected="false">지표</button>
         <button class="chapter-tab" type="button" data-chapter="future" aria-selected="false">미래</button>
-        <button class="chapter-tab" type="button" data-chapter="analysis" aria-selected="false">심층</button>
         <button class="chapter-tab" type="button" data-chapter="study" aria-selected="false">공부</button>
         <button class="chapter-tab" type="button" data-chapter="news" aria-selected="false">뉴스</button>
         <button class="chapter-tab" type="button" data-chapter="politics" aria-selected="false">정치</button>
@@ -110,37 +109,73 @@
             </section>
 
             <section class="chapter-pane chapter-single" id="markets" data-chapter-panel="markets" aria-label="시장 전문">
-              <article class="panel chart-panel">
-                <div class="panel-heading">
+              <article class="panel chart-panel market-hub-panel">
+                <div class="panel-heading market-heading">
                   <div>
                     <p class="section-kicker">시장 전문</p>
                     <h2 id="chartTitle">KOSPI</h2>
                   </div>
-                  <div class="segmented" id="chartTabs" role="tablist"></div>
+                  <div class="segmented" id="chartTabs" role="tablist" aria-label="시장 선택"></div>
                 </div>
-                <div class="chart-meta" id="chartMeta" aria-live="polite"></div>
-                <div class="chart-frame" id="chartFrame">
-                  <div class="chart-visual-head">
-                    <div class="chart-current-reading">
-                      <span>최근 차트값</span>
-                      <strong id="chartCurrentValue">--</strong>
-                      <em id="chartStatusText">데이터 확인 중</em>
-                    </div>
-                    <div class="chart-period-reading" id="chartPeriodBadge" data-direction="flat">
-                      <span>조회 기간 등락</span>
-                      <strong>--</strong>
-                    </div>
-                  </div>
-                  <div class="chart-canvas-wrap" id="chartCanvasWrap">
-                    <canvas id="marketChart" width="960" height="420" aria-label="시장 가격 차트"></canvas>
-                    <i class="chart-hover-line" id="chartHoverLine" hidden aria-hidden="true"></i>
-                    <i class="chart-hover-dot" id="chartHoverDot" hidden aria-hidden="true"></i>
-                    <div class="chart-tooltip" id="chartTooltip" role="status" hidden></div>
-                  </div>
+                <div class="nested-chapter-tabs market-view-tabs" id="marketViewTabs" role="tablist" aria-label="시장 하위 챕터">
+                  <button type="button" role="tab" data-market-view="summary" aria-selected="true">
+                    <strong>시장 요약</strong>
+                    <span>숫자의 의미와 한국 영향</span>
+                  </button>
+                  <button type="button" role="tab" data-market-view="chart" aria-selected="false">
+                    <strong>시장 차트</strong>
+                    <span>기간과 가격 흐름 확인</span>
+                  </button>
+                  <button type="button" role="tab" data-market-view="deep" aria-selected="false">
+                    <strong>심층 분석</strong>
+                    <span>근거·반대 신호·시나리오</span>
+                  </button>
                 </div>
-                <div class="market-brief" id="marketBrief"></div>
-                <div class="market-board" id="marketBoard"></div>
-                <div class="chapter-expansion" id="marketConnections"></div>
+                <div class="nested-chapter-panels market-view-panels">
+                  <section class="nested-chapter-panel market-view-panel" data-market-view-panel="summary" aria-hidden="false">
+                    <div class="market-brief" id="marketBrief"></div>
+                    <div class="market-board" id="marketBoard"></div>
+                    <div class="chapter-expansion" id="marketConnections"></div>
+                  </section>
+                  <section class="nested-chapter-panel market-view-panel market-chart-panel" data-market-view-panel="chart" aria-hidden="true" inert>
+                    <div class="chart-meta" id="chartMeta" aria-live="polite"></div>
+                    <div class="chart-frame" id="chartFrame">
+                      <div class="chart-visual-head">
+                        <div class="chart-current-reading">
+                          <span>최근 차트값</span>
+                          <strong id="chartCurrentValue">--</strong>
+                          <em id="chartStatusText">데이터 확인 중</em>
+                        </div>
+                        <div class="chart-period-reading" id="chartPeriodBadge" data-direction="flat">
+                          <span>조회 기간 등락</span>
+                          <strong>--</strong>
+                        </div>
+                      </div>
+                      <div class="chart-canvas-wrap" id="chartCanvasWrap">
+                        <canvas id="marketChart" width="960" height="420" aria-label="시장 가격 차트"></canvas>
+                        <i class="chart-hover-line" id="chartHoverLine" hidden aria-hidden="true"></i>
+                        <i class="chart-hover-dot" id="chartHoverDot" hidden aria-hidden="true"></i>
+                        <div class="chart-tooltip" id="chartTooltip" role="status" hidden></div>
+                      </div>
+                    </div>
+                  </section>
+                  <section class="nested-chapter-panel market-view-panel market-deep-panel" data-market-view-panel="deep" aria-hidden="true" inert>
+                    <header class="market-deep-heading">
+                      <div>
+                        <p class="section-kicker">시장 심층</p>
+                        <h3 id="marketDeepTitle">선택 시장의 원인과 한국 영향</h3>
+                      </div>
+                      <span>통계·규칙 기반 · 수익률 예측 아님</span>
+                    </header>
+                    <div class="market-deep-status" id="marketDeepStatus" role="status">
+                      <span aria-hidden="true"></span>
+                      <p>심층 탭을 열면 현재 시장 데이터로 분석합니다.</p>
+                    </div>
+                    <div class="chapter-board" id="analysisBoard"></div>
+                    <ul class="analysis-list" id="analysisList"></ul>
+                    <div class="chapter-expansion" id="scenarioMatrix"></div>
+                  </section>
+                </div>
               </article>
             </section>
 
@@ -289,20 +324,6 @@
                 </div>
               </article>
             </section>
-            <section class="chapter-pane chapter-single" id="analysis" data-chapter-panel="analysis" aria-label="심층 전문">
-              <article class="panel analysis-panel">
-                <div class="panel-heading">
-                  <div>
-                    <p class="section-kicker">심층 전문</p>
-                    <h2>사실과 해석을 나눈 심층 브리핑</h2>
-                  </div>
-                </div>
-                <div class="chapter-board" id="analysisBoard"></div>
-                <ul class="analysis-list" id="analysisList"></ul>
-                <div class="chapter-expansion" id="scenarioMatrix"></div>
-              </article>
-            </section>
-
             <section class="chapter-pane chapter-single" id="study" data-chapter-panel="study" aria-label="경제 공부">
               <article class="panel study-panel">
                 <div class="panel-heading study-heading">
@@ -482,6 +503,6 @@
       </footer>
     </div>
 
-    <script type="module" src="/app.js?v=89"></script>
+    <script type="module" src="/app.js"></script>
   </body>
 </html>

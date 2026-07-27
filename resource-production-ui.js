@@ -1,8 +1,10 @@
-import { resourceProductionMetadata } from "./resource-production-data.js?v=87";
+import { resourceProductionMetadata } from "./resource-production-data.js";
+import { buildResourceIndicatorMetadata, isMetadataUnavailable } from "./indicator-metadata.js";
 
 const boundRoots = new WeakSet();
 
 export function renderResourceProductionDetail(indicator) {
+  const metadata = buildResourceIndicatorMetadata(indicator, resourceProductionMetadata);
   const ranked = [...indicator.countries].sort((a, b) => b.value - a.value);
   const mapped = ranked.filter((country) => Number.isFinite(country.lon) && Number.isFinite(country.lat));
   const leader = mapped[0];
@@ -83,7 +85,59 @@ export function renderResourceProductionDetail(indicator) {
         <a href="${escapeHtml(indicator.sourceUrl)}" target="_blank" rel="noopener noreferrer">생산량 원자료 <span aria-hidden="true">↗</span></a>
       </div>
     </footer>
+    ${renderResourceMetadataDetails(metadata, indicator)}
   `;
+}
+
+function renderResourceMetadataDetails(metadata, indicator) {
+  const rows = [
+    ["공식 코드", metadata.officialCode],
+    ["현재 표시값", formatProductionExact(metadata.value, indicator.unit)],
+    ["단위", metadata.displayUnit],
+    ["배율", `×${metadata.multiplier}`],
+    ["기준기간", metadata.referencePeriod],
+    ["발표·수정일", formatMetadataDate(metadata.releaseDate)],
+    ["수집일", formatMetadataDate(metadata.collectedAt)],
+    ["자료 주기", metadata.frequency],
+    ["값의 범위", metadata.valueScope],
+    ["잠정·확정", metadata.releaseStatus],
+    ["명목·실질", metadata.nominalReal],
+    ["통화·가격 기준", `${metadata.currency} · ${metadata.priceBasis}`],
+    ["계절조정", metadata.seasonalAdjustment],
+    ["수정 여부", metadata.revisionStatus]
+  ];
+  return `
+    <details class="indicator-source-details resource-metadata-details">
+      <summary>
+        <span>출처·단위·기준 자세히 보기</span>
+        <strong>${escapeHtml(metadata.sourceDataset)}</strong>
+      </summary>
+      <div class="indicator-metadata-body">
+        <section class="indicator-metadata-source">
+          <span>원자료 기관</span>
+          <strong>${escapeHtml(metadata.sourceInstitution)}</strong>
+          <p>광산 생산 물량이며 가격이나 매장량이 아닙니다.</p>
+        </section>
+        <dl class="indicator-metadata-grid">
+          ${rows.map(([label, value]) => `
+            <div>
+              <dt>${escapeHtml(label)}</dt>
+              <dd${isMetadataUnavailable(value) ? ' class="is-unavailable"' : ""}>${escapeHtml(isMetadataUnavailable(value) ? "제공처 미공개" : value)}</dd>
+            </div>
+          `).join("")}
+        </dl>
+        <div class="indicator-metadata-footer">
+          <p><b>표시 계산</b> USGS 공표 물량 × 1; 국가 비중은 국가 생산량 ÷ 세계 총량 × 100입니다.</p>
+          <a href="${escapeHtml(metadata.sourceUrl)}" target="_blank" rel="noopener noreferrer">USGS 원자료 보기 <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </details>
+  `.replace(/^\+/gm, "");
+}
+
+function formatMetadataDate(value) {
+  if (isMetadataUnavailable(value)) return null;
+  return String(value).replaceAll("-", ".");
 }
 
 export function bindResourceProductionDetail(root, updateHeight = () => {}) {

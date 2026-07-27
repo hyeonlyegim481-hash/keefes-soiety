@@ -1,16 +1,21 @@
-import { climateBusinessFramework } from "./climate-business-data.js?v=87";
-import { futureCompanies, futureIndustries, futureIndustryMethod } from "./future-industry-data.js?v=87";
-import { initFutureOutlook } from "./future-outlook-ui.js?v=87";
+import { climateBusinessFramework } from "./climate-business-data.js";
+import { futureCompanies, futureIndustries, futureIndustryMethod } from "./future-industry-data.js";
+import { initFutureOutlook } from "./future-outlook-ui.js";
+import {
+  readUrlState,
+  subscribeUrlState,
+  syncUrlState
+} from "./url-state.js";
 
 const MAX_COMPARE = 4;
 const numberFormatter = new Intl.NumberFormat("ko-KR", { maximumFractionDigits: 1 });
 const companyById = new Map(futureCompanies.map((company) => [company.id, company]));
 const industryById = new Map(futureIndustries.map((industry) => [industry.id, industry]));
-const initialFutureParameters = new URLSearchParams(globalThis.location?.search || "");
+const initialUrlState = readUrlState();
 
 const viewState = {
-  view: initialFutureParameters.get("future") === "outlook" ? "outlook" : "industries",
-  sector: "ai-chips",
+  view: initialUrlState.chapter === "future" ? initialUrlState.future : "industries",
+  sector: initialUrlState.chapter === "future" ? initialUrlState.industry : "ai-chips",
   climatePhase: "all",
   compareIds: ["nvidia", "sk-hynix", "microsoft"],
   region: "all",
@@ -20,6 +25,7 @@ const viewState = {
 
 let updateChapterHeight = () => {};
 let outlookController = null;
+let subscribedToUrlState = false;
 
 const elements = {
   update: document.querySelector("#futureUpdate"),
@@ -66,6 +72,14 @@ export function initFutureIndustryChapter({ updateHeight = () => {} } = {}) {
     viewState.query = "";
     if (elements.companySearch) elements.companySearch.value = "";
     renderFutureIndustryChapter();
+    syncUrlState(
+      {
+        chapter: "future",
+        future: "industries",
+        industry: viewState.sector
+      },
+      { mode: "push", source: "future-industry" }
+    );
   });
 
   elements.companyList?.addEventListener("click", (event) => {
@@ -102,6 +116,10 @@ export function initFutureIndustryChapter({ updateHeight = () => {} } = {}) {
     root: elements.outlookRoot,
     updateHeight: updateChapterHeight
   });
+  if (!subscribedToUrlState) {
+    subscribedToUrlState = true;
+    subscribeUrlState(applyFutureUrlState);
+  }
   renderFutureIndustryChapter();
   setFutureView(viewState.view, { syncUrl: false });
 }
@@ -126,13 +144,36 @@ function setFutureView(nextView, { syncUrl = true } = {}) {
     elements.update.textContent = `${String(updatedAt || "").replaceAll("-", ".")} 기준`;
   }
 
-  if (syncUrl && globalThis.location && globalThis.history) {
-    const url = new URL(globalThis.location.href);
-    if (normalized === "outlook") url.searchParams.set("future", "outlook");
-    else url.searchParams.delete("future");
-    globalThis.history.replaceState(null, "", url);
+  if (syncUrl) {
+    syncUrlState(
+      {
+        chapter: "future",
+        future: normalized,
+        ...(normalized === "industries" ? { industry: viewState.sector } : {})
+      },
+      { mode: "push", source: "future-view" }
+    );
   }
   requestAnimationFrame(updateChapterHeight);
+}
+
+function applyFutureUrlState(urlState) {
+  if (urlState.chapter !== "future") return;
+  const nextView = urlState.future === "outlook" ? "outlook" : "industries";
+  const nextSector = industryById.has(urlState.industry)
+    ? urlState.industry
+    : "ai-chips";
+  const sectorChanged = viewState.sector !== nextSector;
+  const viewChanged = viewState.view !== nextView;
+  if (!sectorChanged && !viewChanged) return;
+
+  viewState.sector = nextSector;
+  if (sectorChanged) {
+    viewState.query = "";
+    if (elements.companySearch) elements.companySearch.value = "";
+    renderFutureIndustryChapter();
+  }
+  setFutureView(nextView, { syncUrl: false });
 }
 
 function getSelectedIndustry() {

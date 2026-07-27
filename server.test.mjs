@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
+  buildAnalysis,
   buildArticleMarketContext,
   fetchMarket,
   rankAndDedupeHeadlines,
@@ -250,4 +251,22 @@ test("keeps current context when no post-publication price exists", () => {
 
   assert.equal(context.basis, "current");
   assert.equal(context.markets[0].changePercent, -2);
+});
+
+test("returns 판단 자료 부족 instead of treating a missing previous close as zero", () => {
+  const markets = [
+    { id: "vix", name: "VIX", value: 18, changePercent: 1, changeAvailable: true },
+    { id: "usdkrw", name: "USD/KRW", value: 1380, changePercent: 0.2, changeAvailable: true },
+    { id: "kospi", name: "KOSPI", value: 2800, changePercent: null, changeAvailable: false },
+    { id: "sp500", name: "S&P 500", value: 5900, changePercent: -0.5, changeAvailable: true },
+    { id: "wti", name: "WTI 선물", value: 78, changePercent: 1.2, changeAvailable: true }
+  ];
+  const analysis = buildAnalysis(markets, []);
+
+  assert.equal(analysis.dataComplete, false);
+  assert.equal(analysis.riskScore, null);
+  assert.equal(analysis.regime, "판단 자료 부족");
+  assert.deepEqual(analysis.missingInputs, ["kospiChange"]);
+  assert.match(analysis.pulse, /0으로 바꾸지 않고/);
+  assert.doesNotMatch(JSON.stringify(analysis), /KOSPI[^"]*\+0/);
 });

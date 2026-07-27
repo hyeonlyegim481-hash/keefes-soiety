@@ -1,38 +1,58 @@
-const CACHE_NAME = "keefes-society-v89";
+importScripts("/app-version.js");
+
+const APP_VERSION = String(self.KEEFES_APP_VERSION || "dev");
+const CACHE_NAME = `keefes-society-v${APP_VERSION}`;
+const RESOURCE_TIMEOUT_MS = 10_000;
 const CORE_SHELL = [
   "/",
   "/index.html",
-  "/styles.css?v=87",
-  "/news-system.css?v=89",
-  "/future-industry.css?v=87",
-  "/future-outlook.css?v=87",
-  "/future-outlook-ui.js?v=87",
-  "/future-outlook-data.js?v=87",
-  "/politics.css?v=87",
-  "/app.js?v=89",
-  "/politics-ui.js?v=87",
-  "/politics-data.js?v=87",
-  "/economic-narrative.js?v=87",
-  "/manifest.json?v=87",
+  "/app-version.js",
+  "/runtime-loader.js",
+  "/styles.css",
+  "/app.js",
+  "/economic-narrative.js",
+  "/economic-graph.js",
+  "/market-data.js",
+  "/manifest.json",
   "/assets/econest-icon.png"
 ];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) =>
-      Promise.allSettled(CORE_SHELL.map((asset) => cache.add(asset)))
-    )
+    (async () => {
+      const cache = await caches.open(CACHE_NAME);
+      await Promise.all(
+        CORE_SHELL.map(async (asset) => {
+          const response = await fetch(asset, { cache: "reload" });
+          if (!response.ok) {
+            throw new Error(`Core asset failed: ${asset} (${response.status})`);
+          }
+          await cache.put(asset, response);
+        })
+      );
+      await self.skipWaiting();
+    })().catch((error) => {
+      console.error("[service-worker] install failed", error);
+      throw error;
+    })
   );
-  self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches
-      .keys()
-      .then((keys) => Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))))
+    (async () => {
+      const keys = await caches.keys();
+      await Promise.all(
+        keys
+          .filter((key) => key !== CACHE_NAME)
+          .map((key) => caches.delete(key))
+      );
+      await self.clients.claim();
+    })().catch((error) => {
+      console.error("[service-worker] activation failed", error);
+      throw error;
+    })
   );
-  self.clients.claim();
 });
 
 self.addEventListener("fetch", (event) => {
@@ -45,33 +65,63 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  const networkFirst = ["script", "style", "worker", "manifest"].includes(
+    event.request.destination
+  );
   event.respondWith(
-    caches.match(event.request).then((cached) => cached || fetchAndCache(event.request))
+    networkFirst
+      ? fetchAndCache(event.request)
+      : caches.match(event.request).then(
+          (cached) => cached || fetchAndCache(event.request)
+        )
   );
 });
 
 async function fetchNavigation(request) {
   try {
-    const response = await fetch(request, { signal: AbortSignal.timeout(3_500) });
-    if (response.ok) {
-      const cache = await caches.open(CACHE_NAME);
-      cache.put("/index.html", response.clone()).catch(() => {});
-    }
+    const response = await fetch(request, {
+      signal: AbortSignal.timeout(3_500)
+    });
+    if (!response.ok) throw new Error(`Navigation failed: ${response.status}`);
+    await cacheResponse("/index.html", response.clone());
     return response;
-  } catch {
-    return (
+  } catch (error) {
+    console.warn("[service-worker] using navigation fallback", error);
+    const cached =
       (await caches.match(request)) ||
       (await caches.match("/index.html")) ||
-      (await caches.match("/"))
-    );
+      (await caches.match("/"));
+    if (cached) return cached;
+    throw error;
   }
 }
 
 async function fetchAndCache(request) {
-  const response = await fetch(request);
-  if (response.ok) {
-    const cache = await caches.open(CACHE_NAME);
-    cache.put(request, response.clone()).catch(() => {});
+  try {
+    const response = await fetch(request, {
+      signal: AbortSignal.timeout(RESOURCE_TIMEOUT_MS)
+    });
+    if (!response.ok) {
+      throw new Error(`Resource failed: ${request.url} (${response.status})`);
+    }
+    await cacheResponse(request, response.clone());
+    return response;
+  } catch (error) {
+    const cached = await caches.match(request);
+    if (cached) {
+      console.warn("[service-worker] using cached resource", request.url, error);
+      return cached;
+    }
+    console.error("[service-worker] resource unavailable", request.url, error);
+    throw error;
   }
-  return response;
+}
+
+async function cacheResponse(request, response) {
+  try {
+    const cache = await caches.open(CACHE_NAME);
+    await cache.put(request, response);
+  } catch (error) {
+    console.warn("[service-worker] cache write failed", error);
+  }
 }

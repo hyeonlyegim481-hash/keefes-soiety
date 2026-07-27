@@ -2,14 +2,21 @@ import {
   economicLabControls,
   economicLabPresets,
   evaluateEconomicScenario
-} from "./economic-lab-data.js?v=87";
+} from "./economic-lab-data.js";
 import {
   indicatorCountries,
   indicatorDefinitions as baseIndicatorDefinitions
-} from "./indicator-data.js?v=87";
-import { financeIndicatorDefinitions } from "./indicator-finance-data.js?v=87";
-import { expandedIndicatorDefinitions } from "./indicator-expanded-data.js?v=87";
-import { indicatorSnapshot } from "./indicator-values.js?v=87";
+} from "./indicator-data.js";
+import { financeIndicatorDefinitions } from "./indicator-finance-data.js";
+import { expandedIndicatorDefinitions } from "./indicator-expanded-data.js";
+import { indicatorSnapshot } from "./indicator-values.js";
+import { buildIndicatorCountryComparison } from "./indicator-comparison.js";
+import { formatIndicatorDisplayValue } from "./indicator-metadata.js";
+import {
+  readUrlState,
+  subscribeUrlState,
+  syncUrlState
+} from "./url-state.js";
 
 const comparableIndicators = [
   ...baseIndicatorDefinitions,
@@ -98,20 +105,7 @@ const escapeHtml = (value) =>
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
-function formatNumber(indicator, value) {
-  return new Intl.NumberFormat("ko-KR", {
-    minimumFractionDigits: indicator.precision,
-    maximumFractionDigits: indicator.precision
-  }).format(value);
-}
-
-function formatIndicatorValue(indicator, observation) {
-  if (!observation || !Number.isFinite(observation.value)) return "--";
-  const number = formatNumber(indicator, observation.value);
-  if (indicator.format === "currency") return `$${number}`;
-  if (indicator.unit === "%") return `${number}%`;
-  return `${number} ${indicator.unit}`;
-}
+const formatIndicatorValue = formatIndicatorDisplayValue;
 
 export function buildCountryComparisonModel(groupId, requestedCountryIds) {
   const group =
@@ -134,35 +128,43 @@ export function buildCountryComparisonModel(groupId, requestedCountryIds) {
       const indicator = comparableIndicators.find((item) => item.id === indicatorId);
       const data = indicatorSnapshot.indicators[indicatorId];
       if (!indicator || !data) return null;
-      const observations = countries.map((country) => ({
-        country,
-        observation: data.countries?.[country.id] || null
-      }));
-      const available = observations.filter((item) =>
-        Number.isFinite(item.observation?.value)
+      const comparison = buildIndicatorCountryComparison({
+        indicator,
+        dataset: data,
+        countries,
+        countryIds
+      });
+      const values = comparison.available.map(
+        (item) => item.observation.value
       );
-      const values = available.map((item) => item.observation.value);
       const min = values.length ? Math.min(...values) : 0;
       const max = values.length ? Math.max(...values) : 0;
       const range = max - min || 1;
-      const ranked = [...available].sort(
-        (a, b) => b.observation.value - a.observation.value
-      );
       const koreaRank =
-        ranked.findIndex((item) => item.country.id === "KOR") + 1 || null;
+        comparison.ranked.findIndex((item) => item.country.id === "KOR") + 1 ||
+        null;
 
       return {
         indicator,
-        observations: observations.map((item) => ({
+        observations: comparison.entries.map((item) => ({
           ...item,
-          position: Number.isFinite(item.observation?.value)
+          position: item.available
             ? clamp(((item.observation.value - min) / range) * 100, 4, 100)
             : null
         })),
-        highest: ranked[0] || null,
-        lowest: ranked.at(-1) || null,
+        highest: comparison.ranked[0] || null,
+        lowest: comparison.ranked.at(-1) || null,
         koreaRank,
-        availableCount: available.length
+        availableCount: comparison.available.length,
+        comparisonLabel: comparison.comparisonLabel,
+        yearsDiffer: comparison.yearsDiffer,
+        yearGap: comparison.yearGap,
+        yearNotice: comparison.yearNotice,
+        yearDifferenceLabel: comparison.yearDifferenceLabel,
+        rankingLabel: comparison.rankingLabel,
+        interpretation: comparison.interpretation,
+        pace: comparison.pace,
+        worldReferenceYear: comparison.worldReferenceYear
       };
     })
     .filter(Boolean);
@@ -192,10 +194,10 @@ function setNestedView({
     panel.inert = !isSelected;
   });
   if (updateUrl) {
-    const url = new URL(window.location.href);
-    url.searchParams.set("chapter", chapter);
-    url.searchParams.set(queryName, selected);
-    history.replaceState(null, "", url);
+    syncUrlState(
+      { chapter, [queryName]: selected },
+      { mode: "push", source: chapter + "-view" }
+    );
   }
   requestAnimationFrame(() => {
     updateHeight();
@@ -700,6 +702,7 @@ function renderCountryComparison(root, groupId, countryIds, selectionMessage = "
                   <div>
                     <span>${escapeHtml(metric.indicator.code)}</span>
                     <h4>${escapeHtml(metric.indicator.name)}</h4>
+                    <small class="country-metric-basis">${escapeHtml(metric.comparisonLabel)}</small>
                   </div>
                   <p>${escapeHtml(metric.indicator.description)}</p>
                 </header>
@@ -708,35 +711,44 @@ function renderCountryComparison(root, groupId, countryIds, selectionMessage = "
                 }">
                   ${metric.observations
                     .map((item) => {
-                      const available = Number.isFinite(
-                        item.observation?.value
-                      );
+                      const available = item.available;
                       return `
                         <section data-country="${item.country.id}" data-available="${available}">
                           <span>${escapeHtml(item.country.label)} <em>${
-                            item.observation?.year || "연도 없음"
+                            item.observation?.year ? `${item.observation.year}년` : "기준연도 없음"
                           }</em></span>
                           <strong>${escapeHtml(
-                            formatIndicatorValue(
-                              metric.indicator,
-                              item.observation
-                            )
+                            available
+                              ? formatIndicatorValue(
+                                  metric.indicator,
+                                  item.observation
+                                )
+                              : item.missingStatus
                           )}</strong>
                           ${
                             available
                               ? `<div class="country-value-track"><i style="width:${item.position}%"></i></div>`
-                              : '<div class="country-value-track" data-missing><span>비교 자료 없음</span></div>'
+                              : `<div class="country-value-track" data-missing><span>${escapeHtml(item.missingStatus)}</span></div>`
                           }
                         </section>
                       `;
                     })
                     .join("")}
                 </div>
+                ${metric.yearNotice ? `
+                  <div class="country-year-notice" data-year-gap="${metric.yearGap}">
+                    <strong>${escapeHtml(metric.yearDifferenceLabel || "기준연도 다름")}</strong>
+                    <p>${escapeHtml(metric.yearNotice)}</p>
+                    <em>${escapeHtml(metric.interpretation)}</em>
+                  </div>
+                ` : ""}
                 <footer>
                   <p>
                     ${
-                      metric.highest && metric.lowest
-                        ? `선택 국가 중 높은 값 ${escapeHtml(
+                      metric.yearsDiffer && metric.pace === "fast"
+                        ? escapeHtml(metric.interpretation)
+                        : metric.highest && metric.lowest
+                          ? `${metric.yearsDiffer ? "참고 순서상" : "선택 국가 중"} 높은 값 ${escapeHtml(
                             metric.highest.country.label
                           )} ${escapeHtml(
                             formatIndicatorValue(
@@ -756,7 +768,7 @@ function renderCountryComparison(root, groupId, countryIds, selectionMessage = "
                   </p>
                   <span>${
                     metric.koreaRank
-                      ? `한국 ${metric.koreaRank}/${metric.availableCount}번째`
+                      ? `한국 ${metric.koreaRank}/${metric.availableCount} · ${metric.rankingLabel}`
                       : `비교 가능 ${metric.availableCount}/${model.countries.length}개`
                   }</span>
                 </footer>
@@ -780,9 +792,10 @@ function renderCountryComparison(root, groupId, countryIds, selectionMessage = "
         <summary>출처·기준·수정 가능성 자세히 보기</summary>
         <div>
           <p><b>원자료 제공기관</b> 세계은행 World Development Indicators</p>
-          <p><b>데이터 기준일</b> 각 값 옆의 국가별 공표연도</p>
+          <p><b>데이터 기준일</b> 공통연도가 있으면 공통 최신연도, 없으면 각 국가의 최신 공표연도</p>
           <p><b>사이트 갱신일</b> ${escapeHtml(indicatorSnapshot.dataUpdatedAt.replaceAll("-", "."))}</p>
-          <p><b>계산식</b> 원자료 값을 변환하지 않고 표시하며, 막대는 현재 선택 국가 안의 최솟값~최댓값 상대 위치입니다.</p>
+          <p><b>계산식</b> 모든 선택 국가에 공통인 최신연도를 먼저 찾고, 없으면 국가별 최신값을 사용합니다. 막대는 표시 가능한 값의 최솟값~최댓값 상대 위치입니다.</p>
+          <p><b>누락 상태</b> 공표 자료 없음, 자료 수집 실패, 비교 기준 불일치, 제공처 미지원을 구분하며 누락값을 0으로 표시하지 않습니다.</p>
           <p><b>명목·실질</b> 지표 코드별 정의가 다르므로 각 카드의 원자료 링크에서 확인합니다.</p>
           <p><b>계절조정·수정</b> 연간 WDI 값으로 별도 계절조정 표시는 없으며, 제공기관 갱신 때 과거 값이 수정될 수 있습니다.</p>
           <p><b>잠정·확정</b> WDI 응답에 공통 상태 필드가 없어 확정치로 단정하지 않습니다.</p>
@@ -816,18 +829,13 @@ export function initLearningTools({ updateHeight }) {
     return;
   }
 
-  const parameters = new URLSearchParams(window.location.search);
-  const requestedChapter = parameters.get("chapter");
-  let studyView = requestedChapter === "history"
-    ? "history"
-    : parameters.get("study") || "today";
-  let indicatorView = parameters.get("indicatorView") || "explorer";
-  if (!["today", "connections", "lab", "history"].includes(studyView)) {
-    studyView = "today";
-  }
-  if (!["explorer", "compare"].includes(indicatorView)) {
-    indicatorView = "explorer";
-  }
+  const initialUrlState = readUrlState();
+  let studyView = initialUrlState.chapter === "study"
+    ? initialUrlState.study
+    : "today";
+  let indicatorView = initialUrlState.chapter === "indicators"
+    ? initialUrlState.indicatorView
+    : "explorer";
 
   let economicValues = Object.fromEntries(
     economicLabControls.map((control) => [control.id, 0])
@@ -863,6 +871,40 @@ export function initLearningTools({ updateHeight }) {
     chapter: "indicators",
     updateHeight,
     updateUrl: false
+  });
+
+  subscribeUrlState((urlState) => {
+    if (urlState.chapter === "study") {
+      const nextStudyView = urlState.study || "today";
+      if (nextStudyView !== studyView) {
+        studyView = nextStudyView;
+        setNestedView({
+          tabs: studyTabs,
+          panels: studyPanels,
+          selected: studyView,
+          dataName: "studyView",
+          queryName: "study",
+          chapter: "study",
+          updateHeight,
+          updateUrl: false
+        });
+      }
+    } else if (urlState.chapter === "indicators") {
+      const nextIndicatorView = urlState.indicatorView || "explorer";
+      if (nextIndicatorView !== indicatorView) {
+        indicatorView = nextIndicatorView;
+        setNestedView({
+          tabs: indicatorTabs,
+          panels: indicatorPanels,
+          selected: indicatorView,
+          dataName: "indicatorView",
+          queryName: "indicatorView",
+          chapter: "indicators",
+          updateHeight,
+          updateUrl: false
+        });
+      }
+    }
   });
 
   document.querySelector("#studyViewTabs")?.addEventListener("click", (event) => {
