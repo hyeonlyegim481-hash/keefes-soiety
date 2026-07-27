@@ -15096,6 +15096,11 @@ html[data-reader-layout="desktop"] body {
   min-width: 1180px;
 }
 
+html[data-reader-layout="desktop"] .chapter-window,
+html[data-reader-layout="desktop"] .chart-canvas-wrap {
+  touch-action: pan-y pinch-zoom;
+}
+
 .reader-layout-toggle {
   margin-bottom: 16px;
   padding-bottom: 16px;
