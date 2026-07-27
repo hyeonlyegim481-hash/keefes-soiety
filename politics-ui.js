@@ -6,6 +6,12 @@ import {
   politicsMeta
 } from "./politics-data.js";
 import {
+  buildPoliticsLiveBriefs,
+  getPoliticalTransmission,
+  inferPoliticalJurisdiction,
+  selectPoliticalHeadlines
+} from "./chapter-live-briefs.js";
+import {
   readUrlState,
   subscribeUrlState,
   syncUrlState
@@ -102,9 +108,7 @@ export function initPoliticsChapter({
   return {
     updateSnapshot(snapshot) {
       viewState.snapshot = snapshot;
-      if (viewState.view === "overview" || viewState.view === "news") {
-        renderPoliticsChapter();
-      }
+      renderPoliticsChapter();
     }
   };
 }
@@ -172,6 +176,7 @@ function renderPoliticsChapter() {
 
 function renderOverview() {
   const politicalNews = selectPoliticalHeadlines(viewState.snapshot?.headlines || []);
+  const liveBriefs = getPoliticsLiveBriefs();
   const effectiveCount = lawChanges.filter((law) => law.status === "in-force").length;
   const nextCalendar = politicalCalendar.find((item) => item.tone === "upcoming");
 
@@ -199,6 +204,11 @@ function renderOverview() {
           <p>${escapeHtml(nextCalendar?.title || "공식 일정을 확인합니다.")}</p>
         </div>
       </div>
+
+      ${renderPoliticsLiveBrief(liveBriefs.overview, {
+        title: "30분 정치·정책 동향",
+        description: "기사와 공식 기준자료를 분리해 읽습니다."
+      })}
 
       <div class="politics-overview-layout">
         <section class="politics-transmission" aria-labelledby="politicsTransmissionTitle">
@@ -282,7 +292,7 @@ function renderOverview() {
           </section>
           <section>
             <span>업데이트 구분</span>
-            <p>국가·법률 설명은 ${escapeHtml(politicsMeta.updatedAt)} 기준으로 검증한 정적 자료이며, 정치 뉴스만 서버 스냅샷 주기에 맞춰 갱신됩니다.</p>
+            <p>공식 기준 설명은 ${escapeHtml(politicsMeta.updatedAt)} 검증본을 유지하고, 국가·법률별 최근 동향은 뉴스 스냅샷과 같은 ${Number(liveBriefs.overview.refreshMinutes) || 30}분 주기로 갱신합니다.</p>
           </section>
         </div>
       </details>
@@ -291,6 +301,7 @@ function renderOverview() {
 }
 
 function renderLaws() {
+  const liveBriefs = getPoliticsLiveBriefs();
   const jurisdictions = ["전체", ...new Set(lawChanges.map((law) => law.jurisdiction))];
   const visibleLaws = lawChanges
     .filter((law) => viewState.jurisdiction === "전체" || law.jurisdiction === viewState.jurisdiction)
@@ -314,6 +325,11 @@ function renderLaws() {
           <em>${escapeHtml(politicsMeta.updatedAt)} 확인</em>
         </aside>
       </header>
+
+      ${renderPoliticsLiveBrief(liveBriefs.overview, {
+        title: "법·제도 관련 30분 동향",
+        description: "새 기사를 확인하되 공식 원문 전에는 시행 상태를 바꾸지 않습니다."
+      })}
 
       <div class="politics-law-toolbar">
         <div class="politics-law-filter" role="group" aria-label="법률 국가 필터">
@@ -350,7 +366,7 @@ function renderLaws() {
 
       <div class="politics-law-list">
         ${visibleLaws.length
-          ? visibleLaws.map(renderLawChange).join("")
+          ? visibleLaws.map((law) => renderLawChange(law, liveBriefs.byLaw[law.id])).join("")
           : `
             <div class="politics-empty">
               <strong>선택한 조건에 맞는 법·제도 항목이 없습니다.</strong>
@@ -363,7 +379,7 @@ function renderLaws() {
   `;
 }
 
-function renderLawChange(law) {
+function renderLawChange(law, liveBrief) {
   const sourceUrl = safeExternalUrl(law.source.url);
   const secondaryUrl = law.secondarySource
     ? safeExternalUrl(law.secondarySource.url)
@@ -387,6 +403,11 @@ function renderLawChange(law) {
         </div>
       </summary>
       <div class="politics-law-detail">
+        ${renderPoliticsLiveBrief(liveBrief, {
+          title: "이 법률의 최근 기사 동향",
+          description: "기사 동향과 공식 시행 상태는 별개입니다.",
+          compact: true
+        })}
         <section class="politics-law-change">
           <span>정확히 무엇이 달라졌나</span>
           <ol>
@@ -424,6 +445,7 @@ function renderLawChange(law) {
 function renderCountries() {
   const selected = countrySnapshots.find((country) => country.id === viewState.country)
     || countrySnapshots[0];
+  const liveBrief = getPoliticsLiveBriefs().byCountry[selected.id];
 
   elements.body.innerHTML = `
     <section class="politics-countries">
@@ -466,6 +488,12 @@ function renderCountries() {
             <div>${selected.agenda.map((item) => `<em>${escapeHtml(item)}</em>`).join("")}</div>
           </div>
         </header>
+
+        ${renderPoliticsLiveBrief(liveBrief, {
+          title: `${selected.name} 30분 정치·경제 동향`,
+          description: "최근 기사 신호이며 공식 지도부·정책 상태와 구분합니다.",
+          compact: true
+        })}
 
         <div class="politics-country-facts">
           <section>
@@ -605,68 +633,70 @@ function renderPoliticalHeadline(headline, index) {
   `;
 }
 
-export function selectPoliticalHeadlines(headlines = [], limit = 12) {
-  const politicsPattern = /대통령|대통령실|청와대|국회|의회|상원|하원|백악관|내각|총리|정부|국무원|전인대|집행위원회|법안|법률|상법|시행령|예산안|선거|정당|관세|제재|규제/i;
-  const economyPattern = /경제|예산|재정|세금|조세|금리|물가|관세|무역|수출|수입|산업|기업|노동|고용|부동산|금융|은행|AI|반도체|에너지|공급망|제재|투자|성장/i;
-  const seenTitles = new Set();
-  const seenUrls = new Set();
+export {
+  getPoliticalTransmission,
+  inferPoliticalJurisdiction,
+  selectPoliticalHeadlines
+};
 
-  return [...headlines]
-    .filter((headline) => {
-      const text = `${headline.title || ""} ${headline.topic || ""} ${headline.impactArea || ""}`;
-      return headline.section === "politics"
-        || (politicsPattern.test(text) && economyPattern.test(text));
-    })
-    .sort((left, right) => Date.parse(right.publishedAt) - Date.parse(left.publishedAt))
-    .filter((headline) => {
-      const titleKey = normalizeText(headline.title);
-      const urlKey = normalizeText(headline.url);
-      if (
-        !titleKey
-        || seenTitles.has(titleKey)
-        || (urlKey && seenUrls.has(urlKey))
-      ) {
-        return false;
-      }
-      seenTitles.add(titleKey);
-      if (urlKey) seenUrls.add(urlKey);
-      return true;
-    })
-    .slice(0, limit);
+function getPoliticsLiveBriefs() {
+  return buildPoliticsLiveBriefs(
+    viewState.snapshot || getCurrentSnapshot(),
+    countrySnapshots,
+    lawChanges
+  );
 }
 
-export function getPoliticalTransmission(headline = {}) {
-  const text = `${headline.title || ""} ${headline.topic || ""}`;
-  if (/관세|무역|수출통제|제재|공급망/i.test(text)) {
-    return "정책 결정 → 교역 비용·물량 → 수출기업 이익·환율·물가";
-  }
-  if (/예산|재정|세금|조세|감세|보조금/i.test(text)) {
-    return "법안·예산 → 가계 세부담·정부 지출 → 소비·투자·국채금리";
-  }
-  if (/금융|은행|가상자산|스테이블코인|자본시장|상법/i.test(text)) {
-    return "법·감독 기준 → 자금조달·준수 비용 → 금융시장·기업가치";
-  }
-  if (/노동|고용|임금|노조/i.test(text)) {
-    return "노동 제도 → 임금·교섭·고용 비용 → 소비와 기업 마진";
-  }
-  if (/AI|반도체|기술|에너지|산업/i.test(text)) {
-    return "산업정책·규제 → 지원·준수 비용 → 설비투자·생산·경쟁";
-  }
-  return "정책 발표 → 법안·시행 여부 확인 → 기업·가계 행동 → 시장 가격";
+function renderPoliticsLiveBrief(brief, {
+  title = "30분 동향",
+  description = "검증된 기준자료와 함께 확인합니다.",
+  compact = false
+} = {}) {
+  const current = brief || {
+    status: "unavailable",
+    count: 0,
+    fetchedAt: null,
+    refreshMinutes: 30,
+    headlines: [],
+    summary: "최신 동향을 수집하지 못했습니다."
+  };
+  const statusLabels = {
+    current: "새 동향",
+    empty: "새 기사 없음",
+    stale: "마지막 정상 뉴스",
+    unavailable: "수집 실패"
+  };
+  const headlines = Array.isArray(current.headlines) ? current.headlines : [];
+  return `
+    <section class="politics-live-brief${compact ? " is-compact" : ""}" data-status="${escapeHtml(current.status)}">
+      <header>
+        <div>
+          <span>LIVE POLICY WATCH</span>
+          <strong>${escapeHtml(title)}</strong>
+          <p>${escapeHtml(description)}</p>
+        </div>
+        <aside>
+          <b>${escapeHtml(statusLabels[current.status] || "확인 중")}</b>
+          <time datetime="${escapeHtml(current.fetchedAt || "")}">${current.fetchedAt ? formatDate(current.fetchedAt) : "기준시각 없음"}</time>
+          <em>${Number(current.refreshMinutes) || 30}분 확인 · ${Number(current.count) || 0}건 연결</em>
+        </aside>
+      </header>
+      <p class="politics-live-summary">${escapeHtml(current.summary)}</p>
+      ${current.transmission ? `<p class="politics-live-path"><span>경제 확인 경로</span>${escapeHtml(current.transmission)}</p>` : ""}
+      ${headlines.length ? `
+        <div class="politics-live-links">
+          ${headlines.map((headline) => `
+            <a href="${escapeHtml(safeExternalUrl(headline.url))}" target="_blank" rel="noopener noreferrer">
+              <span>${escapeHtml(headline.source || "출처 미확인")} · ${formatDate(headline.publishedAt, "게시일 미확인")}</span>
+              <strong>${escapeHtml(headline.title)}</strong>
+            </a>
+          `).join("")}
+        </div>
+      ` : ""}
+      <small>기사 동향은 법률의 통과·공포·시행을 확정하지 않습니다. 공식 원문이 확인될 때만 기준 상태를 수정합니다.</small>
+    </section>
+  `;
 }
-
-export function inferPoliticalJurisdiction(headline = {}) {
-  const text = `${headline.title || ""} ${headline.topic || ""}`;
-  if (/한국|국내|대통령실|청와대|국회|기획재정부|금융위원회/i.test(text)) return "한국";
-  if (/미국|트럼프|백악관|상원|하원|Congress|U\.S\./i.test(text)) return "미국";
-  if (/중국|시진핑|국무원|전인대|China/i.test(text)) return "중국";
-  if (/일본|다카이치|일본\s*내각|Japan/i.test(text)) return "일본";
-  if (/러시아|푸틴|크렘린|Russia/i.test(text)) return "러시아";
-  if (/EU|유럽연합|집행위원회|유럽의회|European Commission/i.test(text)) return "EU";
-  if (/인도|모디|India/i.test(text)) return "인도";
-  return "세계";
-}
-
 function formatDate(value, fallback = "기준시각 미확인") {
   const date = new Date(value);
   return Number.isFinite(date.getTime()) ? dateFormatter.format(date) : fallback;

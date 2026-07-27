@@ -96,7 +96,7 @@ test("retries the secondary Yahoo host when the primary host is unavailable", as
         chart: {
           result: [
             {
-              timestamp: [timestamp - 3600, timestamp],
+              timestamp: [timestamp - 24 * 3600, timestamp],
               meta: {
                 regularMarketPrice: 110,
                 regularMarketTime: timestamp,

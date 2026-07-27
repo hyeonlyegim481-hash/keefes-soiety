@@ -75,6 +75,32 @@ test("does not calculate a change when the previous close is missing", () => {
   assert.equal(movement.changePercent, null);
 });
 
+test("uses the latest completed session instead of the one-year chart baseline", () => {
+  const baseline = resolvePreviousCloseInfo(
+    {
+      chartPreviousClose: 3196.05,
+      exchangeTimezoneName: "Asia/Seoul"
+    },
+    [
+      { time: "2025-07-28T00:00:00.000Z", value: 3209.52 },
+      { time: "2026-07-24T00:00:00.000Z", value: 6690.62 },
+      { time: "2026-07-27T00:00:00.000Z", value: 6755.75 }
+    ],
+    { time: "2026-07-27T00:00:00.000Z", value: 6755.75 },
+    { maxDailyChangePercent: 30 }
+  );
+  const movement = calculateMarketChange(6755.75, baseline, {
+    maxDailyChangePercent: 30
+  });
+
+  assert.equal(baseline.available, true);
+  assert.equal(baseline.value, 6690.62);
+  assert.equal(baseline.source, "series-previous-session");
+  assert.equal(baseline.previousTradingDate, "2026-07-24");
+  assert.equal(movement.available, true);
+  assert.equal(Math.round(movement.changePercent * 100), 97);
+});
+
 test("rejects a previous session that is too old", () => {
   const baseline = resolvePreviousCloseInfo(
     { previousClose: 100, exchangeTimezoneName: "UTC" },

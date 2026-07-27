@@ -1,4 +1,5 @@
 import { climateBusinessFramework } from "./climate-business-data.js";
+import { buildFutureIndustryBrief } from "./chapter-live-briefs.js";
 import { futureCompanies, futureIndustries, futureIndustryMethod } from "./future-industry-data.js";
 import { initFutureOutlook } from "./future-outlook-ui.js";
 import {
@@ -9,6 +10,12 @@ import {
 
 const MAX_COMPARE = 4;
 const numberFormatter = new Intl.NumberFormat("ko-KR", { maximumFractionDigits: 1 });
+const liveDateFormatter = new Intl.DateTimeFormat("ko-KR", {
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit"
+});
 const companyById = new Map(futureCompanies.map((company) => [company.id, company]));
 const industryById = new Map(futureIndustries.map((industry) => [industry.id, industry]));
 const initialUrlState = readUrlState();
@@ -20,10 +27,12 @@ const viewState = {
   compareIds: ["nvidia", "sk-hynix", "microsoft"],
   region: "all",
   sort: "health",
-  query: ""
+  query: "",
+  snapshot: null
 };
 
 let updateChapterHeight = () => {};
+let getCurrentSnapshot = () => null;
 let outlookController = null;
 let subscribedToUrlState = false;
 
@@ -48,8 +57,13 @@ const elements = {
   method: document.querySelector("#futureMethod")
 };
 
-export function initFutureIndustryChapter({ updateHeight = () => {} } = {}) {
+export function initFutureIndustryChapter({
+  updateHeight = () => {},
+  getSnapshot = () => null
+} = {}) {
   updateChapterHeight = updateHeight;
+  getCurrentSnapshot = getSnapshot;
+  viewState.snapshot = getCurrentSnapshot();
 
   elements.viewTabs?.addEventListener("click", (event) => {
     const button = event.target.closest?.("[data-future-view]");
@@ -114,7 +128,8 @@ export function initFutureIndustryChapter({ updateHeight = () => {} } = {}) {
 
   outlookController = initFutureOutlook({
     root: elements.outlookRoot,
-    updateHeight: updateChapterHeight
+    updateHeight: updateChapterHeight,
+    snapshot: viewState.snapshot
   });
   if (!subscribedToUrlState) {
     subscribedToUrlState = true;
@@ -122,6 +137,14 @@ export function initFutureIndustryChapter({ updateHeight = () => {} } = {}) {
   }
   renderFutureIndustryChapter();
   setFutureView(viewState.view, { syncUrl: false });
+  return {
+    updateSnapshot(snapshot) {
+      viewState.snapshot = snapshot;
+      outlookController?.updateSnapshot(snapshot);
+      renderFutureIndustryChapter();
+      renderFutureUpdateLabel(viewState.view);
+    }
+  };
 }
 
 function setFutureView(nextView, { syncUrl = true } = {}) {
@@ -137,12 +160,7 @@ function setFutureView(nextView, { syncUrl = true } = {}) {
     panel.inert = !selected;
   });
 
-  if (elements.update) {
-    const updatedAt = normalized === "outlook"
-      ? outlookController?.updatedAt
-      : futureIndustryMethod.updatedAt;
-    elements.update.textContent = `${String(updatedAt || "").replaceAll("-", ".")} 기준`;
-  }
+  renderFutureUpdateLabel(normalized);
 
   if (syncUrl) {
     syncUrlState(
@@ -196,14 +214,13 @@ function toggleComparison(companyId) {
 function renderFutureIndustryChapter() {
   const industry = getSelectedIndustry();
   const companies = getIndustryCompanies(industry);
+  const liveBrief = buildFutureIndustryBrief(viewState.snapshot, industry);
 
-  if (elements.update && viewState.view === "industries") {
-    elements.update.textContent = `${futureIndustryMethod.updatedAt.replaceAll("-", ".")} 기준`;
-  }
+  if (viewState.view === "industries") renderFutureUpdateLabel("industries");
 
   renderSummary(industry, companies);
   renderIndustryTabs(industry);
-  if (elements.story) elements.story.innerHTML = renderIndustryStory(industry, companies);
+  if (elements.story) elements.story.innerHTML = renderIndustryStory(industry, companies, liveBrief);
   renderCompanyWorkspace(industry);
   renderComparison();
   renderClimateBusinessLab();
@@ -261,7 +278,7 @@ function renderIndustryTabs(activeIndustry) {
   );
 }
 
-function renderIndustryStory(industry, companies) {
+function renderIndustryStory(industry, companies, liveBrief) {
   const strongest = [...companies].sort((a, b) => getHealthScore(b) - getHealthScore(a))[0];
   const fastest = [...companies].sort((a, b) => b.revenueGrowth - a.revenueGrowth)[0];
   const koreaCount = companies.filter((company) => company.country === "한국").length;
@@ -280,6 +297,7 @@ function renderIndustryStory(industry, companies) {
         <em>관찰 기간 · ${escapeHtml(industry.horizon)}</em>
       </aside>
     </header>
+    ${renderFutureLiveBrief(liveBrief, `${industry.label} 30분 동향`)}
     <div class="future-plain">
       <span>한 문장으로 쉽게</span>
       <strong>${escapeHtml(industry.plain)}</strong>
@@ -654,6 +672,77 @@ function renderMethod() {
   `;
 }
 
+function renderFutureUpdateLabel(view = viewState.view) {
+  if (!elements.update) return;
+  const staticDate = view === "outlook"
+    ? outlookController?.updatedAt
+    : futureIndustryMethod.updatedAt;
+  const newsAt = viewState.snapshot?.dataQuality?.newsFetchedAt;
+  const liveLabel = newsAt
+    ? ` · 동향 ${formatLiveDate(newsAt)} · ${Number(viewState.snapshot?.dataQuality?.newsRefreshMinutes) || 30}분 확인`
+    : " · 동향 수집 확인 중";
+  elements.update.textContent = `${String(staticDate || "").replaceAll("-", ".")} 검증 기준${liveLabel}`;
+}
+
+function renderFutureLiveBrief(brief, title) {
+  const current = brief || {
+    status: "unavailable",
+    count: 0,
+    fetchedAt: null,
+    refreshMinutes: 30,
+    headlines: [],
+    summary: "최신 동향을 수집하지 못했습니다."
+  };
+  const statusLabels = {
+    current: "새 동향",
+    empty: "새 기사 없음",
+    stale: "마지막 정상 뉴스",
+    unavailable: "수집 실패"
+  };
+  const headlines = Array.isArray(current.headlines) ? current.headlines : [];
+  return `
+    <section class="future-live-brief" data-status="${escapeHtml(current.status)}">
+      <header>
+        <div>
+          <span>LIVE INDUSTRY WATCH</span>
+          <strong>${escapeHtml(title)}</strong>
+        </div>
+        <aside>
+          <b>${escapeHtml(statusLabels[current.status] || "확인 중")}</b>
+          <time datetime="${escapeHtml(current.fetchedAt || "")}">${current.fetchedAt ? formatLiveDate(current.fetchedAt) : "기준시각 없음"}</time>
+          <em>${Number(current.refreshMinutes) || 30}분 확인 · ${Number(current.count) || 0}건 연결</em>
+        </aside>
+      </header>
+      <p>${escapeHtml(current.summary)}</p>
+      ${current.transmission ? `<div class="future-live-path"><span>사업 전달 경로</span><strong>${escapeHtml(current.transmission)}</strong></div>` : ""}
+      ${headlines.length ? `
+        <div class="future-live-links">
+          ${headlines.map((headline) => `
+            <a href="${escapeHtml(safeExternalUrl(headline.url))}" target="_blank" rel="noopener noreferrer">
+              <span>${escapeHtml(headline.source || "출처 미확인")} · ${formatLiveDate(headline.publishedAt, "게시일 미확인")}</span>
+              <strong>${escapeHtml(headline.title)}</strong>
+            </a>
+          `).join("")}
+        </div>
+      ` : ""}
+      <small>뉴스 동향은 장기 전망이나 기업 실적을 자동 확정하지 않습니다. 공식 자료가 바뀔 때 기준 수치를 별도로 수정합니다.</small>
+    </section>
+  `;
+}
+
+function formatLiveDate(value, fallback = "기준시각 미확인") {
+  const date = new Date(value);
+  return Number.isFinite(date.getTime()) ? liveDateFormatter.format(date) : fallback;
+}
+
+function safeExternalUrl(value) {
+  try {
+    const url = new URL(String(value || ""));
+    return ["http:", "https:"].includes(url.protocol) ? url.toString() : "#";
+  } catch {
+    return "#";
+  }
+}
 function getCompanyRole(company, contextIndustry = null) {
   if (company.role) return company.role;
   return contextIndustry?.shortLabel || industryById.get(company.sectorId)?.shortLabel || "미래산업";

@@ -277,17 +277,7 @@ export function resolvePreviousCloseInfo(
     meta?.exchangeTimezoneName || options.fallbackTimezone || "UTC";
   const current = Number(currentPoint?.value);
   const currentTime = Date.parse(currentPoint?.time);
-  const candidates = [
-    ["previousClose", meta?.previousClose],
-    ["chartPreviousClose", meta?.chartPreviousClose]
-  ];
-  const [source, rawValue] =
-    candidates.find(([, value]) => Number.isFinite(Number(value)) && Number(value) > 0) ||
-    [];
 
-  if (!source) {
-    return unavailableBaseline("previous-close-missing");
-  }
   if (!Number.isFinite(current) || !Number.isFinite(currentTime)) {
     return unavailableBaseline("current-point-invalid");
   }
@@ -302,6 +292,12 @@ export function resolvePreviousCloseInfo(
     )
     .sort((a, b) => Date.parse(a.time) - Date.parse(b.time))
     .at(-1);
+  const value = Number(priorSessionPoint?.value);
+  if (!priorSessionPoint || !Number.isFinite(value) || value <= 0) {
+    return unavailableBaseline("previous-close-missing");
+  }
+
+  const source = "series-previous-session";
   const previousCloseAsOf = priorSessionPoint?.time || null;
   const previousTradingDate = previousCloseAsOf
     ? getDateKey(previousCloseAsOf, timezone)
@@ -318,7 +314,6 @@ export function resolvePreviousCloseInfo(
     });
   }
 
-  const value = Number(rawValue);
   const changePercent = ((current - value) / value) * 100;
   const maximum = Number(options.maxDailyChangePercent);
   if (
@@ -363,7 +358,7 @@ export function resolvePreviousClose(meta = {}, series = [], current = 0) {
   // Legacy test/helper calls may omit timestamps. Production records use
   // resolvePreviousCloseInfo directly and never take this compatibility path.
   if (result.reason === "current-point-invalid") {
-    const direct = [meta?.previousClose, meta?.chartPreviousClose]
+    const direct = [meta?.previousClose]
       .map(Number)
       .find((value) => Number.isFinite(value) && value > 0);
     return direct ?? null;

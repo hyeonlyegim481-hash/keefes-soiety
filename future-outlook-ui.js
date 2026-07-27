@@ -7,11 +7,19 @@ import {
   outlookSources,
   policyTemperaturePaths
 } from "./future-outlook-data.js";
+import { buildFutureOutlookBrief } from "./chapter-live-briefs.js";
 
 const sourceById = new Map(outlookSources.map((source) => [source.id, source]));
+const liveDateFormatter = new Intl.DateTimeFormat("ko-KR", {
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit"
+});
 const state = {
   scenario: "middle",
-  category: "all"
+  category: "all",
+  snapshot: null
 };
 
 let rootElement = null;
@@ -19,10 +27,12 @@ let updateChapterHeight = () => {};
 
 export function initFutureOutlook({
   root = document.querySelector("#futureOutlook"),
-  updateHeight = () => {}
+  updateHeight = () => {},
+  snapshot = null
 } = {}) {
   rootElement = root;
   updateChapterHeight = updateHeight;
+  state.snapshot = snapshot;
 
   rootElement?.addEventListener("click", (event) => {
     const scenarioButton = event.target.closest?.("[data-outlook-scenario]");
@@ -42,7 +52,11 @@ export function initFutureOutlook({
   renderFutureOutlook();
   return {
     updatedAt: futureOutlookMeta.updatedAt,
-    render: renderFutureOutlook
+    render: renderFutureOutlook,
+    updateSnapshot(snapshot) {
+      state.snapshot = snapshot;
+      renderFutureOutlook();
+    }
   };
 }
 
@@ -82,6 +96,7 @@ function renderFutureOutlook() {
   rootElement.innerHTML = `
     <section class="outlook-dashboard">
       ${renderOutlookLead()}
+      ${renderOutlookLiveBrief(buildFutureOutlookBrief(state.snapshot))}
       ${renderPolicyPath()}
       ${renderScenarioExplorer(scenario)}
       <section class="outlook-risk-section" aria-labelledby="outlookRiskTitle">
@@ -374,7 +389,7 @@ function renderMethod() {
         </section>
         <section>
           <span>업데이트 방식</span>
-          <p>각 기관의 연례 보고서나 공식 개정판이 발표될 때 기준연도와 수치를 함께 교체합니다. 새 자료를 확인하지 못하면 기존 기준일을 유지합니다.</p>
+          <p>공식 수치는 각 기관의 개정판이 발표될 때 교체하고, 관련 뉴스 동향은 30분마다 확인합니다. 뉴스만으로 전망 수치나 시나리오를 변경하지 않습니다.</p>
         </section>
         <section class="outlook-source-directory">
           <span>사용한 공식 자료</span>
@@ -393,6 +408,66 @@ function renderMethod() {
   `;
 }
 
+function renderOutlookLiveBrief(brief) {
+  const current = brief || {
+    status: "unavailable",
+    count: 0,
+    fetchedAt: null,
+    refreshMinutes: 30,
+    headlines: [],
+    summary: "최신 동향을 수집하지 못했습니다."
+  };
+  const statusLabels = {
+    current: "새 동향",
+    empty: "새 기사 없음",
+    stale: "마지막 정상 뉴스",
+    unavailable: "수집 실패"
+  };
+  const headlines = Array.isArray(current.headlines) ? current.headlines : [];
+  return `
+    <section class="outlook-live-brief" data-status="${escapeHtml(current.status)}" aria-labelledby="outlookLiveTitle">
+      <header>
+        <div>
+          <span>30-MINUTE EVIDENCE WATCH</span>
+          <h3 id="outlookLiveTitle">미래 위험·전환 최신 동향</h3>
+          <p>기후·에너지·물·식량·재난 관련 기사를 공식 장기 전망과 분리해 봅니다.</p>
+        </div>
+        <aside>
+          <b>${escapeHtml(statusLabels[current.status] || "확인 중")}</b>
+          <time datetime="${escapeHtml(current.fetchedAt || "")}">${current.fetchedAt ? formatLiveDate(current.fetchedAt) : "기준시각 없음"}</time>
+          <em>${Number(current.refreshMinutes) || 30}분 확인 · ${Number(current.count) || 0}건 연결</em>
+        </aside>
+      </header>
+      <p class="outlook-live-summary">${escapeHtml(current.summary)}</p>
+      ${current.transmission ? `<p class="outlook-live-path"><span>전망 확인 경로</span>${escapeHtml(current.transmission)}</p>` : ""}
+      ${headlines.length ? `
+        <div class="outlook-live-links">
+          ${headlines.map((headline) => `
+            <a href="${escapeHtml(safeExternalUrl(headline.url))}" target="_blank" rel="noopener noreferrer">
+              <span>${escapeHtml(headline.source || "출처 미확인")} · ${formatLiveDate(headline.publishedAt, "게시일 미확인")}</span>
+              <strong>${escapeHtml(headline.title)}</strong>
+            </a>
+          `).join("")}
+        </div>
+      ` : ""}
+      <small>기사는 변화 신호입니다. 관측값·공식 전망·정책 시나리오는 원자료가 개정될 때만 수정합니다.</small>
+    </section>
+  `;
+}
+
+function formatLiveDate(value, fallback = "기준시각 미확인") {
+  const date = new Date(value);
+  return Number.isFinite(date.getTime()) ? liveDateFormatter.format(date) : fallback;
+}
+
+function safeExternalUrl(value) {
+  try {
+    const url = new URL(String(value || ""));
+    return ["http:", "https:"].includes(url.protocol) ? url.toString() : "#";
+  } catch {
+    return "#";
+  }
+}
 function renderSourceLink(sourceId, label) {
   const source = sourceById.get(sourceId);
   if (!source) return "";

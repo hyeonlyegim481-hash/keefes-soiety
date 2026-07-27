@@ -73,6 +73,7 @@ let historyEraProfiles = {};
 let historyEventPerspectives = {};
 let economicRelationships = [];
 let politicsController = null;
+let futureController = null;
 
 const GLOSSARY_PAGE_SIZE = 24;
 
@@ -1141,7 +1142,10 @@ function initFutureIndustryOnce() {
       loadStylesheetOnce("future-outlook-styles", "/future-outlook.css", { attempt }),
       importVersioned("./future-industry-ui.js", { attempt })
     ]);
-    module.initFutureIndustryChapter({ updateHeight: updateChapterHeight });
+    futureController = module.initFutureIndustryChapter({
+      updateHeight: updateChapterHeight,
+      getSnapshot: () => state.snapshot
+    });
   });
 }
 
@@ -1355,6 +1359,7 @@ async function refreshSnapshot() {
     state.snapshot = null;
     state.sharedDataGraph = null;
     politicsController?.updateSnapshot(null);
+    futureController?.updateSnapshot(null);
     renderDataUnavailable();
     setConnection("error", "자료 수집 실패");
   } finally {
@@ -1420,6 +1425,7 @@ function render(snapshot) {
   }
   renderNews(snapshot.headlines, snapshot.analysis, snapshot.dataQuality);
   politicsController?.updateSnapshot(snapshot);
+  futureController?.updateSnapshot(snapshot);
   drawChart();
   setActiveChapter(state.activeChapter, { skipAnimation: true, syncUrl: false });
 }

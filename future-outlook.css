@@ -1509,3 +1509,159 @@
     margin-left: 0;
   }
 }
+
+/* Shared 30-minute future evidence watch */
+#future .outlook-live-brief {
+  display: grid;
+  min-width: 0;
+  gap: 12px;
+  padding: 20px 22px;
+  border-top: 1px solid #cedbdd;
+  border-bottom: 1px solid #cedbdd;
+  background: #f4f8f7;
+  box-shadow: inset 4px 0 #147d73;
+}
+
+#future .outlook-live-brief[data-status="empty"] {
+  background: #f7f8f8;
+  box-shadow: inset 4px 0 #87959b;
+}
+
+#future .outlook-live-brief[data-status="stale"],
+#future .outlook-live-brief[data-status="unavailable"] {
+  background: #fff8ed;
+  box-shadow: inset 4px 0 #c47a20;
+}
+
+#future .outlook-live-brief > header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 20px;
+}
+
+#future .outlook-live-brief > header > div,
+#future .outlook-live-brief > header > aside {
+  display: grid;
+  min-width: 0;
+  gap: 4px;
+}
+
+#future .outlook-live-brief > header span {
+  color: #147d73;
+  font-size: 0.68rem;
+  font-weight: 900;
+}
+
+#future .outlook-live-brief h3 {
+  margin: 0;
+  color: #1d2c33;
+  font-size: 1.08rem;
+}
+
+#future .outlook-live-brief > header p,
+#future .outlook-live-brief > header time,
+#future .outlook-live-brief > header em {
+  margin: 0;
+  color: #607078;
+  font-size: 0.73rem;
+  font-style: normal;
+  line-height: 1.5;
+}
+
+#future .outlook-live-brief > header aside {
+  justify-items: end;
+  text-align: right;
+}
+
+#future .outlook-live-brief > header b {
+  color: #24343b;
+  font-size: 0.76rem;
+}
+
+#future .outlook-live-summary,
+#future .outlook-live-path {
+  margin: 0;
+  color: #293940;
+  font-size: 0.82rem;
+  line-height: 1.65;
+}
+
+#future .outlook-live-path {
+  padding-top: 9px;
+  border-top: 1px solid #d7e0e2;
+}
+
+#future .outlook-live-path span {
+  display: block;
+  color: #65767d;
+  font-size: 0.7rem;
+  font-weight: 850;
+}
+
+#future .outlook-live-links {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid #d7e0e2;
+  border-bottom: 1px solid #d7e0e2;
+}
+
+#future .outlook-live-links a {
+  display: grid;
+  min-width: 0;
+  gap: 5px;
+  padding: 11px 13px;
+  border-right: 1px solid #d7e0e2;
+  color: #1d2c33;
+  text-decoration: none;
+}
+
+#future .outlook-live-links a:last-child {
+  border-right: 0;
+}
+
+#future .outlook-live-links a:hover,
+#future .outlook-live-links a:focus-visible {
+  background: #eaf3f1;
+}
+
+#future .outlook-live-links span {
+  color: #687980;
+  font-size: 0.68rem;
+}
+
+#future .outlook-live-links strong {
+  overflow-wrap: anywhere;
+  font-size: 0.76rem;
+  line-height: 1.45;
+}
+
+#future .outlook-live-brief > small {
+  color: #6a787e;
+  font-size: 0.7rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 720px) {
+  #future .outlook-live-brief > header {
+    grid-template-columns: 1fr;
+  }
+
+  #future .outlook-live-brief > header aside {
+    justify-items: start;
+    text-align: left;
+  }
+
+  #future .outlook-live-links {
+    grid-template-columns: 1fr;
+  }
+
+  #future .outlook-live-links a {
+    border-right: 0;
+    border-bottom: 1px solid #d7e0e2;
+  }
+
+  #future .outlook-live-links a:last-child {
+    border-bottom: 0;
+  }
+}
