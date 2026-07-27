@@ -6,7 +6,8 @@ import {
   rankAndDedupeHeadlines,
   resolveMarketPoint,
   resolveMarketStatus,
-  resolvePreviousClose
+  resolvePreviousClose,
+  selectSectionedHeadlines
 } from "./server.mjs";
 
 const hour = 60 * 60 * 1000;
@@ -156,6 +157,35 @@ test("keeps high-impact war and disaster headlines in the critical section", () 
   assert.equal(ranked.length, 2);
   assert.ok(ranked.every((headline) => headline.section === "security-disasters"));
   assert.ok(ranked.every((headline) => /^h\d+$/.test(headline.eventKey)));
+});
+
+test("keeps economy-linked political headlines in the politics section", () => {
+  const ranked = rankAndDedupeHeadlines([
+    {
+      id: "politics-korea-1",
+      topic: "한국 정치·법",
+      section: "politics",
+      title: "국회, 상법 개정 시행으로 기업 지배구조 규제 변화",
+      source: "연합뉴스",
+      url: "https://example.com/politics-korea",
+      publishedAt: new Date(now - hour).toISOString()
+    },
+    {
+      id: "politics-global-1",
+      topic: "세계 정치·정책",
+      section: "politics",
+      title: "미국 의회 관세 법안 심사, 글로벌 무역과 공급망 영향",
+      source: "Reuters",
+      url: "https://example.com/politics-global",
+      publishedAt: new Date(now - 2 * hour).toISOString()
+    }
+  ], now);
+  const selected = selectSectionedHeadlines(ranked, 28);
+
+  assert.equal(ranked.length, 2);
+  assert.equal(selected.length, 2);
+  assert.ok(selected.every((headline) => headline.section === "politics"));
+  assert.ok(selected.every((headline) => headline.impactArea === "정치·법률"));
 });
 
 test("clusters duplicate reports of the same conflict across publishers", () => {

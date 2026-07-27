@@ -1,5 +1,5 @@
-import { climateBusinessFramework } from "./climate-business-data.js?v=85";
-import { futureCompanies, futureIndustries, futureIndustryMethod } from "./future-industry-data.js?v=85";
+import { climateBusinessFramework } from "./climate-business-data.js?v=86";
+import { futureCompanies, futureIndustries, futureIndustryMethod } from "./future-industry-data.js?v=86";
 
 const MAX_COMPARE = 4;
 const numberFormatter = new Intl.NumberFormat("ko-KR", { maximumFractionDigits: 1 });

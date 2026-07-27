@@ -8,9 +8,9 @@
       content="최신 시장 데이터와 한국 경제 흐름을 기준시각과 함께 정리하는 대시보드"
     />
     <meta name="theme-color" content="#f6f7f8" />
-    <link rel="manifest" href="/manifest.json?v=85" />
+    <link rel="manifest" href="/manifest.json?v=86" />
     <link rel="icon" href="/assets/econest-icon.png" type="image/png" />
-    <link rel="stylesheet" href="/styles.css?v=85" />
+    <link rel="stylesheet" href="/styles.css?v=86" />
     <title>keefe's society</title>
   </head>
   <body>
@@ -43,6 +43,7 @@
         <button class="chapter-tab" type="button" data-chapter="analysis" aria-selected="false">심층</button>
         <button class="chapter-tab" type="button" data-chapter="study" aria-selected="false">공부</button>
         <button class="chapter-tab" type="button" data-chapter="news" aria-selected="false">뉴스</button>
+        <button class="chapter-tab" type="button" data-chapter="politics" aria-selected="false">정치</button>
         <button class="chapter-tab" type="button" data-chapter="glossary" aria-selected="false">용어</button>
         <button class="chapter-tab" type="button" data-chapter="quiz" aria-selected="false">퀴즈</button>
         <button class="chapter-tab" type="button" data-chapter="resources" aria-selected="false">추가 정보</button>
@@ -358,6 +359,40 @@
               </article>
             </section>
 
+            <section class="chapter-pane chapter-single" id="politics" data-chapter-panel="politics" aria-label="정치와 법·제도">
+              <article class="panel politics-panel">
+                <div class="panel-heading politics-heading">
+                  <div>
+                    <p class="section-kicker">정치·정책</p>
+                    <h2>정치가 경제를 움직이는 경로</h2>
+                  </div>
+                  <span class="politics-update" id="politicsUpdate">공식 자료 기준 확인 중</span>
+                </div>
+                <div class="politics-principle">
+                  <i aria-hidden="true">i</i>
+                  <strong>인물 평가 대신 제도, 시행 상태, 경제 전달 경로를 봅니다.</strong>
+                  <span>국가 요약은 기준일 · 뉴스는 서버 갱신</span>
+                </div>
+                <div class="politics-view-tabs" id="politicsViewTabs" role="tablist" aria-label="정치 하위 챕터">
+                  <button type="button" data-politics-view="overview" role="tab" aria-selected="true">
+                    <i>01</i><strong>정치 요약</strong><span>경제 연결 경로</span>
+                  </button>
+                  <button type="button" data-politics-view="laws" role="tab" aria-selected="false">
+                    <i>02</i><strong>법·제도 변화</strong><span>시행일과 영향</span>
+                  </button>
+                  <button type="button" data-politics-view="countries" role="tab" aria-selected="false">
+                    <i>03</i><strong>국가별 상황</strong><span>7개국·권역 비교</span>
+                  </button>
+                  <button type="button" data-politics-view="news" role="tab" aria-selected="false">
+                    <i>04</i><strong>정치 뉴스</strong><span>경제 관련 기사만</span>
+                  </button>
+                </div>
+                <div class="politics-body" id="politicsBody" aria-live="polite">
+                  <div class="politics-loading"><span>정치·법률 자료를 정리하고 있습니다.</span></div>
+                </div>
+              </article>
+            </section>
+
             <section class="chapter-pane chapter-single" id="glossary" data-chapter-panel="glossary" aria-label="경제용어 사전">
               <article class="panel glossary-panel">
                 <div class="panel-heading glossary-heading">
@@ -426,6 +461,6 @@
       </footer>
     </div>
 
-    <script type="module" src="/app.js?v=85"></script>
+    <script type="module" src="/app.js?v=86"></script>
   </body>
 </html>

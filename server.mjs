@@ -54,6 +54,8 @@ const headlineFeeds = [
   { topic: "한국경제", section: "korea", query: "한국 경제 (환율 OR 금리 OR 물가 OR 수출 OR 반도체) when:7d" },
   { topic: "한국시장", section: "korea", query: "(코스피 OR 코스닥 OR 원달러 OR 한국은행) when:7d" },
   { topic: "정책·지표", section: "korea", query: "(기획재정부 OR 한국은행 OR 국가데이터처 OR 금융위원회 OR 관세청) (경제 OR 금리 OR 물가 OR 수출) when:7d" },
+  { topic: "한국 정치·법", section: "politics", query: "(대통령 OR 국회 OR 정부 OR 법안 OR 시행령 OR 상법) (경제 OR 예산 OR 세금 OR 노동 OR 기업 OR 금융 OR 부동산) when:7d" },
+  { topic: "세계 정치·정책", section: "politics", query: "(미국 의회 OR 백악관 OR 중국 국무원 OR 일본 내각 OR EU 집행위원회 OR 러시아 정부) (법안 OR 관세 OR 제재 OR 예산 OR 규제 OR 산업정책) when:7d" },
   { topic: "산업·기업", section: "korea", query: "(기업 실적 OR 반도체 OR 자동차 OR 조선 OR 배터리 OR 설비투자) 한국 when:7d" },
   { topic: "부동산·가계", section: "korea", query: "(주택시장 OR 아파트값 OR 전세 OR 가계대출 OR 소비자심리 OR 취업자 OR 실업률 OR 자영업경기) 한국 when:7d" },
   { topic: "전쟁·지정학", section: "security-disasters", query: "(전쟁 OR 공습 OR 미사일 OR 휴전 OR 군사충돌 OR 경제제재 OR 해상봉쇄) (한국 OR 국제유가 OR 환율 OR 공급망 OR 무역 OR 증시) when:7d" },
@@ -66,9 +68,10 @@ const headlineFeeds = [
   { topic: "원자재·환율", section: "commodities-fx", query: "(OPEC OR 국제유가 OR WTI OR 브렌트유 OR 금값 OR 달러인덱스 OR 해상운임) (글로벌 OR 미국 OR 중동 OR 국제) when:7d" }
 ];
 
-const newsSectionOrder = ["korea", "security-disasters", "us", "china-asia", "europe-global", "commodities-fx"];
+const newsSectionOrder = ["korea", "politics", "security-disasters", "us", "china-asia", "europe-global", "commodities-fx"];
 const newsSectionQuotas = {
   korea: 6,
+  politics: 4,
   "security-disasters": 5,
   us: 4,
   "china-asia": 3,
@@ -86,7 +89,9 @@ const topicRelevancePatterns = {
   "미국 시장": /S&P\s*500|나스닥|미국\s*증시|연준|Fed|물가|고용|실적|관세/i,
   "중국·아시아": /중국|인민은행|PBOC|위안|일본|일본은행|BOJ|엔화|아시아|수출/i,
   "유럽·글로벌": /ECB|유럽|유로존|IMF|세계은행|글로벌|세계경제|무역/i,
-  "원자재·환율": /OPEC|유가|원유|WTI|브렌트|금값|금\s*가격|달러|환율|해상운임/i
+  "원자재·환율": /OPEC|유가|원유|WTI|브렌트|금값|금\s*가격|달러|환율|해상운임/i,
+  "한국 정치·법": /(?=.*(?:대통령|대통령실|국회|정부|법안|법률|상법|시행령))(?=.*(?:경제|예산|재정|세금|노동|기업|금융|부동산|투자|산업))/i,
+  "세계 정치·정책": /(?=.*(?:백악관|의회|상원|하원|국무원|내각|집행위원회|정부|법안|법률))(?=.*(?:관세|제재|예산|규제|산업정책|경제|무역|투자|세금))/i
 };
 const newsEntityPatterns = [
   ["kospi", /코스피|KOSPI/i],
@@ -120,11 +125,12 @@ const newsRelevancePatterns = [
   /중국|미국|유럽|일본|글로벌|세계경제|China|U\.S\.|Europe|Japan|global/i,
   /유가|원유|WTI|브렌트|OPEC|에너지|oil|crude|energy/i,
   /전쟁|공습|미사일|휴전|침공|교전|제재|봉쇄|war|missile|ceasefire|sanction/i,
-  /지진|강진|홍수|산불|태풍|폭발|붕괴|추락|충돌|침몰|탈선|테러|인명피해|대규모\s*정전|통신\s*장애|사이버\s*공격|항만\s*마비|earthquake|flood|wildfire|typhoon|blackout|cyberattack/i
+  /지진|강진|홍수|산불|태풍|폭발|붕괴|추락|충돌|침몰|탈선|테러|인명피해|대규모\s*정전|통신\s*장애|사이버\s*공격|항만\s*마비|earthquake|flood|wildfire|typhoon|blackout|cyberattack/i,
+  /대통령|국회|의회|백악관|내각|정부|법안|법률|상법|시행령|예산안|regulation|legislation|congress|parliament/i
 ];
 
 const koreaNewsPattern = /한국|국내|코스피|코스닥|원\/달러|원달러|원화|한국은행|반도체|수출|Korea|KOSPI|KOSDAQ|KRW/i;
-const primaryNewsSourcePattern = /한국은행|국가데이터처|통계청|기획재정부|산업통상자원부|금융위원회|금융감독원|관세청|KDI|대한민국 정책브리핑|Federal Reserve|European Central Bank|ECB|IMF|World Bank|Bank of Japan/i;
+const primaryNewsSourcePattern = /한국은행|국가데이터처|통계청|기획재정부|산업통상자원부|금융위원회|금융감독원|관세청|KDI|대한민국 정책브리핑|대한민국 국회|법제처|Federal Reserve|White House|Congress|U\.S\. Treasury|European Commission|European Central Bank|ECB|IMF|World Bank|Bank of Japan|State Council/i;
 const establishedNewsSourcePattern = /연합뉴스|연합인포맥스|KBS|MBC|SBS|한국경제|매일경제|서울경제|머니투데이|로이터|Reuters|Bloomberg|블룸버그|AP|Associated Press|BBC|CNBC|Financial Times|파이낸셜타임스|Wall Street Journal|WSJ|Nikkei|닛케이/i;
 const globalMajorImpactPatterns = [
   /연준|Fed|FOMC|ECB|유럽중앙은행|일본은행|BOJ|인민은행|PBOC|기준금리|금리\s*(?:인상|인하|동결)/i,
@@ -134,7 +140,8 @@ const globalMajorImpactPatterns = [
   /OPEC|WTI|브렌트|국제유가|원유|해상운임|홍해|중동|전쟁/i,
   /S&P\s*500|나스닥|증시\s*(?:급락|폭락|급등)|서킷브레이커|금융위기|은행\s*(?:위기|파산)/i,
   /실적|매출|영업이익|순이익|전망치|가이던스|반도체|AI\s*투자/i,
-  /지진|홍수|산불|태풍|폭발|붕괴|대규모\s*정전|통신\s*장애|사이버\s*공격|항만\s*마비|원전\s*사고/i
+  /지진|홍수|산불|태풍|폭발|붕괴|대규모\s*정전|통신\s*장애|사이버\s*공격|항만\s*마비|원전\s*사고/i,
+  /대통령|국회|의회|백악관|내각|정부|법안|법률|상법|시행령|예산안|조세개편|규제개편/i
 ];
 const criticalEventPattern = /전쟁|공습|미사일|휴전|침공|교전|군사충돌|경제제재|봉쇄|테러|지진|강진|홍수|산불|태풍|폭발|붕괴|추락|충돌|침몰|탈선|인명피해|항공사고|열차사고|선박사고|대규모\s*정전|통신\s*장애|사이버\s*공격|항만\s*마비|공장\s*화재|원전\s*사고/i;
 const clickbaitHeadlinePattern = /피눈물|대박|충격|발칵|이 사람들|그만할래|무조건|역대급|폭망|몰빵|개미군단|난리 났다/i;
@@ -322,7 +329,7 @@ async function getNewsBundle({ now = Date.now(), force = false, preferScheduled 
       const scheduledAnalyses = scheduled.analyses || {};
       return {
         rawHeadlines: scheduled.headlines,
-        headlines: scheduled.headlines.slice(0, 24).map((headline) => ({
+        headlines: scheduled.headlines.slice(0, 28).map((headline) => ({
           ...headline,
           analysisStatus:
             scheduledAnalyses[getHeadlineEventKey(headline)]?.aiGenerated === true
@@ -352,7 +359,7 @@ async function getNewsBundle({ now = Date.now(), force = false, preferScheduled 
     const rankedHeadlines = rankAndDedupeHeadlines(rawHeadlines, now);
     const value = {
       rawHeadlines,
-      headlines: selectSectionedHeadlines(rankedHeadlines, 24).map(
+      headlines: selectSectionedHeadlines(rankedHeadlines, 28).map(
         (headline) => ({
           ...headline,
           analysisStatus:
@@ -649,7 +656,7 @@ function rankAndDedupeHeadlines(items, now = Date.now()) {
     }));
 }
 
-function selectSectionedHeadlines(items, limit = 24) {
+function selectSectionedHeadlines(items, limit = 28) {
   const selected = [];
   for (const section of newsSectionOrder) {
     const candidates = items.filter((item) => item.section === section);
@@ -746,6 +753,7 @@ function scoreHeadline(item, now) {
 }
 
 function getHeadlineImpactArea(title) {
+  if (/대통령|국회|의회|백악관|내각|정부|법안|법률|상법|시행령|예산안|조세개편|규제개편/i.test(title)) return "정치·법률";
   if (/연준|Fed|FOMC|ECB|일본은행|BOJ|인민은행|PBOC|금리|CPI|PCE|물가|고용|GDP/i.test(title)) return "금리·거시";
   if (/지진|홍수|산불|태풍|폭발|붕괴|사고|정전|통신\s*장애|사이버\s*공격/i.test(title)) return "재난·인프라";
   if (/전쟁|공습|미사일|휴전|침공|교전|군사충돌|봉쇄/i.test(title)) return "전쟁·안보";
@@ -757,6 +765,7 @@ function getHeadlineImpactArea(title) {
 }
 
 function getKoreaImpactLabel(title) {
+  if (/예산|재정|세금|조세|상법|법안|법률|시행령|규제/i.test(title)) return "정책·기업비용";
   if (/환율|달러|국채금리|연준|Fed|금리|위안|엔화/i.test(title)) return "환율·금리";
   if (/중국|관세|무역|수출|반도체|공급망/i.test(title)) return "수출·반도체";
   if (/전쟁|공습|미사일|지진|홍수|산불|태풍|폭발|붕괴|정전|사이버|항만|공장\s*화재/i.test(title)) return "공급망·안전";
