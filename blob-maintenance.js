@@ -173,6 +173,23 @@ export async function cleanupBlobVersions({
   };
 }
 
+export function createVerifiedNewsFallback(latest) {
+  if (latest?.status !== "valid") return null;
+  const headlines = latest.files?.["news-index.json"]?.data?.events;
+  if (!Array.isArray(headlines) || !headlines.length) return null;
+  const status = latest.files?.["data-status.json"]?.data;
+  return {
+    headlines,
+    fetchedAt:
+      status?.sourceDetails?.news?.basisAt ||
+      latest.files?.["news-index.json"]?.generatedAt ||
+      latest.manifest?.generatedAt ||
+      null,
+    availableNewsFeedCount:
+      Number(status?.dataQuality?.availableNewsFeedCount) || 0
+  };
+}
+
 export async function runBlobMaintenance({
   adapter,
   snapshot,

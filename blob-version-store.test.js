@@ -153,7 +153,11 @@ test("a failed version write leaves latest.json untouched", async () => {
     /Injected put failure/
   );
   assert.equal(adapter.entries.has("latest.json"), false);
-  assert.equal(adapter.writes.length, 2);
+  const writtenVersionFiles = adapter.writes.filter((entry) =>
+    entry.pathname.startsWith(`versions/${bundle.version}/`)
+  );
+  assert.ok(writtenVersionFiles.length > 0);
+  assert.ok(writtenVersionFiles.length < BLOB_VERSION_FILES.length);
 });
 
 test("an incomplete version is rejected when latest.json is read", async () => {

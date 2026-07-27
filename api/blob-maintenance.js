@@ -1,9 +1,11 @@
 import "../app-version.js";
 import {
   createVercelBlobAdapter,
-  getBlobConnectionStatus
+  getBlobConnectionStatus,
+  readLatestBlobVersion
 } from "../blob-version-store.js";
 import {
+  createVerifiedNewsFallback,
   isAuthorizedCronRequest,
   runBlobMaintenance
 } from "../blob-maintenance.js";
@@ -29,11 +31,13 @@ export default async function handler(request, response) {
   }
 
   try {
-    const snapshot = await getSnapshot({
-      forceNews: true,
-      preferScheduledNews: false
-    });
     const adapter = await createVercelBlobAdapter();
+    const latest = await readLatestBlobVersion(adapter);
+    const snapshot = await getSnapshot({
+      preferScheduledNews: true,
+      verifiedNewsFallback: createVerifiedNewsFallback(latest),
+      allowLiveNews: false
+    });
     const result = await runBlobMaintenance({
       adapter,
       snapshot,

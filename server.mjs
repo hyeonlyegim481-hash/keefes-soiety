@@ -265,11 +265,22 @@ async function getSnapshot(options = {}) {
   }
 }
 
-async function buildSnapshot({ forceNews = false, preferScheduledNews = true } = {}) {
+async function buildSnapshot({
+  forceNews = false,
+  preferScheduledNews = true,
+  verifiedNewsFallback = null,
+  allowLiveNews = true
+} = {}) {
   const now = Date.now();
   const [marketResults, newsBundle, macro] = await Promise.all([
     Promise.allSettled(marketConfig.map(fetchMarket)),
-    getNewsBundle({ now, force: forceNews, preferScheduled: preferScheduledNews }),
+    getNewsBundle({
+      now,
+      force: forceNews,
+      preferScheduled: preferScheduledNews,
+      verifiedFallback: verifiedNewsFallback,
+      allowLive: allowLiveNews
+    }),
     fetchMacroIndicators()
   ]);
   const markets = marketResults.map((result, index) =>
@@ -342,7 +353,11 @@ async function buildSnapshot({ forceNews = false, preferScheduledNews = true } =
       markets: "Yahoo Finance chart endpoint",
       news: newsBundle.sourceMode === "scheduled"
         ? `예약 뉴스 캐시 (1시간 수집·최근 ${NEWS_LOOKBACK_DAYS}일·중복 제거)`
-        : `Google News RSS (30분 캐시·최근 ${NEWS_LOOKBACK_DAYS}일·관련도 선별·중복 제거)`,
+        : newsBundle.sourceMode === "blob-last-known"
+          ? "Vercel Blob 마지막 정상 뉴스 (기준시각 유지)"
+          : newsBundle.sourceMode === "unavailable"
+            ? "뉴스 자료 수집 실패"
+            : `Google News RSS (30분 캐시·최근 ${NEWS_LOOKBACK_DAYS}일·관련도 선별·중복 제거)`,
       macro: "한국은행·국가데이터처·관세청 최신 공표"
     },
     sourceDetails: {
@@ -375,14 +390,22 @@ async function buildSnapshot({ forceNews = false, preferScheduledNews = true } =
       news: {
         provider: newsBundle.sourceMode === "scheduled"
           ? "예약 뉴스 캐시·원 언론사"
-          : "Google News RSS·원 언론사",
+          : newsBundle.sourceMode === "blob-last-known"
+            ? "Vercel Blob 마지막 정상 버전·원 언론사"
+            : newsBundle.sourceMode === "unavailable"
+              ? "자료 수집 실패"
+              : "Google News RSS·원 언론사",
         basisAt: newsBundle.fetchedAt,
         updatedAt: generatedAt,
         revision: "언론사 기사 수정·삭제에 따라 제목과 본문이 바뀔 수 있음",
         calculation: "최근성·경제 관련성·출처 등급으로 선별하고 유사 사건은 중복 제거",
         valueType: "기사 메타데이터와 요약",
         seasonalAdjustment: "해당 없음",
-        status: "잠정·확정 구분 대상 아님 · 언론사 수정 가능"
+        status: newsBundle.sourceMode === "blob-last-known"
+          ? "마지막 정상값 재사용 · basisAt 이후 새 기사 미반영"
+          : newsBundle.sourceMode === "unavailable"
+            ? "자료 수집 실패 · 임의 기사나 대체값을 만들지 않음"
+            : "잠정·확정 구분 대상 아님 · 언론사 수정 가능"
       }
     }
   };
@@ -441,7 +464,13 @@ export function createUnavailableMarket(item, error) {
   };
 }
 
-async function getNewsBundle({ now = Date.now(), force = false, preferScheduled = true } = {}) {
+async function getNewsBundle({
+  now = Date.now(),
+  force = false,
+  preferScheduled = true,
+  verifiedFallback = null,
+  allowLive = true
+} = {}) {
   if (preferScheduled) {
     const scheduled = await readScheduledNewsCache();
     const scheduledAt = Date.parse(scheduled?.updatedAt);
@@ -469,6 +498,35 @@ async function getNewsBundle({ now = Date.now(), force = false, preferScheduled 
         ).length
       };
     }
+  }
+
+  if (
+    Array.isArray(verifiedFallback?.headlines) &&
+    verifiedFallback.headlines.length
+  ) {
+    return {
+      rawHeadlines: verifiedFallback.headlines,
+      headlines: verifiedFallback.headlines.slice(0, 36).map((headline) => ({
+        ...headline,
+        analysisStatus: headline.analysisStatus || "rules"
+      })),
+      availableNewsFeedCount:
+        Number(verifiedFallback.availableNewsFeedCount) || 0,
+      fetchedAt: verifiedFallback.fetchedAt || null,
+      sourceMode: "blob-last-known",
+      scheduledAnalysisCount: 0
+    };
+  }
+
+  if (!allowLive) {
+    return {
+      rawHeadlines: [],
+      headlines: [],
+      availableNewsFeedCount: 0,
+      fetchedAt: null,
+      sourceMode: "unavailable",
+      scheduledAnalysisCount: 0
+    };
   }
 
   if (!force && newsFeedCache && now - newsFeedCache.createdAt < NEWS_CACHE_TTL_MS) {

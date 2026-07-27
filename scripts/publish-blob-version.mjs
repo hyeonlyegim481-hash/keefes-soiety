@@ -1,9 +1,13 @@
 import "../app-version.js";
 import {
   createVercelBlobAdapter,
-  getBlobConnectionStatus
+  getBlobConnectionStatus,
+  readLatestBlobVersion
 } from "../blob-version-store.js";
-import { runBlobMaintenance } from "../blob-maintenance.js";
+import {
+  createVerifiedNewsFallback,
+  runBlobMaintenance
+} from "../blob-maintenance.js";
 import { indicatorSnapshot } from "../indicator-values.js";
 import { getSnapshot } from "../server.mjs";
 
@@ -14,11 +18,14 @@ if (!connection.configured) {
   );
   process.exitCode = 2;
 } else {
+  const adapter = await createVercelBlobAdapter();
+  const latest = await readLatestBlobVersion(adapter);
   const result = await runBlobMaintenance({
-    adapter: await createVercelBlobAdapter(),
+    adapter,
     snapshot: await getSnapshot({
-      forceNews: true,
-      preferScheduledNews: false
+      preferScheduledNews: true,
+      verifiedNewsFallback: createVerifiedNewsFallback(latest),
+      allowLiveNews: false
     }),
     indicatorSnapshot,
     appVersion: globalThis.KEEFES_APP_VERSION || "dev"

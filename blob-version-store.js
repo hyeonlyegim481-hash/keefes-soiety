@@ -499,23 +499,25 @@ async function putVersionFile(adapter, pathname, payload) {
 }
 
 async function verifyVersionFiles(adapter, manifest) {
-  const values = {};
-  for (const [filename, metadata] of Object.entries(manifest.files)) {
-    const stored = await adapter.get(metadata.pathname);
-    if (!stored) {
-      throw new BlobVersionValidationError(
-        `Version file is missing: ${metadata.pathname}`
-      );
-    }
-    const digest = sha256(stored.body);
-    const bytes = Buffer.byteLength(stored.body);
-    if (digest !== metadata.sha256 || bytes !== metadata.bytes) {
-      throw new BlobVersionValidationError(
-        `Version file failed checksum validation: ${metadata.pathname}`
-      );
-    }
-    values[filename] = JSON.parse(stored.body);
-  }
+  const entries = await Promise.all(
+    Object.entries(manifest.files).map(async ([filename, metadata]) => {
+      const stored = await adapter.get(metadata.pathname);
+      if (!stored) {
+        throw new BlobVersionValidationError(
+          `Version file is missing: ${metadata.pathname}`
+        );
+      }
+      const digest = sha256(stored.body);
+      const bytes = Buffer.byteLength(stored.body);
+      if (digest !== metadata.sha256 || bytes !== metadata.bytes) {
+        throw new BlobVersionValidationError(
+          `Version file failed checksum validation: ${metadata.pathname}`
+        );
+      }
+      return [filename, JSON.parse(stored.body)];
+    })
+  );
+  const values = Object.fromEntries(entries);
   const bundle = {
     schemaVersion: manifest.schemaVersion,
     version: manifest.version,
@@ -543,15 +545,17 @@ async function publishBlobVersionInternal({
     };
   }
 
-  const fileMetadata = {};
-  for (const filename of BLOB_VERSION_FILES) {
-    const pathname = `versions/${bundle.version}/${filename}`;
-    fileMetadata[filename] = await putVersionFile(
-      adapter,
-      pathname,
-      bundle.files[filename]
-    );
-  }
+  const fileMetadata = Object.fromEntries(
+    await Promise.all(
+      BLOB_VERSION_FILES.map(async (filename) => {
+        const pathname = `versions/${bundle.version}/${filename}`;
+        return [
+          filename,
+          await putVersionFile(adapter, pathname, bundle.files[filename])
+        ];
+      })
+    )
+  );
 
   const manifest = {
     schemaVersion: 1,
