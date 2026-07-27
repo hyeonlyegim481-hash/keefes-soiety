@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import fs from "node:fs";
 import {
   buildAutomatedNewsAnalysis,
   rankAndDedupeHeadlines,
@@ -103,4 +104,15 @@ test("section selection can expand beyond the previous twenty-eight article ceil
 
   assert.equal(selected.length, 36);
   assert.equal(new Set(selected.map((item) => item.id)).size, 36);
+});
+
+test("news section navigator keeps the selected filter readable", () => {
+  const css = fs.readFileSync(new URL("./news-system.css", import.meta.url), "utf8");
+  const app = fs.readFileSync(new URL("./app.js", import.meta.url), "utf8");
+  const selectedRule = css.match(/#news \.news-filter-tabs button\[aria-selected="true"\] \{[^}]+\}/s)?.[0] || "";
+
+  assert.match(selectedRule, /background:\s*#17242c/);
+  assert.match(selectedRule, /color:\s*#ffffff/);
+  assert.match(app, /class="news-filter-current"/);
+  assert.match(app, /class="news-section-number"/);
 });

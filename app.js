@@ -899,7 +899,7 @@ async function ensureChapterContent(chapter) {
       }
       break;
     case "news":
-      await loadStylesheetOnce("news-system-styles", "/news-system.css?v=88");
+      await loadStylesheetOnce("news-system-styles", "/news-system.css?v=89");
       break;
     case "politics":
       await initPoliticsOnce();
@@ -947,7 +947,7 @@ if ("serviceWorker" in navigator) {
   const hadServiceWorkerController = Boolean(navigator.serviceWorker.controller);
   let reloadingForServiceWorker = false;
   navigator.serviceWorker
-    .register("/sw.js?v=88")
+    .register("/sw.js?v=89")
     .then((registration) => {
       registration.update().catch(() => {});
       setInterval(() => registration.update().catch(() => {}), 5 * 60_000);
@@ -3761,12 +3761,18 @@ function renderNews(headlines = [], analysis, dataQuality = {}) {
     const availableFilters = new Set(["all", ...NEWS_SECTION_DEFINITIONS.map((section) => section.id)]);
     if (!availableFilters.has(state.newsSection)) state.newsSection = "all";
     const filterDefinitions = [
-      { id: "all", label: "전체", count: headlines.length },
+      {
+        id: "all",
+        label: "전체",
+        description: "9개 분야의 주요 흐름",
+        count: headlines.length
+      },
       ...NEWS_SECTION_DEFINITIONS.map((section) => ({
         ...section,
         count: headlines.filter((headline) => headline.section === section.id).length
       }))
     ];
+    const activeFilter = filterDefinitions.find((filter) => filter.id === state.newsSection) || filterDefinitions[0];
     const controls = document.createElement("div");
     controls.className = "news-filter-bar";
     const fetchedAt = dataQuality?.newsFetchedAt ? new Date(dataQuality.newsFetchedAt) : null;
@@ -3776,19 +3782,36 @@ function renderNews(headlines = [], analysis, dataQuality = {}) {
       : `실시간 보완 수집 · ${Number(dataQuality?.newsRefreshMinutes) || 30}분 캐시`;
     controls.innerHTML = `
       <div class="news-filter-copy">
-        <strong>분야별 기사</strong>
-        <span>중복 사건은 하나로 묶고 영향이 큰 순서로 표시합니다.</span>
+        <div>
+          <span class="news-filter-kicker">SECTION NAVIGATOR</span>
+          <strong>분야별 뉴스</strong>
+          <p>경제 흐름을 국내·산업·생활·정치·세계 변수로 나눴습니다.</p>
+        </div>
+        <div class="news-filter-current" aria-live="polite">
+          <span>현재 보기</span>
+          <strong>${escapeHtml(activeFilter.label)}</strong>
+          <em>${activeFilter.count}건</em>
+        </div>
       </div>
       <div class="news-filter-tabs" role="tablist" aria-label="뉴스 분야">
-        ${filterDefinitions.map((filter) => `
-          <button type="button" role="tab" data-news-filter="${escapeHtml(filter.id)}" aria-selected="${state.newsSection === filter.id}">
-            <span>${escapeHtml(filter.label)}</span>
+        ${filterDefinitions.map((filter, filterIndex) => `
+          <button
+            type="button"
+            role="tab"
+            data-news-filter="${escapeHtml(filter.id)}"
+            aria-selected="${state.newsSection === filter.id}"
+          >
+            <i aria-hidden="true">${filter.id === "all" ? "ALL" : String(filterIndex).padStart(2, "0")}</i>
+            <span>
+              <strong>${escapeHtml(filter.label)}</strong>
+              <small>${escapeHtml(filter.description || "주요 경제 기사")}</small>
+            </span>
             <em>${filter.count}</em>
           </button>
         `).join("")}
       </div>
       <div class="news-refresh-note">
-        <span>${escapeHtml(refreshLabel)}</span>
+        <span><i aria-hidden="true"></i>${escapeHtml(refreshLabel)}</span>
         <time>${fetchedAt && Number.isFinite(fetchedAt.getTime()) ? marketTimeFormatter.format(fetchedAt) : "갱신 시각 확인 중"}</time>
       </div>
     `;
@@ -3796,7 +3819,21 @@ function renderNews(headlines = [], analysis, dataQuality = {}) {
       button.addEventListener("click", () => {
         state.newsSection = button.dataset.newsFilter || "all";
         renderNews(headlines, analysis, dataQuality);
-        requestAnimationFrame(updateChapterHeight);
+        requestAnimationFrame(() => {
+          const activeButton = elements.newsList.querySelector('[data-news-filter][aria-selected="true"]');
+          const tabList = activeButton?.closest(".news-filter-tabs");
+          if (activeButton && tabList && tabList.scrollWidth > tabList.clientWidth) {
+            const buttonRect = activeButton.getBoundingClientRect();
+            const listRect = tabList.getBoundingClientRect();
+            const centeredLeft =
+              tabList.scrollLeft +
+              buttonRect.left -
+              listRect.left -
+              (listRect.width - buttonRect.width) / 2;
+            tabList.scrollTo({ left: Math.max(0, centeredLeft), behavior: "smooth" });
+          }
+          updateChapterHeight();
+        });
       });
     });
 
@@ -3813,13 +3850,15 @@ function renderNews(headlines = [], analysis, dataQuality = {}) {
       group.className = "news-section-group";
       group.dataset.newsSection = section.id;
       group.dataset.newsCount = String(sectionHeadlines.length);
+      const sectionNumber = NEWS_SECTION_DEFINITIONS.findIndex((item) => item.id === section.id) + 1;
       group.innerHTML = `
         <header class="news-section-heading">
+          <span class="news-section-number">${String(sectionNumber).padStart(2, "0")}</span>
           <div>
             <span>${escapeHtml(section.label)}</span>
             <strong>${escapeHtml(section.description)}</strong>
           </div>
-          <em>${sectionHeadlines.length}건</em>
+          <em><b>${sectionHeadlines.length}</b>건</em>
         </header>
         <div class="news-section-items"></div>
       `;
