@@ -19,6 +19,17 @@ import {
   notifyUrlState,
   syncUrlState
 } from "./url-state.js";
+import {
+  DEFAULT_READER_SETTINGS,
+  READER_FONT_MAX,
+  READER_FONT_MIN,
+  READER_FONT_STEP,
+  READER_SETTINGS_KEY,
+  applyReaderSettings,
+  loadReaderSettings,
+  normalizeReaderSettings,
+  saveReaderSettings
+} from "./reader-settings.js";
 
 let scenarioQuestions = [];
 let indicatorCategories = [];
@@ -101,6 +112,15 @@ const ECONOMIC_QUOTES = [
 ];
 
 const elements = {
+  utilityMenuButton: document.querySelector("#utilityMenuButton"),
+  utilityDrawer: document.querySelector("#utilityDrawer"),
+  utilityDrawerClose: document.querySelector("#utilityDrawerClose"),
+  readerFontRange: document.querySelector("#readerFontRange"),
+  readerFontValue: document.querySelector("#readerFontValue"),
+  readerFontDown: document.querySelector("#readerFontDown"),
+  readerFontUp: document.querySelector("#readerFontUp"),
+  readerHighContrast: document.querySelector("#readerHighContrast"),
+  readerSettingsReset: document.querySelector("#readerSettingsReset"),
   connectionStatus: document.querySelector("#connectionStatus"),
   refreshButton: document.querySelector("#refreshButton"),
   regimeTitle: document.querySelector("#regimeTitle"),
@@ -447,9 +467,104 @@ let state = {
   newsSummaryResults: new Map()
 };
 
+let readerSettings = applyReaderSettings(loadReaderSettings());
+
+function syncReaderSettingControls() {
+  if (elements.readerFontRange) elements.readerFontRange.value = String(readerSettings.fontScale);
+  if (elements.readerFontValue) elements.readerFontValue.value = `${readerSettings.fontScale}%`;
+  if (elements.readerHighContrast) elements.readerHighContrast.checked = readerSettings.highContrast;
+  if (elements.readerFontDown) elements.readerFontDown.disabled = readerSettings.fontScale <= READER_FONT_MIN;
+  if (elements.readerFontUp) elements.readerFontUp.disabled = readerSettings.fontScale >= READER_FONT_MAX;
+}
+
+function scheduleReaderLayout() {
+  requestAnimationFrame(() => {
+    drawChart();
+    drawIndicatorTrend();
+    updateChapterHeight();
+  });
+}
+
+function updateReaderSettings(nextSettings, { persist = true } = {}) {
+  readerSettings = applyReaderSettings(normalizeReaderSettings({
+    ...readerSettings,
+    ...nextSettings
+  }));
+  if (persist) readerSettings = saveReaderSettings(readerSettings);
+  syncReaderSettingControls();
+  scheduleReaderLayout();
+}
+
+function openUtilityDrawer() {
+  if (!elements.utilityDrawer || elements.utilityDrawer.open) return;
+  elements.utilityDrawer.showModal();
+  document.body.classList.add("utility-drawer-open");
+  elements.utilityMenuButton?.setAttribute("aria-expanded", "true");
+  elements.readerFontRange?.focus({ preventScroll: true });
+}
+
+function closeUtilityDrawer() {
+  if (!elements.utilityDrawer?.open) return;
+  elements.utilityDrawer.close();
+}
+
+syncReaderSettingControls();
+
 if (elements.chapterProgress && elements.chapterTabs.length) {
   elements.chapterProgress.style.width = `${100 / elements.chapterTabs.length}%`;
 }
+
+elements.utilityMenuButton?.addEventListener("click", openUtilityDrawer);
+elements.utilityDrawerClose?.addEventListener("click", closeUtilityDrawer);
+elements.utilityDrawer?.addEventListener("close", () => {
+  document.body.classList.remove("utility-drawer-open");
+  elements.utilityMenuButton?.setAttribute("aria-expanded", "false");
+  elements.utilityMenuButton?.focus({ preventScroll: true });
+});
+elements.utilityDrawer?.addEventListener("click", (event) => {
+  if (event.target !== elements.utilityDrawer) return;
+  const rect = elements.utilityDrawer.getBoundingClientRect();
+  const inside = event.clientX >= rect.left
+    && event.clientX <= rect.right
+    && event.clientY >= rect.top
+    && event.clientY <= rect.bottom;
+  if (!inside) closeUtilityDrawer();
+});
+elements.readerFontRange?.addEventListener("input", (event) => {
+  updateReaderSettings({ fontScale: Number(event.currentTarget.value) });
+});
+elements.readerFontDown?.addEventListener("click", () => {
+  updateReaderSettings({ fontScale: readerSettings.fontScale - READER_FONT_STEP });
+});
+elements.readerFontUp?.addEventListener("click", () => {
+  updateReaderSettings({ fontScale: readerSettings.fontScale + READER_FONT_STEP });
+});
+elements.readerHighContrast?.addEventListener("change", (event) => {
+  updateReaderSettings({ highContrast: event.currentTarget.checked });
+});
+elements.readerSettingsReset?.addEventListener("click", () => {
+  updateReaderSettings(DEFAULT_READER_SETTINGS);
+});
+elements.utilityDrawer?.querySelector(".utility-shortcuts")?.addEventListener("click", (event) => {
+  const chapterButton = event.target.closest?.("[data-utility-chapter]");
+  const actionButton = event.target.closest?.("[data-utility-action]");
+  if (chapterButton) {
+    closeUtilityDrawer();
+    setActiveChapter(chapterButton.dataset.utilityChapter);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    return;
+  }
+  if (actionButton?.dataset.utilityAction === "refresh") {
+    closeUtilityDrawer();
+    refreshSnapshot();
+  }
+});
+window.addEventListener("storage", (event) => {
+  if (event.key !== READER_SETTINGS_KEY) return;
+  readerSettings = applyReaderSettings(loadReaderSettings());
+  syncReaderSettingControls();
+  scheduleReaderLayout();
+});
 
 elements.refreshButton.addEventListener("click", () => refreshSnapshot());
 elements.chapterTabs.forEach((tab) => {
@@ -629,7 +744,7 @@ document.addEventListener("keydown", (event) => {
   if (
     target instanceof Element &&
     (target.matches("input, textarea, select, [contenteditable='true']") ||
-      target.closest(".glossary-categories, .segmented, details"))
+      target.closest("dialog, .glossary-categories, .segmented, details"))
   ) {
     return;
   }

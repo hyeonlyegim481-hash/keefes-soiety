@@ -8,6 +8,7 @@ const CORE_SHELL = [
   "/index.html",
   "/app-version.js",
   "/runtime-loader.js",
+  "/reader-settings.js",
   "/styles.css",
   "/app.js",
   "/economic-narrative.js",

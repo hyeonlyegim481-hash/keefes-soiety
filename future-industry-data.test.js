@@ -18,23 +18,30 @@ test("defines ten complete future industries with valid company links", () => {
     assert.equal(industry.valueChain.length, 5);
     assert.equal(industry.deepDive.length, 3);
     assert.equal(industry.signals.length, 3);
-    assert.ok(industry.companyIds.length >= 2);
+    assert.ok(industry.companyIds.length >= 7);
     for (const companyId of industry.companyIds) {
       assert.ok(companyIds.has(companyId), companyId + " must reference a company");
     }
   }
 });
 
-test("provides twenty-four sourced company snapshots and transparent health parts", () => {
-  assert.equal(futureCompanies.length, 24);
+test("provides sixty sourced company snapshots and transparent health parts", () => {
+  assert.equal(futureCompanies.length, 60);
   const ids = new Set();
   const partIds = futureIndustryMethod.parts.map((part) => part.id).sort();
 
   for (const company of futureCompanies) {
     assert.ok(!ids.has(company.id), company.id + " must be unique");
     ids.add(company.id);
+    assert.ok(company.name);
+    assert.ok(company.ticker);
+    assert.ok(company.country);
+    assert.ok(company.role || futureIndustries.some((industry) => industry.id === company.sectorId));
     assert.ok(company.fiscal);
     assert.ok(company.revenue);
+    assert.ok(company.profitability);
+    assert.ok(company.cashSignal);
+    assert.ok(futureIndustries.some((industry) => industry.id === company.sectorId));
     assert.equal(typeof company.revenueGrowth, "number");
     assert.equal(typeof company.margin, "number");
     assert.ok(company.business.length >= 35);
@@ -51,7 +58,7 @@ test("provides twenty-four sourced company snapshots and transparent health part
 });
 
 test("keeps the financial snapshot basis explicit", () => {
-  assert.equal(futureIndustryMethod.updatedAt, "2026-07-25");
+  assert.equal(futureIndustryMethod.updatedAt, "2026-07-27");
   assert.equal(futureIndustryMethod.parts.length, 4);
   assert.match(futureIndustryMethod.caution, /통화와 연결·별도 기준/);
 
@@ -62,6 +69,12 @@ test("keeps the financial snapshot basis explicit", () => {
   assert.match(byId["doosan-enerbility"].fiscal, /별도재무제표/);
   assert.equal(byId.amd.revenueGrowth, 34);
   assert.equal(byId.meta.margin, 41);
+  assert.equal(byId.sap.margin, 23.9);
+  assert.equal(byId.fanuc.revenueGrowth, 0.2);
+  assert.equal(byId.crowdstrike.margin, 21);
+  assert.match(byId.rigetti.cashSignal, /217\.2M/);
+  assert.equal(byId.veolia.revenueGrowth, -1.5);
+  assert.equal(byId.ecolab.margin, 16.8);
   assert.equal(byId.catl.cashSignal, "영업현금흐름 RMB 133.2B");
   assert.match(byId["palo-alto"].profitability, /GAAP 영업이익률/);
   assert.match(byId.xylem.source.url, /xylem\.com/);

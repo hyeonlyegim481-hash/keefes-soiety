@@ -16,11 +16,25 @@
   <body>
     <div class="app-shell">
       <header class="topbar">
-        <div class="brand-block">
-          <img class="brand-mark" src="/assets/econest-icon.png" alt="경제 흐름 로고" width="50" height="50" />
-          <div>
-            <p class="eyebrow">keefe's society</p>
-            <h1>세계와 한국의 경제 흐름</h1>
+        <div class="topbar-leading">
+          <button
+            class="icon-button utility-menu-button"
+            id="utilityMenuButton"
+            type="button"
+            aria-label="설정 및 기능 열기"
+            aria-haspopup="dialog"
+            aria-controls="utilityDrawer"
+            aria-expanded="false"
+            title="설정 및 기능"
+          >
+            <span aria-hidden="true">☰</span>
+          </button>
+          <div class="brand-block">
+            <img class="brand-mark" src="/assets/econest-icon.png" alt="경제 흐름 로고" width="50" height="50" />
+            <div>
+              <p class="eyebrow">keefe's society</p>
+              <h1>세계와 한국의 경제 흐름</h1>
+            </div>
           </div>
         </div>
         <div class="top-actions">
@@ -502,6 +516,94 @@
 
       </footer>
     </div>
+
+    <dialog class="utility-drawer" id="utilityDrawer" aria-labelledby="utilityDrawerTitle">
+      <div class="utility-drawer-surface">
+        <header class="utility-drawer-head">
+          <div>
+            <p>keefe's society</p>
+            <h2 id="utilityDrawerTitle">설정 및 기능</h2>
+          </div>
+          <button class="icon-button" id="utilityDrawerClose" type="button" aria-label="설정 닫기" title="닫기">
+            <span aria-hidden="true">×</span>
+          </button>
+        </header>
+
+        <section class="utility-setting-section" aria-labelledby="readerFontTitle">
+          <div class="utility-setting-title">
+            <div>
+              <span>읽기 설정</span>
+              <h3 id="readerFontTitle">글자 크기</h3>
+            </div>
+            <output id="readerFontValue" for="readerFontRange">105%</output>
+          </div>
+          <div class="reader-font-control">
+            <button class="reader-step-button" id="readerFontDown" type="button" aria-label="글자 작게" title="글자 작게">
+              <span aria-hidden="true">A−</span>
+            </button>
+            <input
+              id="readerFontRange"
+              type="range"
+              min="90"
+              max="125"
+              step="5"
+              value="105"
+              aria-label="전체 글자 크기"
+            />
+            <button class="reader-step-button" id="readerFontUp" type="button" aria-label="글자 크게" title="글자 크게">
+              <span aria-hidden="true">A+</span>
+            </button>
+          </div>
+          <div class="reader-scale-labels" aria-hidden="true">
+            <span>작게</span>
+            <span>기본</span>
+            <span>크게</span>
+          </div>
+        </section>
+
+        <section class="utility-setting-section">
+          <label class="reader-contrast-toggle" for="readerHighContrast">
+            <span>
+              <strong>글자 선명하게</strong>
+              <small>보조 설명의 대비와 굵기를 높입니다.</small>
+            </span>
+            <input id="readerHighContrast" type="checkbox" checked />
+            <i aria-hidden="true"></i>
+          </label>
+          <button class="utility-reset-button" id="readerSettingsReset" type="button">
+            <span aria-hidden="true">↺</span>
+            <span>읽기 설정 초기화</span>
+          </button>
+        </section>
+
+        <nav class="utility-shortcuts" aria-labelledby="utilityShortcutTitle">
+          <div class="utility-setting-title">
+            <div>
+              <span>기능</span>
+              <h3 id="utilityShortcutTitle">빠른 이동</h3>
+            </div>
+          </div>
+          <div class="utility-shortcut-grid">
+            <button type="button" data-utility-chapter="brief">
+              <span aria-hidden="true">⌂</span>
+              <strong>핵심</strong>
+            </button>
+            <button type="button" data-utility-chapter="markets">
+              <span aria-hidden="true">▥</span>
+              <strong>시장</strong>
+            </button>
+            <button type="button" data-utility-chapter="glossary">
+              <span aria-hidden="true">가</span>
+              <strong>용어</strong>
+            </button>
+            <button type="button" data-utility-action="refresh">
+              <span aria-hidden="true">↻</span>
+              <strong>새로고침</strong>
+            </button>
+          </div>
+        </nav>
+      </div>
+    </dialog>
 
     <script type="module" src="/app.js"></script>
   </body>

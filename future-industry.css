@@ -60,7 +60,7 @@
 #future .future-summary strong small {
   margin-left: 2px;
   color: #78878e;
-  font-size: 0.62rem;
+  font-size: 0.7rem;
 }
 
 #future .future-industry-tabs {
@@ -97,7 +97,7 @@
 }
 
 #future .future-industry-tabs button > span {
-  font-size: 0.58rem;
+  font-size: 0.66rem;
 }
 
 #future .future-industry-tabs button > strong {
@@ -116,7 +116,7 @@
   border: 1px solid #d8e0e3;
   border-radius: 50%;
   color: #65757d;
-  font-size: 0.58rem;
+  font-size: 0.66rem;
   font-style: normal;
   font-weight: 850;
 }
@@ -234,7 +234,7 @@
 
 #future .future-intel-rail span {
   color: #718087;
-  font-size: 0.6rem;
+  font-size: 0.68rem;
   font-weight: 820;
 }
 
@@ -246,7 +246,7 @@
 
 #future .future-intel-rail p {
   color: #65747c;
-  font-size: 0.64rem;
+  font-size: 0.7rem;
   line-height: 1.42;
 }
 
@@ -306,7 +306,7 @@
 #future .future-company-search > span,
 #future .future-company-sort > span {
   color: #65747c;
-  font-size: 0.6rem;
+  font-size: 0.68rem;
   font-weight: 820;
 }
 
@@ -391,7 +391,7 @@
 
 #future .future-company-radar > header span {
   color: #75c9bf;
-  font-size: 0.56rem;
+  font-size: 0.66rem;
   font-weight: 850;
 }
 
@@ -404,7 +404,7 @@
 #future .future-company-radar > header p {
   max-width: 520px;
   color: #bcc9cd;
-  font-size: 0.62rem;
+  font-size: 0.7rem;
   line-height: 1.4;
   text-align: right;
 }
@@ -422,7 +422,7 @@
   border-bottom: 1px solid #e0e6e8;
   background: #f4f7f8;
   color: #78868d;
-  font-size: 0.57rem;
+  font-size: 0.66rem;
   font-weight: 800;
 }
 
@@ -457,7 +457,7 @@
 #future .future-radar-row > div:first-child span,
 #future .future-radar-row > span {
   color: #718087;
-  font-size: 0.61rem;
+  font-size: 0.68rem;
   font-weight: 720;
 }
 
@@ -571,7 +571,7 @@
 #future .future-company-source > span {
   overflow-wrap: anywhere;
   color: #74838a;
-  font-size: 0.6rem;
+  font-size: 0.68rem;
   font-weight: 700;
 }
 
@@ -581,7 +581,7 @@
   align-items: center;
   gap: 4px;
   color: #1f5c98;
-  font-size: 0.65rem;
+  font-size: 0.7rem;
   font-weight: 840;
   text-decoration: none;
 }
@@ -785,7 +785,7 @@
   }
 
   #future .future-radar-row > div:first-child span {
-    font-size: 0.56rem;
+    font-size: 0.66rem;
   }
 
   #future .future-company-card {
@@ -821,4 +821,19 @@
     align-items: flex-start;
     flex-direction: column;
   }
+}
+
+
+html[data-reader-contrast="strong"] #future .future-summary p,
+html[data-reader-contrast="strong"] #future .future-summary small,
+html[data-reader-contrast="strong"] #future .future-intel-rail span,
+html[data-reader-contrast="strong"] #future .future-intel-rail p,
+html[data-reader-contrast="strong"] #future .future-company-search > span,
+html[data-reader-contrast="strong"] #future .future-company-sort > span,
+html[data-reader-contrast="strong"] #future .future-radar-labels,
+html[data-reader-contrast="strong"] #future .future-radar-row > div:first-child span,
+html[data-reader-contrast="strong"] #future .future-radar-row > span,
+html[data-reader-contrast="strong"] #future .future-company-source > span {
+  color: #506069;
+  font-weight: 760;
 }
