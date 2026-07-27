@@ -5,5 +5,11 @@
       "maxDuration": 30,
       "includeFiles": "data/news-cache.json"
     }
-  }
+  },
+  "crons": [
+    {
+      "path": "/api/blob-maintenance",
+      "schedule": "17 3 * * *"
+    }
+  ]
 }

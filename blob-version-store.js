@@ -400,6 +400,23 @@ export async function createVercelBlobAdapter({
         uploadedAt: result.blob.uploadedAt
       };
     },
+    async list(options = {}) {
+      return sdk.list({
+        prefix: options.prefix,
+        limit: options.limit || 1000,
+        ...(options.cursor ? { cursor: options.cursor } : {}),
+        ...auth,
+        abortSignal: AbortSignal.timeout(15_000)
+      });
+    },
+    async del(pathnames) {
+      const values = Array.isArray(pathnames) ? pathnames : [pathnames];
+      if (!values.length) return;
+      await sdk.del(values, {
+        ...auth,
+        abortSignal: AbortSignal.timeout(15_000)
+      });
+    },
     async put(pathname, body, options = {}) {
       const result = await sdk.put(pathname, body, {
         access,
@@ -654,6 +671,31 @@ export function createMemoryBlobAdapter({
     async get(pathname) {
       const entry = entries.get(pathname);
       return entry ? { ...entry } : null;
+    },
+    async list(options = {}) {
+      const values = [...entries.values()]
+        .filter((entry) =>
+          options.prefix ? entry.pathname.startsWith(options.prefix) : true
+        )
+        .sort((left, right) => left.pathname.localeCompare(right.pathname));
+      const limit = Math.max(1, Number(options.limit) || 1000);
+      const start = options.cursor ? Number(options.cursor) || 0 : 0;
+      const blobs = values.slice(start, start + limit).map((entry) => ({
+        pathname: entry.pathname,
+        size: entry.size,
+        uploadedAt: entry.uploadedAt,
+        url: `memory://${entry.pathname}`
+      }));
+      const next = start + blobs.length;
+      return {
+        blobs,
+        hasMore: next < values.length,
+        cursor: next < values.length ? String(next) : undefined
+      };
+    },
+    async del(pathnames) {
+      const values = Array.isArray(pathnames) ? pathnames : [pathnames];
+      values.forEach((pathname) => entries.delete(pathname));
     },
     async put(pathname, body, options = {}) {
       putCount += 1;

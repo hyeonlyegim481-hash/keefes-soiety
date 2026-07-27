@@ -1,13 +1,11 @@
+import "../app-version.js";
 import {
-  buildBlobVersionBundle,
   createVercelBlobAdapter,
-  getBlobConnectionStatus,
-  publishBlobVersion
+  getBlobConnectionStatus
 } from "../blob-version-store.js";
+import { runBlobMaintenance } from "../blob-maintenance.js";
 import { indicatorSnapshot } from "../indicator-values.js";
 import { getSnapshot } from "../server.mjs";
-
-await import("../app-version.js");
 
 const connection = getBlobConnectionStatus();
 if (!connection.configured) {
@@ -16,29 +14,14 @@ if (!connection.configured) {
   );
   process.exitCode = 2;
 } else {
-  const snapshot = await getSnapshot();
-  const bundle = buildBlobVersionBundle({
-    snapshot,
+  const result = await runBlobMaintenance({
+    adapter: await createVercelBlobAdapter(),
+    snapshot: await getSnapshot({
+      forceNews: true,
+      preferScheduledNews: false
+    }),
     indicatorSnapshot,
     appVersion: globalThis.KEEFES_APP_VERSION || "dev"
   });
-  const adapter = await createVercelBlobAdapter();
-  const result = await publishBlobVersion({ adapter, bundle });
-  const totalBytes = Object.values(result.manifest.files).reduce(
-    (total, file) => total + Number(file.bytes || 0),
-    0
-  );
-  console.log(
-    JSON.stringify(
-      {
-        status: result.status,
-        version: result.version,
-        files: Object.keys(result.manifest.files).length,
-        totalBytes
-      },
-      null,
-      2
-    )
-  );
+  console.log(JSON.stringify(result, null, 2));
 }
-
