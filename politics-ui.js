@@ -4,7 +4,7 @@ import {
   politicalCalendar,
   politicalTransmissionPaths,
   politicsMeta
-} from "./politics-data.js?v=86";
+} from "./politics-data.js?v=87";
 
 const viewIds = ["overview", "laws", "countries", "news"];
 const lawStatusOrder = ["in-force", "upcoming", "rulemaking"];

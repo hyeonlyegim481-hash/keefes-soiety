@@ -1,12 +1,15 @@
-import { climateBusinessFramework } from "./climate-business-data.js?v=86";
-import { futureCompanies, futureIndustries, futureIndustryMethod } from "./future-industry-data.js?v=86";
+import { climateBusinessFramework } from "./climate-business-data.js?v=87";
+import { futureCompanies, futureIndustries, futureIndustryMethod } from "./future-industry-data.js?v=87";
+import { initFutureOutlook } from "./future-outlook-ui.js?v=87";
 
 const MAX_COMPARE = 4;
 const numberFormatter = new Intl.NumberFormat("ko-KR", { maximumFractionDigits: 1 });
 const companyById = new Map(futureCompanies.map((company) => [company.id, company]));
 const industryById = new Map(futureIndustries.map((industry) => [industry.id, industry]));
+const initialFutureParameters = new URLSearchParams(globalThis.location?.search || "");
 
 const viewState = {
+  view: initialFutureParameters.get("future") === "outlook" ? "outlook" : "industries",
   sector: "ai-chips",
   climatePhase: "all",
   compareIds: ["nvidia", "sk-hynix", "microsoft"],
@@ -16,9 +19,13 @@ const viewState = {
 };
 
 let updateChapterHeight = () => {};
+let outlookController = null;
 
 const elements = {
   update: document.querySelector("#futureUpdate"),
+  viewTabs: document.querySelector("#futureViewTabs"),
+  viewPanels: document.querySelectorAll("[data-future-view-panel]"),
+  outlookRoot: document.querySelector("#futureOutlook"),
   summary: document.querySelector("#futureSummary"),
   climateLab: document.querySelector("#climateBusinessLab"),
   industryTabs: document.querySelector("#futureIndustryTabs"),
@@ -37,6 +44,12 @@ const elements = {
 
 export function initFutureIndustryChapter({ updateHeight = () => {} } = {}) {
   updateChapterHeight = updateHeight;
+
+  elements.viewTabs?.addEventListener("click", (event) => {
+    const button = event.target.closest?.("[data-future-view]");
+    if (!button) return;
+    setFutureView(button.dataset.futureView);
+  });
 
   elements.climateLab?.addEventListener("click", (event) => {
     const button = event.target.closest?.("[data-climate-phase]");
@@ -85,7 +98,41 @@ export function initFutureIndustryChapter({ updateHeight = () => {} } = {}) {
     renderCompanyWorkspace(getSelectedIndustry());
   });
 
+  outlookController = initFutureOutlook({
+    root: elements.outlookRoot,
+    updateHeight: updateChapterHeight
+  });
   renderFutureIndustryChapter();
+  setFutureView(viewState.view, { syncUrl: false });
+}
+
+function setFutureView(nextView, { syncUrl = true } = {}) {
+  const normalized = nextView === "outlook" ? "outlook" : "industries";
+  viewState.view = normalized;
+
+  elements.viewTabs?.querySelectorAll("[data-future-view]").forEach((button) => {
+    button.setAttribute("aria-selected", String(button.dataset.futureView === normalized));
+  });
+  elements.viewPanels.forEach((panel) => {
+    const selected = panel.dataset.futureViewPanel === normalized;
+    panel.setAttribute("aria-hidden", String(!selected));
+    panel.inert = !selected;
+  });
+
+  if (elements.update) {
+    const updatedAt = normalized === "outlook"
+      ? outlookController?.updatedAt
+      : futureIndustryMethod.updatedAt;
+    elements.update.textContent = `${String(updatedAt || "").replaceAll("-", ".")} 기준`;
+  }
+
+  if (syncUrl && globalThis.location && globalThis.history) {
+    const url = new URL(globalThis.location.href);
+    if (normalized === "outlook") url.searchParams.set("future", "outlook");
+    else url.searchParams.delete("future");
+    globalThis.history.replaceState(null, "", url);
+  }
+  requestAnimationFrame(updateChapterHeight);
 }
 
 function getSelectedIndustry() {
@@ -109,7 +156,7 @@ function renderFutureIndustryChapter() {
   const industry = getSelectedIndustry();
   const companies = getIndustryCompanies(industry);
 
-  if (elements.update) {
+  if (elements.update && viewState.view === "industries") {
     elements.update.textContent = `${futureIndustryMethod.updatedAt.replaceAll("-", ".")} 기준`;
   }
 
