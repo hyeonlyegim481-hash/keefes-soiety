@@ -72,23 +72,122 @@ export async function fetchMacroIndicators() {
   );
   const fetchedAt = new Date().toISOString();
   const previousItems = new Map((macroCache?.items || []).map((item) => [item.id, item]));
-  const items = macroDefinitions.map((definition, index) => {
-    const result = results[index];
-    if (result.status === "fulfilled") return { ...result.value, fetchedAt };
+  const items = macroDefinitions.map((definition, index) =>
+    resolveMacroIndicatorResult({
+      definition,
+      result: results[index],
+      previous: previousItems.get(definition.id),
+      attemptedAt: fetchedAt
+    })
+  );
 
-    const previous = previousItems.get(definition.id);
-    return previous?.status === "official"
-      ? { ...previous, stale: true, fetchedAt }
-      : makeUnavailableIndicator(definition, fetchedAt);
-  });
-
-  const allOfficial = items.every((item) => item.status === "official");
+  const allOfficial = items.every(
+    (item) => item.status === "official" && item.stale !== true
+  );
   macroCache = {
     createdAt: now,
     ttlMs: allOfficial ? MACRO_CACHE_TTL_MS : MACRO_RETRY_TTL_MS,
     items
   };
   return items.map((item) => ({ ...item }));
+}
+
+export function resolveMacroIndicatorResult({
+  definition,
+  result,
+  previous,
+  attemptedAt
+}) {
+  if (result?.status === "fulfilled") {
+    return {
+      ...result.value,
+      stale: false,
+      fetchedAt: attemptedAt,
+      lastAttemptAt: attemptedAt,
+      retryFailedAt: null
+    };
+  }
+
+  if (previous?.status === "official") {
+    return {
+      ...previous,
+      stale: true,
+      lastAttemptAt: attemptedAt,
+      retryFailedAt: attemptedAt
+    };
+  }
+
+  return makeUnavailableIndicator(definition, attemptedAt);
+}
+
+export function summarizeMacroStatus(macro = []) {
+  const items = Array.isArray(macro) ? macro : [];
+  const currentOfficial = items.filter(
+    (item) => item?.status === "official" && item.stale !== true
+  );
+  const staleOfficial = items.filter(
+    (item) => item?.status === "official" && item.stale === true
+  );
+  const unavailable = items.filter((item) => item?.status !== "official");
+  const latestSuccessfulAt = latestIso(
+    [...currentOfficial, ...staleOfficial].map((item) => item.fetchedAt)
+  );
+  const lastAttemptAt = latestIso(
+    items.map((item) => item.lastAttemptAt || item.retryFailedAt || item.fetchedAt)
+  );
+  const requestedCount = items.length;
+  const officialCount = currentOfficial.length + staleOfficial.length;
+  const state =
+    requestedCount === 0 || unavailable.length === requestedCount
+      ? "unavailable"
+      : unavailable.length > 0
+        ? "partial"
+        : staleOfficial.length > 0
+          ? "stale"
+          : "current";
+
+  return {
+    state,
+    requestedCount,
+    officialCount,
+    currentOfficialCount: currentOfficial.length,
+    staleCount: staleOfficial.length,
+    unavailableCount: unavailable.length,
+    staleIds: staleOfficial.map((item) => item.id).filter(Boolean),
+    unavailableIds: unavailable.map((item) => item.id).filter(Boolean),
+    latestSuccessfulAt,
+    lastAttemptAt
+  };
+}
+
+export function formatMacroSourceSummary(summary) {
+  const requestedCount = Number(summary?.requestedCount) || 0;
+  const officialCount = Number(summary?.officialCount) || 0;
+  const currentOfficialCount = Number(summary?.currentOfficialCount) || 0;
+  const staleCount = Number(summary?.staleCount) || 0;
+  const unavailableCount = Number(summary?.unavailableCount) || 0;
+
+  if (requestedCount === 0 || officialCount === 0) {
+    return `공식 거시지표 수집 실패 (0/${requestedCount}개)`;
+  }
+
+  if (staleCount === 0 && unavailableCount === 0) {
+    return `공식 거시지표 ${currentOfficialCount}/${requestedCount}개 최신 확인`;
+  }
+
+  const details = [];
+  if (staleCount > 0) details.push(`이전 정상값 ${staleCount}개`);
+  if (unavailableCount > 0) details.push(`수집 실패 ${unavailableCount}개`);
+  return `공식 거시지표 ${officialCount}/${requestedCount}개 확인 · ${details.join(" · ")}`;
+}
+
+function latestIso(values) {
+  const timestamps = values
+    .map((value) => Date.parse(value))
+    .filter(Number.isFinite);
+  return timestamps.length
+    ? new Date(Math.max(...timestamps)).toISOString()
+    : null;
 }
 
 function withTimeout(promise, timeoutMs) {
@@ -507,7 +606,7 @@ function decodeHtmlEntities(value) {
     );
 }
 
-function makeUnavailableIndicator(definition, fetchedAt) {
+function makeUnavailableIndicator(definition, attemptedAt) {
   return {
     ...definition,
     value: null,
@@ -518,7 +617,9 @@ function makeUnavailableIndicator(definition, fetchedAt) {
     asOf: null,
     publishedAt: null,
     periodLabel: "기준일 확인 불가",
-    fetchedAt
+    fetchedAt: null,
+    lastAttemptAt: attemptedAt,
+    retryFailedAt: attemptedAt
   };
 }
 

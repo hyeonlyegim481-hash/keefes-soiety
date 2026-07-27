@@ -1,6 +1,12 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { parseExportPeriod, parseExportValues } from "./macro-data.js";
+import {
+  formatMacroSourceSummary,
+  parseExportPeriod,
+  parseExportValues,
+  resolveMacroIndicatorResult,
+  summarizeMacroStatus
+} from "./macro-data.js";
 
 test("parses the official confirmed export sentence with inserted Korean spacing", () => {
   assert.deepEqual(
@@ -32,4 +38,97 @@ test("reads the export month from an official policy briefing", () => {
     parseExportPeriod("6월 수출", "산업통상부가 발표한 2026년 6월 수출입 동향입니다."),
     { year: 2026, month: 6 }
   );
+});
+
+test("keeps the last successful macro timestamp when a retry fails", () => {
+  const previous = {
+    id: "cpi",
+    status: "official",
+    stale: false,
+    value: 2.1,
+    fetchedAt: "2026-07-28T01:00:00.000Z"
+  };
+  const item = resolveMacroIndicatorResult({
+    definition: { id: "cpi", label: "소비자물가" },
+    result: { status: "rejected", reason: new Error("network") },
+    previous,
+    attemptedAt: "2026-07-28T02:00:00.000Z"
+  });
+
+  assert.equal(item.fetchedAt, previous.fetchedAt);
+  assert.equal(item.lastAttemptAt, "2026-07-28T02:00:00.000Z");
+  assert.equal(item.retryFailedAt, "2026-07-28T02:00:00.000Z");
+  assert.equal(item.stale, true);
+});
+
+test("summarizes all-current macro data", () => {
+  const summary = summarizeMacroStatus([
+    {
+      id: "base-rate",
+      status: "official",
+      stale: false,
+      fetchedAt: "2026-07-28T01:00:00.000Z",
+      lastAttemptAt: "2026-07-28T01:00:00.000Z"
+    },
+    {
+      id: "cpi",
+      status: "official",
+      stale: false,
+      fetchedAt: "2026-07-28T02:00:00.000Z",
+      lastAttemptAt: "2026-07-28T02:00:00.000Z"
+    }
+  ]);
+
+  assert.equal(summary.state, "current");
+  assert.equal(summary.currentOfficialCount, 2);
+  assert.equal(summary.latestSuccessfulAt, "2026-07-28T02:00:00.000Z");
+  assert.equal(formatMacroSourceSummary(summary), "공식 거시지표 2/2개 최신 확인");
+});
+
+test("separates current, stale, and unavailable macro data", () => {
+  const summary = summarizeMacroStatus([
+    {
+      id: "base-rate",
+      status: "official",
+      stale: false,
+      fetchedAt: "2026-07-28T01:00:00.000Z",
+      lastAttemptAt: "2026-07-28T01:00:00.000Z"
+    },
+    {
+      id: "cpi",
+      status: "official",
+      stale: true,
+      fetchedAt: "2026-07-27T01:00:00.000Z",
+      lastAttemptAt: "2026-07-28T02:00:00.000Z"
+    },
+    {
+      id: "exports",
+      status: "unavailable",
+      fetchedAt: null,
+      lastAttemptAt: "2026-07-28T02:00:00.000Z"
+    }
+  ]);
+
+  assert.equal(summary.state, "partial");
+  assert.equal(summary.currentOfficialCount, 1);
+  assert.equal(summary.staleCount, 1);
+  assert.deepEqual(summary.unavailableIds, ["exports"]);
+  assert.equal(summary.latestSuccessfulAt, "2026-07-28T01:00:00.000Z");
+  assert.equal(
+    formatMacroSourceSummary(summary),
+    "공식 거시지표 2/3개 확인 · 이전 정상값 1개 · 수집 실패 1개"
+  );
+});
+
+test("handles all-unavailable and empty macro collections", () => {
+  const unavailable = summarizeMacroStatus([
+    { id: "cpi", status: "unavailable", fetchedAt: null }
+  ]);
+  const empty = summarizeMacroStatus([]);
+
+  assert.equal(unavailable.state, "unavailable");
+  assert.equal(unavailable.latestSuccessfulAt, null);
+  assert.equal(formatMacroSourceSummary(unavailable), "공식 거시지표 수집 실패 (0/1개)");
+  assert.equal(empty.state, "unavailable");
+  assert.equal(formatMacroSourceSummary(empty), "공식 거시지표 수집 실패 (0/0개)");
 });

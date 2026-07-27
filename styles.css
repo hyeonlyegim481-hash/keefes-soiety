@@ -2766,6 +2766,15 @@ main {
   line-height: 1.5;
 }
 
+.macro-item[data-status="stale"] {
+  border-color: #d6b86c;
+  background: #fffdf6;
+}
+
+.macro-item[data-status="stale"] .macro-basis {
+  color: #6d571f;
+}
+
 .macro-item[data-status="unavailable"] .macro-value,
 .macro-item[data-status="unavailable"] .macro-basis {
   color: var(--muted);
@@ -3480,6 +3489,11 @@ main {
 
   .connection-pill span:last-child {
     display: none;
+  }
+
+  .connection-pill[data-state="stale"] span:last-child,
+  .connection-pill[data-state="error"] span:last-child {
+    display: inline;
   }
 
   .signal-panel,
@@ -15179,5 +15193,65 @@ html[data-reader-layout="desktop"] body {
     min-width: 0;
     padding-right: 5px;
     padding-left: 5px;
+  }
+}
+
+.boot-failure-banner {
+  position: relative;
+  z-index: 60;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 14px;
+  padding: 14px 16px;
+  border: 1px solid #d7b963;
+  border-left-width: 4px;
+  border-radius: 6px;
+  background: #fff9e8;
+  color: #2b2619;
+}
+
+.boot-failure-banner div {
+  min-width: 0;
+}
+
+.boot-failure-banner strong {
+  display: block;
+  font-size: 0.96rem;
+  line-height: 1.4;
+}
+
+.boot-failure-banner p {
+  margin: 4px 0 0;
+  color: #5f5438;
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
+.boot-failure-banner button {
+  min-height: 38px;
+  padding: 8px 13px;
+  border: 1px solid #26363e;
+  border-radius: 6px;
+  background: #26363e;
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.boot-failure-banner button:disabled {
+  cursor: wait;
+  opacity: 0.68;
+}
+
+@media (max-width: 640px) {
+  .boot-failure-banner {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .boot-failure-banner button {
+    width: 100%;
   }
 }

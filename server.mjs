@@ -2,7 +2,11 @@ import http from "node:http";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { fetchMacroIndicators } from "./macro-data.js";
+import {
+  fetchMacroIndicators,
+  formatMacroSourceSummary,
+  summarizeMacroStatus
+} from "./macro-data.js";
 import { buildSharedDataGraph } from "./economic-graph.js";
 import { futureCompanies, futureIndustries } from "./future-industry-data.js";
 import { historyEvents } from "./history-data.js";
@@ -239,9 +243,13 @@ const server = http.createServer(async (req, res) => {
 
     await serveStatic(url.pathname, res);
   } catch (error) {
+    console.error("[server] request failed", {
+      name: error instanceof Error ? error.name : "UnknownError",
+      message: error instanceof Error ? error.message : String(error)
+    });
     sendJson(res, 500, {
       error: "Internal server error",
-      message: error instanceof Error ? error.message : "Unknown error"
+      code: "INTERNAL_SERVER_ERROR"
     });
   }
 });
@@ -296,14 +304,29 @@ async function buildSnapshot({
     .map((market) => market.id);
 
   const { rawHeadlines, headlines, availableNewsFeedCount } = newsBundle;
+  const macroStatus = summarizeMacroStatus(macro);
+  const newsIsPartial =
+    newsBundle.sourceMode === "unavailable"
+    || newsBundle.sourceMode === "blob-last-known"
+    || availableNewsFeedCount < headlineFeeds.length;
   const dataQuality = {
-    ...buildDataQuality(markets, rawHeadlines, headlines, availableNewsFeedCount, macro),
+    ...buildDataQuality(
+      markets,
+      rawHeadlines,
+      headlines,
+      availableNewsFeedCount,
+      macro,
+      macroStatus
+    ),
     newsFetchedAt: newsBundle.fetchedAt,
     newsRefreshMinutes: NEWS_CACHE_TTL_MS / 60_000,
     newsSourceMode: newsBundle.sourceMode,
     scheduledNewsAnalysisCount: newsBundle.scheduledAnalysisCount || 0,
     missingMarketIds,
-    partialSuccess: missingMarketIds.length > 0
+    partialSuccess:
+      missingMarketIds.length > 0
+      || newsIsPartial
+      || macroStatus.state !== "current"
   };
   const generatedAt = new Date().toISOString();
   const latestMarketTimestamp = Math.max(
@@ -361,7 +384,7 @@ async function buildSnapshot({
           : newsBundle.sourceMode === "unavailable"
             ? "뉴스 자료 수집 실패"
             : `Google News RSS (30분 캐시·최근 ${NEWS_LOOKBACK_DAYS}일·관련도 선별·중복 제거)`,
-      macro: "한국은행·국가데이터처·관세청 최신 공표"
+      macro: formatMacroSourceSummary(macroStatus)
     },
     sourceDetails: {
       markets: {
@@ -377,18 +400,27 @@ async function buildSnapshot({
         status: "장중·장 마감·지연·마지막 정상값을 구분하며 제공처 지연 여부를 시장 상세에서 표시"
       },
       macro: {
-        provider: "한국은행·국가데이터처·관세청",
-        basisAt: macro.map((item) => `${item.label}: ${item.periodLabel || "기준 미확인"}`),
-        updatedAt: macro.map((item) => item.fetchedAt).filter(Boolean).sort().at(-1) || generatedAt,
+        provider: `한국은행·국가데이터처·관세청 · ${formatMacroSourceSummary(macroStatus)}`,
+        basisAt: macro.map((item) =>
+          item.status === "official"
+            ? `${item.label}: ${item.periodLabel || "기준 미확인"}${item.stale ? " · 이전 정상값" : ""}`
+            : `${item.label}: 자료 수집 실패`
+        ),
+        updatedAt: macroStatus.latestSuccessfulAt,
+        lastAttemptAt: macroStatus.lastAttemptAt,
         revision: macro.some((item) => item.preliminary)
           ? "잠정치 포함 · 후속 확정 발표에서 수정될 수 있음"
           : "공표값 · 제공기관의 후속 수정 가능",
         calculation: "각 기관 공표 단위와 증감률을 사용하며 대체 추정값을 만들지 않음",
         valueType: "지표별 상이 · 카드의 출처·기준에서 구분",
         seasonalAdjustment: "화면 공통 필드 없음 · 원자료 표에서 확인",
-        status: macro.some((item) => item.preliminary)
-          ? "잠정치 포함 · 각 카드에서 공표 상태 확인"
-          : "잠정 여부 공통 판별 불가 · 각 제공기관 원자료 확인"
+        status: macroStatus.state === "unavailable"
+          ? "공식 자료 수집 실패 · 임의 값이나 대체 추정값을 만들지 않음"
+          : macroStatus.state === "partial" || macroStatus.state === "stale"
+            ? `${formatMacroSourceSummary(macroStatus)} · 각 카드에서 기준시각 확인`
+            : macro.some((item) => item.preliminary)
+              ? "잠정치 포함 · 각 카드에서 공표 상태 확인"
+              : "공표값 · 각 제공기관의 후속 수정 가능"
       },
       news: {
         provider: newsBundle.sourceMode === "scheduled"
@@ -467,6 +499,17 @@ export function createUnavailableMarket(item, error) {
   };
 }
 
+function normalizeAvailableNewsFeedCount(value, fallback = 0) {
+  if (value === null || value === undefined || value === "") {
+    return Math.max(0, Math.min(headlineFeeds.length, Math.trunc(Number(fallback) || 0)));
+  }
+  const count = Number(value);
+  if (!Number.isFinite(count)) {
+    return Math.max(0, Math.min(headlineFeeds.length, Math.trunc(Number(fallback) || 0)));
+  }
+  return Math.max(0, Math.min(headlineFeeds.length, Math.trunc(count)));
+}
+
 async function getNewsBundle({
   now = Date.now(),
   force = false,
@@ -493,7 +536,10 @@ async function getNewsBundle({
               ? "scheduled-ai"
               : "rules"
         })),
-        availableNewsFeedCount: Number(scheduled.availableNewsFeedCount) || headlineFeeds.length,
+        availableNewsFeedCount: normalizeAvailableNewsFeedCount(
+          scheduled.availableNewsFeedCount,
+          headlineFeeds.length
+        ),
         fetchedAt: scheduled.updatedAt,
         sourceMode: "scheduled",
         scheduledAnalysisCount: Object.values(scheduledAnalyses).filter(
@@ -513,8 +559,10 @@ async function getNewsBundle({
         ...headline,
         analysisStatus: headline.analysisStatus || "rules"
       })),
-      availableNewsFeedCount:
-        Number(verifiedFallback.availableNewsFeedCount) || 0,
+      availableNewsFeedCount: normalizeAvailableNewsFeedCount(
+        verifiedFallback.availableNewsFeedCount,
+        0
+      ),
       fetchedAt: verifiedFallback.fetchedAt || null,
       sourceMode: "blob-last-known",
       scheduledAnalysisCount: 0
@@ -2118,20 +2166,22 @@ function buildDataQuality(
   rawHeadlines = [],
   headlines = [],
   availableNewsFeedCount = 0,
-  macro = []
+  macro = [],
+  macroStatus = summarizeMacroStatus(macro)
 ) {
   const requestedIds = marketConfig.map((item) => item.id);
-  const availableIds = new Set(markets.map((market) => market.id));
-  const timestamps = markets
+  const availableMarkets = markets.filter((market) => market.status !== "unavailable");
+  const availableIds = new Set(availableMarkets.map((market) => market.id));
+  const timestamps = availableMarkets
     .map((market) => Date.parse(market.asOf))
     .filter(Number.isFinite);
   const headlineTimestamps = headlines
     .map((headline) => Date.parse(headline.publishedAt))
     .filter(Number.isFinite);
-  const officialMacro = macro.filter((item) => item.status === "official");
+
   return {
     requestedMarketCount: requestedIds.length,
-    availableMarketCount: markets.length,
+    availableMarketCount: availableMarkets.length,
     liveMarketCount: markets.filter((market) => market.live).length,
     marketChangeAvailableCount: markets.filter(
       (market) => market.changeAvailable === true
@@ -2183,12 +2233,16 @@ function buildDataQuality(
     oldestHeadlineAt: headlineTimestamps.length
       ? new Date(Math.min(...headlineTimestamps)).toISOString()
       : null,
-    requestedMacroCount: macro.length,
-    officialMacroCount: officialMacro.length,
-    unavailableMacroIds: macro
-      .filter((item) => item.status !== "official")
-      .map((item) => item.id),
-    macroFetchedAt: macro[0]?.fetchedAt || null
+    requestedMacroCount: macroStatus.requestedCount,
+    officialMacroCount: macroStatus.officialCount,
+    macroCurrentOfficialCount: macroStatus.currentOfficialCount,
+    macroStaleCount: macroStatus.staleCount,
+    macroStaleIds: macroStatus.staleIds,
+    unavailableMacroIds: macroStatus.unavailableIds,
+    macroUnavailableIds: macroStatus.unavailableIds,
+    macroFetchedAt: macroStatus.latestSuccessfulAt,
+    macroLastAttemptAt: macroStatus.lastAttemptAt,
+    macroStatus: macroStatus.state
   };
 }
 function sendJson(res, statusCode, payload) {
@@ -2280,6 +2334,7 @@ export {
   buildAnalysis,
   buildArticleMarketContext,
   buildAutomatedNewsAnalysis,
+  buildDataQuality,
   consumeNewsAnalysisQuota,
   enhanceNewsAnalysisWithAi,
   enhanceNewsBatchWithAi,
@@ -2290,6 +2345,7 @@ export {
   getNewsBundle,
   getSnapshot,
   isAiConfigured,
+  normalizeAvailableNewsFeedCount,
   normalizeHeadlineInput,
   normalizeMarketSeries,
   rankAndDedupeHeadlines,
