@@ -34,6 +34,9 @@ const NEWS_CACHE_TTL_MS = 30 * 60 * 1000;
 const SCHEDULED_NEWS_MAX_AGE_MS = 2 * 60 * 60 * 1000;
 const REQUEST_TIMEOUT_MS = 5_000;
 const MARKET_STALE_CACHE_MS = 6 * 60 * 60 * 1000;
+const MARKET_CHART_RANGE = "1y";
+const MARKET_CHART_INTERVAL = "1d";
+const MARKET_CHART_MAX_POINTS = 280;
 const NEWS_LOOKBACK_DAYS = 7;
 const NEWS_LOOKBACK_MS = NEWS_LOOKBACK_DAYS * 24 * 60 * 60 * 1000;
 // This deployment is intentionally rule-based. AI API calls remain disabled.
@@ -635,7 +638,7 @@ async function fetchMarket(item) {
 async function fetchMarketFromHost(item, hostname) {
   const endpoint = `https://${hostname}/v8/finance/chart/${encodeURIComponent(
     item.symbol
-  )}?range=5d&interval=1h&includePrePost=false`;
+  )}?range=${MARKET_CHART_RANGE}&interval=${MARKET_CHART_INTERVAL}&includePrePost=false`;
   const response = await fetch(endpoint, {
     headers: {
       accept: "application/json",
@@ -662,7 +665,10 @@ async function fetchMarketFromHost(item, hostname) {
     timestamps,
     closes: quote.close || [],
     now: Date.now(),
-    fetchedAt: new Date().toISOString()
+    fetchedAt: new Date().toISOString(),
+    chartRange: MARKET_CHART_RANGE,
+    chartInterval: MARKET_CHART_INTERVAL,
+    maxSeriesPoints: MARKET_CHART_MAX_POINTS
   });
 }
 

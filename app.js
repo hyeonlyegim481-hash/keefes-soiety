@@ -5,7 +5,9 @@ import {
   getMarketKnowledge
 } from "./economic-graph.js";
 import {
+  MARKET_CHART_PERIODS,
   computeMarketChartScale,
+  filterMarketSeriesByPeriod,
   sanitizeMarketSeries
 } from "./market-data.js";
 import {
@@ -26,6 +28,7 @@ import {
   READER_FONT_STEP,
   READER_SETTINGS_KEY,
   applyReaderSettings,
+  applyReaderViewport,
   loadReaderSettings,
   normalizeReaderSettings,
   saveReaderSettings
@@ -120,6 +123,7 @@ const elements = {
   readerFontDown: document.querySelector("#readerFontDown"),
   readerFontUp: document.querySelector("#readerFontUp"),
   readerHighContrast: document.querySelector("#readerHighContrast"),
+  readerDesktopLayout: document.querySelector("#readerDesktopLayout"),
   readerSettingsReset: document.querySelector("#readerSettingsReset"),
   connectionStatus: document.querySelector("#connectionStatus"),
   refreshButton: document.querySelector("#refreshButton"),
@@ -144,6 +148,7 @@ const elements = {
   marketDeepStatus: document.querySelector("#marketDeepStatus"),
   marketDeepTitle: document.querySelector("#marketDeepTitle"),
   chartTabs: document.querySelector("#chartTabs"),
+  chartRangeTabs: document.querySelector("#chartRangeTabs"),
   chartTitle: document.querySelector("#chartTitle"),
   chartMeta: document.querySelector("#chartMeta"),
   chartFrame: document.querySelector("#chartFrame"),
@@ -237,6 +242,17 @@ const chartTooltipTimeFormatter = new Intl.DateTimeFormat("ko-KR", {
   weekday: "short",
   hour: "2-digit",
   minute: "2-digit"
+});
+const chartAxisDateFormatter = new Intl.DateTimeFormat("ko-KR", {
+  year: "2-digit",
+  month: "numeric",
+  day: "numeric"
+});
+const chartTooltipDateFormatter = new Intl.DateTimeFormat("ko-KR", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+  weekday: "short"
 });
 const studyDateFormatter = new Intl.DateTimeFormat("ko-KR", {
   month: "long",
@@ -442,6 +458,7 @@ let state = {
   narrative: null,
   selectedMarket: initialUrlState.market || "kospi",
   marketView: initialUrlState.marketView || "summary",
+  marketPeriod: "1y",
   isRefreshing: false,
   activeChapter: initialChapter,
   historyEra: "overview",
@@ -468,11 +485,13 @@ let state = {
 };
 
 let readerSettings = applyReaderSettings(loadReaderSettings());
+applyReaderViewport(readerSettings);
 
 function syncReaderSettingControls() {
   if (elements.readerFontRange) elements.readerFontRange.value = String(readerSettings.fontScale);
   if (elements.readerFontValue) elements.readerFontValue.value = `${readerSettings.fontScale}%`;
   if (elements.readerHighContrast) elements.readerHighContrast.checked = readerSettings.highContrast;
+  if (elements.readerDesktopLayout) elements.readerDesktopLayout.checked = readerSettings.desktopLayout;
   if (elements.readerFontDown) elements.readerFontDown.disabled = readerSettings.fontScale <= READER_FONT_MIN;
   if (elements.readerFontUp) elements.readerFontUp.disabled = readerSettings.fontScale >= READER_FONT_MAX;
 }
@@ -490,9 +509,18 @@ function updateReaderSettings(nextSettings, { persist = true } = {}) {
     ...readerSettings,
     ...nextSettings
   }));
+  applyReaderViewport(readerSettings);
   if (persist) readerSettings = saveReaderSettings(readerSettings);
   syncReaderSettingControls();
   scheduleReaderLayout();
+}
+
+function syncChartPeriodTabs() {
+  elements.chartRangeTabs?.querySelectorAll("[data-chart-period]").forEach((button) => {
+    const selected = button.dataset.chartPeriod === state.marketPeriod;
+    button.setAttribute("aria-selected", String(selected));
+    button.tabIndex = selected ? 0 : -1;
+  });
 }
 
 function openUtilityDrawer() {
@@ -509,6 +537,7 @@ function closeUtilityDrawer() {
 }
 
 syncReaderSettingControls();
+syncChartPeriodTabs();
 
 if (elements.chapterProgress && elements.chapterTabs.length) {
   elements.chapterProgress.style.width = `${100 / elements.chapterTabs.length}%`;
@@ -542,6 +571,10 @@ elements.readerFontUp?.addEventListener("click", () => {
 elements.readerHighContrast?.addEventListener("change", (event) => {
   updateReaderSettings({ highContrast: event.currentTarget.checked });
 });
+elements.readerDesktopLayout?.addEventListener("change", (event) => {
+  updateReaderSettings({ desktopLayout: event.currentTarget.checked });
+  window.scrollTo(0, window.scrollY);
+});
 elements.readerSettingsReset?.addEventListener("click", () => {
   updateReaderSettings(DEFAULT_READER_SETTINGS);
 });
@@ -562,6 +595,7 @@ elements.utilityDrawer?.querySelector(".utility-shortcuts")?.addEventListener("c
 window.addEventListener("storage", (event) => {
   if (event.key !== READER_SETTINGS_KEY) return;
   readerSettings = applyReaderSettings(loadReaderSettings());
+  applyReaderViewport(readerSettings);
   syncReaderSettingControls();
   scheduleReaderLayout();
 });
@@ -574,6 +608,13 @@ elements.marketViewTabs?.addEventListener("click", (event) => {
   const button = event.target.closest?.("[data-market-view]");
   if (!button) return;
   setMarketView(button.dataset.marketView);
+});
+elements.chartRangeTabs?.addEventListener("click", (event) => {
+  const button = event.target.closest?.("[data-chart-period]");
+  if (!button || !MARKET_CHART_PERIODS.some((period) => period.id === button.dataset.chartPeriod)) return;
+  state.marketPeriod = button.dataset.chartPeriod;
+  syncChartPeriodTabs();
+  drawChart();
 });
 document.addEventListener("click", (event) => {
   const retryButton = event.target.closest?.("[data-retry-chapter]");
@@ -5316,6 +5357,11 @@ function renderNewsAnalysisResult(output, result) {
       </div>
       <em>${escapeHtml(result.engineLabel || "규칙 기반 상세 분석")} · ${contentBasis} · ${marketBasis} · ${sourceBasis} · 신뢰도 ${escapeHtml(result.confidence || "중간")}</em>
     </div>
+    <nav class="news-analysis-outline" aria-label="뉴스 분석 순서">
+      <span><b>01</b><i>기사 핵심</i></span>
+      <span><b>02</b><i>경제 전달과 영향</i></span>
+      <span><b>03</b><i>시간과 검증</i></span>
+    </nav>
     <section class="news-source-panel">
       <header>
         <strong>출처와 기준</strong>
@@ -5329,6 +5375,12 @@ function renderNewsAnalysisResult(output, result) {
         <div><dt>분석 기준</dt><dd>${isAiGenerated ? "생성형 AI가 확인 가능한 입력만 재작성" : isArticleBased ? "원문에서 주체·수치·방향을 추출해 규칙으로 재작성" : "본문 미확인 · 제목과 시장 데이터만 규칙으로 연결"}</dd></div>
       </dl>
     </section>
+    <section class="news-analysis-chapter" data-analysis-step="1">
+      <header class="news-analysis-chapter-heading">
+        <span>01</span>
+        <div><strong>기사 핵심</strong><p>무슨 일이 있었고 어떤 사실이 확인됐는지 먼저 읽습니다.</p></div>
+      </header>
+      <div class="news-analysis-chapter-content">
     <section class="ai-article-summary">
       <span>${summaryLabel}</span>
       <p>${escapeHtml(result.summary || "현재 시장과의 연결을 확인하고 있습니다.")}</p>
@@ -5342,6 +5394,14 @@ function renderNewsAnalysisResult(output, result) {
         ${keyPoints.map((item, index) => `<span><b>${String(index + 1).padStart(2, "0")}</b><i>${escapeHtml(item)}</i></span>`).join("")}
       </div>
     ` : ""}
+      </div>
+    </section>
+    <section class="news-analysis-chapter" data-analysis-step="2">
+      <header class="news-analysis-chapter-heading">
+        <span>02</span>
+        <div><strong>경제 전달과 영향</strong><p>원인이 시장 가격과 한국 경제로 이어지는 경로를 구분합니다.</p></div>
+      </header>
+      <div class="news-analysis-chapter-content">
     <section class="news-transmission-section">
       <header>
         <strong>경제 전달 경로</strong>
@@ -5374,6 +5434,14 @@ function renderNewsAnalysisResult(output, result) {
         <p>${escapeHtml(result.koreaImpact || "환율과 외국인 수급으로 이어지는지 확인합니다.")}</p>
       </article>
     </div>
+      </div>
+    </section>
+    <section class="news-analysis-chapter" data-analysis-step="3">
+      <header class="news-analysis-chapter-heading">
+        <span>03</span>
+        <div><strong>시간과 검증</strong><p>언제 확인해야 하고 어떤 조건에서 해석을 바꿔야 하는지 봅니다.</p></div>
+      </header>
+      <div class="news-analysis-chapter-content">
     <section class="news-horizon-section">
       <header>
         <strong>시점별 확인</strong>
@@ -5402,6 +5470,8 @@ function renderNewsAnalysisResult(output, result) {
       <strong>주의할 점</strong>
       <span>${escapeHtml(result.limitation || "기사 원문과 실제 가격 반응을 함께 확인해야 합니다.")}</span>
     </div>
+      </div>
+    </section>
   `;
 }
 
@@ -5414,7 +5484,10 @@ function drawChart() {
 
   hideChartTooltip();
   elements.chartTitle.textContent = market.name;
-  const series = getSanitizedClientMarketSeries(market);
+  const fullSeries = getSanitizedClientMarketSeries(market);
+  const periodConfig = MARKET_CHART_PERIODS.find((period) => period.id === state.marketPeriod)
+    || MARKET_CHART_PERIODS.at(-1);
+  const series = filterMarketSeriesByPeriod(fullSeries, periodConfig.id);
 
   const canvas = elements.marketChart;
   const context = canvas.getContext("2d");
@@ -5436,6 +5509,7 @@ function drawChart() {
     elements.chartCurrentValue.textContent = "--";
     elements.chartStatusText.textContent = "데이터 확인 필요";
     elements.chartPeriodBadge.dataset.direction = "flat";
+    elements.chartPeriodBadge.querySelector("span").textContent = `${periodConfig.label} 등락`;
     elements.chartPeriodBadge.querySelector("strong").textContent = "--";
     context.fillStyle = "#65717d";
     context.font = "650 13px Inter, system-ui, sans-serif";
@@ -5462,10 +5536,16 @@ function drawChart() {
   const endLabel = formatMarketTimestamp(market, lastPoint.time);
   const intervalMinutes = Number(market.seriesMeta?.intervalMinutes);
   const intervalLabel = Number.isFinite(intervalMinutes)
-    ? `약 ${formatter.format(intervalMinutes)}분`
+    ? intervalMinutes >= 720
+      ? `약 ${formatter.format(intervalMinutes / 1_440)}일`
+      : `약 ${formatter.format(intervalMinutes)}분`
     : market.chartInterval === "1h"
       ? "1시간"
-      : market.chartInterval || "간격 미확인";
+      : market.chartInterval === "1d"
+        ? "1일"
+        : market.chartInterval || "간격 미확인";
+  const isDailyChart = intervalMinutes >= 720 || market.chartInterval === "1d";
+  const axisTimeFormatter = isDailyChart ? chartAxisDateFormatter : chartAxisTimeFormatter;
   const sourceUrl = safeNewsUrl(market.sourceUrl);
   const sourceMarkup =
     sourceUrl === "#"
@@ -5476,11 +5556,12 @@ function drawChart() {
   elements.chartCurrentValue.parentElement.dataset.direction = direction;
   elements.chartStatusText.textContent = `${statusLabel} · ${endLabel} 기준`;
   elements.chartPeriodBadge.dataset.direction = direction;
+  elements.chartPeriodBadge.querySelector("span").textContent = `${periodConfig.label} 등락`;
   elements.chartPeriodBadge.querySelector("strong").textContent =
     Number.isFinite(periodChange) ? `${signed(periodChange)}%` : "기간 등락 계산 불가";
   elements.chartMeta.innerHTML = `
     <span><b>조회 기간</b>${escapeHtml(startLabel)} ~ ${escapeHtml(endLabel)}</span>
-    <span><b>데이터 간격</b>${escapeHtml(market.chartRange || "5d")} 조회 · ${escapeHtml(intervalLabel)} · ${series.length}개</span>
+    <span><b>데이터 간격</b>원자료 ${escapeHtml(market.chartRange || "1y")} · 표시 ${escapeHtml(periodConfig.label)} · ${escapeHtml(intervalLabel)} · ${series.length}개</span>
     <span><b>비교</b>기간 ${escapeHtml(Number.isFinite(periodChange) ? `${signed(periodChange)}%` : "계산 불가")} · 전일 ${escapeHtml(formatMarketChangePercent(market))}</span>
     <span><b>거래 기준</b>${escapeHtml(market.tradingDate || "거래일 미확인")} · ${escapeHtml(statusLabel)} · ${escapeHtml(getMarketDelayLabel(market))}</span>
     <span><b>상품·단위</b>${escapeHtml(market.instrumentLabel || getMarketInstrumentLabel(market))} · ${escapeHtml(market.displayUnit || getMarketDisplayUnit(market))}</span>
@@ -5488,7 +5569,7 @@ function drawChart() {
   `;
   canvas.setAttribute(
     "aria-label",
-    `${market.name} ${startLabel}부터 ${endLabel}까지 ${intervalLabel} 간격의 단일 계열 가격 차트. 기간 변화 ${Number.isFinite(periodChange) ? `${signed(periodChange)}퍼센트` : "계산 불가"}`
+    `${market.name} ${periodConfig.label} 차트. ${startLabel}부터 ${endLabel}까지 ${intervalLabel} 간격의 단일 계열 가격 차트. 기간 변화 ${Number.isFinite(periodChange) ? `${signed(periodChange)}퍼센트` : "계산 불가"}`
   );
 
   const compact = width < 560;
@@ -5543,7 +5624,7 @@ function drawChart() {
     context.fillStyle = "#74828b";
     context.textAlign = index === 0 ? "left" : index === timeTickCount - 1 ? "right" : "center";
     context.fillText(
-      chartAxisTimeFormatter.format(tickTime),
+      axisTimeFormatter.format(tickTime),
       x,
       height - 13
     );
@@ -5582,11 +5663,15 @@ function drawChart() {
   area.addColorStop(1, "rgba(255, 255, 255, 0)");
 
   const coordinateSegments = [];
+  const expectedIntervalMinutes = Number.isFinite(intervalMinutes)
+    ? intervalMinutes
+    : isDailyChart ? 1_440 : 60;
+  const maximumContinuousGapMs = Math.max(150, expectedIntervalMinutes * 4.5) * 60 * 1000;
   let currentSegment = [];
   coordinates.forEach((point, index) => {
     const previousTime = series[index - 1]?.time.getTime();
     const currentTime = series[index].time.getTime();
-    if (index > 0 && currentTime - previousTime > 2.5 * 60 * 60 * 1000) {
+    if (index > 0 && currentTime - previousTime > maximumContinuousGapMs) {
       if (currentSegment.length) coordinateSegments.push(currentSegment);
       currentSegment = [];
     }
@@ -5657,7 +5742,8 @@ function drawChart() {
     height,
     plotHeight,
     firstValue: firstPoint.value,
-    lineColor
+    lineColor,
+    isDailyChart
   };
 }
 
@@ -5751,7 +5837,7 @@ function showChartTooltip(index) {
   elements.chartTooltip.style.left = `${left}px`;
   elements.chartTooltip.style.top = `${Math.max(58, Math.min(wrapRect.height - 58, top))}px`;
   elements.chartTooltip.innerHTML = `
-    <span>${escapeHtml(chartTooltipTimeFormatter.format(datum.time))}</span>
+    <span>${escapeHtml((chart.isDailyChart ? chartTooltipDateFormatter : chartTooltipTimeFormatter).format(datum.time))}</span>
     <strong>${escapeHtml(formatChartPointValue(chart.market, datum.value))}</strong>
     <em data-direction="${direction}">조회 시작 대비 ${signed(changeFromStart)}%</em>
   `;

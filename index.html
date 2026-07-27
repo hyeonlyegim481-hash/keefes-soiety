@@ -2,7 +2,7 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta id="appViewport" name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
       content="최신 시장 데이터와 한국 경제 흐름을 기준시각과 함께 정리하는 대시보드"
@@ -152,6 +152,18 @@
                     <div class="chapter-expansion" id="marketConnections"></div>
                   </section>
                   <section class="nested-chapter-panel market-view-panel market-chart-panel" data-market-view-panel="chart" aria-hidden="true" inert>
+                    <div class="chart-range-toolbar">
+                      <div>
+                        <span>PRICE HISTORY</span>
+                        <strong>표시 기간</strong>
+                      </div>
+                      <div class="chart-range-tabs" id="chartRangeTabs" role="tablist" aria-label="시장 차트 표시 기간">
+                        <button type="button" role="tab" data-chart-period="1m" aria-selected="false">1개월</button>
+                        <button type="button" role="tab" data-chart-period="3m" aria-selected="false">3개월</button>
+                        <button type="button" role="tab" data-chart-period="6m" aria-selected="false">6개월</button>
+                        <button type="button" role="tab" data-chart-period="1y" aria-selected="true">1년</button>
+                      </div>
+                    </div>
                     <div class="chart-meta" id="chartMeta" aria-live="polite"></div>
                     <div class="chart-frame" id="chartFrame">
                       <div class="chart-visual-head">
@@ -562,6 +574,14 @@
         </section>
 
         <section class="utility-setting-section">
+          <label class="reader-contrast-toggle reader-layout-toggle" for="readerDesktopLayout">
+            <span>
+              <strong>PC 화면 모드</strong>
+              <small>모바일에서 데스크톱 전체 배치를 축소해 보여줍니다.</small>
+            </span>
+            <input id="readerDesktopLayout" type="checkbox" />
+            <i aria-hidden="true"></i>
+          </label>
           <label class="reader-contrast-toggle" for="readerHighContrast">
             <span>
               <strong>글자 선명하게</strong>
@@ -572,7 +592,7 @@
           </label>
           <button class="utility-reset-button" id="readerSettingsReset" type="button">
             <span aria-hidden="true">↺</span>
-            <span>읽기 설정 초기화</span>
+            <span>표시 설정 초기화</span>
           </button>
         </section>
 

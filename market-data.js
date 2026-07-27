@@ -114,6 +114,34 @@ export const MARKET_CONFIG = Object.freeze([
   })
 ]);
 
+export const MARKET_CHART_PERIODS = Object.freeze([
+  Object.freeze({ id: "1m", label: "1개월", days: 31 }),
+  Object.freeze({ id: "3m", label: "3개월", days: 93 }),
+  Object.freeze({ id: "6m", label: "6개월", days: 186 }),
+  Object.freeze({ id: "1y", label: "1년", days: 366 })
+]);
+
+export function filterMarketSeriesByPeriod(series = [], periodId = "1y") {
+  const period = MARKET_CHART_PERIODS.find((item) => item.id === periodId)
+    || MARKET_CHART_PERIODS.at(-1);
+  const normalized = series
+    .map((point) => ({
+      point,
+      timestamp: point?.time instanceof Date
+        ? point.time.getTime()
+        : Date.parse(point?.time)
+    }))
+    .filter(({ point, timestamp }) => Number.isFinite(timestamp) && Number.isFinite(Number(point?.value)))
+    .sort((left, right) => left.timestamp - right.timestamp);
+  if (normalized.length < 2) return normalized.map(({ point }) => point);
+
+  const endAt = normalized.at(-1).timestamp;
+  const threshold = endAt - period.days * 24 * 60 * 60 * 1000;
+  const filtered = normalized.filter(({ timestamp }) => timestamp >= threshold);
+  const selected = filtered.length >= 2 ? filtered : normalized.slice(-2);
+  return selected.map(({ point }) => point);
+}
+
 export function sanitizeMarketSeries(
   timestamps = [],
   closes = [],
@@ -458,7 +486,10 @@ export function buildMarketRecord({
   timestamps = [],
   closes = [],
   now = Date.now(),
-  fetchedAt = new Date(now).toISOString()
+  fetchedAt = new Date(now).toISOString(),
+  chartRange = "1y",
+  chartInterval = "1d",
+  maxSeriesPoints = 280
 }) {
   const normalized = sanitizeMarketSeries(timestamps, closes, {
     allowZero: item.allowZero,
@@ -487,7 +518,8 @@ export function buildMarketRecord({
   );
   const movement = calculateMarketChange(current, previousCloseInfo, item);
   const timing = buildMarketTiming(meta, asOf, now, item);
-  const series = normalized.series.slice(-160).map((point) => ({
+  const safePointLimit = Math.max(2, Math.floor(Number(maxSeriesPoints) || 280));
+  const series = normalized.series.slice(-safePointLimit).map((point) => ({
     time: point.time,
     value: roundByMagnitude(point.value)
   }));
@@ -520,13 +552,13 @@ export function buildMarketRecord({
     seriesMeta: {
       startAt: series[0]?.time || null,
       endAt: series.at(-1)?.time || null,
-      interval: "1h",
+      interval: chartInterval,
       intervalMinutes: normalized.inferredIntervalMinutes,
       pointCount: series.length,
       quality: normalized.quality
     },
-    chartRange: "5d",
-    chartInterval: "1h",
+    chartRange,
+    chartInterval,
     chartSource: "Yahoo Finance",
     source: "Yahoo Finance chart endpoint",
     sourceUrl: `https://finance.yahoo.com/quote/${encodeURIComponent(item.symbol)}`,

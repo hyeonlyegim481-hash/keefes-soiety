@@ -1456,3 +1456,132 @@
     justify-self: start;
   }
 }
+
+
+/* Structured news analysis v99 */
+.news-analysis-outline {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  overflow: hidden;
+  border: 1px solid #cbd7db;
+  border-radius: 5px;
+  background: #eef3f4;
+}
+
+.news-analysis-outline span {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: 30px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 9px 12px;
+  border-right: 1px solid #cbd7db;
+}
+
+.news-analysis-outline span:last-child {
+  border-right: 0;
+}
+
+.news-analysis-outline b {
+  color: #0b796f;
+  font-size: 0.68rem;
+  font-weight: 950;
+}
+
+.news-analysis-outline i {
+  color: #263840;
+  font-size: 0.74rem;
+  font-style: normal;
+  font-weight: 850;
+}
+
+.news-analysis-chapter {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(132px, 0.22fr) minmax(0, 1fr);
+  gap: 18px;
+  padding: 18px 0 4px;
+  border-top: 1px solid #cdd8dc;
+}
+
+.news-analysis-chapter-heading {
+  display: grid;
+  align-content: start;
+  gap: 9px;
+  padding: 2px 12px 0 2px;
+}
+
+.news-analysis-chapter-heading > span {
+  display: grid;
+  width: 34px;
+  height: 26px;
+  place-items: center;
+  border-radius: 4px;
+  background: #17242c;
+  color: #ffffff;
+  font-size: 0.64rem;
+  font-weight: 950;
+}
+
+.news-analysis-chapter[data-analysis-step="2"] .news-analysis-chapter-heading > span {
+  background: #087b6d;
+}
+
+.news-analysis-chapter[data-analysis-step="3"] .news-analysis-chapter-heading > span {
+  background: #9a6816;
+}
+
+.news-analysis-chapter-heading > div {
+  display: grid;
+  gap: 4px;
+}
+
+.news-analysis-chapter-heading strong {
+  color: #17242c;
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.news-analysis-chapter-heading p {
+  margin: 0;
+  color: #5c6d75;
+  font-size: 0.68rem;
+  font-weight: 650;
+  line-height: 1.55;
+  word-break: keep-all;
+}
+
+.news-analysis-chapter-content {
+  display: grid;
+  min-width: 0;
+  gap: 14px;
+}
+
+@media (max-width: 760px) {
+  .news-analysis-outline {
+    grid-template-columns: 1fr;
+  }
+
+  .news-analysis-outline span {
+    border-right: 0;
+    border-bottom: 1px solid #cbd7db;
+  }
+
+  .news-analysis-outline span:last-child {
+    border-bottom: 0;
+  }
+
+  .news-analysis-chapter {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding-top: 16px;
+  }
+
+  .news-analysis-chapter-heading {
+    grid-template-columns: 38px minmax(0, 1fr);
+    align-items: start;
+    gap: 9px;
+    padding-right: 0;
+  }
+}

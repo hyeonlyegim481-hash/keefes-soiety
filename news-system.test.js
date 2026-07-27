@@ -116,3 +116,15 @@ test("news section navigator keeps the selected filter readable", () => {
   assert.match(app, /class="news-filter-current"/);
   assert.match(app, /class="news-section-number"/);
 });
+
+
+test("news detail summary exposes a clear three-step analysis hierarchy", () => {
+  const app = fs.readFileSync(new URL("./app.js", import.meta.url), "utf8");
+  const css = fs.readFileSync(new URL("./news-system.css", import.meta.url), "utf8");
+  assert.match(app, /class="news-analysis-outline"/);
+  assert.match(app, /data-analysis-step="1"/);
+  assert.match(app, /data-analysis-step="2"/);
+  assert.match(app, /data-analysis-step="3"/);
+  assert.match(css, /\.news-analysis-chapter-heading/);
+  assert.match(css, /\.news-analysis-outline/);
+});

@@ -2,9 +2,12 @@ export const READER_SETTINGS_KEY = "keefes-reader-settings";
 export const READER_FONT_MIN = 90;
 export const READER_FONT_MAX = 125;
 export const READER_FONT_STEP = 5;
+export const RESPONSIVE_VIEWPORT_CONTENT = "width=device-width, initial-scale=1.0";
+export const DESKTOP_VIEWPORT_CONTENT = "width=1180";
 export const DEFAULT_READER_SETTINGS = Object.freeze({
   fontScale: 105,
-  highContrast: true
+  highContrast: true,
+  desktopLayout: false
 });
 
 function normalizeFontScale(value) {
@@ -17,7 +20,8 @@ function normalizeFontScale(value) {
 export function normalizeReaderSettings(value = {}) {
   return {
     fontScale: normalizeFontScale(value?.fontScale),
-    highContrast: value?.highContrast !== false
+    highContrast: value?.highContrast !== false,
+    desktopLayout: value?.desktopLayout === true
   };
 }
 
@@ -47,5 +51,18 @@ export function applyReaderSettings(settings, root = globalThis.document?.docume
   root.style?.setProperty?.("--reader-root-size", `${rootSize.toFixed(2)}px`);
   root.dataset.readerContrast = normalized.highContrast ? "strong" : "standard";
   root.dataset.readerScale = String(normalized.fontScale);
+  root.dataset.readerLayout = normalized.desktopLayout ? "desktop" : "responsive";
+  return normalized;
+}
+
+export function applyReaderViewport(
+  settings,
+  viewport = globalThis.document?.querySelector?.('meta[name="viewport"]')
+) {
+  const normalized = normalizeReaderSettings(settings);
+  viewport?.setAttribute?.(
+    "content",
+    normalized.desktopLayout ? DESKTOP_VIEWPORT_CONTENT : RESPONSIVE_VIEWPORT_CONTENT
+  );
   return normalized;
 }

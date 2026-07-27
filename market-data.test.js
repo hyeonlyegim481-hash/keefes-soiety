@@ -5,6 +5,7 @@ import {
   buildMarketRecord,
   calculateMarketChange,
   computeMarketChartScale,
+  filterMarketSeriesByPeriod,
   resolvePreviousCloseInfo,
   sanitizeMarketSeries
 } from "./market-data.js";
@@ -141,8 +142,21 @@ test("builds a complete market record with timing, source and interval metadata"
   assert.equal(record.timezone, "Asia/Seoul");
   assert.equal(record.instrumentType, "index");
   assert.equal(record.source, "Yahoo Finance chart endpoint");
-  assert.equal(record.seriesMeta.interval, "1h");
+  assert.equal(record.seriesMeta.interval, "1d");
+  assert.equal(record.chartRange, "1y");
   assert.equal(record.seriesMeta.pointCount, 3);
+});
+
+test("filters one year of daily prices into readable chart periods", () => {
+  const series = Array.from({ length: 366 }, (_, index) => ({
+    time: new Date(now - (365 - index) * day),
+    value: 100 + index
+  }));
+  assert.ok(filterMarketSeriesByPeriod(series, "1m").length >= 31);
+  assert.ok(filterMarketSeriesByPeriod(series, "1m").length <= 32);
+  assert.ok(filterMarketSeriesByPeriod(series, "3m").length >= 93);
+  assert.equal(filterMarketSeriesByPeriod(series, "1y").length, 366);
+  assert.equal(filterMarketSeriesByPeriod(series, "invalid").length, 366);
 });
 
 test("identifies WTI and Gold as futures with explicit contract units", () => {
