@@ -118,6 +118,59 @@ h2 {
   gap: 10px;
 }
 
+.profile-glance {
+  display: grid;
+  min-height: 38px;
+  grid-template-columns: repeat(2, minmax(0, auto));
+  align-items: center;
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.86);
+  color: var(--charcoal);
+}
+
+.profile-glance[hidden] {
+  display: none;
+}
+
+.profile-glance > span {
+  display: grid;
+  min-width: 58px;
+  gap: 1px;
+  padding: 0 8px;
+  text-align: left;
+}
+
+.profile-glance > span + span {
+  border-left: 1px solid var(--line);
+}
+
+.profile-glance small {
+  color: var(--muted);
+  font-size: 0.58rem;
+  font-weight: 760;
+}
+
+.profile-glance strong {
+  color: var(--teal);
+  font-size: 0.74rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.profile-glance > span:first-child strong {
+  color: var(--tier-color, var(--teal));
+}
+
+.profile-glance[data-streak-level="7"] > span:last-child strong {
+  color: #ad7412;
+}
+
+.profile-glance[data-streak-level="30"] > span:last-child strong {
+  color: #2563a8;
+}
+
 .connection-pill {
   display: inline-flex;
   align-items: center;
@@ -14848,8 +14901,7 @@ body.utility-drawer-open {
   box-shadow: none;
 }
 
-.utility-setting-section,
-.utility-shortcuts {
+.utility-setting-section {
   padding: 22px 20px;
   border-bottom: 1px solid var(--line);
 }
@@ -14881,37 +14933,34 @@ body.utility-drawer-open {
 }
 
 .reader-font-section .utility-setting-title {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
+  position: relative;
 }
 
 .reader-font-section .utility-setting-title output {
-  justify-self: center;
-  margin-top: 16px;
-  color: #17242c;
-  font-size: 1.42rem;
-  line-height: 1;
+  position: absolute;
+  left: 50%;
   text-align: center;
+  transform: translateX(-50%);
 }
 
 .reader-font-control {
   display: grid;
-  grid-template-columns: 48px minmax(0, 1fr) 48px;
+  grid-template-columns: 42px minmax(0, 1fr) 42px;
   align-items: center;
-  gap: 14px;
-  margin-top: 14px;
+  gap: 12px;
+  margin-top: 18px;
 }
 
 .reader-step-button {
   display: grid;
-  width: 48px;
-  height: 48px;
+  width: 42px;
+  height: 42px;
   place-items: center;
   border: 1px solid #bfcbd0;
   border-radius: 6px;
   background: #f8fafb;
   color: #213039;
-  font-size: 0.9rem;
+  font-size: 0.82rem;
   font-weight: 900;
 }
 
@@ -14927,38 +14976,13 @@ body.utility-drawer-open {
 
 .reader-font-control input[type="range"] {
   width: 100%;
-  height: 10px;
-  margin: 0;
-  appearance: none;
-  border-radius: 5px;
-  background: #d4dee1;
   accent-color: #087b6d;
-  cursor: pointer;
-}
-
-.reader-font-control input[type="range"]::-webkit-slider-thumb {
-  width: 24px;
-  height: 24px;
-  appearance: none;
-  border: 3px solid #ffffff;
-  border-radius: 50%;
-  background: #087b6d;
-  box-shadow: 0 0 0 1px #087b6d, 0 3px 8px rgba(20, 38, 45, 0.18);
-}
-
-.reader-font-control input[type="range"]::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
-  border: 3px solid #ffffff;
-  border-radius: 50%;
-  background: #087b6d;
-  box-shadow: 0 0 0 1px #087b6d, 0 3px 8px rgba(20, 38, 45, 0.18);
 }
 
 .reader-scale-labels {
   display: flex;
   justify-content: space-between;
-  margin: 9px 62px 0;
+  margin: 7px 54px 0;
   color: var(--muted);
   font-size: 0.68rem;
   font-weight: 720;
@@ -15046,47 +15070,6 @@ body.utility-drawer-open {
   font-weight: 800;
 }
 
-.utility-shortcut-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-  margin-top: 16px;
-}
-
-.utility-shortcut-grid button {
-  display: grid;
-  min-height: 58px;
-  grid-template-columns: 28px minmax(0, 1fr);
-  align-items: center;
-  gap: 9px;
-  padding: 10px 12px;
-  border: 1px solid #cfd8dc;
-  border-radius: 6px;
-  background: #f8fafb;
-  color: #213039;
-  text-align: left;
-}
-
-.utility-shortcut-grid button:hover {
-  border-color: #087b6d;
-  background: #edf7f5;
-}
-
-.utility-shortcut-grid button > span {
-  display: grid;
-  width: 28px;
-  height: 28px;
-  place-items: center;
-  border-radius: 4px;
-  background: #17242c;
-  color: #ffffff;
-  font-size: 0.78rem;
-  font-weight: 900;
-}
-
-.utility-shortcut-grid button strong {
-  font-size: 0.82rem;
-}
 
 .profile-panel {
   padding: 20px;

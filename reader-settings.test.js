@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import {
   DEFAULT_READER_SETTINGS,
   READER_SETTINGS_KEY,
@@ -19,7 +20,7 @@ test("normalizes reader settings to safe steps and bounds", () => {
     desktopLayout: true
   });
   assert.equal(normalizeReaderSettings({ fontScale: 20 }).fontScale, 90);
-  assert.equal(normalizeReaderSettings({ fontScale: 999 }).fontScale, 125);
+  assert.equal(normalizeReaderSettings({ fontScale: 999 }).fontScale, 150);
   assert.deepEqual(normalizeReaderSettings({ fontScale: "bad" }), DEFAULT_READER_SETTINGS);
 });
 
@@ -41,11 +42,11 @@ test("applies root font size and contrast without browser globals", () => {
     dataset: {},
     style: { setProperty: (name, value) => properties.set(name, value) }
   };
-  const applied = applyReaderSettings({ fontScale: 125, highContrast: true, desktopLayout: true }, root);
-  assert.deepEqual(applied, { fontScale: 125, highContrast: true, desktopLayout: true });
-  assert.equal(properties.get("--reader-root-size"), "20.00px");
+  const applied = applyReaderSettings({ fontScale: 150, highContrast: true, desktopLayout: true }, root);
+  assert.deepEqual(applied, { fontScale: 150, highContrast: true, desktopLayout: true });
+  assert.equal(properties.get("--reader-root-size"), "24.00px");
   assert.equal(root.dataset.readerContrast, "strong");
-  assert.equal(root.dataset.readerScale, "125");
+  assert.equal(root.dataset.readerScale, "150");
   assert.equal(root.dataset.readerLayout, "desktop");
 });
 
@@ -63,4 +64,13 @@ test("switches the viewport between responsive and desktop layout modes", () => 
   assert.match(viewport.content, /user-scalable=yes/);
   applyReaderViewport({ desktopLayout: false }, viewport);
   assert.equal(viewport.content, RESPONSIVE_VIEWPORT_CONTENT);
+});
+test("settings UI allows 150 percent and keeps profile progress outside the drawer", async () => {
+  const html = await readFile(new URL("./index.html", import.meta.url), "utf8");
+  assert.match(html, /id="readerFontRange"[\s\S]*max="150"/);
+  assert.match(html, /id="profileGlance"/);
+  assert.match(html, /id="mainProfileTier"/);
+  assert.match(html, /id="mainProfileStreak"/);
+  assert.doesNotMatch(html, /class="utility-shortcuts"/);
+  assert.doesNotMatch(html, />빠른 이동</);
 });

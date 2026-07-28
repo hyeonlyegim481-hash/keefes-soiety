@@ -109,6 +109,9 @@ export async function createProfileController({
     xpText: document.querySelector("#profileXpText"),
     xpBar: document.querySelector("#profileXpBar"),
     nextTier: document.querySelector("#profileNextTier"),
+    mainGlance: document.querySelector("#profileGlance"),
+    mainTier: document.querySelector("#mainProfileTier"),
+    mainStreak: document.querySelector("#mainProfileStreak"),
     streakSummary: document.querySelector("#profileStreakSummary"),
     currentStreak: document.querySelector("#profileCurrentStreak"),
     longestStreak: document.querySelector("#profileLongestStreak"),
@@ -282,6 +285,7 @@ export async function createProfileController({
   }
 
   function renderLoading(label = "로그인 상태 확인 중") {
+    if (elements.mainGlance) elements.mainGlance.hidden = true;
     elements.authStatus.textContent = label;
     elements.authStatus.hidden = false;
     elements.loggedOut.hidden = true;
@@ -290,6 +294,7 @@ export async function createProfileController({
   }
 
   function renderUnavailable(message) {
+    if (elements.mainGlance) elements.mainGlance.hidden = true;
     elements.authStatus.textContent = message || "프로필 연결을 사용할 수 없습니다.";
     elements.authStatus.hidden = false;
     elements.loggedOut.hidden = true;
@@ -298,6 +303,7 @@ export async function createProfileController({
   }
 
   function renderSignedOut() {
+    if (elements.mainGlance) elements.mainGlance.hidden = true;
     elements.authStatus.hidden = true;
     elements.loggedOut.hidden = false;
     elements.loggedIn.hidden = true;
@@ -315,6 +321,10 @@ export async function createProfileController({
     elements.avatar.dataset.tone = avatar.tone;
     elements.avatar.setAttribute("aria-label", avatar.label);
     elements.nickname.textContent = state.profile?.nickname || "사용자";
+    if (elements.mainGlance) {
+      elements.mainGlance.hidden = false;
+      elements.mainGlance.dataset.avatarKey = avatar.id;
+    }
     renderProgress();
   }
 
@@ -323,6 +333,10 @@ export async function createProfileController({
     const tierProgress = getProfileTierProgress(xp);
     elements.tier.textContent = tierProgress.current.label;
     elements.tier.style.setProperty("--tier-color", tierProgress.current.color);
+    if (elements.mainTier) elements.mainTier.textContent = tierProgress.current.label;
+    if (elements.mainGlance) {
+      elements.mainGlance.style.setProperty("--tier-color", tierProgress.current.color);
+    }
     elements.xpText.textContent = `${xp.toLocaleString("ko-KR")} XP`;
     elements.xpBar.style.width = `${tierProgress.percent.toFixed(1)}%`;
     elements.nextTier.textContent = tierProgress.next
@@ -339,8 +353,17 @@ export async function createProfileController({
       elements.longestStreak.textContent = hasStreak ? `${longestStreak}일` : "확인 중";
     }
     if (elements.activeDays) elements.activeDays.textContent = `${activeDays}일`;
+    if (elements.mainStreak) {
+      elements.mainStreak.textContent = hasStreak ? `${currentStreak}일` : "확인 중";
+    }
     if (elements.streakSummary) {
       elements.streakSummary.dataset.streakLevel = currentStreak >= 30
+        ? "30"
+        : currentStreak >= 7 ? "7" : currentStreak > 0 ? "1" : "0";
+    }
+    if (elements.mainGlance) {
+      elements.mainGlance.dataset.tier = tierProgress.current.id;
+      elements.mainGlance.dataset.streakLevel = currentStreak >= 30
         ? "30"
         : currentStreak >= 7 ? "7" : currentStreak > 0 ? "1" : "0";
     }

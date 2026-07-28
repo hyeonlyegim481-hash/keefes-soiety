@@ -7,6 +7,10 @@ const streakMigrationUrl = new URL(
   "./supabase/migrations/003_profile_streaks.sql",
   import.meta.url
 );
+const fontScaleMigrationUrl = new URL(
+  "./supabase/migrations/004_profile_font_scale.sql",
+  import.meta.url
+);
 
 test("profile reward migration is atomic and service-role only", async () => {
   const sql = await readFile(migrationUrl, "utf8");
@@ -35,4 +39,10 @@ test("profile streak migration calculates consecutive KST activity safely", asyn
   assert.match(sql, /'current_streak', current_streak/);
   assert.match(sql, /'longest_streak', longest_streak/);
   assert.match(sql, /grant execute .*service_role/is);
+});
+test("profile font scale migration permits synchronized values through 150 percent", async () => {
+  const sql = await readFile(fontScaleMigrationUrl, "utf8");
+  assert.match(sql, /drop constraint if exists profile_preferences_font_scale_check/);
+  assert.match(sql, /font_scale between 90 and 150/);
+  assert.match(sql, /font_scale % 5 = 0/);
 });

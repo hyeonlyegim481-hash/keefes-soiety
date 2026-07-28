@@ -1,6 +1,6 @@
 export const READER_SETTINGS_KEY = "keefes-reader-settings";
 export const READER_FONT_MIN = 90;
-export const READER_FONT_MAX = 125;
+export const READER_FONT_MAX = 150;
 export const READER_FONT_STEP = 5;
 export const RESPONSIVE_VIEWPORT_CONTENT = "width=device-width, initial-scale=1.0";
 export const DESKTOP_VIEWPORT_CONTENT =

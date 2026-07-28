@@ -128,6 +128,7 @@ const elements = {
   readerHighContrast: document.querySelector("#readerHighContrast"),
   readerDesktopLayout: document.querySelector("#readerDesktopLayout"),
   readerSettingsReset: document.querySelector("#readerSettingsReset"),
+  profileGlance: document.querySelector("#profileGlance"),
   connectionStatus: document.querySelector("#connectionStatus"),
   refreshButton: document.querySelector("#refreshButton"),
   regimeTitle: document.querySelector("#regimeTitle"),
@@ -574,6 +575,7 @@ if (elements.chapterProgress && elements.chapterTabs.length) {
 }
 
 elements.utilityMenuButton?.addEventListener("click", openUtilityDrawer);
+elements.profileGlance?.addEventListener("click", openUtilityDrawer);
 elements.utilityDrawerClose?.addEventListener("click", closeUtilityDrawer);
 elements.utilityDrawer?.addEventListener("close", () => {
   document.body.classList.remove("utility-drawer-open");
@@ -607,20 +609,6 @@ elements.readerDesktopLayout?.addEventListener("change", (event) => {
 });
 elements.readerSettingsReset?.addEventListener("click", () => {
   updateReaderSettings(DEFAULT_READER_SETTINGS);
-});
-elements.utilityDrawer?.querySelector(".utility-shortcuts")?.addEventListener("click", (event) => {
-  const chapterButton = event.target.closest?.("[data-utility-chapter]");
-  const actionButton = event.target.closest?.("[data-utility-action]");
-  if (chapterButton) {
-    closeUtilityDrawer();
-    setActiveChapter(chapterButton.dataset.utilityChapter);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    return;
-  }
-  if (actionButton?.dataset.utilityAction === "refresh") {
-    closeUtilityDrawer();
-    refreshSnapshot();
-  }
 });
 window.addEventListener("storage", (event) => {
   if (event.key !== READER_SETTINGS_KEY) return;
