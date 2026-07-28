@@ -616,6 +616,39 @@ export function computeMarketChartScale(values = [], options = {}) {
   };
 }
 
+export function projectPointerToChart(
+  clientX,
+  clientY,
+  rect,
+  chartWidth,
+  chartHeight
+) {
+  const rectWidth = Number(rect?.width);
+  const rectHeight = Number(rect?.height);
+  const width = Number(chartWidth);
+  const height = Number(chartHeight);
+  const x = Number(clientX);
+  const y = Number(clientY);
+  if (
+    !Number.isFinite(x)
+    || !Number.isFinite(y)
+    || !Number.isFinite(rectWidth)
+    || !Number.isFinite(rectHeight)
+    || !Number.isFinite(width)
+    || !Number.isFinite(height)
+    || rectWidth <= 0
+    || rectHeight <= 0
+    || width <= 0
+    || height <= 0
+  ) {
+    return null;
+  }
+  return {
+    x: (x - Number(rect.left || 0)) * (width / rectWidth),
+    y: (y - Number(rect.top || 0)) * (height / rectHeight)
+  };
+}
+
 function market(config) {
   return Object.freeze({
     allowZero: false,

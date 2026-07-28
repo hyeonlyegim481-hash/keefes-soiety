@@ -91,7 +91,29 @@
       </nav>
 
       <main>
-        <section class="market-strip" id="marketStrip" aria-label="시장 티커"></section>
+        <div class="market-strip-shell" id="marketStripShell" data-overflow="false">
+          <button
+            class="market-strip-control market-strip-control-previous"
+            id="marketStripPrevious"
+            type="button"
+            aria-label="이전 시장 지표 보기"
+            aria-controls="marketStrip"
+            disabled
+          >
+            <span aria-hidden="true">‹</span>
+          </button>
+          <section class="market-strip" id="marketStrip" aria-label="클릭해서 차트를 여는 시장 지표"></section>
+          <button
+            class="market-strip-control market-strip-control-next"
+            id="marketStripNext"
+            type="button"
+            aria-label="다음 시장 지표 보기"
+            aria-controls="marketStrip"
+            disabled
+          >
+            <span aria-hidden="true">›</span>
+          </button>
+        </div>
 
         <section class="chapter-window" id="chapterWindow" aria-live="polite">
           <div class="chapter-track" id="chapterTrack">

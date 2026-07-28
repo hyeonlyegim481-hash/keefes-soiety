@@ -8,6 +8,7 @@ import {
   MARKET_CHART_PERIODS,
   computeMarketChartScale,
   filterMarketSeriesByPeriod,
+  projectPointerToChart,
   sanitizeMarketSeries
 } from "./market-data.js";
 import {
@@ -132,6 +133,9 @@ const elements = {
   profileGlance: document.querySelector("#profileGlance"),
   connectionStatus: document.querySelector("#connectionStatus"),
   refreshButton: document.querySelector("#refreshButton"),
+  marketStripShell: document.querySelector("#marketStripShell"),
+  marketStripPrevious: document.querySelector("#marketStripPrevious"),
+  marketStripNext: document.querySelector("#marketStripNext"),
   regimeTitle: document.querySelector("#regimeTitle"),
   pulseText: document.querySelector("#pulseText"),
   watchChips: document.querySelector("#watchChips"),
@@ -452,6 +456,7 @@ const initialChapter = initialUrlState.chapter;
 const initialIndicator = initialUrlState.indicator || "fertility";
 let swipeStart = null;
 let chartRenderState = null;
+let marketStripScrollFrame = 0;
 let sharedMarketAnalysisCache = null;
 let renderedMarketDeepSnapshot = null;
 let renderedMarketDeepId = null;
@@ -629,6 +634,9 @@ if ("requestIdleCallback" in window) {
 }
 
 elements.refreshButton.addEventListener("click", () => refreshSnapshot());
+elements.marketStripPrevious?.addEventListener("click", () => scrollMarketStrip(-1));
+elements.marketStripNext?.addEventListener("click", () => scrollMarketStrip(1));
+elements.marketStrip?.addEventListener("scroll", scheduleMarketStripControls, { passive: true });
 elements.chapterTabs.forEach((tab) => {
   tab.addEventListener("click", () => setActiveChapter(tab.dataset.chapter));
 });
@@ -847,6 +855,7 @@ window.addEventListener("resize", () => {
   drawChart();
   drawIndicatorTrend();
   updateChapterHeight();
+  scheduleMarketStripControls();
 });
 document.addEventListener(
   "toggle",
@@ -1747,6 +1756,63 @@ function renderBriefBoard(snapshot, narrative = state.narrative) {
     setActiveChapter("markets");
   });
 }
+function scheduleMarketStripControls() {
+  if (marketStripScrollFrame) return;
+  marketStripScrollFrame = requestAnimationFrame(() => {
+    marketStripScrollFrame = 0;
+    updateMarketStripControls();
+  });
+}
+
+function updateMarketStripControls() {
+  if (!elements.marketStrip || !elements.marketStripShell) return;
+  const maximum = Math.max(0, elements.marketStrip.scrollWidth - elements.marketStrip.clientWidth);
+  const hasOverflow = maximum > 2;
+  const edgeTolerance = 8;
+  const atStart = elements.marketStrip.scrollLeft <= edgeTolerance;
+  const atEnd = elements.marketStrip.scrollLeft >= maximum - edgeTolerance;
+  elements.marketStripShell.dataset.overflow = String(hasOverflow);
+  if (elements.marketStripPrevious) {
+    elements.marketStripPrevious.disabled = !hasOverflow || atStart;
+  }
+  if (elements.marketStripNext) {
+    elements.marketStripNext.disabled = !hasOverflow || atEnd;
+  }
+}
+
+function scrollMarketStrip(direction) {
+  if (!elements.marketStrip) return;
+  const ticker = elements.marketStrip.querySelector(".ticker-item");
+  const distance = Math.max(
+    Number(ticker?.offsetWidth || 0) + 8,
+    elements.marketStrip.clientWidth * 0.72
+  );
+  const behavior = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches
+    ? "auto"
+    : "smooth";
+  elements.marketStrip.scrollBy({ left: direction * distance, behavior });
+}
+
+function syncMarketTickerSelection({ reveal = false } = {}) {
+  if (!elements.marketStrip) return;
+  let selectedButton = null;
+  elements.marketStrip.querySelectorAll(".ticker-item").forEach((button) => {
+    const selected = button.dataset.marketId === state.selectedMarket;
+    button.setAttribute("aria-pressed", String(selected));
+    if (selected) selectedButton = button;
+  });
+  if (!reveal || !selectedButton) return;
+  const start = selectedButton.offsetLeft;
+  const end = start + selectedButton.offsetWidth;
+  const visibleStart = elements.marketStrip.scrollLeft;
+  const visibleEnd = visibleStart + elements.marketStrip.clientWidth;
+  if (start >= visibleStart && end <= visibleEnd) return;
+  const target = start - (elements.marketStrip.clientWidth - selectedButton.offsetWidth) / 2;
+  elements.marketStrip.scrollTo({
+    left: Math.max(0, target),
+    behavior: window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ? "auto" : "smooth"
+  });
+}
 function renderMarkets(markets) {
   elements.marketStrip.replaceChildren(
     ...markets.map((market) => {
@@ -1759,18 +1825,20 @@ function renderMarkets(markets) {
       const tone = getMarketTone(market);
       button.type = "button";
       button.className = "ticker-item";
+      button.dataset.marketId = market.id;
       button.dataset.direction = tone;
       button.dataset.live = String(Boolean(market.live));
       button.dataset.status = market.status || (market.live ? "live" : "closed");
-      button.title = `${statusLabel} · ${basisLabel} · ${reason.title}: ${reason.detail}`;
+      button.setAttribute("aria-pressed", String(market.id === state.selectedMarket));
+      button.title = `${statusLabel} · ${basisLabel} · ${reason.title}: ${reason.detail} · 눌러서 차트 보기`;
       button.setAttribute(
         "aria-label",
         `${market.name} ${formatMarketValue(market)}, ${directionLabel} ${movementLabel}, ${statusLabel}, ${basisLabel} 기준. 자세한 시장 차트로 이동`
       );
       button.innerHTML = `
-        <span class="ticker-name">${escapeHtml(market.name)}<em>${escapeHtml(statusLabel)}</em></span>
+        <span class="ticker-name">${escapeHtml(market.name)}<em>${escapeHtml(statusLabel)}</em><i class="ticker-open" aria-hidden="true">↗</i></span>
         <strong class="ticker-value">${escapeHtml(formatMarketValue(market))}</strong>
-        <canvas class="ticker-sparkline" width="76" height="30" aria-hidden="true"></canvas>
+        <canvas class="ticker-sparkline" width="90" height="34" aria-hidden="true"></canvas>
         <span class="ticker-change">
           <span aria-hidden="true">${tone === "up" ? "▲" : tone === "down" ? "▼" : "·"}</span>
           ${escapeHtml(movementLabel)}
@@ -1780,6 +1848,7 @@ function renderMarkets(markets) {
       drawTickerSparkline(button.querySelector(".ticker-sparkline"), market);
       button.addEventListener("click", () => {
         state.selectedMarket = market.id;
+        state.marketView = "chart";
         syncUrlState(
           {
             chapter: "markets",
@@ -1798,6 +1867,8 @@ function renderMarkets(markets) {
       return button;
     })
   );
+  syncMarketTickerSelection();
+  scheduleMarketStripControls();
 }
 
 function getSanitizedClientMarketSeries(market, limit = Number.POSITIVE_INFINITY) {
@@ -1826,8 +1897,8 @@ function drawTickerSparkline(canvas, market) {
   );
   if (!canvas || values.length < 2) return;
 
-  const width = 76;
-  const height = 30;
+  const width = 90;
+  const height = 34;
   const ratio = Math.min(window.devicePixelRatio || 1, 2);
   canvas.width = Math.round(width * ratio);
   canvas.height = Math.round(height * ratio);
@@ -2112,6 +2183,7 @@ function renderTabs(markets) {
       return button;
     })
   );
+  syncMarketTickerSelection({ reveal: true });
 }
 
 function getSharedMarketAnalysis(markets = state.snapshot?.markets || []) {
@@ -5586,16 +5658,18 @@ function drawChart() {
 
   const canvas = elements.marketChart;
   const context = canvas.getContext("2d");
+  const width = canvas.clientWidth;
+  const height = canvas.clientHeight;
+  if (width < 40 || height < 40) return;
+
   const rect = canvas.getBoundingClientRect();
-  if (rect.width < 40 || rect.height < 40) return;
-
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  canvas.width = Math.max(1, Math.round(rect.width * dpr));
-  canvas.height = Math.max(1, Math.round(rect.height * dpr));
-  context.scale(dpr, dpr);
+  const renderScaleX = Math.min(dpr * Math.max(1, rect.width / width), 3);
+  const renderScaleY = Math.min(dpr * Math.max(1, rect.height / height), 3);
+  canvas.width = Math.max(1, Math.round(width * renderScaleX));
+  canvas.height = Math.max(1, Math.round(height * renderScaleY));
+  context.setTransform(renderScaleX, 0, 0, renderScaleY, 0, 0);
 
-  const width = rect.width;
-  const height = rect.height;
   context.clearRect(0, 0, width, height);
 
   if (series.length < 2) {
@@ -5874,8 +5948,15 @@ function handleChartPointer(event) {
   if (!chart || !chart.coordinates.length) return;
 
   const canvasRect = elements.marketChart.getBoundingClientRect();
-  const localX = event.clientX - canvasRect.left;
-  const localY = event.clientY - canvasRect.top;
+  const localPoint = projectPointerToChart(
+    event.clientX,
+    event.clientY,
+    canvasRect,
+    chart.width,
+    chart.height
+  );
+  if (!localPoint) return;
+  const { x: localX, y: localY } = localPoint;
   const inPlot =
     localX >= chart.padding.left &&
     localX <= chart.width - chart.padding.right &&
@@ -5905,10 +5986,10 @@ function showChartTooltip(index) {
   const datum = chart?.series[index];
   if (!chart || !point || !datum) return;
 
-  const wrapRect = elements.chartCanvasWrap.getBoundingClientRect();
-  const canvasRect = elements.marketChart.getBoundingClientRect();
-  const offsetX = canvasRect.left - wrapRect.left;
-  const offsetY = canvasRect.top - wrapRect.top;
+  const wrapWidth = elements.chartCanvasWrap.clientWidth;
+  const wrapHeight = elements.chartCanvasWrap.clientHeight;
+  const offsetX = elements.marketChart.offsetLeft;
+  const offsetY = elements.marketChart.offsetTop;
   const left = offsetX + point.x;
   const top = offsetY + point.y;
   const changeFromStart = chart.firstValue
@@ -5928,9 +6009,9 @@ function showChartTooltip(index) {
   elements.chartHoverDot.style.backgroundColor = chart.lineColor;
 
   elements.chartTooltip.hidden = false;
-  elements.chartTooltip.dataset.side = left > wrapRect.width * 0.68 ? "left" : "right";
+  elements.chartTooltip.dataset.side = left > wrapWidth * 0.68 ? "left" : "right";
   elements.chartTooltip.style.left = `${left}px`;
-  elements.chartTooltip.style.top = `${Math.max(58, Math.min(wrapRect.height - 58, top))}px`;
+  elements.chartTooltip.style.top = `${Math.max(58, Math.min(wrapHeight - 58, top))}px`;
   elements.chartTooltip.innerHTML = `
     <span>${escapeHtml((chart.isDailyChart ? chartTooltipDateFormatter : chartTooltipTimeFormatter).format(datum.time))}</span>
     <strong>${escapeHtml(formatChartPointValue(chart.market, datum.value))}</strong>
@@ -6015,6 +6096,7 @@ function renderDataUnavailable() {
     "실제 시세 연결이 복구되면 자동으로 다시 표시됩니다.",
     "market-unavailable"
   );
+  scheduleMarketStripControls();
   elements.briefBoard.innerHTML = unavailablePanel(
     "분석을 잠시 멈췄습니다.",
     "신뢰할 수 있는 시장 데이터가 없으므로 위험 온도와 시장 해석을 만들지 않습니다."

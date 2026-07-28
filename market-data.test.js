@@ -6,6 +6,7 @@ import {
   calculateMarketChange,
   computeMarketChartScale,
   filterMarketSeriesByPeriod,
+  projectPointerToChart,
   resolvePreviousCloseInfo,
   sanitizeMarketSeries
 } from "./market-data.js";
@@ -17,6 +18,18 @@ const now = Date.UTC(2026, 6, 27, 6, 0, 0);
 function unix(iso) {
   return Date.parse(iso) / 1000;
 }
+
+test("maps pointer coordinates back through CSS zoom", () => {
+  const point = projectPointerToChart(
+    700,
+    350,
+    { left: 100, top: 50, width: 1_200, height: 600 },
+    800,
+    400
+  );
+  assert.deepEqual(point, { x: 400, y: 200 });
+  assert.equal(projectPointerToChart(1, 1, { width: 0, height: 10 }, 10, 10), null);
+});
 
 test("sorts market points and keeps only the latest duplicate timestamp", () => {
   const result = sanitizeMarketSeries(
