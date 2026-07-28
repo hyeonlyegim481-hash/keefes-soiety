@@ -99,14 +99,14 @@ p {
 h1 {
   margin: 0;
   color: var(--ink);
-  font-size: clamp(1.55rem, 2.8vw, 2.55rem);
+  font-size: 2.1rem;
   line-height: 1.08;
   letter-spacing: 0;
 }
 
 h2 {
   margin: 0;
-  font-size: clamp(1.05rem, 1.6vw, 1.45rem);
+  font-size: 1.35rem;
   line-height: 1.2;
   letter-spacing: 0;
 }
@@ -388,7 +388,7 @@ main {
   max-width: 880px;
   margin: 0;
   color: #35414a;
-  font-size: clamp(1.08rem, 1.7vw, 1.45rem);
+  font-size: 1.45rem;
   font-weight: 680;
   line-height: 1.48;
   word-break: keep-all;
@@ -607,7 +607,7 @@ main {
 }
 
 .meter-copy strong {
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: 3rem;
   line-height: 1;
 }
 
@@ -618,7 +618,7 @@ main {
 }
 
 .time-panel time {
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: 3rem;
   font-weight: 850;
   line-height: 1;
 }
@@ -870,7 +870,7 @@ main {
 }
 
 .market-value {
-  font-size: clamp(1.35rem, 2vw, 1.85rem);
+  font-size: 1.7rem;
   font-weight: 850;
   line-height: 1.02;
 }
@@ -1814,7 +1814,7 @@ main {
 .history-overview h3 {
   margin: 0;
   color: var(--ink);
-  font-size: clamp(1.08rem, 1.5vw, 1.34rem);
+  font-size: 1.28rem;
   line-height: 1.32;
   letter-spacing: 0;
   word-break: keep-all;
@@ -2414,7 +2414,7 @@ main {
 .analysis-part-heading h3 {
   margin: 0;
   color: var(--ink);
-  font-size: clamp(1.08rem, 1.4vw, 1.28rem);
+  font-size: 1.2rem;
   line-height: 1.25;
   letter-spacing: 0;
 }
@@ -2482,7 +2482,7 @@ main {
 .analysis-article h3 {
   margin: 0;
   color: var(--ink);
-  font-size: clamp(1.16rem, 1.6vw, 1.42rem);
+  font-size: 1.36rem;
   line-height: 1.25;
   letter-spacing: 0;
   word-break: keep-all;
@@ -2500,7 +2500,7 @@ main {
 .deep-analysis h4 {
   margin: 0;
   color: var(--ink);
-  font-size: clamp(1.08rem, 1.5vw, 1.34rem);
+  font-size: 1.28rem;
   line-height: 1.26;
   letter-spacing: 0;
   word-break: keep-all;
@@ -3895,7 +3895,7 @@ main {
 
 .term-title-row > strong {
   color: var(--ink);
-  font-size: clamp(1.35rem, 2.2vw, 1.8rem);
+  font-size: 1.8rem;
   line-height: 1.2;
 }
 
@@ -4721,7 +4721,7 @@ main {
 .quiz-question-card h3 {
   margin: 0;
   color: var(--ink);
-  font-size: clamp(1.08rem, 1.7vw, 1.35rem);
+  font-size: 1.35rem;
   line-height: 1.42;
   word-break: keep-all;
 }
@@ -5362,7 +5362,7 @@ body {
 }
 
 h1 {
-  font-size: clamp(1.38rem, 2vw, 1.85rem);
+  font-size: 1.7rem;
   font-weight: 820;
 }
 
@@ -5457,14 +5457,14 @@ h1 {
 .signal-panel h2 {
   max-width: 720px;
   color: #ffffff;
-  font-size: clamp(1.8rem, 3vw, 2.85rem);
+  font-size: 2.55rem;
   line-height: 1.08;
 }
 
 .signal-panel .pulse-text {
   max-width: 760px;
   color: #d4dee2;
-  font-size: clamp(1rem, 1.35vw, 1.2rem);
+  font-size: 1.15rem;
   font-weight: 620;
 }
 
@@ -5509,7 +5509,7 @@ h1 {
 
 .time-panel time {
   color: #26343b;
-  font-size: clamp(1.85rem, 3vw, 2.65rem);
+  font-size: 2.55rem;
 }
 
 .brief-board-panel {
@@ -5585,7 +5585,7 @@ h1 {
 .brief-thesis h3 {
   margin: 0;
   color: var(--ink);
-  font-size: clamp(1.55rem, 2.5vw, 2.35rem);
+  font-size: 2.1rem;
   line-height: 1.12;
 }
 
@@ -5844,7 +5844,7 @@ h1 {
   }
 
   .signal-panel h2 {
-    font-size: clamp(1.7rem, 9vw, 2.35rem);
+    font-size: 2.05rem;
   }
 
   .risk-panel,

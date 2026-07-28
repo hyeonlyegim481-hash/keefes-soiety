@@ -127,6 +127,96 @@ export async function callProfileRpc(functionName, payload, {
   return Array.isArray(result) ? result[0] : result;
 }
 
+function toUtcDayNumber(value) {
+  const match = String(value || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) return null;
+  const day = Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+  return Number.isFinite(day) ? Math.floor(day / 86_400_000) : null;
+}
+
+export function getKstDateString(now = new Date()) {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Seoul",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  }).format(now);
+}
+
+export function calculateActivityStreak(activityDates = [], today = getKstDateString()) {
+  const days = [...new Set(activityDates.map(toUtcDayNumber).filter(Number.isInteger))]
+    .sort((left, right) => left - right);
+  if (!days.length) return { currentStreak: 0, longestStreak: 0 };
+
+  let run = 1;
+  let longestStreak = 1;
+  for (let index = 1; index < days.length; index += 1) {
+    run = days[index] === days[index - 1] + 1 ? run + 1 : 1;
+    longestStreak = Math.max(longestStreak, run);
+  }
+
+  const todayDay = toUtcDayNumber(today);
+  let currentStreak = 0;
+  if (days.at(-1) === todayDay) {
+    currentStreak = 1;
+    for (let index = days.length - 1; index > 0; index -= 1) {
+      if (days[index - 1] !== days[index] - 1) break;
+      currentStreak += 1;
+    }
+  }
+  return { currentStreak, longestStreak };
+}
+
+export async function fetchProfileActivityStreak(userId, {
+  env = process.env,
+  fetchImpl = globalThis.fetch,
+  now = new Date()
+} = {}) {
+  const config = getSupabaseEnvironment(env);
+  if (!config.serverConfigured) {
+    const error = new Error("Supabase server environment is not configured");
+    error.statusCode = 503;
+    throw error;
+  }
+  if (!/^[0-9a-f-]{36}$/i.test(String(userId || ""))) {
+    const error = new Error("A valid profile user is required");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const rows = [];
+  const pageSize = 1_000;
+  const maxPages = 5;
+  for (let page = 0; page < maxPages; page += 1) {
+    const query = new URLSearchParams({
+      select: "activity_date",
+      user_id: `eq.${userId}`,
+      order: "activity_date.asc",
+      limit: String(pageSize),
+      offset: String(page * pageSize)
+    });
+    const response = await fetchImpl(`${config.url}/rest/v1/daily_activity?${query}`, {
+      method: "GET",
+      headers: { apikey: config.secretKey },
+      signal: AbortSignal.timeout(SUPABASE_REQUEST_TIMEOUT_MS)
+    });
+    const result = await response.json().catch(() => null);
+    if (!response.ok || !Array.isArray(result)) {
+      const error = new Error(result?.message || "Supabase activity lookup failed");
+      error.statusCode = response.status >= 500 ? 502 : response.status;
+      error.code = result?.code || "profile-activity-lookup-failed";
+      throw error;
+    }
+    rows.push(...result);
+    if (result.length < pageSize) break;
+  }
+
+  return calculateActivityStreak(
+    rows.map((row) => row?.activity_date),
+    getKstDateString(now)
+  );
+}
+
 export function validateQuizSubmission(input = {}) {
   const questionId = String(input.questionId || "").trim();
   const selectedAnswer = String(input.selectedAnswer || "").trim();

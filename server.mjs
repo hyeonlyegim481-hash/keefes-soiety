@@ -26,6 +26,7 @@ import {
 } from "./market-data.js";
 import {
   callProfileRpc,
+  fetchProfileActivityStreak,
   getProfilePublicConfig,
   sanitizeProgressResult,
   validateQuizSubmission,
@@ -211,7 +212,19 @@ const server = http.createServer(async (req, res) => {
       }
       const token = String(req.headers.authorization || "").replace(/^Bearer\s+/i, "");
       const user = await validateSupabaseUser(token);
-      const result = await callProfileRpc("record_daily_activity", { target_user: user.id });
+      let result = await callProfileRpc("record_daily_activity", { target_user: user.id });
+      if (!sanitizeProgressResult(result).streakAvailable) {
+        try {
+          const streak = await fetchProfileActivityStreak(user.id);
+          result = {
+            ...result,
+            current_streak: streak.currentStreak,
+            longest_streak: streak.longestStreak
+          };
+        } catch (error) {
+          console.error("[profile] streak fallback failed", error);
+        }
+      }
       sendJson(res, 200, sanitizeProgressResult(result));
       return;
     }

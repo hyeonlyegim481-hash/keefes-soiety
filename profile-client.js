@@ -457,6 +457,10 @@ export async function createProfileController({
       return;
     }
     applyProgressResult(result);
+    if (result.streakAvailable !== true) {
+      renderStreakFailure();
+      return;
+    }
     if (result.xpAwarded > 0) {
       const streakText = result.currentStreak > 0
         ? ` · ${result.currentStreak}일 연속`

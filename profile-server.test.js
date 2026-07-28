@@ -1,7 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
+  calculateActivityStreak,
   callProfileRpc,
+  fetchProfileActivityStreak,
   getProfilePublicConfig,
   getSupabaseEnvironment,
   sanitizeProgressResult,
@@ -102,6 +104,47 @@ test("progress responses normalize streak values from database fields", () => {
   assert.equal(progress.streakAvailable, true);
 });
 
+test("activity dates calculate the current and longest streak independently", () => {
+  assert.deepEqual(
+    calculateActivityStreak(
+      ["2026-07-20", "2026-07-21", "2026-07-25", "2026-07-26", "2026-07-27", "2026-07-28"],
+      "2026-07-28"
+    ),
+    { currentStreak: 4, longestStreak: 4 }
+  );
+  assert.deepEqual(
+    calculateActivityStreak(["2026-07-20", "2026-07-21"], "2026-07-28"),
+    { currentStreak: 0, longestStreak: 2 }
+  );
+});
+
+test("activity streak fallback reads the signed-in user's stored dates", async () => {
+  let capturedUrl;
+  let capturedHeaders;
+  const result = await fetchProfileActivityStreak(
+    "11111111-1111-4111-8111-111111111111",
+    {
+      env: completeEnv,
+      now: new Date("2026-07-28T03:00:00.000Z"),
+      fetchImpl: async (url, options) => {
+        capturedUrl = url;
+        capturedHeaders = options.headers;
+        return new Response(JSON.stringify([
+          { activity_date: "2026-07-26" },
+          { activity_date: "2026-07-27" },
+          { activity_date: "2026-07-28" }
+        ]), {
+          status: 200,
+          headers: { "content-type": "application/json" }
+        });
+      }
+    }
+  );
+  assert.deepEqual(result, { currentStreak: 3, longestStreak: 3 });
+  assert.match(capturedUrl, /daily_activity/);
+  assert.match(capturedUrl, /user_id=eq\.11111111-1111-4111-8111-111111111111/);
+  assert.equal(capturedHeaders.apikey, completeEnv.SUPABASE_SECRET_KEY);
+});
 test("secret-key RPC uses apikey and never sends the opaque key as a JWT", async () => {
   let capturedHeaders;
   const result = await callProfileRpc("record_daily_activity", { target_user: "user-id" }, {
