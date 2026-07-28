@@ -122,7 +122,6 @@ const elements = {
   utilityMenuButton: document.querySelector("#utilityMenuButton"),
   utilityDrawer: document.querySelector("#utilityDrawer"),
   utilityDrawerClose: document.querySelector("#utilityDrawerClose"),
-  utilityDrawerLower: document.querySelector("#utilityDrawerLower"),
   readerFontRange: document.querySelector("#readerFontRange"),
   readerFontValue: document.querySelector("#readerFontValue"),
   readerFontDown: document.querySelector("#readerFontDown"),
@@ -579,7 +578,6 @@ if (elements.chapterProgress && elements.chapterTabs.length) {
 elements.utilityMenuButton?.addEventListener("click", openUtilityDrawer);
 elements.profileGlance?.addEventListener("click", openUtilityDrawer);
 elements.utilityDrawerClose?.addEventListener("click", closeUtilityDrawer);
-elements.utilityDrawerLower?.addEventListener("click", closeUtilityDrawer);
 elements.utilityDrawer?.addEventListener("close", () => {
   document.body.classList.remove("utility-drawer-open");
   elements.utilityMenuButton?.setAttribute("aria-expanded", "false");

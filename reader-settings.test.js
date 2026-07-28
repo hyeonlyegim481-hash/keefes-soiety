@@ -77,11 +77,17 @@ test("settings UI allows 150 percent and keeps profile progress outside the draw
   assert.match(html, /id="mainProfileStreak"/);
   assert.match(html, /id="mainProfileStreakImage"/);
   assert.match(html, /id="profileStreakVisual"/);
+  assert.doesNotMatch(html, /id="utilityDrawerLower"/);
   assert.doesNotMatch(html, /class="utility-shortcuts"/);
   assert.doesNotMatch(html, />빠른 이동</);
   const css = await readFile(new URL("./styles.css", import.meta.url), "utf8");
   assert.match(css, /min-width:\s*max\(288px, 18rem\)/);
   assert.match(css, /\.app-shell\s*\{[\s\S]*?zoom:\s*var\(--reader-page-scale/);
+  assert.match(css, /\.utility-drawer-surface\s*\{[\s\S]*?height:\s*100%/);
+  assert.match(css, /\.utility-drawer-surface\s*\{[\s\S]*?min-height:\s*0/);
+  assert.match(css, /\.utility-drawer-surface\s*\{[\s\S]*?overflow-y:\s*auto/);
+  assert.match(css, /\.utility-drawer-surface\s*\{[\s\S]*?touch-action:\s*pan-y/);
+  assert.doesNotMatch(css, /\.utility-drawer-lower/);
   assert.doesNotMatch(css, /font-size:\s*clamp\([^;]*vw/);
   assert.doesNotMatch(css, /\.market-mini-card p \{[\s\S]*?-webkit-line-clamp:\s*3/);
   const app = await readFile(new URL("./app.js", import.meta.url), "utf8");
