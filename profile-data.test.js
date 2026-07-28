@@ -34,6 +34,7 @@ test("every profile tier has a unique optimized artwork asset", async () => {
     const file = await readFile(new URL(`.${tier.image}`, import.meta.url));
     assert.equal(file.subarray(0, 4).toString("ascii"), "RIFF");
     assert.equal(file.subarray(8, 12).toString("ascii"), "WEBP");
+    assert.notEqual(file.indexOf(Buffer.from("ALPH")), -1);
     assert.ok(file.length > 10_000);
   }
 });
