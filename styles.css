@@ -15003,12 +15003,16 @@ body.utility-drawer-open {
 .utility-drawer-surface {
   display: flex;
   min-height: 100%;
+  padding-bottom: 76px;
   overflow-y: auto;
   flex-direction: column;
   background: #ffffff;
 }
 
 .utility-drawer-head {
+  position: sticky;
+  top: 0;
+  z-index: 4;
   display: flex;
   min-height: 94px;
   align-items: center;
@@ -15042,6 +15046,39 @@ body.utility-drawer-open {
   box-shadow: none;
 }
 
+.utility-drawer-lower {
+  position: absolute;
+  right: 16px;
+  bottom: max(14px, env(safe-area-inset-bottom));
+  z-index: 5;
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid #0b6f66;
+  border-radius: 50%;
+  background: #087b6d;
+  color: #ffffff;
+  box-shadow: 0 8px 22px rgba(20, 33, 41, 0.24);
+}
+
+.utility-drawer-lower span {
+  display: block;
+  margin-top: -5px;
+  font-size: 1.75rem;
+  font-weight: 850;
+  line-height: 1;
+}
+
+.utility-drawer-lower:hover {
+  border-color: #075d56;
+  background: #075d56;
+}
+
+.utility-drawer-lower:active {
+  transform: translateY(2px);
+}
 .utility-setting-section {
   padding: 22px 20px;
   border-bottom: 1px solid var(--line);
