@@ -4,6 +4,7 @@ import {
   getProfileAvatar,
   getProfileTierProgress,
   isValidProfileNickname,
+  mergeProfileProgressResult,
   normalizeProfileNickname
 } from "./profile-data.js";
 import { importVersioned } from "./runtime-loader.js";
@@ -240,7 +241,18 @@ export async function createProfileController({
       return;
     }
     renderLoading("프로필 불러오는 중");
-    await loadProfile(requestId);
+    try {
+      await loadProfile(requestId);
+    } catch (error) {
+      if (requestId !== state.loadRequest) return;
+      console.error("[profile] load failed", error);
+      renderUnavailable("프로필을 불러오지 못했습니다.");
+      setMessage(
+        elements.message,
+        "로그인 정보는 유지되지만 프로필 데이터 연결에 실패했습니다. 새로고침하면 다시 확인합니다.",
+        "error"
+      );
+    }
   }
 
   async function loadProfile(requestId = state.loadRequest) {
@@ -265,8 +277,11 @@ export async function createProfileController({
     state.preferences = preferencesResult.data;
     state.watchlists = watchlistResult.data || [];
     state.selectedAvatar = state.profile.avatar_key;
-    await reconcilePreferences();
+    const preferenceWarning = await reconcilePreferences();
     renderSignedIn();
+    if (preferenceWarning) {
+      setMessage(elements.message, preferenceWarning, "error");
+    }
     if (!state.activityRecorded) {
       state.activityRecorded = true;
       void recordDailyActivity();
@@ -278,10 +293,17 @@ export async function createProfileController({
     const local = getReaderSettings();
     const cloudIsDefault = preferencesMatch(cloud, DEFAULT_PREFERENCES);
     if (cloudIsDefault && !preferencesMatch(local, DEFAULT_PREFERENCES)) {
-      await savePreferences(local);
-      return;
+      try {
+        await savePreferences(local);
+        return "";
+      } catch (error) {
+        console.error("[profile] initial preference sync failed", error);
+        applyReaderSettings(local);
+        return "읽기 설정은 현재 기기에 적용됐지만 계정에는 동기화하지 못했습니다.";
+      }
     }
     applyReaderSettings(cloud);
+    return "";
   }
 
   function renderLoading(label = "로그인 상태 확인 중") {
@@ -369,9 +391,25 @@ export async function createProfileController({
     }
   }
 
+  function renderStreakFailure() {
+    if (elements.currentStreak) elements.currentStreak.textContent = "확인 실패";
+    if (elements.longestStreak) elements.longestStreak.textContent = "확인 실패";
+    if (elements.mainStreak) elements.mainStreak.textContent = "확인 실패";
+    if (elements.streakSummary) elements.streakSummary.dataset.streakLevel = "0";
+    if (elements.mainGlance) elements.mainGlance.dataset.streakLevel = "0";
+    setMessage(
+      elements.message,
+      "연속 접속 기록을 확인하지 못했습니다. 새로고침하면 다시 확인합니다.",
+      "error"
+    );
+  }
+
   async function recordDailyActivity() {
     const result = await authenticatedPost("/api/profile-activity", {});
-    if (!result) return;
+    if (!result) {
+      renderStreakFailure();
+      return;
+    }
     applyProgressResult(result);
     if (result.xpAwarded > 0) {
       const streakText = result.currentStreak > 0
@@ -397,16 +435,7 @@ export async function createProfileController({
   }
 
   function applyProgressResult(result) {
-    state.progress = {
-      ...state.progress,
-      xp: result.xp,
-      active_days: result.activeDays,
-      current_streak: result.currentStreak,
-      longest_streak: result.longestStreak,
-      streak_available: result.streakAvailable,
-      quiz_correct_count: result.quizCorrectCount,
-      last_active_on: result.lastActiveOn
-    };
+    state.progress = mergeProfileProgressResult(state.progress, result);
     renderProgress();
   }
 
@@ -442,6 +471,11 @@ export async function createProfileController({
     state.preferenceTimer = setTimeout(() => {
       void savePreferences(settings).catch((error) => {
         console.error("[profile] preference sync failed", error);
+        setMessage(
+          elements.message,
+          "설정은 이 기기에 저장됐지만 계정 동기화에 실패했습니다.",
+          "error"
+        );
       });
     }, 500);
   }

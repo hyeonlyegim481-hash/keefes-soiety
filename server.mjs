@@ -1342,20 +1342,28 @@ function buildAutomatedNewsAnalysis(headline, snapshot) {
   const baseRate = macroById["base-rate"];
   const householdCredit = macroById["household-credit"];
   const contextLabel = marketContext.basis === "post-article" ? "기사 이후" : "현재";
+  const marketChange = (market) =>
+    Number.isFinite(Number(market?.changePercent))
+      ? `${signed(Number(market.changePercent))}%`
+      : "등락 자료 부족";
+  const marketValue = (market, unit = "") =>
+    Number.isFinite(Number(market?.value))
+      ? `${formatNumber(Number(market.value))}${unit}`
+      : "가격 자료 부족";
   const marketImpactByTheme = {
-    rates: `${contextLabel} S&P 500 ${signed(sp500?.changePercent || 0)}%, NASDAQ ${signed(nasdaq?.changePercent || 0)}%와 장기금리를 함께 봅니다. 금리 상승인데 기술주가 버티면 이익 기대가 할인율 부담을 상쇄하는지 확인합니다.`,
-    fx: `${contextLabel} 원/달러 ${formatNumber(usdkrw?.value || 0)}원과 VIX ${formatNumber(vix?.value || 0)}의 조합이 핵심입니다. 환율 상승과 변동성 확대가 겹치면 한국 위험자산의 부담이 커집니다.`,
-    chips: `${contextLabel} NASDAQ ${signed(nasdaq?.changePercent || 0)}%와 KOSPI ${signed(kospi?.changePercent || 0)}%의 차이를 봅니다. 미국 기술주 강세가 한국 반도체 수급으로 전달되지 않으면 국내 고유 부담이 있다는 뜻입니다.`,
-    energy: `${contextLabel} WTI ${formatNumber(wti?.value || 0)}달러, ${signed(wti?.changePercent || 0)}% 움직임을 확인합니다. 유가 상승은 에너지 업종에는 호재일 수 있지만 운송·화학·소비에는 비용 부담입니다.`,
-    china: `${contextLabel} KOSPI ${signed(kospi?.changePercent || 0)}%와 원/달러 ${formatNumber(usdkrw?.value || 0)}원이 같은 방향인지 봅니다.`,
-    growth: `${contextLabel} S&P 500 ${signed(sp500?.changePercent || 0)}%, KOSPI ${signed(kospi?.changePercent || 0)}% 흐름이 경기 기대와 일치하는지 봅니다.`,
+    rates: `${contextLabel} S&P 500 ${marketChange(sp500)}, NASDAQ ${marketChange(nasdaq)}와 장기금리를 함께 봅니다. 금리 상승인데 기술주가 버티면 이익 기대가 할인율 부담을 상쇄하는지 확인합니다.`,
+    fx: `${contextLabel} 원/달러 ${marketValue(usdkrw, "원")}과 VIX ${marketValue(vix)}의 조합이 핵심입니다. 환율 상승과 변동성 확대가 겹치면 한국 위험자산의 부담이 커집니다.`,
+    chips: `${contextLabel} NASDAQ ${marketChange(nasdaq)}와 KOSPI ${marketChange(kospi)}의 차이를 봅니다. 미국 기술주 강세가 한국 반도체 수급으로 전달되지 않으면 국내 고유 부담이 있다는 뜻입니다.`,
+    energy: `${contextLabel} WTI ${marketValue(wti, "달러")}, ${marketChange(wti)} 움직임을 확인합니다. 유가 상승은 에너지 업종에는 호재일 수 있지만 운송·화학·소비에는 비용 부담입니다.`,
+    china: `${contextLabel} KOSPI ${marketChange(kospi)}와 원/달러 ${marketValue(usdkrw, "원")}이 같은 방향인지 봅니다.`,
+    growth: `${contextLabel} S&P 500 ${marketChange(sp500)}, KOSPI ${marketChange(kospi)} 흐름이 경기 기대와 일치하는지 봅니다.`,
     housing: `한국 기준금리 ${macroValue(baseRate, "%")}와 가계신용 ${macroValue(householdCredit, "조원")}을 함께 봅니다. 금리보다 대출 증가와 연체 위험의 조합이 중요합니다.`,
-    earnings: `${contextLabel} KOSPI ${signed(kospi?.changePercent || 0)}%와 거래 집중 업종을 비교합니다. 실적 숫자보다 시장 예상과의 차이, 다음 분기 전망이 주가 지속성을 좌우합니다.`,
+    earnings: `${contextLabel} KOSPI ${marketChange(kospi)}와 거래 집중 업종을 비교합니다. 실적 숫자보다 시장 예상과의 차이, 다음 분기 전망이 주가 지속성을 좌우합니다.`,
     policy: marketContext.basis === "post-article"
       ? "정책 발표 이후 국채금리, 원/달러와 관련 업종이 실제로 움직였는지 확인합니다."
       : "정책 발표 이후 가격이 아직 확인되지 않아 현재 시장값만 참고합니다.",
-    geopolitics: `${contextLabel} VIX ${formatNumber(vix?.value || 0)}, WTI ${signed(wti?.changePercent || 0)}%, 금 ${signed(gold?.changePercent || 0)}%가 같은 방향인지 봅니다.`,
-    sentiment: `${contextLabel} KOSPI ${signed(kospi?.changePercent || 0)}%, S&P 500 ${signed(sp500?.changePercent || 0)}%, VIX ${formatNumber(vix?.value || 0)}를 함께 봅니다.`
+    geopolitics: `${contextLabel} VIX ${marketValue(vix)}, WTI ${marketChange(wti)}, 금 ${marketChange(gold)}가 같은 방향인지 봅니다.`,
+    sentiment: `${contextLabel} KOSPI ${marketChange(kospi)}, S&P 500 ${marketChange(sp500)}, VIX ${marketValue(vix)}를 함께 봅니다.`
   };
 
   const priceBasisText = marketContext.basis === "post-article"

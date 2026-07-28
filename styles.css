@@ -5379,7 +5379,7 @@ h1 {
 }
 
 .ticker-item {
-  min-width: 226px;
+  min-width: max(288px, 18rem);
   min-height: 58px;
   grid-template-columns: minmax(72px, 1fr) 76px auto;
   grid-template-rows: auto auto;
@@ -5803,7 +5803,7 @@ h1 {
   }
 
   .ticker-item {
-    min-width: 206px;
+    min-width: max(276px, 18rem);
     grid-template-columns: minmax(64px, 1fr) 64px auto;
   }
 
@@ -5872,7 +5872,7 @@ h1 {
   }
 
   .ticker-item {
-    min-width: 192px;
+    min-width: max(268px, 18rem);
     grid-template-columns: minmax(62px, 1fr) 56px auto;
     gap: 2px 7px;
   }
@@ -8014,11 +8014,10 @@ h1 {
 }
 
 .market-mini-card p {
-  display: -webkit-box;
-  overflow: hidden;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-  min-height: 3.75em;
+  display: block;
+  overflow: visible;
+  -webkit-line-clamp: unset;
+  min-height: 0;
 }
 
 .cross-reading {

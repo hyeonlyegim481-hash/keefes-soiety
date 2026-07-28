@@ -63,3 +63,19 @@ export function isValidProfileNickname(value) {
 export function getProfileAvatar(avatarKey) {
   return PROFILE_AVATARS.find((avatar) => avatar.id === avatarKey) || PROFILE_AVATARS[0];
 }
+
+export function mergeProfileProgressResult(current = {}, result = {}) {
+  const next = {
+    ...current,
+    xp: result.xp,
+    active_days: result.activeDays,
+    quiz_correct_count: result.quizCorrectCount,
+    last_active_on: result.lastActiveOn
+  };
+  if (result.streakAvailable === true) {
+    next.current_streak = result.currentStreak;
+    next.longest_streak = result.longestStreak;
+    next.streak_available = true;
+  }
+  return next;
+}

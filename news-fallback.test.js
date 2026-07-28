@@ -42,4 +42,6 @@ test("non-AI fallback rewrites the article instead of exposing extracted sentenc
   assert.doesNotMatch(publicText, /원문 추출 전용 문장 7391/);
   assert.equal(result.sourceInfo.author, "김경제");
   assert.equal(result.sourceInfo.originalUrl, headline.articleUrl);
+  assert.match(result.marketImpact, /자료 부족/);
+  assert.doesNotMatch(result.marketImpact, /(?:원\/달러|WTI) 0|\+0(?:\.0+)?%/);
 });

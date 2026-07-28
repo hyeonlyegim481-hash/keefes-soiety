@@ -3826,12 +3826,12 @@ function getRelationshipCurrentSignal(scenarioId, snapshot) {
     },
     "oil-up": {
       label: "현재 시장 신호",
-      value: wti ? `WTI ${formatMarketValue(wti)} · ${signed(wti.changePercent)}%` : "WTI 확인 중",
+      value: `WTI ${formatMarketValue(wti)} · ${formatMarketChangePercent(wti)}`,
       detail: "하루 상승보다 몇 주간 높은 가격이 이어지고 원화 약세까지 겹치는지 확인합니다."
     },
     "won-weakness": {
       label: "현재 시장 신호",
-      value: usdkrw ? `원/달러 ${formatMarketValue(usdkrw)} · ${signed(usdkrw.changePercent)}%` : "환율 확인 중",
+      value: `원/달러 ${formatMarketValue(usdkrw)} · ${formatMarketChangePercent(usdkrw)}`,
       detail: "달러지수, 외국인 수급, 수입물가가 같은 방향인지 교차 확인합니다."
     },
     "fiscal-expansion": {
@@ -3846,7 +3846,7 @@ function getRelationshipCurrentSignal(scenarioId, snapshot) {
     },
     "us-slowdown": {
       label: "현재 미국 위험 신호",
-      value: `${sp500 ? `S&P 500 ${signed(sp500.changePercent)}%` : "S&P 확인 중"} · ${vix ? `VIX ${formatMarketValue(vix)}` : "VIX 확인 중"}`,
+      value: `S&P 500 ${formatMarketChangePercent(sp500)} · VIX ${formatMarketValue(vix)}`,
       detail: "주가 하락만 보지 말고 미국 고용·소매판매와 국채금리가 동시에 침체 방향인지 확인합니다."
     },
     "china-slowdown": {
@@ -3879,14 +3879,18 @@ function getRelationshipCurrentSignal(scenarioId, snapshot) {
 function renderStudy(snapshot) {
   const { analysis, markets } = snapshot;
   const byId = Object.fromEntries(markets.map((market) => [market.id, market]));
-  const sorted = [...markets].sort((a, b) => b.changePercent - a.changePercent);
-  const strongest = sorted[0];
-  const weakest = sorted.at(-1);
+  const comparableMarkets = markets
+    .filter(hasMarketChange)
+    .sort((a, b) => Number(b.changePercent) - Number(a.changePercent));
+  const strongest = comparableMarkets[0] || null;
+  const weakest = comparableMarkets.at(-1) || null;
   const kospi = byId.kospi;
   const sp500 = byId.sp500;
   const usdkrw = byId.usdkrw;
   const vix = byId.vix;
-  const koreaGap = (kospi?.changePercent || 0) - (sp500?.changePercent || 0);
+  const koreaGap = hasMarketChange(kospi) && hasMarketChange(sp500)
+    ? Number(kospi.changePercent) - Number(sp500.changePercent)
+    : null;
   const todayTerm = getDailyEconomicTerm();
   const changeCondition =
     analysis.riskScore >= 66
@@ -3903,17 +3907,17 @@ function renderStudy(snapshot) {
     </article>
     <article class="brief-card">
       <span>가장 강한 가격</span>
-      <strong>${strongest.name} ${signed(strongest.changePercent)}%</strong>
+      <strong>${strongest ? `${strongest.name} ${formatMarketChangePercent(strongest)}` : "자료 수집 실패"}</strong>
       <p>강한 자산이 무엇인지 보면 지금 돈이 향하는 곳을 추정할 수 있습니다.</p>
     </article>
     <article class="brief-card">
       <span>가장 약한 가격</span>
-      <strong>${weakest.name} ${signed(weakest.changePercent)}%</strong>
+      <strong>${weakest ? `${weakest.name} ${formatMarketChangePercent(weakest)}` : "자료 수집 실패"}</strong>
       <p>약한 자산은 시장이 가장 걱정하는 변수와 연결해 해석합니다.</p>
     </article>
     <article class="brief-card">
       <span>한국의 차이</span>
-      <strong>미국 대비 ${signed(koreaGap)}%p</strong>
+      <strong>${koreaGap === null ? "미국 대비 비교 불가" : `미국 대비 ${signed(koreaGap)}%p`}</strong>
       <p>KOSPI와 S&amp;P 500의 차이가 크면 환율, 외국인 수급과 국내 요인을 따로 봐야 합니다.</p>
     </article>
   `;
@@ -3928,9 +3932,9 @@ function renderStudy(snapshot) {
         <span>4단계 사고 훈련</span>
       </div>
       <div class="thinking-flow">
-        ${renderThinkingStep("01", "무엇이 움직였나", `${strongest.name} ${signed(strongest.changePercent)}%, ${weakest.name} ${signed(weakest.changePercent)}%입니다. 먼저 사실과 의견을 분리합니다.`)}
+        ${renderThinkingStep("01", "무엇이 움직였나", strongest && weakest ? `${strongest.name} ${formatMarketChangePercent(strongest)}, ${weakest.name} ${formatMarketChangePercent(weakest)}입니다. 먼저 사실과 의견을 분리합니다.` : "비교 가능한 시장 등락 자료가 부족합니다.")}
         ${renderThinkingStep("02", "왜 움직였나", `원/달러 ${usdkrw ? formatMarketValue(usdkrw) : "--"}, VIX ${vix ? formatMarketValue(vix) : "--"}와 주요 뉴스를 교차 확인합니다. 한 기사만으로 원인을 단정하지 않습니다.`)}
-        ${renderThinkingStep("03", "한국에는 어떻게 오나", `미국 증시 변화가 환율과 외국인 수급을 거쳐 KOSPI에 전달됩니다. 현재 한미 지수 차이는 ${signed(koreaGap)}%p입니다.`)}
+        ${renderThinkingStep("03", "한국에는 어떻게 오나", koreaGap === null ? "KOSPI와 S&P 500의 같은 기준 등락 자료가 없어 전달 경로를 계산하지 않습니다." : `미국 증시 변화가 환율과 외국인 수급을 거쳐 KOSPI에 전달됩니다. 현재 한미 지수 차이는 ${signed(koreaGap)}%p입니다.`)}
         ${renderThinkingStep("04", "무엇이면 생각을 바꾸나", `${changeCondition} 확인합니다. 반대 증거가 나오면 기존 결론을 고칩니다.`)}
       </div>
       ${renderStudyMarketCases(snapshot)}
@@ -4038,16 +4042,16 @@ function getStudyTermConnection(termId, snapshot) {
   const sp500 = byId.sp500;
   const connections = {
     "base-rate": `한국 기준금리는 ${macroValueText(rate)}입니다. 물가 ${macroValueText(cpi)}와 원/달러 ${usdkrw ? formatMarketValue(usdkrw) : "--"}를 함께 봐야 금리 여력을 판단할 수 있습니다.`,
-    inflation: `소비자물가는 ${macroValueText(cpi)}이고 WTI는 ${wti ? `${signed(wti.changePercent)}%` : "--"} 움직였습니다. 유가는 시차를 두고 물가와 기업 비용에 영향을 줍니다.`,
+    inflation: `소비자물가는 ${macroValueText(cpi)}이고 WTI는 ${formatMarketChangePercent(wti)} 움직였습니다. 유가는 시차를 두고 물가와 기업 비용에 영향을 줍니다.`,
     "real-rate": `기준금리 ${macroValueText(rate)}에서 물가상승률 ${macroValueText(cpi)}를 단순 차감하면 현재 실질금리 방향을 대략 가늠할 수 있습니다.`,
-    "exchange-rate": `원/달러는 ${usdkrw ? `${formatMarketValue(usdkrw)}이며 ${signed(usdkrw.changePercent)}%` : "확인 중"} 움직였습니다. KOSPI ${signed(kospi?.changePercent || 0)}%와 함께 보면 외국인 수급 압력을 읽기 쉽습니다.`,
-    vix: `VIX는 ${vix ? `${formatMarketValue(vix)}이며 ${signed(vix.changePercent)}%` : "확인 중"} 움직였습니다. 지수 수준과 하루 변화율을 함께 봐야 공포의 크기와 방향을 구분할 수 있습니다.`,
+    "exchange-rate": `원/달러는 ${formatMarketValue(usdkrw)}이며 ${formatMarketChangePercent(usdkrw)} 움직였습니다. KOSPI ${formatMarketChangePercent(kospi)}와 함께 보면 외국인 수급 압력을 읽기 쉽습니다.`,
+    vix: `VIX는 ${formatMarketValue(vix)}이며 ${formatMarketChangePercent(vix)} 움직였습니다. 지수 수준과 하루 변화율을 함께 봐야 공포의 크기와 방향을 구분할 수 있습니다.`,
     "bond-yield": `현재 화면의 위험 온도는 ${snapshot.analysis.riskScore}/100입니다. 장기금리 상승이 NASDAQ 약세와 달러 강세로 이어지는지 확인하면 채권금리 충격을 판단할 수 있습니다.`,
-    liquidity: `KOSPI ${signed(kospi?.changePercent || 0)}%, S&P 500 ${signed(sp500?.changePercent || 0)}%처럼 시장별 반응이 크게 다르면 자금이 모든 자산에 고르게 흐르는지 의심해봐야 합니다.`,
+    liquidity: `KOSPI ${formatMarketChangePercent(kospi)}, S&P 500 ${formatMarketChangePercent(sp500)}처럼 시장별 반응이 크게 다르면 자금이 모든 자산에 고르게 흐르는지 의심해봐야 합니다.`,
     "base-effect": `수출 증가율 ${macroValueText(exports)}만 보지 말고 전년의 수출액이 높았는지 낮았는지 함께 확인해야 실제 수출 체력을 알 수 있습니다.`,
     "current-account": `수출 증가율은 ${macroValueText(exports)}입니다. 하지만 경상수지는 상품 외에도 서비스와 배당·이자를 포함하므로 수출 하나만으로 결론 내리면 안 됩니다.`,
     valuation: `시장금리와 위험 온도 ${snapshot.analysis.riskScore}/100이 높을수록 같은 이익에도 주식이 받을 수 있는 평가 배수가 낮아질 수 있습니다.`,
-    "risk-on": `S&P 500 ${signed(sp500?.changePercent || 0)}%, KOSPI ${signed(kospi?.changePercent || 0)}%, 원/달러 ${usdkrw ? signed(usdkrw.changePercent) : "--"}%가 같은 방향인지 보면 위험선호가 글로벌한지 판단할 수 있습니다.`,
+    "risk-on": `S&P 500 ${formatMarketChangePercent(sp500)}, KOSPI ${formatMarketChangePercent(kospi)}, 원/달러 ${formatMarketChangePercent(usdkrw)}가 같은 방향인지 보면 위험선호가 글로벌한지 판단할 수 있습니다.`,
     "credit-spread": `현재 위험 온도 ${snapshot.analysis.riskScore}/100이 높아도 국채금리만 오른 것인지, 기업 신용 위험까지 커진 것인지 신용스프레드로 구분해야 합니다.`
   };
   return connections[termId] || "오늘의 시장 가격과 함께 보면 용어가 실제 경제에서 어떻게 작동하는지 이해하기 쉽습니다.";

@@ -73,4 +73,7 @@ test("settings UI allows 150 percent and keeps profile progress outside the draw
   assert.match(html, /id="mainProfileStreak"/);
   assert.doesNotMatch(html, /class="utility-shortcuts"/);
   assert.doesNotMatch(html, />빠른 이동</);
+  const css = await readFile(new URL("./styles.css", import.meta.url), "utf8");
+  assert.match(css, /min-width:\s*max\(288px, 18rem\)/);
+  assert.doesNotMatch(css, /\.market-mini-card p \{[\s\S]*?-webkit-line-clamp:\s*3/);
 });
