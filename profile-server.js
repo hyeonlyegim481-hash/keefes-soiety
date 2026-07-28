@@ -2,6 +2,8 @@ import { scenarioQuestions } from "./quiz-data.js";
 import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js";
 import { moreScenarioQuestions } from "./quiz-scenario-more-data.js";
 import { expandedScenarioQuestions } from "./quiz-scenario-expanded-data.js";
+import { scenarioValidationQuestions } from "./quiz-scenario-validation-data.js";
+import { historyQuizQuestions } from "./quiz-history-data.js";
 import { glossaryTerms } from "./glossary-data.js";
 import { glossaryCoreExtraTerms } from "./glossary-core-extra-data.js";
 import { glossaryExtraTerms } from "./glossary-extra-data.js";
@@ -9,6 +11,7 @@ import { glossaryMoreTerms } from "./glossary-more-data.js";
 import { glossaryProTerms } from "./glossary-pro-data.js";
 import { glossarySpecialTerms } from "./glossary-special-data.js";
 import { glossaryExpandedTerms } from "./glossary-expanded-data.js";
+import { buildMasterGlossary } from "./glossary-master-data.js";
 
 const SUPABASE_REQUEST_TIMEOUT_MS = 8_000;
 const scenarioById = new Map(
@@ -16,18 +19,29 @@ const scenarioById = new Map(
     ...scenarioQuestions,
     ...extraScenarioQuestions,
     ...moreScenarioQuestions,
-    ...expandedScenarioQuestions
+    ...expandedScenarioQuestions,
+    ...scenarioValidationQuestions
   ].map((question) => [question.id, question])
 );
+const historyQuizById = new Map(
+  historyQuizQuestions.map((question) => [question.id, question])
+);
+const choiceQuestionById = new Map([...scenarioById, ...historyQuizById]);
+const glossarySeedTerms = [
+  ...glossaryTerms,
+  ...glossaryCoreExtraTerms,
+  ...glossaryExtraTerms,
+  ...glossaryMoreTerms,
+  ...glossaryProTerms,
+  ...glossarySpecialTerms,
+  ...glossaryExpandedTerms
+];
+const generatedGlossaryTerms = buildMasterGlossary(glossarySeedTerms);
 const glossaryTermSet = new Set(
   [
-    ...glossaryTerms,
-    ...glossaryCoreExtraTerms,
-    ...glossaryExtraTerms,
-    ...glossaryMoreTerms,
-    ...glossaryProTerms,
-    ...glossarySpecialTerms,
-    ...glossaryExpandedTerms
+    ...glossarySeedTerms,
+    ...generatedGlossaryTerms.core,
+    ...generatedGlossaryTerms.advanced
   ].map((item) => item.term)
 );
 
@@ -235,7 +249,7 @@ export function validateQuizSubmission(input = {}) {
     };
   }
 
-  const question = scenarioById.get(questionId);
+  const question = choiceQuestionById.get(questionId);
   if (!question) return { valid: false, reason: "unknown-question" };
   const selectedIndex = question.choices.indexOf(selectedAnswer);
   if (selectedIndex < 0) return { valid: false, reason: "unknown-answer" };
@@ -269,7 +283,10 @@ export function sanitizeProgressResult(value = {}) {
       value?.quiz_correct_count ?? value?.quizCorrectCount
     ),
     lastActiveOn: value?.last_active_on ?? value?.lastActiveOn ?? null,
-    xpAwarded: nonNegativeNumber(value?.xp_awarded ?? value?.xpAwarded),
+    xpAwarded: (() => {
+      const awarded = Number(value?.xp_awarded ?? value?.xpAwarded);
+      return Number.isFinite(awarded) ? Math.min(10, Math.max(-5, awarded)) : 0;
+    })(),
     tier: String(value?.tier || "iron")
   };
 }

@@ -1,5 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { historyQuizQuestions } from "./quiz-history-data.js";
+import { scenarioValidationQuestions } from "./quiz-scenario-validation-data.js";
 import {
   calculateActivityStreak,
   callProfileRpc,
@@ -51,6 +53,28 @@ test("scenario quiz answers are checked against the shared source data", () => {
   assert.equal(wrong.correct, false);
 });
 
+test("history and validation scenario answers use the shared server bank", () => {
+  const historyQuestion = historyQuizQuestions[0];
+  const validationQuestion = scenarioValidationQuestions[0];
+  const historyCorrect = validateQuizSubmission({
+    questionId: historyQuestion.id,
+    selectedAnswer: historyQuestion.choices[historyQuestion.answerIndex]
+  });
+  const scenarioCorrect = validateQuizSubmission({
+    questionId: validationQuestion.id,
+    selectedAnswer: validationQuestion.choices[validationQuestion.answerIndex]
+  });
+  const scenarioWrong = validateQuizSubmission({
+    questionId: validationQuestion.id,
+    selectedAnswer: validationQuestion.choices.find(
+      (_choice, index) => index !== validationQuestion.answerIndex
+    )
+  });
+  assert.equal(historyCorrect.correct, true);
+  assert.equal(scenarioCorrect.correct, true);
+  assert.equal(scenarioWrong.correct, false);
+});
+
 test("term quiz IDs are stable and invented questions cannot earn XP", () => {
   const correct = validateQuizSubmission({
     questionId: "term:국내총생산",
@@ -60,12 +84,17 @@ test("term quiz IDs are stable and invented questions cannot earn XP", () => {
     questionId: "term:국내총생산",
     selectedAnswer: "국민총소득"
   });
+  const generated = validateQuizSubmission({
+    questionId: "term:보통예금 표시금리",
+    selectedAnswer: "보통예금 표시금리"
+  });
   const invented = validateQuizSubmission({
     questionId: "term:없는용어",
     selectedAnswer: "없는용어"
   });
   assert.equal(correct.correct, true);
   assert.equal(wrong.correct, false);
+  assert.equal(generated.correct, true);
   assert.equal(invented.valid, false);
 });
 
@@ -90,6 +119,12 @@ test("progress responses discard invalid and non-finite values", () => {
       tier: "silver"
     }
   );
+});
+
+test("quiz progress responses preserve the signed XP delta within its allowed range", () => {
+  assert.equal(sanitizeProgressResult({ xp: 20, xp_awarded: -5 }).xpAwarded, -5);
+  assert.equal(sanitizeProgressResult({ xp: 20, xp_awarded: -50 }).xpAwarded, -5);
+  assert.equal(sanitizeProgressResult({ xp: 20, xp_awarded: 50 }).xpAwarded, 10);
 });
 
 test("progress responses normalize streak values from database fields", () => {

@@ -71,6 +71,7 @@ let historyDeepDives = {};
 let historyEraDetails = {};
 let historyEraProfiles = {};
 let historyEventPerspectives = {};
+let historyQuizQuestions = [];
 let economicRelationships = [];
 let politicsController = null;
 let futureController = null;
@@ -1064,7 +1065,7 @@ function loadGlossaryData() {
       ...expanded.glossaryExpandedTerms.map((item) => ({ ...item, level: "advanced", kind: "standard" })),
       ...generated.advanced.map((item) => ({ ...item, level: "advanced", kind: "applied" }))
     ];
-    quizGlossaryTerms = glossaryTerms.filter((item) => item.kind === "standard");
+    quizGlossaryTerms = [...glossaryTerms];
     glossaryTermsByCategory = quizGlossaryTerms.reduce((groups, item) => {
       const categoryTerms = groups.get(item.category) || [];
       categoryTerms.push(item);
@@ -1078,18 +1079,22 @@ function loadGlossaryData() {
 function loadQuizData() {
   return loadFeature("quiz", async ({ attempt }) => {
     await loadGlossaryData();
-    const [base, extra, more, expanded] = await Promise.all([
+    const [base, extra, more, expanded, validation, historyQuiz] = await Promise.all([
       importVersioned("./quiz-data.js", { attempt }),
       importVersioned("./quiz-scenario-extra-data.js", { attempt }),
       importVersioned("./quiz-scenario-more-data.js", { attempt }),
-      importVersioned("./quiz-scenario-expanded-data.js", { attempt })
+      importVersioned("./quiz-scenario-expanded-data.js", { attempt }),
+      importVersioned("./quiz-scenario-validation-data.js", { attempt }),
+      importVersioned("./quiz-history-data.js", { attempt })
     ]);
     scenarioQuestions = [
       ...base.scenarioQuestions,
       ...extra.extraScenarioQuestions,
       ...more.moreScenarioQuestions,
-      ...expanded.expandedScenarioQuestions
+      ...expanded.expandedScenarioQuestions,
+      ...validation.scenarioValidationQuestions
     ];
+    historyQuizQuestions = historyQuiz.historyQuizQuestions;
   });
 }
 
@@ -4532,12 +4537,15 @@ function getGlossaryReadingPoint(category) {
 }
 
 function renderQuiz() {
+  const totalBankSize =
+    quizGlossaryTerms.length + scenarioQuestions.length + historyQuizQuestions.length;
   const modes = [
-    { id: "mixed", label: "혼합", detail: "표준 용어 5 + 상황 5", count: quizGlossaryTerms.length + scenarioQuestions.length },
-    { id: "term", label: "용어", detail: "표준 용어 뜻 맞히기", count: quizGlossaryTerms.length },
-    { id: "scenario", label: "상황판단", detail: "경제 흐름 판단", count: scenarioQuestions.length }
+    { id: "mixed", label: "혼합", detail: "용어 4 + 상황 4 + 역사 4", count: totalBankSize },
+    { id: "term", label: "용어", detail: "전체 경제용어 뜻 맞히기", count: quizGlossaryTerms.length },
+    { id: "scenario", label: "상황판단", detail: "판단과 검증 기준 연습", count: scenarioQuestions.length },
+    { id: "history", label: "경제 역사", detail: "입문부터 심화까지", count: historyQuizQuestions.length }
   ];
-  elements.quizBankSize.textContent = `${formatter.format(quizGlossaryTerms.length + scenarioQuestions.length)}개 문제은행`;
+  elements.quizBankSize.textContent = `${formatter.format(totalBankSize)}개 문제은행`;
   elements.quizModes.replaceChildren(
     ...modes.map((mode) => {
       const button = document.createElement("button");
@@ -4591,16 +4599,16 @@ function renderQuiz() {
   elements.quizBody.innerHTML = `
     <div class="quiz-status-row">
       <span>문제 ${state.quizIndex + 1} / ${state.quizQuestions.length}</span>
-      <strong>현재 점수 ${state.quizScore}</strong>
+      <strong>정답 ${state.quizScore}개</strong>
     </div>
     <div class="quiz-progress" aria-label="퀴즈 진행률 ${Math.round(progress)}%">
       <span style="width: ${progress}%"></span>
     </div>
     <article class="quiz-question-card">
       <div class="quiz-question-meta">
-        <span>${question.type === "term" ? "용어" : "상황판단"}</span>
+        <span>${getQuizTypeLabel(question.type)}</span>
         <em>${escapeHtml(question.category)}</em>
-        ${question.type === "scenario" ? `<b>${escapeHtml(question.difficulty || "기본")}</b>` : ""}
+        ${question.difficulty ? `<b>${escapeHtml(question.difficulty)}</b>` : ""}
       </div>
       <h3>${escapeHtml(question.prompt)}</h3>
       <p>${escapeHtml(question.context)}</p>
@@ -4609,7 +4617,11 @@ function renderQuiz() {
         state.quizAnswered
           ? `
             <div class="quiz-feedback" data-correct="${isCorrect}">
-              <strong>${isCorrect ? "정답입니다" : `정답은 ${String.fromCharCode(65 + question.answerIndex)}입니다`}</strong>
+              <strong>${
+                isCorrect
+                  ? "정답입니다 · 로그인 시 +10 XP"
+                  : `정답은 ${String.fromCharCode(65 + question.answerIndex)}입니다 · 로그인 시 -5 XP`
+              }</strong>
               <p>${escapeHtml(question.explanation)}</p>
               ${question.rule ? `
                 <div class="quiz-judgment-rule">
@@ -4630,7 +4642,7 @@ function renderQuiz() {
 }
 
 function resetQuizSession(mode = "mixed") {
-  state.quizMode = ["mixed", "term", "scenario"].includes(mode) ? mode : "mixed";
+  state.quizMode = ["mixed", "term", "scenario", "history"].includes(mode) ? mode : "mixed";
   state.quizQuestions = createQuizSession(state.quizMode);
   state.quizIndex = 0;
   state.quizScore = 0;
@@ -4642,19 +4654,42 @@ function resetQuizSession(mode = "mixed") {
 }
 
 function createQuizSession(mode) {
-  const termCount = mode === "term" ? 10 : mode === "mixed" ? 5 : 0;
-  const scenarioCount = mode === "scenario" ? 10 : mode === "mixed" ? 5 : 0;
+  const termCount = mode === "term" ? 10 : mode === "mixed" ? 4 : 0;
+  const scenarioCount = mode === "scenario" ? 10 : mode === "mixed" ? 4 : 0;
+  const historyCount = mode === "history" ? 12 : mode === "mixed" ? 4 : 0;
   const selectedTerms = termCount ? shuffleQuizItems(quizGlossaryTerms).slice(0, termCount) : [];
   const selectedScenarios = scenarioCount
-    ? shuffleQuizItems(scenarioQuestions).slice(0, scenarioCount).map(shuffleScenarioChoices)
+    ? shuffleQuizItems(scenarioQuestions).slice(0, scenarioCount).map(shuffleQuizChoices)
     : [];
+  const selectedHistory = selectHistoryQuizQuestions(historyCount).map(shuffleQuizChoices);
   const termPool = buildTermQuizPool(selectedTerms);
   if (mode === "term") return termPool;
   if (mode === "scenario") return selectedScenarios;
-  return shuffleQuizItems([...termPool, ...selectedScenarios]);
+  if (mode === "history") return selectedHistory;
+  return shuffleQuizItems([...termPool, ...selectedScenarios, ...selectedHistory]);
 }
 
-function shuffleScenarioChoices(question) {
+function selectHistoryQuizQuestions(count) {
+  if (!count) return [];
+  const distribution = count >= 12
+    ? [["입문", 4], ["기본", 4], ["심화", 4]]
+    : [["입문", 2], ["기본", 1], ["심화", 1]];
+  const selected = distribution.flatMap(([difficulty, target]) =>
+    shuffleQuizItems(
+      historyQuizQuestions.filter((question) => question.difficulty === difficulty)
+    ).slice(0, target)
+  );
+  if (selected.length >= count) return selected.slice(0, count);
+  const selectedIds = new Set(selected.map((question) => question.id));
+  return [
+    ...selected,
+    ...shuffleQuizItems(
+      historyQuizQuestions.filter((question) => !selectedIds.has(question.id))
+    ).slice(0, count - selected.length)
+  ];
+}
+
+function shuffleQuizChoices(question) {
   const shuffledChoices = shuffleQuizItems(
     question.choices.map((choice, index) => ({
       choice,
@@ -4671,11 +4706,15 @@ function shuffleScenarioChoices(question) {
 function buildTermQuizPool(terms) {
   return terms.map((term, termIndex) => {
     const sameCategory = glossaryTermsByCategory.get(term.category) || [];
+    const distractorSource = sameCategory.length >= 4
+      ? sameCategory
+      : [...sameCategory, ...quizGlossaryTerms];
     const distractors = [];
-    let cursor = Math.abs(quizHash(`${term.term}-${termIndex}`)) % sameCategory.length;
+    let cursor =
+      Math.abs(quizHash(`${term.term}-${termIndex}`)) % Math.max(1, distractorSource.length);
     let attempts = 0;
-    while (distractors.length < 3 && attempts < sameCategory.length * 2) {
-      const candidate = sameCategory[cursor % sameCategory.length].term;
+    while (distractors.length < 3 && attempts < distractorSource.length * 2) {
+      const candidate = distractorSource[cursor % distractorSource.length].term;
       if (candidate !== term.term && !distractors.includes(candidate)) distractors.push(candidate);
       cursor += 1;
       attempts += 1;
@@ -4687,6 +4726,7 @@ function buildTermQuizPool(terms) {
       id: `term:${term.term}`,
       type: "term",
       category: term.category,
+      difficulty: term.level === "core" ? "핵심" : "심화",
       prompt: "다음 설명에 해당하는 경제용어는 무엇일까요?",
       context: term.definition,
       choices,
@@ -4802,7 +4842,7 @@ function renderQuizReviewItem(mistake, index) {
   const question = mistake.question;
   const selectedChoice = question.choices[mistake.selectedIndex] || "선택한 답을 찾을 수 없습니다.";
   const correctChoice = question.choices[question.answerIndex] || "정답을 찾을 수 없습니다.";
-  const typeLabel = question.type === "scenario" ? "상황판단" : "용어";
+  const typeLabel = getQuizTypeLabel(question.type);
   return `
     <details class="quiz-review-item" ${index === 0 ? "open" : ""}>
       <summary>
@@ -4847,7 +4887,7 @@ function retryQuizMistakes() {
       ...mistake.question,
       choices: [...mistake.question.choices]
     };
-    return question.type === "scenario" ? shuffleScenarioChoices(question) : question;
+    return question.type === "term" ? question : shuffleQuizChoices(question);
   });
   state.quizQuestions = shuffleQuizItems(missedQuestions);
   state.quizIndex = 0;
@@ -4866,6 +4906,12 @@ function shuffleQuizItems(items) {
     [output[index], output[swapIndex]] = [output[swapIndex], output[index]];
   }
   return output;
+}
+
+function getQuizTypeLabel(type) {
+  if (type === "history") return "경제 역사";
+  if (type === "scenario") return "상황판단";
+  return "용어";
 }
 
 function quizHash(value) {

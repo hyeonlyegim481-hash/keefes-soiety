@@ -11,6 +11,10 @@ const fontScaleMigrationUrl = new URL(
   "./supabase/migrations/004_profile_font_scale.sql",
   import.meta.url
 );
+const quizScoringMigrationUrl = new URL(
+  "./supabase/migrations/005_quiz_scoring.sql",
+  import.meta.url
+);
 
 test("profile reward migration is atomic and service-role only", async () => {
   const sql = await readFile(migrationUrl, "utf8");
@@ -18,8 +22,6 @@ test("profile reward migration is atomic and service-role only", async () => {
   assert.match(sql, /on conflict \(user_id, activity_date\) do nothing/);
   assert.match(sql, /create or replace function public\.record_quiz_attempt/);
   assert.match(sql, /for update/);
-  assert.match(sql, /today_attempt_count >= 200/);
-  assert.match(sql, /100 - today_quiz_xp/);
   assert.match(sql, /grant execute .*service_role/is);
   assert.match(sql, /create or replace function public\.replace_own_watchlists/);
   assert.match(sql, /revoke insert, delete on public\.watchlists from authenticated/);
@@ -45,4 +47,14 @@ test("profile font scale migration permits synchronized values through 150 perce
   assert.match(sql, /drop constraint if exists profile_preferences_font_scale_check/);
   assert.match(sql, /font_scale between 90 and 150/);
   assert.match(sql, /font_scale % 5 = 0/);
+});
+test("quiz scoring migration removes daily caps and applies signed XP safely", async () => {
+  const sql = await readFile(quizScoringMigrationUrl, "utf8");
+  assert.match(sql, /drop constraint if exists quiz_attempts_xp_awarded_check/);
+  assert.match(sql, /xp_awarded between -5 and 10/);
+  assert.match(sql, /case when target_correct then 10 else -5 end/);
+  assert.match(sql, /greatest\(0, progress_row\.xp \+ potential_award\)/);
+  assert.match(sql, /for update/);
+  assert.match(sql, /grant execute .*service_role/is);
+  assert.doesNotMatch(sql, /today_attempt_count|today_quiz_xp|daily quiz attempt limit/);
 });
