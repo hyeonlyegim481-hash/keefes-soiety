@@ -79,12 +79,27 @@ test("progress responses discard invalid and non-finite values", () => {
     {
       xp: 0,
       activeDays: 0,
+      currentStreak: 0,
+      longestStreak: 0,
+      streakAvailable: false,
       quizCorrectCount: 12,
       lastActiveOn: null,
       xpAwarded: 0,
       tier: "silver"
     }
   );
+});
+
+test("progress responses normalize streak values from database fields", () => {
+  const progress = sanitizeProgressResult({
+    xp: 25,
+    active_days: 8,
+    current_streak: "5",
+    longest_streak: 12
+  });
+  assert.equal(progress.currentStreak, 5);
+  assert.equal(progress.longestStreak, 12);
+  assert.equal(progress.streakAvailable, true);
 });
 
 test("secret-key RPC uses apikey and never sends the opaque key as a JWT", async () => {

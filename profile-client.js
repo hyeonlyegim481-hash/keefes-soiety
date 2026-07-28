@@ -109,6 +109,10 @@ export async function createProfileController({
     xpText: document.querySelector("#profileXpText"),
     xpBar: document.querySelector("#profileXpBar"),
     nextTier: document.querySelector("#profileNextTier"),
+    streakSummary: document.querySelector("#profileStreakSummary"),
+    currentStreak: document.querySelector("#profileCurrentStreak"),
+    longestStreak: document.querySelector("#profileLongestStreak"),
+    activeDays: document.querySelector("#profileActiveDays"),
     message: document.querySelector("#profileMessage"),
     dialog: document.querySelector("#profileDialog"),
     dialogClose: document.querySelector("#profileDialogClose"),
@@ -324,6 +328,22 @@ export async function createProfileController({
     elements.nextTier.textContent = tierProgress.next
       ? `${tierProgress.next.label}까지 ${tierProgress.remaining.toLocaleString("ko-KR")} XP`
       : "최고 티어 달성";
+    const hasStreak = state.progress?.streak_available === true;
+    const currentStreak = Math.max(0, Number(state.progress?.current_streak) || 0);
+    const longestStreak = Math.max(0, Number(state.progress?.longest_streak) || 0);
+    const activeDays = Math.max(0, Number(state.progress?.active_days) || 0);
+    if (elements.currentStreak) {
+      elements.currentStreak.textContent = hasStreak ? `${currentStreak}일` : "확인 중";
+    }
+    if (elements.longestStreak) {
+      elements.longestStreak.textContent = hasStreak ? `${longestStreak}일` : "확인 중";
+    }
+    if (elements.activeDays) elements.activeDays.textContent = `${activeDays}일`;
+    if (elements.streakSummary) {
+      elements.streakSummary.dataset.streakLevel = currentStreak >= 30
+        ? "30"
+        : currentStreak >= 7 ? "7" : currentStreak > 0 ? "1" : "0";
+    }
   }
 
   async function recordDailyActivity() {
@@ -331,7 +351,14 @@ export async function createProfileController({
     if (!result) return;
     applyProgressResult(result);
     if (result.xpAwarded > 0) {
-      setMessage(elements.message, `오늘 첫 방문 +${result.xpAwarded} XP`, "success");
+      const streakText = result.currentStreak > 0
+        ? ` · ${result.currentStreak}일 연속`
+        : "";
+      setMessage(
+        elements.message,
+        `오늘 첫 방문 +${result.xpAwarded} XP${streakText}`,
+        "success"
+      );
     }
   }
 
@@ -351,6 +378,9 @@ export async function createProfileController({
       ...state.progress,
       xp: result.xp,
       active_days: result.activeDays,
+      current_streak: result.currentStreak,
+      longest_streak: result.longestStreak,
+      streak_available: result.streakAvailable,
       quiz_correct_count: result.quizCorrectCount,
       last_active_on: result.lastActiveOn
     };

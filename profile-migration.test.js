@@ -3,6 +3,10 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 const migrationUrl = new URL("./supabase/migrations/002_profile_rewards.sql", import.meta.url);
+const streakMigrationUrl = new URL(
+  "./supabase/migrations/003_profile_streaks.sql",
+  import.meta.url
+);
 
 test("profile reward migration is atomic and service-role only", async () => {
   const sql = await readFile(migrationUrl, "utf8");
@@ -19,4 +23,16 @@ test("profile reward migration is atomic and service-role only", async () => {
   assert.match(sql, /revoke update \(nickname, avatar_key\) on public\.profiles from authenticated/);
   assert.match(sql, /grant execute on function public\.replace_own_watchlists\(jsonb\) to authenticated/);
   assert.match(sql, /revoke all on function public\.record_daily_activity\(uuid\)[\s\S]*from public, anon, authenticated/);
+});
+
+test("profile streak migration calculates consecutive KST activity safely", async () => {
+  const sql = await readFile(streakMigrationUrl, "utf8");
+  assert.match(sql, /timezone\('Asia\/Seoul', now\(\)\)/);
+  assert.match(sql, /for update/);
+  assert.match(sql, /on conflict \(user_id, activity_date\) do nothing/);
+  assert.match(sql, /row_number\(\) over \(order by activity_date\)/);
+  assert.match(sql, /filter \(where ended_on = today_kst\)/);
+  assert.match(sql, /'current_streak', current_streak/);
+  assert.match(sql, /'longest_streak', longest_streak/);
+  assert.match(sql, /grant execute .*service_role/is);
 });

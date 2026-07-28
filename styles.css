@@ -15197,6 +15197,53 @@ body.utility-drawer-open {
   transition: width 220ms ease;
 }
 
+.profile-streak-summary {
+  --streak-accent: #66757e;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 14px 0 0;
+  border-top: 1px solid #d5dfe2;
+  border-bottom: 1px solid #d5dfe2;
+}
+
+.profile-streak-summary[data-streak-level="1"] {
+  --streak-accent: #087b6d;
+}
+
+.profile-streak-summary[data-streak-level="7"] {
+  --streak-accent: #ad7412;
+}
+
+.profile-streak-summary[data-streak-level="30"] {
+  --streak-accent: #2563a8;
+}
+
+.profile-streak-summary > div {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+  padding: 10px 7px;
+  text-align: center;
+}
+
+.profile-streak-summary > div + div {
+  border-left: 1px solid #d5dfe2;
+}
+
+.profile-streak-summary dt {
+  color: #60717a;
+  font-size: 0.68rem;
+  font-weight: 760;
+}
+
+.profile-streak-summary dd {
+  margin: 0;
+  color: var(--streak-accent);
+  font-size: 0.86rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
 .profile-logout-button {
   margin-top: 12px;
   padding: 0;

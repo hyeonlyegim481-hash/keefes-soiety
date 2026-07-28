@@ -163,9 +163,18 @@ export function sanitizeProgressResult(value = {}) {
     return Number.isFinite(numeric) ? Math.max(0, numeric) : 0;
   };
   const xp = nonNegativeNumber(value?.xp);
+  const streakAvailable = value?.current_streak !== undefined
+    || value?.currentStreak !== undefined;
   return {
     xp,
     activeDays: nonNegativeNumber(value?.active_days ?? value?.activeDays),
+    currentStreak: nonNegativeNumber(
+      value?.current_streak ?? value?.currentStreak
+    ),
+    longestStreak: nonNegativeNumber(
+      value?.longest_streak ?? value?.longestStreak
+    ),
+    streakAvailable,
     quizCorrectCount: nonNegativeNumber(
       value?.quiz_correct_count ?? value?.quizCorrectCount
     ),
