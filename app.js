@@ -74,6 +74,8 @@ let historyEventPerspectives = {};
 let economicRelationships = [];
 let politicsController = null;
 let futureController = null;
+let profileController = null;
+let profileControllerPromise = null;
 
 const GLOSSARY_PAGE_SIZE = 24;
 
@@ -488,6 +490,28 @@ let state = {
 let readerSettings = applyReaderSettings(loadReaderSettings());
 applyReaderViewport(readerSettings);
 
+function initProfileOnce() {
+  if (profileController) return Promise.resolve(profileController);
+  if (profileControllerPromise) return profileControllerPromise;
+  profileControllerPromise = importVersioned("./profile-client.js")
+    .then((module) => module.createProfileController({
+      getReaderSettings: () => ({ ...readerSettings }),
+      applyReaderSettings: (settings) => updateReaderSettings(settings, {
+        syncProfile: false
+      })
+    }))
+    .then((controller) => {
+      profileController = controller;
+      return controller;
+    })
+    .catch((error) => {
+      profileControllerPromise = null;
+      console.error("[profile] failed to initialize", error);
+      throw error;
+    });
+  return profileControllerPromise;
+}
+
 function syncReaderSettingControls() {
   if (elements.readerFontRange) elements.readerFontRange.value = String(readerSettings.fontScale);
   if (elements.readerFontValue) elements.readerFontValue.value = `${readerSettings.fontScale}%`;
@@ -505,7 +529,10 @@ function scheduleReaderLayout() {
   });
 }
 
-function updateReaderSettings(nextSettings, { persist = true } = {}) {
+function updateReaderSettings(nextSettings, {
+  persist = true,
+  syncProfile = true
+} = {}) {
   readerSettings = applyReaderSettings(normalizeReaderSettings({
     ...readerSettings,
     ...nextSettings
@@ -514,6 +541,7 @@ function updateReaderSettings(nextSettings, { persist = true } = {}) {
   if (persist) readerSettings = saveReaderSettings(readerSettings);
   syncReaderSettingControls();
   scheduleReaderLayout();
+  if (syncProfile) profileController?.queuePreferenceSync(readerSettings);
 }
 
 function syncChartPeriodTabs() {
@@ -529,6 +557,7 @@ function openUtilityDrawer() {
   elements.utilityDrawer.showModal();
   document.body.classList.add("utility-drawer-open");
   elements.utilityMenuButton?.setAttribute("aria-expanded", "true");
+  void initProfileOnce().catch(() => {});
   elements.readerFontRange?.focus({ preventScroll: true });
 }
 
@@ -600,6 +629,15 @@ window.addEventListener("storage", (event) => {
   syncReaderSettingControls();
   scheduleReaderLayout();
 });
+
+const initializeProfileWhenIdle = () => {
+  void initProfileOnce().catch(() => {});
+};
+if ("requestIdleCallback" in window) {
+  window.requestIdleCallback(initializeProfileWhenIdle, { timeout: 3500 });
+} else {
+  window.setTimeout(initializeProfileWhenIdle, 1500);
+}
 
 elements.refreshButton.addEventListener("click", () => refreshSnapshot());
 elements.chapterTabs.forEach((tab) => {
@@ -4651,7 +4689,7 @@ function buildTermQuizPool(terms) {
       (a, b) => quizHash(`${term.term}-${a}`) - quizHash(`${term.term}-${b}`)
     );
     return {
-      id: `term-${termIndex}`,
+      id: `term:${term.term}`,
       type: "term",
       category: term.category,
       prompt: "다음 설명에 해당하는 경제용어는 무엇일까요?",
@@ -4663,12 +4701,22 @@ function buildTermQuizPool(terms) {
   });
 }
 
+function syncProfileQuizAnswer(question, answerIndex) {
+  void initProfileOnce()
+    .then((controller) => controller.recordQuizAnswer({
+      id: question.id,
+      selectedAnswer: question.choices[answerIndex]
+    }))
+    .catch((error) => console.error("[profile] quiz sync failed", error));
+}
+
 function handleQuizAnswer(answerIndex) {
   if (state.quizAnswered || !Number.isInteger(answerIndex)) return;
   const question = state.quizQuestions[state.quizIndex];
   if (!question || answerIndex < 0 || answerIndex >= question.choices.length) return;
   state.quizSelected = answerIndex;
   state.quizAnswered = true;
+  syncProfileQuizAnswer(question, answerIndex);
   if (answerIndex === question.answerIndex) {
     state.quizScore += 1;
   } else {

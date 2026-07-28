@@ -24,6 +24,13 @@ import {
   resolveMarketStatus,
   resolvePreviousClose
 } from "./market-data.js";
+import {
+  callProfileRpc,
+  getProfilePublicConfig,
+  sanitizeProgressResult,
+  validateQuizSubmission,
+  validateSupabaseUser
+} from "./profile-server.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -188,6 +195,49 @@ const server = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url || "/", `http://${req.headers.host}`);
 
+    if (url.pathname === "/api/profile-config") {
+      if (req.method !== "GET") {
+        sendJson(res, 405, { error: "Method not allowed" });
+        return;
+      }
+      sendJson(res, 200, getProfilePublicConfig());
+      return;
+    }
+
+    if (url.pathname === "/api/profile-activity") {
+      if (req.method !== "POST") {
+        sendJson(res, 405, { error: "Method not allowed" });
+        return;
+      }
+      const token = String(req.headers.authorization || "").replace(/^Bearer\s+/i, "");
+      const user = await validateSupabaseUser(token);
+      const result = await callProfileRpc("record_daily_activity", { target_user: user.id });
+      sendJson(res, 200, sanitizeProgressResult(result));
+      return;
+    }
+
+    if (url.pathname === "/api/profile-quiz") {
+      if (req.method !== "POST") {
+        sendJson(res, 405, { error: "Method not allowed" });
+        return;
+      }
+      const submission = validateQuizSubmission(await readJsonBody(req));
+      if (!submission.valid) {
+        sendJson(res, 400, { error: "확인할 수 없는 퀴즈 응답입니다.", code: submission.reason });
+        return;
+      }
+      const token = String(req.headers.authorization || "").replace(/^Bearer\s+/i, "");
+      const user = await validateSupabaseUser(token);
+      const result = await callProfileRpc("record_quiz_attempt", {
+        target_user: user.id,
+        target_quiz_id: submission.questionId,
+        target_selected_answer: submission.selectedIndex,
+        target_correct: submission.correct
+      });
+      sendJson(res, 200, { ...sanitizeProgressResult(result), correct: submission.correct });
+      return;
+    }
+
     if (url.pathname === "/api/snapshot") {
       const snapshot = await getSnapshot();
       sendJson(res, 200, snapshot);
@@ -237,6 +287,18 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    if (
+      url.pathname === "/_vercel/insights/script.js"
+      || url.pathname === "/_vercel/speed-insights/script.js"
+    ) {
+      sendText(
+        res,
+        200,
+        "/* Vercel telemetry is available only on deployed environments. */",
+        "text/javascript; charset=utf-8"
+      );
+      return;
+    }
     await serveStatic(url.pathname, res);
   } catch (error) {
     sendJson(res, 500, {

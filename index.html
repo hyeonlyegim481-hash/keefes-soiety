@@ -550,6 +550,41 @@
           </button>
         </header>
 
+        <section class="profile-panel" id="profilePanel" aria-labelledby="profilePanelTitle">
+          <div class="utility-setting-title">
+            <div>
+              <span>내 학습</span>
+              <h3 id="profilePanelTitle">프로필</h3>
+            </div>
+          </div>
+          <p class="profile-auth-status" id="profileAuthStatus">로그인 상태 확인 중</p>
+          <div class="profile-signed-out" id="profileLoggedOut" hidden>
+            <p>퀴즈 기록과 관심 분야, 화면 설정을 여러 기기에서 이어서 봅니다.</p>
+            <button class="profile-login-button" id="profileLoginButton" type="button">
+              <span aria-hidden="true">G</span>
+              Google로 시작
+            </button>
+          </div>
+          <div class="profile-signed-in" id="profileLoggedIn" hidden>
+            <div class="profile-identity">
+              <span class="profile-avatar" id="profileAvatarDisplay" aria-hidden="true">↗</span>
+              <div>
+                <strong id="profileNicknameDisplay">사용자</strong>
+                <span class="profile-tier-badge" id="profileTierBadge">아이언</span>
+              </div>
+              <button class="profile-edit-button" id="profileEditButton" type="button">편집</button>
+            </div>
+            <div class="profile-xp-head">
+              <strong id="profileXpText">0 XP</strong>
+              <span id="profileNextTier">브론즈까지 300 XP</span>
+            </div>
+            <div class="profile-xp-track" aria-hidden="true">
+              <i id="profileXpBar"></i>
+            </div>
+            <button class="profile-logout-button" id="profileLogoutButton" type="button">로그아웃</button>
+          </div>
+          <p class="profile-message" id="profileMessage" hidden></p>
+        </section>
         <section class="utility-setting-section" aria-labelledby="readerFontTitle">
           <div class="utility-setting-title">
             <div>
@@ -634,6 +669,51 @@
       </div>
     </dialog>
 
+    <dialog class="profile-dialog" id="profileDialog" aria-labelledby="profileDialogTitle">
+      <form class="profile-dialog-surface" id="profileForm">
+        <header class="profile-dialog-head">
+          <div>
+            <p>내 학습 설정</p>
+            <h2 id="profileDialogTitle">프로필 편집</h2>
+          </div>
+          <button class="icon-button" id="profileDialogClose" type="button" aria-label="프로필 편집 닫기" title="닫기">
+            <span aria-hidden="true">×</span>
+          </button>
+        </header>
+        <div class="profile-dialog-body">
+          <section class="profile-form-section">
+            <label for="profileNicknameInput">닉네임</label>
+            <input id="profileNicknameInput" name="nickname" type="text" minlength="2" maxlength="20" autocomplete="nickname" />
+            <small>2~20자이며 다른 사용자와 같은 닉네임은 사용할 수 없습니다.</small>
+          </section>
+          <section class="profile-form-section">
+            <span class="profile-form-label">기본 프로필 아이콘</span>
+            <div class="profile-avatar-options" id="profileAvatarOptions" role="group" aria-label="프로필 아이콘 선택"></div>
+          </section>
+          <section class="profile-form-section">
+            <span class="profile-form-label">관심 시장</span>
+            <div class="profile-add-row">
+              <select id="profileMarketSelect" aria-label="관심 시장"></select>
+              <button id="profileMarketAdd" type="button">추가</button>
+            </div>
+            <div class="profile-watch-list" id="profileMarketList"></div>
+          </section>
+          <section class="profile-form-section">
+            <span class="profile-form-label">관심 기업</span>
+            <div class="profile-add-row">
+              <input id="profileCompanyInput" type="text" list="profileCompanyOptions" placeholder="기업명 검색" autocomplete="off" />
+              <datalist id="profileCompanyOptions"></datalist>
+              <button id="profileCompanyAdd" type="button">추가</button>
+            </div>
+            <div class="profile-watch-list" id="profileCompanyList"></div>
+          </section>
+          <p class="profile-form-message" id="profileFormMessage" hidden></p>
+        </div>
+        <footer class="profile-dialog-actions">
+          <button id="profileSaveButton" type="submit">저장</button>
+        </footer>
+      </form>
+    </dialog>
     <script>
       window.va = window.va || function () {
         (window.vaq = window.vaq || []).push(arguments);

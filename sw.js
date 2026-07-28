@@ -9,6 +9,8 @@ const CORE_SHELL = [
   "/app-version.js",
   "/runtime-loader.js",
   "/reader-settings.js",
+  "/profile-data.js",
+  "/profile-client.js",
   "/styles.css",
   "/app.js",
   "/economic-narrative.js",
