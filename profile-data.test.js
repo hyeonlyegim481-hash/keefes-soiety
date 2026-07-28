@@ -5,6 +5,7 @@ import {
   PROFILE_AVATARS,
   PROFILE_MARKETS,
   PROFILE_STREAK_STAGES,
+  calculateProfileStreak,
   getNextProfileStreakStage,
   getProfileStreakStage,
   getProfileTier,
@@ -82,6 +83,19 @@ test("activity progress replaces streak fields when the response includes them",
   assert.equal(merged.streak_available, true);
 });
 
+test("browser streak calculation handles duplicates, gaps, and Korea's current date", () => {
+  assert.deepEqual(
+    calculateProfileStreak(
+      ["2026-07-20", "2026-07-20", "2026-07-25", "2026-07-26", "2026-07-27", "2026-07-28"],
+      "2026-07-28"
+    ),
+    { currentStreak: 4, longestStreak: 4 }
+  );
+  assert.deepEqual(
+    calculateProfileStreak(["2026-07-20", "2026-07-21"], "2026-07-28"),
+    { currentStreak: 0, longestStreak: 2 }
+  );
+});
 test("streak artwork changes at the ten agreed day thresholds", () => {
   assert.deepEqual(
     PROFILE_STREAK_STAGES.map((stage) => stage.minDays),

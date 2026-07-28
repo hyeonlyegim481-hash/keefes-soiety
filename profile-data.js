@@ -89,6 +89,47 @@ export function getNextProfileStreakStage(days = 0) {
   return PROFILE_STREAK_STAGES.find((stage) => stage.minDays > safeDays) || null;
 }
 
+function toProfileDayNumber(value) {
+  const match = String(value || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) return null;
+  return Math.floor(
+    Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3])) / 86_400_000
+  );
+}
+
+export function getProfileKstDate(now = new Date()) {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Seoul",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  }).format(now);
+}
+
+export function calculateProfileStreak(activityDates = [], today = getProfileKstDate()) {
+  const days = [...new Set(activityDates.map(toProfileDayNumber).filter(Number.isInteger))]
+    .sort((left, right) => left - right);
+  if (!days.length) return { currentStreak: 0, longestStreak: 0 };
+
+  let run = 1;
+  let longestStreak = 1;
+  for (let index = 1; index < days.length; index += 1) {
+    run = days[index] === days[index - 1] + 1 ? run + 1 : 1;
+    longestStreak = Math.max(longestStreak, run);
+  }
+
+  const todayDay = toProfileDayNumber(today);
+  let currentStreak = 0;
+  if (days.at(-1) === todayDay) {
+    currentStreak = 1;
+    for (let index = days.length - 1; index > 0; index -= 1) {
+      if (days[index - 1] !== days[index] - 1) break;
+      currentStreak += 1;
+    }
+  }
+  return { currentStreak, longestStreak };
+}
+
 export function mergeProfileProgressResult(current = {}, result = {}) {
   const next = {
     ...current,

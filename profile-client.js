@@ -1,6 +1,7 @@
 import {
   PROFILE_AVATARS,
   PROFILE_MARKETS,
+  calculateProfileStreak,
   getProfileAvatar,
   getNextProfileStreakStage,
   getProfileStreakStage,
@@ -265,11 +266,19 @@ export async function createProfileController({
   async function loadProfile(requestId = state.loadRequest) {
     const userId = state.session?.user?.id;
     if (!userId) return;
-    const [profileResult, progressResult, preferencesResult, watchlistResult] = await Promise.all([
+    const [
+      profileResult,
+      progressResult,
+      preferencesResult,
+      watchlistResult,
+      activityResult
+    ] = await Promise.all([
       state.client.from("profiles").select("user_id,nickname,avatar_key,updated_at").eq("user_id", userId).single(),
       state.client.from("profile_progress").select("xp,quiz_correct_count,active_days,last_active_on,updated_at").eq("user_id", userId).single(),
       state.client.from("profile_preferences").select("font_scale,high_contrast,desktop_layout,updated_at").eq("user_id", userId).single(),
-      state.client.from("watchlists").select("id,item_type,target_id,created_at").eq("user_id", userId).order("created_at")
+      state.client.from("watchlists").select("id,item_type,target_id,created_at").eq("user_id", userId).order("created_at"),
+      state.client.from("daily_activity").select("activity_date").eq("user_id", userId)
+        .order("activity_date", { ascending: false }).limit(1000)
     ]);
     if (requestId !== state.loadRequest) return;
     const firstError = [
@@ -283,6 +292,11 @@ export async function createProfileController({
     state.progress = progressResult.data;
     state.preferences = preferencesResult.data;
     state.watchlists = watchlistResult.data || [];
+    if (activityResult.error) {
+      console.error("[profile] initial streak lookup failed", activityResult.error);
+    } else {
+      applyActivityRows(activityResult.data);
+    }
     state.selectedAvatar = state.profile.avatar_key;
     const preferenceWarning = await reconcilePreferences();
     renderSignedIn();
@@ -453,17 +467,33 @@ export async function createProfileController({
   async function recordDailyActivity() {
     const result = await authenticatedPost("/api/profile-activity", {});
     if (!result) {
-      renderStreakFailure();
+      try {
+        await refreshActivityStreak();
+        setMessage(
+          elements.message,
+          "기존 연속 기록을 표시합니다. 오늘 기록 저장은 잠시 후 다시 시도해 주세요.",
+          "error"
+        );
+      } catch (error) {
+        console.error("[profile] streak recovery failed", error);
+        renderStreakFailure();
+      }
       return;
     }
     applyProgressResult(result);
     if (result.streakAvailable !== true) {
-      renderStreakFailure();
-      return;
+      try {
+        await refreshActivityStreak();
+      } catch (error) {
+        console.error("[profile] streak refresh failed", error);
+        renderStreakFailure();
+        return;
+      }
     }
     if (result.xpAwarded > 0) {
-      const streakText = result.currentStreak > 0
-        ? ` · ${result.currentStreak}일 연속`
+      const currentStreak = Math.max(0, Number(state.progress?.current_streak) || 0);
+      const streakText = currentStreak > 0
+        ? ` · ${currentStreak}일 연속`
         : "";
       setMessage(
         elements.message,
@@ -486,6 +516,30 @@ export async function createProfileController({
 
   function applyProgressResult(result) {
     state.progress = mergeProfileProgressResult(state.progress, result);
+    renderProgress();
+  }
+
+  function applyActivityRows(rows = []) {
+    const streak = calculateProfileStreak(rows.map((row) => row?.activity_date));
+    state.progress = {
+      ...state.progress,
+      current_streak: streak.currentStreak,
+      longest_streak: streak.longestStreak,
+      streak_available: true
+    };
+  }
+
+  async function refreshActivityStreak() {
+    const userId = state.session?.user?.id;
+    if (!userId) throw new Error("Profile session is unavailable");
+    const { data, error } = await state.client
+      .from("daily_activity")
+      .select("activity_date")
+      .eq("user_id", userId)
+      .order("activity_date", { ascending: false })
+      .limit(1000);
+    if (error) throw error;
+    applyActivityRows(data);
     renderProgress();
   }
 

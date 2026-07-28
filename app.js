@@ -2071,7 +2071,10 @@ function updateChapterHeight() {
     (pane) => pane.dataset.chapterPanel === state.activeChapter
   );
   if (!activePane || !elements.chapterWindow) return;
-  elements.chapterWindow.style.height = `${Math.ceil(activePane.getBoundingClientRect().height)}px`;
+  const layoutHeight = Math.max(activePane.offsetHeight, activePane.scrollHeight);
+  if (layoutHeight > 0) {
+    elements.chapterWindow.style.height = `${Math.ceil(layoutHeight)}px`;
+  }
 }
 
 function renderTabs(markets) {

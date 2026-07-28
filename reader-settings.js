@@ -50,6 +50,7 @@ export function applyReaderSettings(settings, root = globalThis.document?.docume
   if (!root) return normalized;
   const rootSize = (16 * normalized.fontScale) / 100;
   root.style?.setProperty?.("--reader-root-size", `${rootSize.toFixed(2)}px`);
+  root.style?.setProperty?.("--reader-page-scale", (normalized.fontScale / 100).toFixed(2));
   root.dataset.readerContrast = normalized.highContrast ? "strong" : "standard";
   root.dataset.readerScale = String(normalized.fontScale);
   root.dataset.readerLayout = normalized.desktopLayout ? "desktop" : "responsive";

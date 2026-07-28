@@ -1,6 +1,7 @@
 :root {
   color-scheme: light;
   --reader-root-size: 16.8px;
+  --reader-page-scale: 1.05;
   --bg: #f5f7f8;
   --panel: #ffffff;
   --ink: #172026;
@@ -14796,6 +14797,16 @@ h1 {
 /* Reader settings and utility drawer v99 */
 html {
   font-size: var(--reader-root-size, 16.8px);
+}
+
+@supports (zoom: 1) {
+  html {
+    font-size: 16px;
+  }
+
+  .app-shell {
+    zoom: var(--reader-page-scale, 1.05);
+  }
 }
 
 html[data-reader-contrast="strong"] {

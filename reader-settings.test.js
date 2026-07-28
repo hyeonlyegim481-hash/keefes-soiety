@@ -45,6 +45,7 @@ test("applies root font size and contrast without browser globals", () => {
   const applied = applyReaderSettings({ fontScale: 150, highContrast: true, desktopLayout: true }, root);
   assert.deepEqual(applied, { fontScale: 150, highContrast: true, desktopLayout: true });
   assert.equal(properties.get("--reader-root-size"), "24.00px");
+  assert.equal(properties.get("--reader-page-scale"), "1.50");
   assert.equal(root.dataset.readerContrast, "strong");
   assert.equal(root.dataset.readerScale, "150");
   assert.equal(root.dataset.readerLayout, "desktop");
@@ -68,6 +69,7 @@ test("switches the viewport between responsive and desktop layout modes", () => 
 test("settings UI allows 150 percent and keeps profile progress outside the drawer", async () => {
   const html = await readFile(new URL("./index.html", import.meta.url), "utf8");
   assert.match(html, /id="readerFontRange"[\s\S]*max="150"/);
+  assert.match(html, /id="readerFontTitle">사이트 크기/);
   assert.match(html, /id="profileGlance"/);
   assert.match(html, /id="mainProfileTier"/);
   assert.match(html, /id="mainProfileStreak"/);
@@ -77,6 +79,9 @@ test("settings UI allows 150 percent and keeps profile progress outside the draw
   assert.doesNotMatch(html, />빠른 이동</);
   const css = await readFile(new URL("./styles.css", import.meta.url), "utf8");
   assert.match(css, /min-width:\s*max\(288px, 18rem\)/);
+  assert.match(css, /\.app-shell\s*\{[\s\S]*?zoom:\s*var\(--reader-page-scale/);
   assert.doesNotMatch(css, /font-size:\s*clamp\([^;]*vw/);
   assert.doesNotMatch(css, /\.market-mini-card p \{[\s\S]*?-webkit-line-clamp:\s*3/);
+  const app = await readFile(new URL("./app.js", import.meta.url), "utf8");
+  assert.match(app, /Math\.max\(activePane\.offsetHeight, activePane\.scrollHeight\)/);
 });
