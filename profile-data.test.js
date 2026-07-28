@@ -5,6 +5,7 @@ import {
   PROFILE_AVATARS,
   PROFILE_MARKETS,
   PROFILE_STREAK_STAGES,
+  PROFILE_TIERS,
   calculateProfileStreak,
   getNextProfileStreakStage,
   getProfileStreakStage,
@@ -24,6 +25,17 @@ test("profile tiers use the agreed XP boundaries", () => {
   assert.equal(getProfileTier(3500).id, "platinum");
   assert.equal(getProfileTier(6000).id, "diamond");
   assert.equal(getProfileTier(10000).id, "master");
+});
+
+test("every profile tier has a unique optimized artwork asset", async () => {
+  assert.equal(new Set(PROFILE_TIERS.map((tier) => tier.image)).size, PROFILE_TIERS.length);
+  for (const tier of PROFILE_TIERS) {
+    assert.match(tier.image, /^\/assets\/tiers\/tier-[a-z]+\.webp$/);
+    const file = await readFile(new URL(`.${tier.image}`, import.meta.url));
+    assert.equal(file.subarray(0, 4).toString("ascii"), "RIFF");
+    assert.equal(file.subarray(8, 12).toString("ascii"), "WEBP");
+    assert.ok(file.length > 10_000);
+  }
 });
 
 test("tier progress remains bounded and reports the next threshold", () => {

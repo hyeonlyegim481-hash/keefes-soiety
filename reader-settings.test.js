@@ -72,6 +72,8 @@ test("settings UI allows 150 percent and keeps profile progress outside the draw
   assert.match(html, /id="readerFontTitle">사이트 크기/);
   assert.match(html, /id="profileGlance"/);
   assert.match(html, /id="mainProfileTier"/);
+  assert.match(html, /id="mainProfileTierImage"/);
+  assert.match(html, /id="profileTierImage"/);
   assert.match(html, /id="mainProfileStreak"/);
   assert.match(html, /id="mainProfileStreakImage"/);
   assert.match(html, /id="profileStreakVisual"/);

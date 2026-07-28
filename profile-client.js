@@ -110,11 +110,13 @@ export async function createProfileController({
     avatar: document.querySelector("#profileAvatarDisplay"),
     nickname: document.querySelector("#profileNicknameDisplay"),
     tier: document.querySelector("#profileTierBadge"),
+    tierImage: document.querySelector("#profileTierImage"),
     xpText: document.querySelector("#profileXpText"),
     xpBar: document.querySelector("#profileXpBar"),
     nextTier: document.querySelector("#profileNextTier"),
     mainGlance: document.querySelector("#profileGlance"),
     mainTier: document.querySelector("#mainProfileTier"),
+    mainTierImage: document.querySelector("#mainProfileTierImage"),
     mainStreak: document.querySelector("#mainProfileStreak"),
     mainStreakImage: document.querySelector("#mainProfileStreakImage"),
     streakSummary: document.querySelector("#profileStreakSummary"),
@@ -208,6 +210,15 @@ export async function createProfileController({
   };
 
   function bindEvents() {
+    [elements.tierImage, elements.mainTierImage].forEach((image) => {
+      image?.addEventListener("load", () => {
+        image.hidden = false;
+      });
+      image?.addEventListener("error", () => {
+        image.hidden = true;
+        console.error("[profile] tier artwork failed", image.getAttribute("src"));
+      });
+    });
     elements.loginButton?.addEventListener("click", async () => {
       setButtonBusy(elements.loginButton, true, "Google 연결 중...");
       setMessage(elements.message);
@@ -377,6 +388,16 @@ export async function createProfileController({
     elements.tier.textContent = tierProgress.current.label;
     elements.tier.style.setProperty("--tier-color", tierProgress.current.color);
     if (elements.mainTier) elements.mainTier.textContent = tierProgress.current.label;
+    [elements.tierImage, elements.mainTierImage].forEach((image) => {
+      if (!image) return;
+      image.style.setProperty("--tier-color", tierProgress.current.color);
+      if (image.getAttribute("src") !== tierProgress.current.image) {
+        image.hidden = true;
+        image.src = tierProgress.current.image;
+      } else if (image.complete && image.naturalWidth > 0) {
+        image.hidden = false;
+      }
+    });
     if (elements.mainGlance) {
       elements.mainGlance.style.setProperty("--tier-color", tierProgress.current.color);
     }

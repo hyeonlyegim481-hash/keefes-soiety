@@ -40,6 +40,15 @@
         <div class="top-actions">
           <button class="profile-glance" id="profileGlance" type="button" aria-label="프로필 설정 열기" hidden>
             <span>
+              <img
+                class="profile-glance-tier-icon"
+                id="mainProfileTierImage"
+                width="30"
+                height="30"
+                alt=""
+                aria-hidden="true"
+                hidden
+              />
               <small>티어</small>
               <strong id="mainProfileTier">아이언</strong>
             </span>
@@ -586,8 +595,19 @@
           </div>
           <div class="profile-signed-in" id="profileLoggedIn" hidden>
             <div class="profile-identity">
-              <span class="profile-avatar" id="profileAvatarDisplay" aria-hidden="true">↗</span>
-              <div>
+              <div class="profile-identity-visual">
+                <span class="profile-avatar" id="profileAvatarDisplay" aria-hidden="true">↗</span>
+                <img
+                  class="profile-tier-emblem"
+                  id="profileTierImage"
+                  width="42"
+                  height="42"
+                  alt=""
+                  aria-hidden="true"
+                  hidden
+                />
+              </div>
+              <div class="profile-identity-copy">
                 <strong id="profileNicknameDisplay">사용자</strong>
                 <span class="profile-tier-badge" id="profileTierBadge">아이언</span>
               </div>

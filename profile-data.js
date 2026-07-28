@@ -21,13 +21,13 @@ export const PROFILE_MARKETS = Object.freeze([
 ]);
 
 export const PROFILE_TIERS = Object.freeze([
-  { id: "iron", label: "아이언", minXp: 0, color: "#58656c" },
-  { id: "bronze", label: "브론즈", minXp: 300, color: "#9b5f32" },
-  { id: "silver", label: "실버", minXp: 800, color: "#71808a" },
-  { id: "gold", label: "골드", minXp: 1800, color: "#b47b12" },
-  { id: "platinum", label: "플래티넘", minXp: 3500, color: "#0b8478" },
-  { id: "diamond", label: "다이아", minXp: 6000, color: "#2563a8" },
-  { id: "master", label: "마스터", minXp: 10000, color: "#792f83" }
+  { id: "iron", label: "아이언", minXp: 0, color: "#58656c", image: "/assets/tiers/tier-iron.webp" },
+  { id: "bronze", label: "브론즈", minXp: 300, color: "#9b5f32", image: "/assets/tiers/tier-bronze.webp" },
+  { id: "silver", label: "실버", minXp: 800, color: "#71808a", image: "/assets/tiers/tier-silver.webp" },
+  { id: "gold", label: "골드", minXp: 1800, color: "#b47b12", image: "/assets/tiers/tier-gold.webp" },
+  { id: "platinum", label: "플래티넘", minXp: 3500, color: "#0b8478", image: "/assets/tiers/tier-platinum.webp" },
+  { id: "diamond", label: "다이아", minXp: 6000, color: "#2563a8", image: "/assets/tiers/tier-diamond.webp" },
+  { id: "master", label: "마스터", minXp: 10000, color: "#792f83", image: "/assets/tiers/tier-master.webp" }
 ]);
 
 export const PROFILE_STREAK_STAGES = Object.freeze([
