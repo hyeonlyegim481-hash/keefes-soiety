@@ -30,6 +30,19 @@ export const PROFILE_TIERS = Object.freeze([
   { id: "master", label: "마스터", minXp: 10000, color: "#792f83" }
 ]);
 
+export const PROFILE_STREAK_STAGES = Object.freeze([
+  { stage: 1, minDays: 1, label: "1일차", accent: "#425b66", image: "/assets/streak/streak-stage-01.png" },
+  { stage: 2, minDays: 3, label: "3일차", accent: "#8f4d20", image: "/assets/streak/streak-stage-02.png" },
+  { stage: 3, minDays: 5, label: "5일차", accent: "#c55c12", image: "/assets/streak/streak-stage-03.png" },
+  { stage: 4, minDays: 10, label: "10일차", accent: "#e96f05", image: "/assets/streak/streak-stage-04.png" },
+  { stage: 5, minDays: 30, label: "30일차", accent: "#f68000", image: "/assets/streak/streak-stage-05.png" },
+  { stage: 6, minDays: 50, label: "50일차", accent: "#fa8f00", image: "/assets/streak/streak-stage-06.png" },
+  { stage: 7, minDays: 100, label: "100일차", accent: "#ff9d08", image: "/assets/streak/streak-stage-07.png" },
+  { stage: 8, minDays: 250, label: "250일차", accent: "#ffad12", image: "/assets/streak/streak-stage-08.png" },
+  { stage: 9, minDays: 500, label: "500일차", accent: "#ffbe22", image: "/assets/streak/streak-stage-09.png" },
+  { stage: 10, minDays: 1000, label: "1,000일차", accent: "#ffd24a", image: "/assets/streak/streak-stage-10.png" }
+]);
+
 export function getProfileTier(xp = 0) {
   const safeXp = Math.max(0, Number.isFinite(Number(xp)) ? Number(xp) : 0);
   return [...PROFILE_TIERS].reverse().find((tier) => safeXp >= tier.minXp) || PROFILE_TIERS[0];
@@ -62,6 +75,18 @@ export function isValidProfileNickname(value) {
 
 export function getProfileAvatar(avatarKey) {
   return PROFILE_AVATARS.find((avatar) => avatar.id === avatarKey) || PROFILE_AVATARS[0];
+}
+
+export function getProfileStreakStage(days = 0) {
+  const safeDays = Math.max(0, Math.floor(Number(days) || 0));
+  return [...PROFILE_STREAK_STAGES]
+    .reverse()
+    .find((stage) => safeDays >= stage.minDays) || null;
+}
+
+export function getNextProfileStreakStage(days = 0) {
+  const safeDays = Math.max(0, Math.floor(Number(days) || 0));
+  return PROFILE_STREAK_STAGES.find((stage) => stage.minDays > safeDays) || null;
 }
 
 export function mergeProfileProgressResult(current = {}, result = {}) {

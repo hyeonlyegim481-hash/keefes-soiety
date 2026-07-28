@@ -17,7 +17,17 @@ const CORE_SHELL = [
   "/economic-graph.js",
   "/market-data.js",
   "/manifest.json",
-  "/assets/econest-icon.png"
+  "/assets/econest-icon.png",
+  "/assets/streak/streak-stage-01.png",
+  "/assets/streak/streak-stage-02.png",
+  "/assets/streak/streak-stage-03.png",
+  "/assets/streak/streak-stage-04.png",
+  "/assets/streak/streak-stage-05.png",
+  "/assets/streak/streak-stage-06.png",
+  "/assets/streak/streak-stage-07.png",
+  "/assets/streak/streak-stage-08.png",
+  "/assets/streak/streak-stage-09.png",
+  "/assets/streak/streak-stage-10.png"
 ];
 
 self.addEventListener("install", (event) => {

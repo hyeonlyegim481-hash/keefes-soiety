@@ -2,6 +2,8 @@ import {
   PROFILE_AVATARS,
   PROFILE_MARKETS,
   getProfileAvatar,
+  getNextProfileStreakStage,
+  getProfileStreakStage,
   getProfileTierProgress,
   isValidProfileNickname,
   mergeProfileProgressResult,
@@ -113,7 +115,12 @@ export async function createProfileController({
     mainGlance: document.querySelector("#profileGlance"),
     mainTier: document.querySelector("#mainProfileTier"),
     mainStreak: document.querySelector("#mainProfileStreak"),
+    mainStreakImage: document.querySelector("#mainProfileStreakImage"),
     streakSummary: document.querySelector("#profileStreakSummary"),
+    streakVisual: document.querySelector("#profileStreakVisual"),
+    streakImage: document.querySelector("#profileStreakImage"),
+    streakStageLabel: document.querySelector("#profileStreakStageLabel"),
+    streakNext: document.querySelector("#profileStreakNext"),
     currentStreak: document.querySelector("#profileCurrentStreak"),
     longestStreak: document.querySelector("#profileLongestStreak"),
     activeDays: document.querySelector("#profileActiveDays"),
@@ -378,16 +385,54 @@ export async function createProfileController({
     if (elements.mainStreak) {
       elements.mainStreak.textContent = hasStreak ? `${currentStreak}일` : "확인 중";
     }
+    const streakStage = hasStreak ? getProfileStreakStage(currentStreak) : null;
+    renderStreakVisual(streakStage, currentStreak);
     if (elements.streakSummary) {
-      elements.streakSummary.dataset.streakLevel = currentStreak >= 30
-        ? "30"
-        : currentStreak >= 7 ? "7" : currentStreak > 0 ? "1" : "0";
+      elements.streakSummary.dataset.streakLevel = streakStage
+        ? String(streakStage.stage)
+        : "0";
+      elements.streakSummary.style.setProperty(
+        "--streak-accent",
+        streakStage?.accent || "#66757e"
+      );
     }
     if (elements.mainGlance) {
       elements.mainGlance.dataset.tier = tierProgress.current.id;
-      elements.mainGlance.dataset.streakLevel = currentStreak >= 30
-        ? "30"
-        : currentStreak >= 7 ? "7" : currentStreak > 0 ? "1" : "0";
+      elements.mainGlance.dataset.streakLevel = streakStage
+        ? String(streakStage.stage)
+        : "0";
+      elements.mainGlance.style.setProperty(
+        "--streak-accent",
+        streakStage?.accent || "#66757e"
+      );
+    }
+  }
+
+  function renderStreakVisual(stage, currentStreak = 0) {
+    const showStage = Boolean(stage);
+    [elements.streakImage, elements.mainStreakImage].forEach((image) => {
+      if (!image) return;
+      image.hidden = !showStage;
+      if (showStage && image.getAttribute("src") !== stage.image) {
+        image.src = stage.image;
+      }
+    });
+    if (elements.streakVisual) {
+      elements.streakVisual.hidden = !showStage;
+      elements.streakVisual.style.setProperty(
+        "--streak-accent",
+        stage?.accent || "#66757e"
+      );
+    }
+    if (!showStage) return;
+    if (elements.streakStageLabel) {
+      elements.streakStageLabel.textContent = `${stage.label} 그래프`;
+    }
+    const nextStage = getNextProfileStreakStage(currentStreak);
+    if (elements.streakNext) {
+      elements.streakNext.textContent = nextStage
+        ? `다음 이미지까지 ${nextStage.minDays - currentStreak}일`
+        : "1,000일 최고 단계 달성";
     }
   }
 
@@ -397,6 +442,7 @@ export async function createProfileController({
     if (elements.mainStreak) elements.mainStreak.textContent = "확인 실패";
     if (elements.streakSummary) elements.streakSummary.dataset.streakLevel = "0";
     if (elements.mainGlance) elements.mainGlance.dataset.streakLevel = "0";
+    renderStreakVisual(null);
     setMessage(
       elements.message,
       "연속 접속 기록을 확인하지 못했습니다. 새로고침하면 다시 확인합니다.",

@@ -46,6 +46,15 @@
             <span>
               <small>연속</small>
               <strong id="mainProfileStreak">확인 중</strong>
+              <img
+                class="profile-glance-streak-icon"
+                id="mainProfileStreakImage"
+                width="30"
+                height="28"
+                alt=""
+                aria-hidden="true"
+                hidden
+              />
             </span>
           </button>
           <div class="connection-pill" id="connectionStatus">
@@ -591,6 +600,16 @@
             <div class="profile-xp-track" aria-hidden="true">
               <i id="profileXpBar"></i>
             </div>
+            <figure class="profile-streak-visual" id="profileStreakVisual" hidden>
+              <div class="profile-streak-art" aria-hidden="true">
+                <img id="profileStreakImage" width="320" height="300" alt="" />
+              </div>
+              <figcaption>
+                <span>연속 접속 단계</span>
+                <strong id="profileStreakStageLabel">1일차 그래프</strong>
+                <small id="profileStreakNext">다음 이미지까지 2일</small>
+              </figcaption>
+            </figure>
             <dl class="profile-streak-summary" id="profileStreakSummary" data-streak-level="0" aria-label="학습 연속 기록">
               <div>
                 <dt>현재 연속</dt>

@@ -1,8 +1,12 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import {
   PROFILE_AVATARS,
   PROFILE_MARKETS,
+  PROFILE_STREAK_STAGES,
+  getNextProfileStreakStage,
+  getProfileStreakStage,
   getProfileTier,
   getProfileTierProgress,
   isValidProfileNickname,
@@ -76,4 +80,28 @@ test("activity progress replaces streak fields when the response includes them",
   assert.equal(merged.current_streak, 5);
   assert.equal(merged.longest_streak, 7);
   assert.equal(merged.streak_available, true);
+});
+
+test("streak artwork changes at the ten agreed day thresholds", () => {
+  assert.deepEqual(
+    PROFILE_STREAK_STAGES.map((stage) => stage.minDays),
+    [1, 3, 5, 10, 30, 50, 100, 250, 500, 1000]
+  );
+  assert.equal(getProfileStreakStage(0), null);
+  assert.equal(getProfileStreakStage(1).stage, 1);
+  assert.equal(getProfileStreakStage(2).stage, 1);
+  assert.equal(getProfileStreakStage(3).stage, 2);
+  assert.equal(getProfileStreakStage(999).stage, 9);
+  assert.equal(getProfileStreakStage(1000).stage, 10);
+  assert.equal(getProfileStreakStage(5000).stage, 10);
+  assert.equal(getNextProfileStreakStage(1).minDays, 3);
+  assert.equal(getNextProfileStreakStage(1000), null);
+});
+
+test("every streak stage has a transparent PNG asset", async () => {
+  for (const stage of PROFILE_STREAK_STAGES) {
+    const file = await readFile(new URL(`.${stage.image}`, import.meta.url));
+    assert.deepEqual([...file.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);
+    assert.equal(file[25], 6);
+  }
 });
