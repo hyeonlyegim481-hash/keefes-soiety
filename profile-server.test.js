@@ -85,9 +85,13 @@ test("term quiz IDs are stable and invented questions cannot earn XP", () => {
     questionId: "term:국내총생산",
     selectedAnswer: "국민총소득"
   });
-  const generated = validateQuizSubmission({
+  const removedCombination = validateQuizSubmission({
     questionId: "term:보통예금 표시금리",
     selectedAnswer: "보통예금 표시금리"
+  });
+  const sourceOnly = validateQuizSubmission({
+    questionId: "term:가계부실위험지수(HDRI)",
+    selectedAnswer: "가계부실위험지수(HDRI)"
   });
   const invented = validateQuizSubmission({
     questionId: "term:없는용어",
@@ -95,7 +99,8 @@ test("term quiz IDs are stable and invented questions cannot earn XP", () => {
   });
   assert.equal(correct.correct, true);
   assert.equal(wrong.correct, false);
-  assert.equal(generated.correct, true);
+  assert.equal(removedCombination.valid, false);
+  assert.equal(sourceOnly.valid, false);
   assert.equal(invented.valid, false);
 });
 

@@ -1,4 +1,5 @@
 import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js";
+import { buildMarketDeepModel } from "./market-deep-analysis.js";
 import {
   buildSharedDataGraph,
   getGraphEntity,
@@ -60,8 +61,8 @@ let glossaryRenderFrame = 0;
 let glossaryStats = {
   coreCount: 0,
   advancedCount: 0,
-  standardCount: 0,
-  appliedCount: 0,
+  officialCount: 0,
+  editorialCount: 0,
   levelTerms: { all: [], core: [], advanced: [] },
   categoryCounts: { all: new Map(), core: new Map(), advanced: new Map() }
 };
@@ -997,7 +998,7 @@ function countGlossaryCategories(terms) {
 function buildGlossaryMetadata() {
   const core = glossaryTerms.filter((item) => item.level === "core");
   const advanced = glossaryTerms.filter((item) => item.level === "advanced");
-  const standardCount = glossaryTerms.filter((item) => item.kind === "standard").length;
+  const officialCount = glossaryTerms.filter((item) => item.sourceType === "bok-official").length;
 
   glossarySearchIndex = new Map(
     glossaryTerms.map((item) => [
@@ -1020,8 +1021,8 @@ function buildGlossaryMetadata() {
   glossaryStats = {
     coreCount: core.length,
     advancedCount: advanced.length,
-    standardCount,
-    appliedCount: glossaryTerms.length - standardCount,
+    officialCount,
+    editorialCount: glossaryTerms.length - officialCount,
     levelTerms: { all: glossaryTerms, core, advanced },
     categoryCounts: {
       all: countGlossaryCategories(glossaryTerms),
@@ -1041,7 +1042,7 @@ function loadGlossaryData() {
       special,
       coreExtra,
       expanded,
-      master
+      official
     ] = await Promise.all([
       importVersioned("./glossary-data.js", { attempt }),
       importVersioned("./glossary-extra-data.js", { attempt }),
@@ -1050,7 +1051,7 @@ function loadGlossaryData() {
       importVersioned("./glossary-special-data.js", { attempt }),
       importVersioned("./glossary-core-extra-data.js", { attempt }),
       importVersioned("./glossary-expanded-data.js", { attempt }),
-      importVersioned("./glossary-master-data.js", { attempt })
+      importVersioned("./glossary-official-data.js", { attempt })
     ]);
 
     glossaryCategoryOrder = [
@@ -1059,28 +1060,17 @@ function loadGlossaryData() {
       ...more.glossaryMoreCategories,
       ...pro.glossaryProCategories
     ];
-    const seedTerms = [
-      ...core.glossaryTerms,
-      ...coreExtra.glossaryCoreExtraTerms,
-      ...extra.glossaryExtraTerms,
-      ...more.glossaryMoreTerms,
-      ...pro.glossaryProTerms,
-      ...special.glossarySpecialTerms,
-      ...expanded.glossaryExpandedTerms
-    ];
-    const generated = master.buildMasterGlossary(seedTerms);
-    glossaryTerms = [
+    const curatedTerms = [
       ...core.glossaryTerms.map((item) => ({ ...item, level: "core", kind: "standard" })),
       ...coreExtra.glossaryCoreExtraTerms.map((item) => ({ ...item, level: "core", kind: "standard" })),
-      ...generated.core.map((item) => ({ ...item, level: "core", kind: "applied" })),
       ...extra.glossaryExtraTerms.map((item) => ({ ...item, level: "advanced", kind: "standard" })),
       ...more.glossaryMoreTerms.map((item) => ({ ...item, level: "advanced", kind: "standard" })),
       ...pro.glossaryProTerms.map((item) => ({ ...item, level: "advanced", kind: "standard" })),
       ...special.glossarySpecialTerms.map((item) => ({ ...item, level: "advanced", kind: "standard" })),
-      ...expanded.glossaryExpandedTerms.map((item) => ({ ...item, level: "advanced", kind: "standard" })),
-      ...generated.advanced.map((item) => ({ ...item, level: "advanced", kind: "applied" }))
+      ...expanded.glossaryExpandedTerms.map((item) => ({ ...item, level: "advanced", kind: "standard" }))
     ];
-    quizGlossaryTerms = [...glossaryTerms];
+    glossaryTerms = official.buildOfficialGlossary(curatedTerms);
+    quizGlossaryTerms = glossaryTerms.filter((item) => item.quizEligible !== false);
     glossaryTermsByCategory = quizGlossaryTerms.reduce((groups, item) => {
       const categoryTerms = groups.get(item.category) || [];
       categoryTerms.push(item);
@@ -1246,6 +1236,8 @@ function initPersonalDashboardOnce() {
       onOpenNewsAnalysis: (headline) => {
         openNewsAnalysisDialog(headline, state.snapshot?.analysis);
       },
+      onRequestLatestCompanies: (companyIds) =>
+        refreshSnapshot({ manual: true, companyIds }),
       updateHeight: updateChapterHeight
     });
   });
@@ -1496,7 +1488,7 @@ function setRefreshControlsBusy(isBusy, manual = false) {
   activeButton?.setAttribute("aria-busy", "true");
 }
 
-async function refreshSnapshot({ manual = false } = {}) {
+async function refreshSnapshot({ manual = false, companyIds = [] } = {}) {
   if (state.isRefreshing) return;
   state.isRefreshing = true;
   setRefreshControlsBusy(true, manual);
@@ -1517,7 +1509,7 @@ async function refreshSnapshot({ manual = false } = {}) {
         openUtilityDrawer();
         return;
       }
-      const result = await controller.requestFreshSnapshot();
+      const result = await controller.requestFreshSnapshot({ companyIds });
       if (!result?.ok) {
         updateManualRefreshButton(result?.data?.manualRefresh);
         const error = new Error(result?.data?.error || "즉시 갱신에 실패했습니다.");
@@ -2854,13 +2846,25 @@ function ensureMarketDeepAnalysis() {
 function renderAnalysis(snapshot, narrative = state.narrative) {
   const analysis = snapshot?.analysis || {};
   const { selected, read } = getSharedMarketAnalysis(snapshot?.markets || []);
-  const facts = narrative?.facts || [];
-  const inferences = narrative?.inferences || [];
-  const tensions = narrative?.tensions || [];
-  const limitations = narrative?.limitations || [];
   const verdictTone = getRiskTone(analysis);
   const statistics = analysis?.statisticalAnalysis || {};
   const selectedStatistics = statistics?.markets?.[selected?.id] || null;
+  const deepModel = buildMarketDeepModel({
+    selected,
+    markets: snapshot?.markets || [],
+    read,
+    statisticalAnalysis: statistics
+  });
+  const facts = deepModel.facts || [];
+  const inferences = deepModel.inferences || [];
+  const tensions = deepModel.counterSignals || [];
+  const limitations = [...new Set([
+    read?.caution,
+    ...(narrative?.limitations || [])
+  ].filter(Boolean))].slice(0, 4);
+  const relation = selected
+    ? state.sharedDataGraph?.relations?.markets?.[selected.id]
+    : null;
   const horizonCards = Object.values(selectedStatistics?.horizons || {}).map((item) => {
     const available = item.status === "available" && Number.isFinite(Number(item.value));
     return `
@@ -2877,60 +2881,193 @@ function renderAnalysis(snapshot, narrative = state.narrative) {
   }).join("");
 
   renderAnalysisBoard(analysis, narrative);
-  renderScenarioMatrix(analysis, narrative);
+  renderScenarioMatrix(analysis, narrative, deepModel);
 
   if (elements.marketDeepTitle) {
-    elements.marketDeepTitle.textContent = `${selected?.name || "선택 시장"}의 원인과 한국 영향`;
+    elements.marketDeepTitle.textContent =
+      `${selected?.name || "선택 시장"} 심층 판단과 검증`;
   }
+
   const marketBasis = selected?.asOf
-    ? marketTimeFormatter.format(new Date(selected.asOf))
+    ? formatMarketTimestamp(selected, selected.asOf)
     : "기준시각 없음";
+  const marketStatus = selected ? getMarketStatusLabel(selected) : "상태 확인 필요";
+  const marketDelay = selected ? getMarketDelayLabel(selected) : "지연 여부 미확인";
+  const instrumentLabel = selected
+    ? selected.instrumentLabel || getMarketInstrumentLabel(selected)
+    : "자료 구분 확인 필요";
+  const sourceUrl = safeNewsUrl(selected?.sourceUrl);
+  const sourceName = selected?.source || "원자료 확인 필요";
+  const sourceMarkup = sourceUrl === "#"
+    ? escapeHtml(sourceName)
+    : `<a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(sourceName)} 원문</a>`;
+  const confidenceScore = Number.isFinite(Number(statistics?.confidence?.score))
+    ? `${statistics.confidence.score}/100`
+    : "점수 자료 부족";
+  const qualityScore = Number.isFinite(Number(statistics?.dataQuality?.score))
+    ? `${statistics.dataQuality.score}/100`
+    : "점수 자료 부족";
+  const causeAssessment = deepModel.causeAssessment || {};
+  const causeEvidence = Array.isArray(causeAssessment.evidence)
+    ? causeAssessment.evidence.filter(Boolean).slice(0, 3)
+    : [];
+  const causeConfidence = Number.isFinite(Number(causeAssessment.confidenceScore))
+    ? `${causeAssessment.confidenceLabel || "자료 부족"} · ${causeAssessment.confidenceScore}/100`
+    : causeAssessment.confidenceLabel || "자료 부족";
 
   elements.analysisList.innerHTML = `
-    <li class="selected-market-deep" data-tone="${escapeHtml(read.tone || "neutral")}">
-      <header>
-        <div>
-          <span>선택 시장</span>
+    <li class="deep-command-center" data-tone="${escapeHtml(verdictTone)}">
+      <header class="deep-command-header">
+        <div class="deep-market-identity">
+          <span>선택 시장 심층 판단</span>
           <h3>${escapeHtml(selected?.name || "시장 자료 없음")}</h3>
-          <p>${escapeHtml(read.deepFocus || "선택 시장과 한국 경제의 연결")}</p>
+          <p>${escapeHtml(read?.deepFocus || "선택 시장과 한국 경제의 연결")}</p>
         </div>
-        <div class="selected-market-reading">
+        <div class="deep-market-reading">
           <strong>${selected ? escapeHtml(formatMarketValue(selected)) : "--"}</strong>
           <em>${selected ? escapeHtml(formatMarketChangePercent(selected)) : "등락률 없음"}</em>
-          <small>${escapeHtml(marketBasis)}</small>
+          <small>${escapeHtml(marketStatus)} · ${escapeHtml(marketBasis)}</small>
         </div>
       </header>
-      <div class="market-deep-route-grid">
-        <article>
-          <span>현재 움직임</span>
-          <p>${escapeHtml(read.movement)}</p>
-        </article>
-        <article>
-          <span>원인 → 시장 전달 경로</span>
-          <p>${escapeHtml(read.transmission)}</p>
-        </article>
-        <article>
-          <span>한국 경제 영향</span>
-          <p>${escapeHtml(read.koreaImpact)}</p>
-        </article>
+      <div class="deep-verdict-layout">
+        <section class="deep-main-thesis" data-cause-state="${escapeHtml(deepModel.direction || "unknown")}">
+          <div class="deep-thesis-heading">
+            <span>오늘 왜 움직였나</span>
+            <strong class="deep-estimate-badge">${escapeHtml(causeAssessment.statusLabel || "추정 분석 · 틀릴 수 있음")}</strong>
+          </div>
+          <h4>${escapeHtml(causeAssessment.title || "현재 움직임의 원인 가설")}</h4>
+          <p class="deep-cause-conclusion">${escapeHtml(causeAssessment.summary || deepModel.thesis)}</p>
+          <div class="deep-cause-evidence" aria-label="원인 추정에 사용한 근거">
+            <span><b>판단 확실도</b>${escapeHtml(causeConfidence)}</span>
+            ${causeEvidence.map((item, index) => `
+              <span><b>근거 ${index + 1}</b>${escapeHtml(item)}</span>
+            `).join("")}
+          </div>
+          <div class="deep-cause-alternative">
+            <span>다른 가능성</span>
+            <p>${escapeHtml(causeAssessment.alternative || deepModel.alternative || "추가 자료 확인 필요")}</p>
+          </div>
+          <aside class="deep-cause-warning">
+            <strong>주의</strong>
+            <p>${escapeHtml(causeAssessment.warning || "이 설명은 추정이며 실제 원인과 다를 수 있습니다.")}</p>
+          </aside>
+        </section>
+        <aside class="deep-score-rail" aria-label="심층 판단 상태">
+          <div>
+            <span>현재 경제 국면</span>
+            <strong>${escapeHtml(statistics.currentRegime || "판단 자료 부족")}</strong>
+            <small>같은 규칙이 3회 이어질 때만 국면을 확정합니다.</small>
+          </div>
+          <div>
+            <span>위험도</span>
+            <strong>${Number.isFinite(Number(statistics?.risk?.score)) ? `${statistics.risk.score}/100` : "판단 자료 부족"}</strong>
+            <small>발생확률이나 수익률 예측이 아닙니다.</small>
+          </div>
+          <div>
+            <span>분석 확실도</span>
+            <strong>${escapeHtml(statistics?.confidence?.label || "자료 부족")} · ${escapeHtml(confidenceScore)}</strong>
+            <small>자료 수와 시장 신호 일치율을 따로 계산합니다.</small>
+          </div>
+          <div>
+            <span>데이터 품질</span>
+            <strong>${escapeHtml(statistics?.dataQuality?.label || "자료 부족")} · ${escapeHtml(qualityScore)}</strong>
+            <small>${escapeHtml(marketDelay)}</small>
+          </div>
+        </aside>
       </div>
-      <div class="market-deep-checks">
-        <strong>앞으로 함께 확인할 지표</strong>
-        ${(read.watch || []).map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
+      <div class="deep-evidence-grid" aria-label="판단에 사용한 핵심 신호">
+        ${(deepModel.evidence || []).map((item) => `
+          <article class="deep-evidence-card" data-state="${escapeHtml(item.state || "neutral")}">
+            <span>${escapeHtml(item.label)}</span>
+            <strong>${escapeHtml(item.value)}</strong>
+            <p>${escapeHtml(item.detail)}</p>
+          </article>
+        `).join("")}
       </div>
-      <p class="market-deep-caution"><strong>단정하면 안 되는 점</strong> ${escapeHtml(read.caution)}</p>
+      <footer class="deep-source-line">
+        <strong>데이터 기준</strong>
+        <span>${escapeHtml(marketBasis)}</span>
+        <span>${escapeHtml(instrumentLabel)}</span>
+        <span>${escapeHtml(marketDelay)}</span>
+        <span>원자료 ${sourceMarkup}</span>
+      </footer>
     </li>
+
+    <li class="deep-hypothesis-panel">
+      <header class="deep-section-heading">
+        <div>
+          <span>판단 구조</span>
+          <h3>한 가지 설명에 고정되지 않고 반대 가설까지 검증</h3>
+        </div>
+        <p>가격의 동시 움직임은 인과관계의 증명이 아닙니다.</p>
+      </header>
+      <div class="deep-hypothesis-grid">
+        <article class="deep-hypothesis-card" data-kind="primary">
+          <span>01 · 주요 가설</span>
+          <strong>${escapeHtml(deepModel.thesis)}</strong>
+          <p>${escapeHtml(deepModel.trend?.detail || "기간 흐름을 추가로 확인합니다.")}</p>
+        </article>
+        <article class="deep-hypothesis-card" data-kind="alternative">
+          <span>02 · 대안 가설</span>
+          <strong>${escapeHtml(deepModel.alternative)}</strong>
+          <p>선택 시장만 보고 원인을 확정했을 때 생길 수 있는 오류를 줄이기 위한 설명입니다.</p>
+        </article>
+        <article class="deep-hypothesis-card" data-kind="invalidate">
+          <span>03 · 이 판단을 바꿀 조건</span>
+          <ul>
+            ${(deepModel.invalidation || []).slice(0, 4)
+              .map((item) => `<li>${escapeHtml(item)}</li>`)
+              .join("")}
+          </ul>
+        </article>
+      </div>
+    </li>
+
+    <li class="deep-transmission-panel">
+      <header class="deep-section-heading">
+        <div>
+          <span>전달 경로</span>
+          <h3>${escapeHtml(selected?.name || "시장")} 변화가 한국 경제까지 가는 순서</h3>
+        </div>
+        <p>각 단계가 실제 자료로 확인될 때만 다음 단계의 영향이 강해집니다.</p>
+      </header>
+      <ol class="deep-path-steps">
+        ${(deepModel.pathSteps || []).map((step, index) => `
+          <li>
+            <span>단계 ${index + 1}</span>
+            <strong>${escapeHtml(step)}</strong>
+          </li>
+        `).join("") || "<li><strong>전달 경로 자료 부족</strong></li>"}
+      </ol>
+      <div class="deep-impact-grid">
+        ${(deepModel.impactChannels || []).map((item) => `
+          <article class="deep-impact-card">
+            <span>한국 영향</span>
+            <strong>${escapeHtml(item.label)}</strong>
+            <p>${escapeHtml(item.text)}</p>
+            <em>${escapeHtml(item.check)}</em>
+          </article>
+        `).join("") || `
+          <article class="deep-impact-card">
+            <span>한국 영향</span>
+            <strong>자료 확인 필요</strong>
+            <p>${escapeHtml(read?.koreaImpact || "연결 자료를 확인할 수 없습니다.")}</p>
+          </article>
+        `}
+      </div>
+    </li>
+
     <li class="statistical-deep-panel">
       <header>
         <div>
-          <span>통계·규칙 분석</span>
-          <h3>${escapeHtml(statistics.currentRegime || "판단 자료 부족")}</h3>
-          <p>한 번의 움직임으로 국면을 확정하지 않고 같은 규칙이 3회 이어지는지 확인합니다.</p>
+          <span>기간별 검증</span>
+          <h3>${escapeHtml(deepModel.trend?.label || statistics.currentRegime || "판단 자료 부족")}</h3>
+          <p>당일 움직임을 5일·20일·3개월·1년 흐름과 비교하고, 없는 기간은 계산하지 않습니다.</p>
         </div>
         <div class="statistical-score-strip">
-          <span><small>위험도</small><strong>${Number.isFinite(Number(statistics?.risk?.score)) ? `${statistics.risk.score}/100` : "자료 부족"}</strong></span>
-          <span><small>분석 확실도</small><strong>${escapeHtml(statistics?.confidence?.label || "자료 부족")} ${Number.isFinite(Number(statistics?.confidence?.score)) ? statistics.confidence.score : ""}</strong></span>
-          <span><small>데이터 품질</small><strong>${escapeHtml(statistics?.dataQuality?.label || "자료 부족")} ${Number.isFinite(Number(statistics?.dataQuality?.score)) ? statistics.dataQuality.score : ""}</strong></span>
+          <span><small>표본 수</small><strong>${Number.isFinite(Number(selectedStatistics?.sampleSize)) ? `${selectedStatistics.sampleSize}개` : "자료 부족"}</strong></span>
+          <span><small>백분위</small><strong>${Number.isFinite(Number(selectedStatistics?.percentile)) ? `${selectedStatistics.percentile}%` : "자료 부족"}</strong></span>
+          <span><small>변동성</small><strong>${Number.isFinite(Number(selectedStatistics?.volatility)) ? `${selectedStatistics.volatility}%` : "자료 부족"}</strong></span>
         </div>
       </header>
       <div class="statistical-horizon-grid">
@@ -2938,24 +3075,15 @@ function renderAnalysis(snapshot, narrative = state.narrative) {
       </div>
       <footer>
         <p><strong>신호 일치율</strong> ${Number.isFinite(Number(statistics?.directionAgreement?.rate)) ? `${statistics.directionAgreement.rate}% · ${escapeHtml(statistics.directionAgreement.dominant)}` : "판단 자료 부족"}</p>
-        <p><strong>반대 신호</strong> ${(statistics?.directionAgreement?.counterSignals || []).length ? statistics.directionAgreement.counterSignals.map((id) => escapeHtml((snapshot?.markets || []).find((market) => market.id === id)?.name || id)).join(", ") : "뚜렷한 반대 신호 없음"}</p>
+        <p><strong>현재 해석</strong> ${escapeHtml(deepModel.trend?.detail || "기간 비교 자료 부족")}</p>
       </footer>
-    </li>
-    <li class="deep-thesis" data-tone="${verdictTone}">
-      <span>심층 결론</span>
-      <h3>${escapeHtml(narrative?.title || analysis.regime || "현재 시장을 교차 확인합니다.")}</h3>
-      <p>${escapeHtml(narrative?.meaning || analysis.pulse || "")}</p>
-      <div>
-        <strong>왜 중요한가</strong>
-        <em>${escapeHtml(narrative?.korea?.title || "한국에서는 환율과 수출의 전파 경로를 함께 봐야 합니다.")}</em>
-      </div>
     </li>
 
     <li class="evidence-separation">
       <div class="analysis-part-heading">
-        <p class="article-label">Evidence</p>
-        <h3>사실과 해석을 분리해서 보기</h3>
-        <span>왼쪽은 확인된 값, 오른쪽은 그 값에서 도출한 판단입니다.</span>
+        <p class="article-label">Evidence ledger</p>
+        <h3>${escapeHtml(selected?.name || "선택 시장")}의 사실과 해석을 분리</h3>
+        <span>확인된 값과 그 값에서 도출한 가설을 같은 줄에서 구분합니다.</span>
       </div>
       <div class="fact-inference-grid">
         <section class="fact-column">
@@ -2963,40 +3091,32 @@ function renderAnalysis(snapshot, narrative = state.narrative) {
             <span>01</span>
             <div>
               <strong>확인된 사실</strong>
-              <p>가격과 공식 발표에서 직접 읽을 수 있는 내용</p>
+              <p>가격·기간·교차 시장에서 직접 읽은 내용</p>
             </div>
           </header>
-          ${facts
-            .map(
-              (item) => `
-                <article>
-                  <span>${escapeHtml(item.label)}</span>
-                  <strong>${escapeHtml(item.value)}</strong>
-                  <p>${escapeHtml(item.note)}</p>
-                </article>
-              `
-            )
-            .join("")}
+          ${facts.map((item) => `
+            <article>
+              <span>${escapeHtml(item.label)}</span>
+              <strong>${escapeHtml(item.value)}</strong>
+              <p>${escapeHtml(item.note)}</p>
+            </article>
+          `).join("")}
         </section>
         <section class="inference-column">
           <header>
             <span>02</span>
             <div>
-              <strong>가능성이 높은 해석</strong>
-              <p>사실을 연결한 판단이며 확정된 원인은 아닙니다.</p>
+              <strong>근거 기반 해석</strong>
+              <p>확정된 원인이 아니라 검증 중인 가설</p>
             </div>
           </header>
-          ${inferences
-            .map(
-              (item) => `
-                <article>
-                  <span>${escapeHtml(item.label)} · 신뢰도 ${escapeHtml(item.confidence)}</span>
-                  <strong>${escapeHtml(item.title)}</strong>
-                  <p>근거: ${escapeHtml(item.basis)}</p>
-                </article>
-              `
-            )
-            .join("")}
+          ${inferences.map((item) => `
+            <article>
+              <span>${escapeHtml(item.label)} · 확실도 ${escapeHtml(item.confidence)}</span>
+              <strong>${escapeHtml(item.title)}</strong>
+              <p>근거: ${escapeHtml(item.basis)}</p>
+            </article>
+          `).join("")}
         </section>
       </div>
     </li>
@@ -3005,26 +3125,26 @@ function renderAnalysis(snapshot, narrative = state.narrative) {
       <div class="analysis-part-heading">
         <p class="article-label">Countercheck</p>
         <h3>현재 결론과 충돌하는 신호</h3>
-        <span>심층 분석은 맞는 근거뿐 아니라 틀릴 수 있는 근거도 함께 봅니다.</span>
+        <span>반대 자료가 나오면 기존 결론을 유지하지 않습니다.</span>
       </div>
       <div class="counter-evidence-list">
-        ${tensions
-          .map(
-            (item, index) => `
-              <article>
-                <span>반대 신호 ${index + 1}</span>
-                <p>${escapeHtml(item)}</p>
-              </article>
-            `
-          )
-          .join("")}
+        ${tensions.map((item, index) => `
+          <article>
+            <span>반대 신호 ${index + 1}</span>
+            <p>${escapeHtml(item)}</p>
+          </article>
+        `).join("")}
       </div>
+    </li>
+
+    <li class="deep-research-map">
+      ${renderMarketRelationMap(relation)}
     </li>
 
     <li class="analysis-limitations">
       <div>
         <span>분석의 한계</span>
-        <strong>여기까지는 말할 수 있고, 그 이상은 단정하지 않습니다.</strong>
+        <strong>자료가 말하는 범위까지만 판단합니다.</strong>
       </div>
       <ul>
         ${limitations.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
@@ -3032,75 +3152,95 @@ function renderAnalysis(snapshot, narrative = state.narrative) {
     </li>
   `;
 }
+
 function renderAnalysisBoard(analysis, narrative = state.narrative) {
+  const wasOpen = elements.analysisBoard.querySelector(".deep-methodology")?.open === true;
   if (
     getAvailableRiskScore(analysis) === null
     || narrative?.dataComplete === false
   ) {
     elements.analysisBoard.innerHTML = `
-      <section class="analysis-score-board is-unavailable">
-        <div class="board-heading">
-          <div>
-            <p class="section-kicker">계산 보류</p>
-            <h3>위험 온도는 필수 시장 자료가 모두 확인될 때만 계산합니다</h3>
+      <details class="deep-methodology"${wasOpen ? " open" : ""}>
+        <summary>
+          <span>계산 보류 이유 보기<small>불완전한 숫자로 위험 점수를 만들지 않습니다.</small></span>
+          <strong>판단 자료 부족</strong>
+        </summary>
+        <section class="analysis-score-board is-unavailable">
+          <div class="board-heading">
+            <div>
+              <p class="section-kicker">계산 보류</p>
+              <h3>위험 온도는 필수 시장 자료가 모두 확인될 때만 계산합니다</h3>
+            </div>
+            <span>판단 자료 부족</span>
           </div>
-          <span>판단 자료 부족</span>
-        </div>
-        <p class="analysis-unavailable-copy">${escapeHtml(
-          narrative?.plainSummary
-          || analysis?.pulse
-          || "현재값과 이전 종가의 기준을 확인하지 못했습니다."
-        )}</p>
-      </section>
+          <p class="analysis-unavailable-copy">${escapeHtml(
+            narrative?.plainSummary
+            || analysis?.pulse
+            || "현재값과 이전 종가의 기준을 확인하지 못했습니다."
+          )}</p>
+        </section>
+      </details>
     `;
     return;
   }
+
   const components = narrative?.riskComponents || [];
-  const actual = Number(analysis.riskScore || narrative?.riskScore || 0);
-  const rebuilt = Number(narrative?.rebuiltRisk || actual);
-  const adjustment = components.slice(1).reduce((sum, item) => sum + Number(item.points || 0), 0);
+  const actualValue = analysis?.riskScore ?? narrative?.riskScore;
+  const actual = Number(actualValue);
+  const rebuilt = Number(narrative?.rebuiltRisk ?? actual);
+  const basePoints = Number(components[0]?.points ?? 42);
+  const adjustment = components.slice(1)
+    .reduce((sum, item) => sum + Number(item.points || 0), 0);
 
   elements.analysisBoard.innerHTML = `
-    <section class="analysis-score-board">
-      <div class="board-heading">
-        <div>
-          <p class="section-kicker">계산을 공개하는 심층 분석</p>
-          <h3>위험 온도 ${actual}점은 이렇게 만들어졌습니다</h3>
+    <details class="deep-methodology"${wasOpen ? " open" : ""}>
+      <summary>
+        <span>
+          계산식·가중치 자세히 보기
+          <small>위험 온도의 입력값, 점수 조정, 검산 과정을 공개합니다.</small>
+        </span>
+        <strong>${actual}/100 · ${escapeHtml(narrative?.riskBand || analysis.regime || "")}</strong>
+      </summary>
+      <section class="analysis-score-board">
+        <div class="board-heading">
+          <div>
+            <p class="section-kicker">계산을 공개하는 심층 분석</p>
+            <h3>위험 온도 ${actual}점은 이렇게 만들어졌습니다</h3>
+          </div>
+          <span>설명 모델 · 수익률 예측 아님</span>
         </div>
-        <span>설명 모델 · 수익률 예측 아님</span>
-      </div>
-      <div class="risk-formula">
-        <div class="risk-formula-total" data-tone="${actual >= 66 ? "negative" : actual >= 45 ? "watch" : "positive"}">
-          <span>현재 위험 온도</span>
-          <strong>${actual}</strong>
-          <em>/100 · ${escapeHtml(narrative?.riskBand || analysis.regime || "")}</em>
-          <p>중립 출발점에 현재 시장 신호를 더하고 뺀 값입니다.</p>
+        <div class="risk-formula">
+          <div class="risk-formula-total" data-tone="${actual >= 66 ? "negative" : actual >= 45 ? "watch" : "positive"}">
+            <span>현재 위험 온도</span>
+            <strong>${actual}</strong>
+            <em>/100 · ${escapeHtml(narrative?.riskBand || analysis.regime || "")}</em>
+            <p>중립 출발점에 현재 시장 신호를 더하고 뺀 값입니다.</p>
+          </div>
+          <ol class="risk-component-list">
+            ${components.map((item, index) => `
+              <li>
+                <span>${index === 0 ? "출발" : `조정 ${index}`}</span>
+                <strong>${escapeHtml(item.label)}</strong>
+                <b class="${Number(item.points) > 0 ? "negative" : Number(item.points) < 0 ? "positive" : "neutral"}">${Number(item.points) > 0 ? "+" : ""}${item.points}점</b>
+                <p>${escapeHtml(item.reason)}</p>
+              </li>
+            `).join("")}
+          </ol>
         </div>
-        <ol class="risk-component-list">
-          ${components
-            .map(
-              (item, index) => `
-                <li>
-                  <span>${index === 0 ? "출발" : `조정 ${index}`}</span>
-                  <strong>${escapeHtml(item.label)}</strong>
-                  <b class="${Number(item.points) > 0 ? "negative" : Number(item.points) < 0 ? "positive" : "neutral"}">${Number(item.points) > 0 ? "+" : ""}${item.points}점</b>
-                  <p>${escapeHtml(item.reason)}</p>
-                </li>
-              `
-            )
-            .join("")}
-        </ol>
-      </div>
-      <footer class="risk-formula-check">
-        <span>검산</span>
-        <strong>기본 42점 ${adjustment >= 0 ? "+" : "-"} ${Math.abs(adjustment)}점 = ${rebuilt}점</strong>
-        <em>화면 표시값 ${actual}점${actual === rebuilt ? "과 일치" : "과 차이 있음"}</em>
-      </footer>
-    </section>
+        <footer class="risk-formula-check">
+          <span>검산</span>
+          <strong>기본 ${basePoints}점 ${adjustment >= 0 ? "+" : "-"} ${Math.abs(adjustment)}점 = ${rebuilt}점</strong>
+          <em>화면 표시값 ${actual}점${actual === rebuilt ? "과 일치" : "과 차이 있음"}</em>
+        </footer>
+      </section>
+    </details>
   `;
 }
-function renderScenarioMatrix(analysis, narrative = state.narrative) {
-  const scenarios = narrative?.scenarios || [];
+
+function renderScenarioMatrix(analysis, narrative = state.narrative, deepModel = null) {
+  const scenarios = deepModel?.scenarios?.length
+    ? deepModel.scenarios
+    : narrative?.scenarios || [];
   const toneById = { base: "watch", better: "positive", worse: "negative" };
 
   elements.scenarioMatrix.innerHTML = `
@@ -3108,35 +3248,31 @@ function renderScenarioMatrix(analysis, narrative = state.narrative) {
       <div class="board-heading">
         <div>
           <p class="section-kicker">조건이 바뀌면 결론도 바뀜</p>
-          <h3>기본·개선·악화 시나리오</h3>
+          <h3>기본·개선·위험 시나리오</h3>
         </div>
         <span>확률 대신 확인 조건</span>
       </div>
       <div class="scenario-condition-grid">
-        ${scenarios
-          .map(
-            (scenario) => `
-              <article data-tone="${toneById[scenario.id] || "neutral"}" data-current="${scenario.id === "base"}">
-                <header>
-                  <span>${escapeHtml(scenario.label)}</span>
-                  ${scenario.id === "base" ? "<em>현재 기본값</em>" : ""}
-                </header>
-                <h4>${escapeHtml(scenario.title)}</h4>
-                <div>
-                  <strong>이 조건이면</strong>
-                  <p>${escapeHtml(scenario.trigger)}</p>
-                </div>
-                <div>
-                  <strong>이렇게 해석</strong>
-                  <p>${escapeHtml(scenario.meaning)}</p>
-                </div>
-                <footer>
-                  ${(scenario.checks || []).map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
-                </footer>
-              </article>
-            `
-          )
-          .join("")}
+        ${scenarios.map((scenario) => `
+          <article data-tone="${toneById[scenario.id] || "neutral"}" data-current="${scenario.id === "base"}">
+            <header>
+              <span>${escapeHtml(scenario.label)}</span>
+              ${scenario.id === "base" ? "<em>현재 기본값</em>" : ""}
+            </header>
+            <h4>${escapeHtml(scenario.title)}</h4>
+            <div>
+              <strong>이 조건이면</strong>
+              <p>${escapeHtml(scenario.trigger)}</p>
+            </div>
+            <div>
+              <strong>이렇게 해석</strong>
+              <p>${escapeHtml(scenario.meaning)}</p>
+            </div>
+            <footer>
+              ${(scenario.checks || []).map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
+            </footer>
+          </article>
+        `).join("")}
       </div>
       <p class="data-caveat">세 시나리오는 발생 확률이 아닙니다. 어떤 데이터가 나오면 현재 판단을 유지하거나 바꿔야 하는지 보여주는 조건표입니다.</p>
     </section>
@@ -4548,7 +4684,7 @@ function renderGlossary() {
     )
   ];
   const levels = [
-    { id: "all", label: "통합", detail: "핵심 700·심화 1,300 전체" },
+    { id: "all", label: "통합", detail: "공식 출처·직접 작성 설명 전체" },
     { id: "core", label: "핵심", detail: "일상·은행·주식·거시 기본어" },
     { id: "advanced", label: "심화", detail: "채권·파생·정책·계량 확장어" }
   ];
@@ -4556,10 +4692,10 @@ function renderGlossary() {
   const {
     coreCount,
     advancedCount,
-    standardCount,
-    appliedCount
+    officialCount,
+    editorialCount
   } = glossaryStats;
-  elements.glossaryTotal.textContent = `전체 ${formatter.format(glossaryTerms.length)} · 표준 용어 ${formatter.format(standardCount)} · 응용 개념 ${formatter.format(appliedCount)}`;
+  elements.glossaryTotal.textContent = `전체 ${formatter.format(glossaryTerms.length)} · 공식 출처 확인 ${formatter.format(officialCount)} · 편집 설명 ${formatter.format(editorialCount)}`;
   elements.glossaryLevels.replaceChildren(
     ...levels.map((item) => {
       const count = item.id === "all"
@@ -4579,7 +4715,7 @@ function renderGlossary() {
   );
   elements.glossaryResultCount.innerHTML = `
     <strong>${formatter.format(filtered.length)}</strong>
-    <span>${query ? `"${escapeHtml(state.glossaryQuery.trim())}" 통합 검색 결과` : category === "전체" ? `${level === "all" ? "전체" : level === "core" ? "핵심" : "심화"} 용어·응용 개념` : category}</span>
+    <span>${query ? `"${escapeHtml(state.glossaryQuery.trim())}" 통합 검색 결과` : category === "전체" ? `${level === "all" ? "전체" : level === "core" ? "핵심" : "심화"} 경제·금융 용어` : category}</span>
   `;
 
   elements.glossaryCategories.replaceChildren(
@@ -4621,7 +4757,59 @@ function renderGlossary() {
 }
 
 function createGlossaryCard(item) {
-  const detail = getGlossaryDetail(item);
+  const detail = item.officialOnly ? null : getGlossaryDetail(item);
+  const provenanceLabel = item.sourceType === "bok-official" ? "공식 출처" : "직접 작성";
+  const sourceUrl = safeNewsUrl(item.sourceUrl);
+  const sourceMarkup = sourceUrl === "#"
+    ? `<span>${escapeHtml(item.sourceInstitution || "keefe's society 편집")}</span>`
+    : `<a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(item.sourceInstitution)} · ${escapeHtml(item.sourceTitle)} <span aria-hidden="true">↗</span></a>`;
+  const detailMarkup = item.officialOnly
+    ? `
+      <div class="glossary-card-body glossary-official-only">
+        <article>
+          <span>공식 수록 확인</span>
+          <p>이 항목은 한국은행 「경제금융용어 800선」의 표제어와 대조했습니다. 아직 사이트 자체 설명을 검수하지 않아 임의 해설이나 퀴즈는 만들지 않습니다.</p>
+        </article>
+        <div class="glossary-source-note">
+          <strong>원자료</strong>
+          ${sourceMarkup}
+          <small>발간일 ${escapeHtml(item.sourcePublishedAt || "확인 필요")}</small>
+        </div>
+      </div>
+    `
+    : `
+      <div class="glossary-card-body">
+        <article data-detail="plain">
+          <span>쉽게 풀면</span>
+          <p>${escapeHtml(detail.plain)}</p>
+        </article>
+        <article data-detail="importance">
+          <span>왜 중요한가</span>
+          <p>${escapeHtml(detail.why)}</p>
+        </article>
+        <article data-detail="example">
+          <span>실제 해석 예시</span>
+          <p>${escapeHtml(detail.example)}</p>
+        </article>
+        <article data-detail="reading">
+          <span>같이 보는 기준</span>
+          <p>${escapeHtml(detail.reading)}</p>
+        </article>
+        <article data-detail="caution">
+          <span>주의할 점</span>
+          <p>${escapeHtml(detail.caution)}</p>
+        </article>
+        <div class="glossary-related">
+          <strong>관련 용어</strong>
+          ${(item.related || []).map((term) => `<span>${escapeHtml(term)}</span>`).join("")}
+        </div>
+        <div class="glossary-source-note">
+          <strong>용어 기준</strong>
+          ${sourceMarkup}
+          ${item.sourcePublishedAt ? `<small>발간일 ${escapeHtml(item.sourcePublishedAt)}</small>` : ""}
+        </div>
+      </div>
+    `;
   const card = document.createElement("details");
   card.className = "glossary-card";
   card.innerHTML = `
@@ -4630,7 +4818,7 @@ function createGlossaryCard(item) {
         <span class="glossary-card-topline">
           <strong>${escapeHtml(item.term)}</strong>
           <em>${escapeHtml(item.english)}</em>
-          <b class="glossary-level-badge" data-level="${item.level}" data-kind="${item.kind}">${item.level === "core" ? "핵심" : "심화"} · ${item.kind === "applied" ? "응용 개념" : "표준 용어"}</b>
+          <b class="glossary-level-badge" data-level="${item.level}" data-kind="${item.sourceType}">${item.level === "core" ? "핵심" : "심화"} · ${provenanceLabel}</b>
         </span>
         <span class="glossary-card-definition">${escapeHtml(item.definition)}</span>
       </span>
@@ -4639,32 +4827,7 @@ function createGlossaryCard(item) {
         <i aria-hidden="true">+</i>
       </span>
     </summary>
-    <div class="glossary-card-body">
-      <article data-detail="plain">
-        <span>쉽게 풀면</span>
-        <p>${escapeHtml(detail.plain)}</p>
-      </article>
-      <article data-detail="importance">
-        <span>왜 중요한가</span>
-        <p>${escapeHtml(detail.why)}</p>
-      </article>
-      <article data-detail="example">
-        <span>실제 해석 예시</span>
-        <p>${escapeHtml(detail.example)}</p>
-      </article>
-      <article data-detail="reading">
-        <span>같이 보는 기준</span>
-        <p>${escapeHtml(detail.reading)}</p>
-      </article>
-      <article data-detail="caution">
-        <span>주의할 점</span>
-        <p>${escapeHtml(detail.caution)}</p>
-      </article>
-      <div class="glossary-related">
-        <strong>관련 용어</strong>
-        ${(item.related || []).map((term) => `<span>${escapeHtml(term)}</span>`).join("")}
-      </div>
-    </div>
+    ${detailMarkup}
   `;
   card.addEventListener("toggle", () => {
     if (!card.open || card.dataset.learningRecorded) return;

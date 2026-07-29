@@ -60,7 +60,7 @@ const AI_ON_DEMAND_ENABLED = false;
 
 let snapshotCache = null;
 let snapshotFetchPromise = null;
-let snapshotRefreshPromise = null;
+const snapshotRefreshPromises = new Map();
 let newsFeedCache = null;
 let newsFetchPromise = null;
 const marketCache = new Map();
@@ -105,6 +105,36 @@ const headlineFeeds = [
   { topic: "기후·에너지", section: "disasters-climate", query: "(폭염 OR 가뭄 OR 기후위기 OR 전력수요 OR 탄소배출권 OR 농산물 가격 OR 재생에너지) (경제 OR 기업 OR 공급망 OR 물가) when:5d" },
   { topic: "외환·채권", section: "fx-bonds", query: "(달러인덱스 OR 원달러 환율 OR 미국 국채금리 OR 한국 국채금리 OR 엔화 OR 위안화) (연준 OR 금리 OR 물가 OR 시장 OR 한국) when:5d" }
 ];
+
+const companyById = new Map(futureCompanies.map((company) => [company.id, company]));
+
+function sanitizeCompanyRefreshIds(value, limit = 6) {
+  if (!Array.isArray(value)) return [];
+  const validIds = [];
+  for (const rawId of value) {
+    const id = String(rawId || "").trim();
+    if (!id || !companyById.has(id) || validIds.includes(id)) continue;
+    validIds.push(id);
+    if (validIds.length >= limit) break;
+  }
+  return validIds;
+}
+
+function buildCompanyHeadlineFeeds(companyIds = []) {
+  return sanitizeCompanyRefreshIds(companyIds).map((companyId) => {
+    const company = companyById.get(companyId);
+    const searchTerms = [company.name, company.ticker]
+      .map((value) => String(value || "").replace(/["()]/g, " ").trim())
+      .filter(Boolean)
+      .map((value) => `"${value}"`);
+    return {
+      topic: `관심 기업 · ${company.name}`,
+      section: "industry",
+      companyId,
+      query: `(${searchTerms.join(" OR ")}) (실적 OR 매출 OR 영업이익 OR 투자 OR 수주 OR 가이던스 OR 주가 OR 규제) when:5d`
+    };
+  });
+}
 
 const newsSectionOrder = ["korea", "industry", "households", "politics", "security-disasters", "disasters-climate", "us", "china-asia", "japan-asia", "europe-global", "commodities-fx", "fx-bonds"];
 const newsSectionQuotas = {
@@ -171,6 +201,7 @@ const newsEntityPatterns = [
   ["us-location", /미국|뉴욕|워싱턴|캘리포니아|텍사스|하와이/i]
 ];
 const newsRelevancePatterns = [
+  /기업|실적|매출|영업이익|순이익|가이던스|수주|설비투자|earnings|revenue|profit/i,
   /경제|경기|성장률|국내총생산|GDP|침체|회복|소비|고용|실업|economy|growth|recession/i,
   /금리|기준금리|연준|한국은행|채권|국채|물가|인플레이션|Fed|rate|yield|inflation|CPI/i,
   /환율|원\/달러|원달러|원화|달러|엔화|위안|외환|currency|dollar|won|yen|yuan/i,
@@ -277,8 +308,10 @@ const server = http.createServer(async (req, res) => {
         return;
       }
       try {
+        const input = await readJsonBody(req);
+        const companyIds = sanitizeCompanyRefreshIds(input?.companyIds);
         const token = String(req.headers.authorization || "").replace(/^Bearer\s+/i, "");
-        const snapshot = await refreshSnapshotForUser(token);
+        const snapshot = await refreshSnapshotForUser(token, { companyIds });
         res.setHeader("Cache-Control", "private, no-store");
         sendJson(res, 200, snapshot);
       } catch (error) {
@@ -389,25 +422,33 @@ async function getSnapshot(options = {}) {
   if (!bypassCache && snapshotCache && now < snapshotCache.expiresAt) {
     return snapshotCache.payload;
   }
-  if (forceRefresh && snapshotRefreshPromise) return snapshotRefreshPromise;
+  const companyIds = sanitizeCompanyRefreshIds(options.companyIds);
+  const refreshKey = companyIds.length ? companyIds.join(",") : "general";
+  if (forceRefresh && snapshotRefreshPromises.has(refreshKey)) {
+    return snapshotRefreshPromises.get(refreshKey);
+  }
   if (!bypassCache && snapshotFetchPromise) return snapshotFetchPromise;
   const promise = buildSnapshot({
     ...options,
     forceNews,
     forceMacro,
+    companyIds,
     preferScheduledNews: forceRefresh ? false : options.preferScheduledNews
   });
-  if (forceRefresh) snapshotRefreshPromise = promise;
+  if (forceRefresh) snapshotRefreshPromises.set(refreshKey, promise);
   else if (!bypassCache) snapshotFetchPromise = promise;
   try {
     return await promise;
   } finally {
     if (snapshotFetchPromise === promise) snapshotFetchPromise = null;
-    if (snapshotRefreshPromise === promise) snapshotRefreshPromise = null;
+    if (snapshotRefreshPromises.get(refreshKey) === promise) {
+      snapshotRefreshPromises.delete(refreshKey);
+    }
   }
 }
 
 async function refreshSnapshotForUser(accessToken, {
+  companyIds = [],
   validateUser = validateSupabaseUser,
   consumeQuota = (userId) => callProfileRpc("consume_manual_refresh", {
     target_user: userId,
@@ -436,16 +477,19 @@ async function refreshSnapshotForUser(accessToken, {
     exhausted.quota = quota;
     throw exhausted;
   }
+  const requestedCompanyIds = sanitizeCompanyRefreshIds(companyIds);
   const snapshot = await loadSnapshot({
     forceRefresh: true,
     forceNews: true,
     forceMacro: true,
-    preferScheduledNews: false
+    preferScheduledNews: false,
+    ...(requestedCompanyIds.length ? { companyIds: requestedCompanyIds } : {})
   });
   return {
     ...snapshot,
     manualRefresh: {
       ...quota,
+      ...(requestedCompanyIds.length ? { companyIds: requestedCompanyIds } : {}),
       refreshedAt: snapshot.generatedAt || new Date().toISOString()
     }
   };
@@ -454,6 +498,7 @@ async function refreshSnapshotForUser(accessToken, {
 async function buildSnapshot({
   forceNews = false,
   forceMacro = false,
+  companyIds = [],
   preferScheduledNews = true,
   verifiedNewsFallback = null,
   allowLiveNews = true
@@ -464,6 +509,7 @@ async function buildSnapshot({
     getNewsBundle({
       now,
       force: forceNews,
+      companyIds,
       preferScheduled: preferScheduledNews,
       verifiedFallback: verifiedNewsFallback,
       allowLive: allowLiveNews
@@ -597,11 +643,13 @@ async function buildSnapshot({
     }
   };
 
-  snapshotCache = {
-    createdAt: now,
-    expiresAt: now + getSnapshotCacheTtl(markets),
-    payload
-  };
+  if (!companyIds.length) {
+    snapshotCache = {
+      createdAt: now,
+      expiresAt: now + getSnapshotCacheTtl(markets),
+      payload
+    };
+  }
   return payload;
 }
 
@@ -662,11 +710,13 @@ function filterHeadlinesByLookback(headlines, now = Date.now()) {
 async function getNewsBundle({
   now = Date.now(),
   force = false,
+  companyIds = [],
   preferScheduled = true,
   verifiedFallback = null,
   allowLive = true
 } = {}) {
-  if (preferScheduled) {
+  const requestedCompanyIds = sanitizeCompanyRefreshIds(companyIds);
+  if (preferScheduled && !requestedCompanyIds.length) {
     const scheduled = await readScheduledNewsCache();
     const scheduledHeadlines = filterHeadlinesByLookback(scheduled?.headlines, now);
     const scheduledAt = Date.parse(scheduled?.updatedAt);
@@ -695,7 +745,9 @@ async function getNewsBundle({
     }
   }
 
-  const fallbackHeadlines = filterHeadlinesByLookback(verifiedFallback?.headlines, now);
+  const fallbackHeadlines = requestedCompanyIds.length
+    ? []
+    : filterHeadlinesByLookback(verifiedFallback?.headlines, now);
   if (fallbackHeadlines.length) {
     return {
       rawHeadlines: fallbackHeadlines,
@@ -722,20 +774,30 @@ async function getNewsBundle({
     };
   }
 
-  if (!force && newsFeedCache && now - newsFeedCache.createdAt < NEWS_CACHE_TTL_MS) {
+  if (!requestedCompanyIds.length && !force && newsFeedCache && now - newsFeedCache.createdAt < NEWS_CACHE_TTL_MS) {
     return newsFeedCache.value;
   }
-  if (!force && newsFetchPromise) return newsFetchPromise;
-
+  if (!requestedCompanyIds.length && !force && newsFetchPromise) return newsFetchPromise;
+  const feeds = [...headlineFeeds, ...buildCompanyHeadlineFeeds(requestedCompanyIds)];
   const fetchPromise = (async () => {
-    const headlineResults = await Promise.allSettled(headlineFeeds.map(fetchHeadlines));
+    const headlineResults = await Promise.allSettled(feeds.map(fetchHeadlines));
     const rawHeadlines = headlineResults.flatMap((result) =>
       result.status === "fulfilled" ? result.value : []
     );
     const rankedHeadlines = rankAndDedupeHeadlines(rawHeadlines, now);
+    const selectedHeadlines = selectSectionedHeadlines(rankedHeadlines, NEWS_HEADLINE_LIMIT);
+    const targetedHeadlines = requestedCompanyIds.flatMap((companyId) =>
+      rankedHeadlines
+        .filter((headline) => headline.companyId === companyId || headline.companyIds?.includes(companyId))
+        .slice(0, 2)
+    );
+    const mergedHeadlines = [
+      ...targetedHeadlines,
+      ...selectedHeadlines.filter((headline) => !targetedHeadlines.includes(headline))
+    ].slice(0, NEWS_HEADLINE_LIMIT);
     const value = {
       rawHeadlines,
-      headlines: selectSectionedHeadlines(rankedHeadlines, NEWS_HEADLINE_LIMIT).map(
+      headlines: mergedHeadlines.map(
         (headline) => ({
           ...headline,
           analysisStatus:
@@ -749,7 +811,7 @@ async function getNewsBundle({
       sourceMode: "live",
       scheduledAnalysisCount: 0
     };
-    newsFeedCache = { createdAt: now, value };
+    if (!requestedCompanyIds.length) newsFeedCache = { createdAt: now, value };
     return value;
   })();
 
@@ -890,6 +952,7 @@ async function fetchHeadlines(feed) {
       id: hash(`${feed.topic}-${title}-${rawPublishedAt}`),
       topic: feed.topic,
       section: feed.section || "korea",
+      companyId: feed.companyId || null,
       title,
       source,
       url: decodeXml(readTag(item, "link")),
@@ -915,6 +978,14 @@ function rankAndDedupeHeadlines(items, now = Date.now()) {
       existing.relevanceScore = Math.max(existing.relevanceScore, candidate.relevanceScore);
       existing.hasPrimaryCorroboration =
         existing.hasPrimaryCorroboration || candidate.sourceTier === "primary";
+      existing.companyIds = [
+        ...new Set([
+          ...(existing.companyIds || []),
+          existing.companyId,
+          candidate.companyId
+        ].filter(Boolean))
+      ];
+      if (!existing.companyId && candidate.companyId) existing.companyId = candidate.companyId;
       continue;
     }
 
@@ -923,7 +994,8 @@ function rankAndDedupeHeadlines(items, now = Date.now()) {
       relatedSources: candidate.source ? [candidate.source] : [],
       relatedSourceCount: candidate.source ? 1 : 0,
       relatedHeadlineCount: 1,
-      hasPrimaryCorroboration: candidate.sourceTier === "primary"
+      hasPrimaryCorroboration: candidate.sourceTier === "primary",
+      companyIds: candidate.companyId ? [candidate.companyId] : []
     });
   }
 
@@ -2493,6 +2565,7 @@ export {
   buildAnalysis,
   buildArticleMarketContext,
   buildAutomatedNewsAnalysis,
+  buildCompanyHeadlineFeeds,
   consumeNewsAnalysisQuota,
   enhanceNewsAnalysisWithAi,
   enhanceNewsBatchWithAi,
@@ -2514,6 +2587,7 @@ export {
   resolveMarketPoint,
   resolveMarketStatus,
   resolvePreviousClose,
+  sanitizeCompanyRefreshIds,
   selectDiverseHeadlines,
   selectSectionedHeadlines
 };

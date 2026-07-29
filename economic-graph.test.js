@@ -19,7 +19,7 @@ import { glossaryCoreExtraTerms } from "./glossary-core-extra-data.js";
 import { glossaryExpandedTerms } from "./glossary-expanded-data.js";
 import { glossaryExtraTerms } from "./glossary-extra-data.js";
 import { glossaryTerms } from "./glossary-data.js";
-import { buildMasterGlossary } from "./glossary-master-data.js";
+import { buildOfficialGlossary } from "./glossary-official-data.js";
 import { glossaryMoreTerms } from "./glossary-more-data.js";
 import { glossaryProTerms } from "./glossary-pro-data.js";
 import { glossarySpecialTerms } from "./glossary-special-data.js";
@@ -52,12 +52,7 @@ const glossarySeed = [
   ...glossarySpecialTerms,
   ...glossaryExpandedTerms
 ];
-const generatedGlossary = buildMasterGlossary(glossarySeed);
-const allGlossaryTerms = [
-  ...glossarySeed,
-  ...generatedGlossary.core,
-  ...generatedGlossary.advanced
-];
+const allGlossaryTerms = buildOfficialGlossary(glossarySeed);
 const headlines = [
   {
     id: "same-event",
@@ -111,8 +106,8 @@ test("entity IDs are stable across chapters and entity types", () => {
   assert.equal(termEntityId("실질금리"), "term:실질금리");
 });
 
-test("all 2,000 glossary terms receive collision-free IDs", () => {
-  assert.equal(allGlossaryTerms.length, 2000);
+test("all sourced glossary terms receive collision-free IDs", () => {
+  assert.equal(allGlossaryTerms.length, 1_298);
   const ids = allGlossaryTerms.map((item) => termEntityId(item.term));
   assert.equal(new Set(ids).size, ids.length);
 });

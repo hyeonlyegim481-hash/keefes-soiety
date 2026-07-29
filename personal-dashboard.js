@@ -436,7 +436,16 @@ function renderCompanies(watchlists, snapshot) {
       );
   return `
     <section class="personal-dashboard-section personal-companies">
-      ${renderSectionHeading("COMPANY DESK", "관심 기업 주요 뉴스와 실적", "기사 제목은 최근 뉴스와 직접 일치할 때만 연결하며, 실적은 회사가 공표한 기준을 표시합니다.")}
+      ${renderSectionHeading(
+        "COMPANY DESK",
+        "관심 기업 주요 뉴스와 실적",
+        snapshot?.manualRefresh?.companyIds?.length
+          ? `관심 기업 ${snapshot.manualRefresh.companyIds.length}개의 최근 뉴스 요청을 ${timeFormatter.format(new Date(snapshot.manualRefresh.refreshedAt))}에 완료했습니다. 실적은 회사 공표 기준입니다.`
+          : "기업별 최근 뉴스와 시장 원자료를 다시 수집할 수 있으며, 실적은 회사가 공표한 기준을 유지합니다.",
+        companies.length
+          ? '<button class="personal-company-refresh" type="button" data-dashboard-company-refresh><strong>관심 기업 최신 요청</strong><small>최근 뉴스·시장 재수집 · 최대 6개 · 하루 3회</small></button>'
+          : ""
+      )}
       ${content}
     </section>
   `;
@@ -663,6 +672,7 @@ export function initPersonalDashboard({
   onSignIn = () => {},
   onNavigate = () => {},
   onOpenNewsAnalysis = () => {},
+  onRequestLatestCompanies = async () => ({ ok: false }),
   updateHeight = () => {}
 } = {}) {
   if (!root) return { updateSnapshot() {}, destroy() {} };
@@ -706,6 +716,23 @@ export function initPersonalDashboard({
     }
     if (event.target.closest?.("[data-dashboard-retry]")) {
       await profile?.loadDashboardData?.({ force: true });
+      return;
+    }
+    const companyRefreshButton = event.target.closest?.("[data-dashboard-company-refresh]");
+    if (companyRefreshButton) {
+      const companyIds = (profileState.watchlists || [])
+        .filter((row) => row.item_type === "company")
+        .map((row) => row.target_id);
+      companyRefreshButton.disabled = true;
+      companyRefreshButton.setAttribute("aria-busy", "true");
+      try {
+        await onRequestLatestCompanies(companyIds);
+      } finally {
+        if (companyRefreshButton.isConnected) {
+          companyRefreshButton.disabled = false;
+          companyRefreshButton.removeAttribute("aria-busy");
+        }
+      }
       return;
     }
     const marketButton = event.target.closest?.("[data-dashboard-market]");

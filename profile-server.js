@@ -11,7 +11,7 @@ import { glossaryMoreTerms } from "./glossary-more-data.js";
 import { glossaryProTerms } from "./glossary-pro-data.js";
 import { glossarySpecialTerms } from "./glossary-special-data.js";
 import { glossaryExpandedTerms } from "./glossary-expanded-data.js";
-import { buildMasterGlossary } from "./glossary-master-data.js";
+import { buildOfficialGlossary } from "./glossary-official-data.js";
 
 const SUPABASE_REQUEST_TIMEOUT_MS = 8_000;
 const scenarioById = new Map(
@@ -36,13 +36,11 @@ const glossarySeedTerms = [
   ...glossarySpecialTerms,
   ...glossaryExpandedTerms
 ];
-const generatedGlossaryTerms = buildMasterGlossary(glossarySeedTerms);
+const officialGlossaryTerms = buildOfficialGlossary(glossarySeedTerms);
 const glossaryTermSet = new Set(
-  [
-    ...glossarySeedTerms,
-    ...generatedGlossaryTerms.core,
-    ...generatedGlossaryTerms.advanced
-  ].map((item) => item.term)
+  officialGlossaryTerms
+    .filter((item) => item.quizEligible !== false)
+    .map((item) => item.term)
 );
 
 export function getSupabaseEnvironment(env = process.env) {

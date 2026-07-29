@@ -837,7 +837,7 @@ export async function createProfileController({
     return { ok: true, saved: true };
   }
 
-  async function requestFreshSnapshot() {
+  async function requestFreshSnapshot({ companyIds = [] } = {}) {
     const accessToken = state.session?.access_token;
     if (!accessToken) {
       return {
@@ -851,8 +851,10 @@ export async function createProfileController({
         method: "POST",
         headers: {
           accept: "application/json",
+          "content-type": "application/json",
           authorization: `Bearer ${accessToken}`
         },
+        body: JSON.stringify({ companyIds }),
         cache: "no-store",
         signal: AbortSignal.timeout(28_000)
       });

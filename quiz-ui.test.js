@@ -14,9 +14,9 @@ test("quiz UI exposes the scoring rules only when opened", async () => {
   assert.match(html, /<strong>최저 XP<\/strong><b>0 XP<\/b>/);
 });
 
-test("quiz UI loads every glossary term and the new scenario and history banks", async () => {
+test("quiz UI uses only reviewed glossary explanations and loads scenario and history banks", async () => {
   const source = await readFile(appUrl, "utf8");
-  assert.match(source, /quizGlossaryTerms = \[\.\.\.glossaryTerms\]/);
+  assert.match(source, /quizGlossaryTerms = glossaryTerms\.filter\(\(item\) => item\.quizEligible !== false\)/);
   assert.match(source, /quiz-scenario-validation-data\.js/);
   assert.match(source, /quiz-history-data\.js/);
   assert.match(source, /id: "history", label: "경제 역사"/);

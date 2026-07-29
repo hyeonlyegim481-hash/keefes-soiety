@@ -4468,6 +4468,49 @@ main {
   font-weight: 720;
 }
 
+.glossary-source-note {
+  display: flex;
+  grid-column: 1 / -1;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px 10px;
+  padding: 10px 11px;
+  border: 1px solid rgba(15, 118, 110, 0.18);
+  background: #f7fbfa;
+}
+
+.glossary-source-note strong,
+.glossary-source-note small {
+  color: #52616b;
+  font-size: 0.68rem;
+  font-weight: 780;
+}
+
+.glossary-source-note a,
+.glossary-source-note > span {
+  min-width: 0;
+  color: #0f766e;
+  font-size: 0.74rem;
+  font-weight: 820;
+  overflow-wrap: anywhere;
+}
+
+.glossary-official-only {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.glossary-official-only article {
+  border-left-color: #2563eb;
+  background: #f4f7fc;
+}
+
+.glossary-level-badge[data-kind="editorial"] {
+  border-color: rgba(71, 85, 105, 0.26);
+  background: #f3f5f7;
+  color: #475569;
+}
+
 .glossary-more-row {
   display: flex;
   justify-content: center;

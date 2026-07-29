@@ -212,3 +212,19 @@ test("news detail summary exposes a clear three-step analysis hierarchy", () => 
   assert.match(css, /\.news-analysis-chapter-heading/);
   assert.match(css, /\.news-analysis-outline/);
 });
+
+test("news save cancellation restores a neutral button without a yellow glow", () => {
+  const css = fs.readFileSync(new URL("./news-system.css", import.meta.url), "utf8");
+  const app = fs.readFileSync(new URL("./app.js", import.meta.url), "utf8");
+  const unsavedStart = css.indexOf('#news .news-save-button[data-saved="false"]');
+  const savedStart = css.indexOf('#news .news-save-button[data-saved="true"]', unsavedStart);
+  const unsavedRules = css.slice(unsavedStart, savedStart);
+
+  assert.ok(unsavedStart >= 0);
+  assert.ok(savedStart > unsavedStart);
+  assert.match(unsavedRules, /background:\s*#ffffff/);
+  assert.match(unsavedRules, /background:\s*#f1f8f7/);
+  assert.match(unsavedRules, /box-shadow:\s*none/);
+  assert.doesNotMatch(unsavedRules, /#fff9ec|#d3a13f|#a57728/);
+  assert.match(app, /button\.dataset\.saved = String\(saved\)/);
+});
