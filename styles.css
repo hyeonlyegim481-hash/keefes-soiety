@@ -15981,43 +15981,87 @@ html[data-reader-layout="desktop"] .chart-canvas-wrap {
     width: 72px;
   }
 }
-/* v121: separate cached refresh and limited live refresh */
-.latest-refresh-button {
+/* v124: distinguish cached screen refresh from limited source refresh */
+.refresh-cluster {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  align-items: stretch;
+  gap: 7px;
+}
+
+.refresh-option-button {
   position: relative;
   display: inline-flex;
-  min-height: 38px;
+  min-width: 0;
+  min-height: 46px;
   align-items: center;
   justify-content: center;
-  gap: 7px;
-  overflow: visible;
-  padding: 8px 13px;
-  border: 1px solid #087b6d;
-  border-radius: 8px;
+  gap: 8px;
+  padding: 7px 11px;
+  border: 1px solid #aebbc2;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #20313a;
+  white-space: nowrap;
+  box-shadow: 0 8px 20px rgba(20, 33, 41, 0.08);
+  transition: background-color 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.refresh-option-button:hover {
+  border-color: #78948f;
+  background: #f4f8f7;
+  transform: translateY(-1px);
+}
+
+.refresh-option-button:focus-visible,
+.refresh-help summary:focus-visible {
+  outline: 3px solid rgba(8, 123, 109, 0.2);
+  outline-offset: 2px;
+}
+
+.refresh-option-icon {
+  display: inline-block;
+  flex: 0 0 auto;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.refresh-option-copy {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+  text-align: left;
+}
+
+.refresh-option-copy strong {
+  color: inherit;
+  font-size: 0.74rem;
+  font-weight: 880;
+  line-height: 1.1;
+}
+
+.refresh-option-copy small {
+  color: #64757d;
+  font-size: 0.59rem;
+  font-weight: 720;
+  line-height: 1.15;
+}
+
+.latest-refresh-button {
+  border-color: #087b6d;
   background: #087b6d;
   color: #ffffff;
-  font-size: 0.78rem;
-  font-weight: 850;
-  line-height: 1;
-  white-space: nowrap;
   box-shadow: 0 8px 20px rgba(8, 123, 109, 0.18);
-  transition: background-color 180ms ease, border-color 180ms ease, transform 180ms ease;
 }
 
 .latest-refresh-button:hover {
   border-color: #06695e;
   background: #06695e;
-  transform: translateY(-1px);
 }
 
-.latest-refresh-button:focus-visible {
-  outline: 3px solid rgba(8, 123, 109, 0.24);
-  outline-offset: 2px;
-}
-
-.latest-refresh-icon {
-  display: inline-block;
-  font-size: 0.96rem;
-  line-height: 1;
+.latest-refresh-button .refresh-option-copy small {
+  color: #d8efeb;
 }
 
 .latest-refresh-label-short {
@@ -16047,40 +16091,196 @@ html[data-reader-layout="desktop"] .chart-canvas-wrap {
   background: #697981;
 }
 
+.refresh-help {
+  position: relative;
+  min-width: 36px;
+}
+
+.refresh-help summary {
+  display: grid;
+  width: 36px;
+  min-height: 46px;
+  height: 100%;
+  place-items: center;
+  border: 1px solid #aebbc2;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #40515a;
+  cursor: pointer;
+  list-style: none;
+  box-shadow: 0 8px 20px rgba(20, 33, 41, 0.08);
+}
+
+.refresh-help summary::-webkit-details-marker {
+  display: none;
+}
+
+.refresh-help summary > span {
+  display: grid;
+  width: 19px;
+  height: 19px;
+  place-items: center;
+  border: 1px solid #70828a;
+  border-radius: 50%;
+  font-family: Georgia, serif;
+  font-size: 0.72rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.refresh-help[open] summary {
+  border-color: #087b6d;
+  background: #edf8f6;
+  color: #087b6d;
+}
+
+.refresh-help-panel {
+  position: absolute;
+  z-index: 80;
+  top: calc(100% + 9px);
+  right: 0;
+  display: grid;
+  width: min(350px, calc(100vw - 28px));
+  gap: 11px;
+  padding: 16px;
+  border: 1px solid #aebbc2;
+  border-top: 3px solid #087b6d;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #25353d;
+  text-align: left;
+  box-shadow: 0 18px 46px rgba(20, 33, 41, 0.2);
+}
+
+.refresh-help-panel > strong {
+  font-size: 0.86rem;
+}
+
+.refresh-help-panel dl {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  border-top: 1px solid #d9e1e4;
+}
+
+.refresh-help-panel dl > div {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #d9e1e4;
+}
+
+.refresh-help-panel dt {
+  color: #087b6d;
+  font-size: 0.7rem;
+  font-weight: 880;
+}
+
+.refresh-help-panel dd {
+  margin: 0;
+  color: #45555d;
+  font-size: 0.69rem;
+  font-weight: 660;
+  line-height: 1.5;
+  word-break: keep-all;
+}
+
+.refresh-help-panel > small {
+  color: #6c551f;
+  font-size: 0.64rem;
+  font-weight: 720;
+  line-height: 1.45;
+  word-break: keep-all;
+}
+
 #refreshButton:disabled,
 #latestRefreshButton:disabled {
   cursor: wait;
   opacity: 0.68;
 }
 
-#refreshButton[aria-busy="true"] span,
-#latestRefreshButton[aria-busy="true"] .latest-refresh-icon {
+#refreshButton[aria-busy="true"] .refresh-option-icon,
+#latestRefreshButton[aria-busy="true"] .refresh-option-icon {
   animation: refresh-turn 900ms linear infinite;
 }
 
-.top-actions:has(.connection-pill[data-state="loading"])
-  #refreshButton:not([aria-busy="true"]) span {
-  animation: none;
+@media (max-width: 1180px) {
+  .refresh-option-button,
+  .refresh-help summary {
+    min-height: 40px;
+  }
+
+  .refresh-option-copy small {
+    display: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .top-actions {
+    max-width: 100%;
+  }
 }
 
 @media (max-width: 560px) {
   .top-actions {
+    width: 100%;
     flex-wrap: wrap;
+    justify-content: flex-end;
     gap: 8px;
+  }
+
+  .refresh-cluster {
+    width: 100%;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.15fr) 38px;
+    display: grid;
+  }
+
+  .refresh-option-button,
+  .refresh-help summary {
+    min-height: 50px;
+  }
+
+  .refresh-option-button {
+    width: 100%;
+    padding-inline: 9px;
+  }
+
+  .refresh-option-copy small {
+    display: block;
+    overflow: hidden;
+    max-width: 100%;
+    text-overflow: ellipsis;
+  }
+
+  .refresh-help-panel {
+    right: 0;
   }
 }
 
 @media (max-width: 420px) {
-  .latest-refresh-button {
-    gap: 5px;
-    padding-inline: 10px;
-  }
-
   .latest-refresh-label-long {
     display: none;
   }
 
   .latest-refresh-label-short {
     display: inline;
+  }
+
+  .refresh-option-button {
+    gap: 6px;
+    padding-inline: 7px;
+  }
+
+  .refresh-option-copy strong {
+    font-size: 0.7rem;
+  }
+
+  .refresh-option-copy small {
+    font-size: 0.54rem;
+  }
+
+  .refresh-help-panel dl > div {
+    grid-template-columns: 82px minmax(0, 1fr);
   }
 }

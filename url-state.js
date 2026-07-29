@@ -86,7 +86,7 @@ export const URL_STATE_VALUES = Object.freeze({
   ]),
   indicatorView: Object.freeze(["explorer", "compare"]),
   study: Object.freeze(["today", "connections", "lab", "history"]),
-  future: Object.freeze(["industries", "outlook"]),
+  future: Object.freeze(["industries", "climate", "outlook"]),
   industry: Object.freeze([
     "ai-chips",
     "ai-platforms",

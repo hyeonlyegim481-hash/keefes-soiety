@@ -70,13 +70,53 @@
             <span class="status-dot"></span>
             <span>연결 중</span>
           </div>
-          <button class="icon-button" id="refreshButton" type="button" aria-label="일반 새로고침" title="현재 저장된 자료 다시 불러오기">
-            <span aria-hidden="true">↻</span>
-          </button>
-          <button class="latest-refresh-button" id="latestRefreshButton" type="button" aria-label="최신 자료 즉시 확인" title="로그인 사용자 기준 하루 3회 최신 자료를 즉시 확인">
-            <span class="latest-refresh-icon" aria-hidden="true">↻</span>
-            <span class="latest-refresh-label"><span class="latest-refresh-label-long">최신 자료</span><span class="latest-refresh-label-short">최신</span></span>
-          </button>
+          <div class="refresh-cluster" aria-label="자료 새로고침">
+            <button
+              class="refresh-option-button cached-refresh-button"
+              id="refreshButton"
+              type="button"
+              aria-label="화면 갱신, 서버에 저장된 자료 다시 읽기"
+              title="서버에 이미 저장된 자료를 다시 불러옵니다. 횟수 제한이 없습니다."
+            >
+              <span class="refresh-option-icon" aria-hidden="true">↻</span>
+              <span class="refresh-option-copy">
+                <strong>화면 갱신</strong>
+                <small>저장 자료 다시 읽기</small>
+              </span>
+            </button>
+            <button
+              class="refresh-option-button latest-refresh-button"
+              id="latestRefreshButton"
+              type="button"
+              aria-label="최신 자료 요청, 로그인 사용자 기준 하루 3회 원자료 재수집"
+              title="로그인 사용자 기준 하루 3회 원자료 수집을 즉시 다시 시도합니다."
+            >
+              <span class="refresh-option-icon latest-refresh-icon" aria-hidden="true">↻</span>
+              <span class="refresh-option-copy">
+                <strong><span class="latest-refresh-label-long">최신 자료 요청</span><span class="latest-refresh-label-short">최신 요청</span></strong>
+                <small id="latestRefreshDescription">원자료 재수집 · 하루 3회</small>
+              </span>
+            </button>
+            <details class="refresh-help">
+              <summary aria-label="두 새로고침의 차이 보기" title="두 새로고침의 차이">
+                <span aria-hidden="true">i</span>
+              </summary>
+              <div class="refresh-help-panel">
+                <strong>두 새로고침의 차이</strong>
+                <dl>
+                  <div>
+                    <dt>화면 갱신</dt>
+                    <dd>서버에 저장된 정상 자료를 다시 표시합니다. 횟수 제한이 없습니다.</dd>
+                  </div>
+                  <div>
+                    <dt>최신 자료 요청</dt>
+                    <dd>원자료 제공처에 새 수집을 즉시 요청합니다. 로그인 후 하루 3회 사용할 수 있습니다.</dd>
+                  </div>
+                </dl>
+                <small>장 마감, 발표 전, 제공처 차단 때는 최신 요청 후에도 수치가 그대로일 수 있습니다.</small>
+              </div>
+            </details>
+          </div>
         </div>
       </header>
 
@@ -351,8 +391,13 @@
                     <strong>미래 산업</strong>
                     <span>산업·기업·사업체력 비교</span>
                   </button>
-                  <button type="button" role="tab" data-future-view="outlook" aria-selected="false">
+                  <button type="button" role="tab" data-future-view="climate" aria-selected="false">
                     <i>02</i>
+                    <strong>기후 대응 지도</strong>
+                    <span>감축·적응·복구 사업 구조</span>
+                  </button>
+                  <button type="button" role="tab" data-future-view="outlook" aria-selected="false">
+                    <i>03</i>
                     <strong>미래 예상하기</strong>
                     <span>기후·자원·인구·전력 시나리오</span>
                   </button>
@@ -403,11 +448,25 @@
                       </header>
                       <div class="future-compare" id="futureCompare"></div>
                     </section>
-                    <section class="climate-business-lab" id="climateBusinessLab" aria-label="지구 온난화 대응 사업"></section>
                     <details class="future-method">
                       <summary>사업체력 점수와 숫자 기준 보기</summary>
                       <div id="futureMethod"></div>
                     </details>
+                  </section>
+                  <section class="future-hub-panel future-climate-panel" data-future-view-panel="climate" aria-hidden="true" inert>
+                    <div class="future-climate-reading">
+                      <div>
+                        <p class="section-kicker">기후 대응 사업</p>
+                        <h3>문제의 크기보다 돈이 흐르는 구조를 먼저 봅니다</h3>
+                        <p>온난화 대응 사업을 배출 감축, 피해 적응, 재난 복구로 나누고 구매자·수익 구조·확인할 숫자까지 비교합니다.</p>
+                      </div>
+                      <ol aria-label="기후 대응 사업 지도 읽는 순서">
+                        <li><span>1</span><strong>누가 비용을 내는가</strong></li>
+                        <li><span>2</span><strong>반복 매출이 생기는가</strong></li>
+                        <li><span>3</span><strong>피해 감소가 숫자로 증명되는가</strong></li>
+                      </ol>
+                    </div>
+                    <section class="climate-business-lab" id="climateBusinessLab" aria-label="지구 온난화 대응 사업 지도"></section>
                   </section>
                   <section class="future-hub-panel" data-future-view-panel="outlook" aria-hidden="true" inert>
                     <div id="futureOutlook"></div>

@@ -135,6 +135,7 @@ const elements = {
   connectionStatus: document.querySelector("#connectionStatus"),
   refreshButton: document.querySelector("#refreshButton"),
   latestRefreshButton: document.querySelector("#latestRefreshButton"),
+  latestRefreshDescription: document.querySelector("#latestRefreshDescription"),
   marketStripShell: document.querySelector("#marketStripShell"),
   marketStripPrevious: document.querySelector("#marketStripPrevious"),
   marketStripNext: document.querySelector("#marketStripNext"),
@@ -1462,17 +1463,26 @@ function updateManualRefreshButton(quota = null) {
   const dailyLimit = Number(quota?.dailyLimit) || 3;
   if (!Number.isFinite(remaining)) {
     delete elements.latestRefreshButton.dataset.remaining;
-    elements.latestRefreshButton.title = "로그인 사용자 기준 하루 3회 최신 자료를 즉시 확인";
-    elements.latestRefreshButton.setAttribute("aria-label", "최신 자료 즉시 확인");
+    elements.latestRefreshButton.title = "로그인 사용자 기준 하루 3회 원자료 수집을 즉시 다시 시도합니다.";
+    elements.latestRefreshButton.setAttribute(
+      "aria-label",
+      "최신 자료 요청, 로그인 사용자 기준 하루 3회 원자료 재수집"
+    );
+    if (elements.latestRefreshDescription) {
+      elements.latestRefreshDescription.textContent = "원자료 재수집 · 하루 3회";
+    }
     return;
   }
   const safeRemaining = Math.min(dailyLimit, Math.max(0, Math.trunc(remaining)));
   elements.latestRefreshButton.dataset.remaining = String(safeRemaining);
-  elements.latestRefreshButton.title = `최신 자료 즉시 확인 · 오늘 ${safeRemaining}/${dailyLimit}회 남음`;
+  elements.latestRefreshButton.title = `최신 자료 요청 · 오늘 ${safeRemaining}/${dailyLimit}회 남음`;
   elements.latestRefreshButton.setAttribute(
     "aria-label",
-    `최신 자료 즉시 확인, 오늘 ${safeRemaining}회 남음`
+    `최신 자료 요청, 오늘 ${safeRemaining}회 남음`
   );
+  if (elements.latestRefreshDescription) {
+    elements.latestRefreshDescription.textContent = `원자료 재수집 · 오늘 ${safeRemaining}/${dailyLimit}회 남음`;
+  }
 }
 
 function setRefreshControlsBusy(isBusy, manual = false) {

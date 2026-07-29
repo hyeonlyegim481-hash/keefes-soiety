@@ -1665,3 +1665,29 @@
     border-bottom: 0;
   }
 }
+/* v124: three explicit future subchapters */
+#future .future-hub-tabs {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 560px) {
+  #future .future-hub-tabs button {
+    min-height: 56px;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    place-items: center;
+    padding: 9px 6px;
+    text-align: center;
+  }
+
+  #future .future-hub-tabs button > i,
+  #future .future-hub-tabs button > span {
+    display: none;
+  }
+
+  #future .future-hub-tabs button > strong {
+    font-size: 0.72rem;
+    line-height: 1.25;
+    word-break: keep-all;
+  }
+}

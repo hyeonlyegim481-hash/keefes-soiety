@@ -52,6 +52,21 @@ test("chapter allowlists remove stale and unknown parameters", () => {
   assert.equal(url.search, "?chapter=future&future=outlook");
 });
 
+test("future climate subchapter keeps a canonical URL without an industry parameter", () => {
+  const state = normalizeUrlState(
+    "https://example.test/?chapter=future&future=climate&industry=bio-health"
+  );
+  assert.deepEqual(state, {
+    chapter: "future",
+    future: "climate",
+    industry: "bio-health"
+  });
+  assert.equal(
+    buildUrlForState(state, "https://example.test/").search,
+    "?chapter=future&future=climate"
+  );
+});
+
 test("country and industry parameters are kept only in matching subviews", () => {
   assert.equal(
     buildUrlForState(

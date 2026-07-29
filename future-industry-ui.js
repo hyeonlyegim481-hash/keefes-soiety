@@ -19,6 +19,11 @@ const liveDateFormatter = new Intl.DateTimeFormat("ko-KR", {
 const companyById = new Map(futureCompanies.map((company) => [company.id, company]));
 const industryById = new Map(futureIndustries.map((industry) => [industry.id, industry]));
 const initialUrlState = readUrlState();
+const FUTURE_VIEW_IDS = new Set(["industries", "climate", "outlook"]);
+
+export function normalizeFutureView(value) {
+  return FUTURE_VIEW_IDS.has(value) ? value : "industries";
+}
 
 const viewState = {
   view: initialUrlState.chapter === "future" ? initialUrlState.future : "industries",
@@ -148,7 +153,7 @@ export function initFutureIndustryChapter({
 }
 
 function setFutureView(nextView, { syncUrl = true } = {}) {
-  const normalized = nextView === "outlook" ? "outlook" : "industries";
+  const normalized = normalizeFutureView(nextView);
   viewState.view = normalized;
 
   elements.viewTabs?.querySelectorAll("[data-future-view]").forEach((button) => {
@@ -159,6 +164,8 @@ function setFutureView(nextView, { syncUrl = true } = {}) {
     panel.setAttribute("aria-hidden", String(!selected));
     panel.inert = !selected;
   });
+
+  if (normalized === "climate") renderClimateBusinessLab();
 
   renderFutureUpdateLabel(normalized);
 
@@ -177,7 +184,7 @@ function setFutureView(nextView, { syncUrl = true } = {}) {
 
 function applyFutureUrlState(urlState) {
   if (urlState.chapter !== "future") return;
-  const nextView = urlState.future === "outlook" ? "outlook" : "industries";
+  const nextView = normalizeFutureView(urlState.future);
   const nextSector = industryById.has(urlState.industry)
     ? urlState.industry
     : "ai-chips";
@@ -223,7 +230,6 @@ function renderFutureIndustryChapter() {
   if (elements.story) elements.story.innerHTML = renderIndustryStory(industry, companies, liveBrief);
   renderCompanyWorkspace(industry);
   renderComparison();
-  renderClimateBusinessLab();
   renderMethod();
   requestAnimationFrame(updateChapterHeight);
 }

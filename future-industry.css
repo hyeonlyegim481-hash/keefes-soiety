@@ -993,3 +993,120 @@ html[data-reader-contrast="strong"] #future .future-company-source > span {
     border-bottom: 0;
   }
 }
+/* v124: standalone climate-response business chapter */
+#future .future-climate-panel {
+  gap: 0;
+}
+
+#future .future-climate-reading {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(360px, 0.85fr);
+  align-items: center;
+  gap: 28px;
+  padding: 22px;
+  border-top: 3px solid #dfad3f;
+  border-bottom: 1px solid #40545d;
+  background: #17242c;
+}
+
+#future .future-climate-reading > div {
+  display: grid;
+  min-width: 0;
+  gap: 7px;
+}
+
+#future .future-climate-reading .section-kicker {
+  color: #77c9bf;
+}
+
+#future .future-climate-reading h3 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.2rem;
+  line-height: 1.35;
+  word-break: keep-all;
+}
+
+#future .future-climate-reading > div > p:last-child {
+  max-width: 780px;
+  margin: 0;
+  color: #d6e0e3;
+  font-size: 0.78rem;
+  font-weight: 650;
+  line-height: 1.65;
+  word-break: keep-all;
+}
+
+#future .future-climate-reading ol {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #40545d;
+  list-style: none;
+}
+
+#future .future-climate-reading li {
+  display: grid;
+  min-width: 0;
+  align-content: center;
+  gap: 5px;
+  min-height: 76px;
+  padding: 11px;
+  border-right: 1px solid #40545d;
+}
+
+#future .future-climate-reading li:last-child {
+  border-right: 0;
+}
+
+#future .future-climate-reading li span {
+  color: #dfad3f;
+  font-size: 0.65rem;
+  font-weight: 900;
+}
+
+#future .future-climate-reading li strong {
+  color: #ffffff;
+  font-size: 0.7rem;
+  line-height: 1.42;
+  word-break: keep-all;
+}
+
+#future .future-climate-panel .climate-business-lab {
+  margin: 0;
+  padding: 22px 0;
+  border-top: 0;
+}
+
+@media (max-width: 920px) {
+  #future .future-climate-reading {
+    grid-template-columns: 1fr;
+    gap: 17px;
+  }
+}
+
+@media (max-width: 560px) {
+  #future .future-climate-reading {
+    padding: 18px;
+  }
+
+  #future .future-climate-reading ol {
+    grid-template-columns: 1fr;
+  }
+
+  #future .future-climate-reading li {
+    min-height: 0;
+    grid-template-columns: 20px minmax(0, 1fr);
+    align-items: center;
+    gap: 8px;
+    padding: 9px 11px;
+    border-right: 0;
+    border-bottom: 1px solid #40545d;
+  }
+
+  #future .future-climate-reading li:last-child {
+    border-bottom: 0;
+  }
+}
