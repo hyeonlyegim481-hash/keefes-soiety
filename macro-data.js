@@ -17,6 +17,8 @@ const OFFICIAL_DATA_HOSTS = new Set([
 const BOK_BASE_RATE_URL =
   "https://www.bok.or.kr/portal/singl/baseRate/list.do?dataSeCd=01&menuNo=200643";
 const CPI_LIST_URL = "https://mods.go.kr/board.es?bid=213&mid=a10301040100";
+const POLICY_BRIEFING_RELEASES_URL =
+  "https://www.korea.kr/briefing/pressReleaseList.do";
 const CUSTOMS_LIST_URL =
   "https://www.customs.go.kr/kcs/na/ntt/selectNttList.do?bbsId=1362&mi=2891&searchType=sj&searchValue=%EC%88%98%EC%B6%9C%EC%9E%85%20%ED%98%84%ED%99%A9&aditCol1=%EC%A0%95%EB%B3%B4%EB%8D%B0%EC%9D%B4%ED%84%B0&listCo=50";
 
@@ -45,8 +47,8 @@ const macroDefinitions = [
     label: "수출 증가율",
     unit: "% YoY",
     cadence: "월간",
-    source: "관세청",
-    sourceUrl: CUSTOMS_LIST_URL
+    source: "산업통상부",
+    sourceUrl: POLICY_BRIEFING_RELEASES_URL
   },
   {
     id: "household-credit",
@@ -60,9 +62,9 @@ const macroDefinitions = [
 
 let macroCache = null;
 
-export async function fetchMacroIndicators() {
+export async function fetchMacroIndicators({ force = false } = {}) {
   const now = Date.now();
-  if (macroCache && now - macroCache.createdAt < macroCache.ttlMs) {
+  if (!force && macroCache && now - macroCache.createdAt < macroCache.ttlMs) {
     return macroCache.items.map((item) => ({ ...item }));
   }
 
@@ -230,13 +232,13 @@ function buildCpiIndicator({ title, text, detailUrl, publishedAt }) {
 
 async function fetchExports() {
   try {
-    return await fetchExportsFromCustoms();
-  } catch (customsError) {
+    return await fetchExportsFromPolicyBriefing();
+  } catch (policyError) {
     try {
-      return await fetchExportsFromPolicyBriefing();
-    } catch (policyError) {
+      return await fetchExportsFromCustoms();
+    } catch (customsError) {
       throw new AggregateError(
-        [customsError, policyError],
+        [policyError, customsError],
         "Official export releases were not available"
       );
     }
@@ -276,7 +278,13 @@ async function fetchExportsFromCustoms() {
   );
 }
 
-async function fetchExportDetail(detailUrl, title, preliminary, timeoutMs = REQUEST_TIMEOUT_MS) {
+async function fetchExportDetail(
+  detailUrl,
+  title,
+  preliminary,
+  timeoutMs = REQUEST_TIMEOUT_MS,
+  source = "관세청"
+) {
   const detailHtml = await fetchOfficialText(detailUrl, "text/html", timeoutMs);
   const text = htmlToText(detailHtml);
   const period = `${title} ${text}`.match(/(\d{4})년\s+(\d{1,2})월(?:\s+월간)?\s+수출입\s+현황/);
@@ -285,6 +293,7 @@ async function fetchExportDetail(detailUrl, title, preliminary, timeoutMs = REQU
 
   return buildExportIndicator({
     detailUrl,
+    source,
     year: Number(period[1]),
     month: Number(period[2]),
     exportAmount,

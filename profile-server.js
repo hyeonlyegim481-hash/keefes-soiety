@@ -261,6 +261,30 @@ export function validateQuizSubmission(input = {}) {
   };
 }
 
+export function sanitizeManualRefreshQuota(value = {}, dailyLimit = 3) {
+  const limitValue = Number(dailyLimit);
+  const limit = Number.isInteger(limitValue)
+    ? Math.min(10, Math.max(1, limitValue))
+    : 3;
+  const usedValue = Number(value?.used_count ?? value?.usedCount);
+  const used = Number.isFinite(usedValue)
+    ? Math.min(limit, Math.max(0, Math.trunc(usedValue)))
+    : 0;
+  const remainingValue = Number(value?.remaining_count ?? value?.remainingCount);
+  const remaining = Number.isFinite(remainingValue)
+    ? Math.min(limit, Math.max(0, Math.trunc(remainingValue)))
+    : Math.max(0, limit - used);
+  const resetTimestamp = Date.parse(value?.reset_at ?? value?.resetAt);
+  return {
+    allowed: value?.allowed === true,
+    dailyLimit: limit,
+    used,
+    remaining,
+    resetAt: Number.isFinite(resetTimestamp)
+      ? new Date(resetTimestamp).toISOString()
+      : null
+  };
+}
 export function sanitizeProgressResult(value = {}) {
   const nonNegativeNumber = (input) => {
     const numeric = Number(input);

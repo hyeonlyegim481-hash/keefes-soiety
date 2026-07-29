@@ -6,7 +6,8 @@ import {
   enhanceNewsBatchWithAi,
   getHeadlineEventKey,
   getSnapshot,
-  isAiConfigured
+  isAiConfigured,
+  NEWS_HEADLINE_LIMIT
 } from "../server.mjs";
 import { enrichHeadlineWithArticle } from "../news-content.js";
 
@@ -36,7 +37,7 @@ async function main() {
   }
 
   const snapshot = await getSnapshot({ forceNews: true, preferScheduledNews: false });
-  const headlines = snapshot.headlines.slice(0, 36);
+  const headlines = snapshot.headlines.slice(0, NEWS_HEADLINE_LIMIT);
   const seen = buildSeenIndex(previous.seen, headlines, now);
   const analyses = pruneAnalyses(previous.analyses, seen);
   const candidates = headlines

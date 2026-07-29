@@ -3,6 +3,8 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import {
   buildAutomatedNewsAnalysis,
+  NEWS_HEADLINE_LIMIT,
+  NEWS_ITEMS_PER_FEED,
   rankAndDedupeHeadlines,
   selectSectionedHeadlines
 } from "./server.mjs";
@@ -80,7 +82,7 @@ test("industry and household headlines survive relevance filtering as separate s
   );
 });
 
-test("section selection can expand beyond the previous twenty-eight article ceiling", () => {
+test("news collection expands to fifty-four unique headlines with eighteen candidates per feed", () => {
   const sections = [
     "korea",
     "industry",
@@ -92,18 +94,50 @@ test("section selection can expand beyond the previous twenty-eight article ceil
     "europe-global",
     "commodities-fx"
   ];
-  const items = Array.from({ length: 40 }, (_, index) => ({
+  const items = Array.from({ length: 81 }, (_, index) => ({
     id: `item-${index}`,
     section: sections[index % sections.length],
-    source: `source-${index % 12}`,
-    topic: `topic-${index % 16}`,
-    relevanceScore: 100 - index,
+    source: `source-${index % 20}`,
+    topic: `topic-${index % 24}`,
+    relevanceScore: 200 - index,
     publishedAt: new Date(now - index * 60_000).toISOString()
   }));
-  const selected = selectSectionedHeadlines(items, 36);
+  const selected = selectSectionedHeadlines(items);
 
-  assert.equal(selected.length, 36);
-  assert.equal(new Set(selected.map((item) => item.id)).size, 36);
+  assert.equal(NEWS_HEADLINE_LIMIT, 54);
+  assert.equal(NEWS_ITEMS_PER_FEED, 18);
+  assert.equal(selected.length, NEWS_HEADLINE_LIMIT);
+  assert.equal(new Set(selected.map((item) => item.id)).size, NEWS_HEADLINE_LIMIT);
+});
+
+test("otherwise comparable recent headlines rank above older headlines", () => {
+  const ranked = rankAndDedupeHeadlines(
+    [
+      {
+        id: "recent-policy",
+        topic: "정책·지표",
+        section: "korea",
+        title: "한국은행 기준금리 결정, 원화 환율과 가계대출 영향",
+        source: "Reuters",
+        url: "https://example.com/recent-policy",
+        publishedAt: new Date(now - 60 * 60 * 1000).toISOString()
+      },
+      {
+        id: "older-policy",
+        topic: "정책·지표",
+        section: "korea",
+        title: "정부 소비자물가 전망, 내수 소비와 시장금리 영향",
+        source: "Reuters",
+        url: "https://example.com/older-policy",
+        publishedAt: new Date(now - 60 * 60 * 60 * 1000).toISOString()
+      }
+    ],
+    now
+  );
+
+  assert.equal(ranked.length, 2);
+  assert.equal(ranked[0].id, "recent-policy");
+  assert.ok(ranked[0].relevanceScore > ranked[1].relevanceScore);
 });
 
 test("news section navigator keeps the selected filter readable", () => {

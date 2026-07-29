@@ -8,6 +8,7 @@ import {
   fetchProfileActivityStreak,
   getProfilePublicConfig,
   getSupabaseEnvironment,
+  sanitizeManualRefreshQuota,
   sanitizeProgressResult,
   validateQuizSubmission
 } from "./profile-server.js";
@@ -96,6 +97,34 @@ test("term quiz IDs are stable and invented questions cannot earn XP", () => {
   assert.equal(wrong.correct, false);
   assert.equal(generated.correct, true);
   assert.equal(invented.valid, false);
+});
+
+test("manual refresh quota responses are bounded and keep the KST reset time", () => {
+  assert.deepEqual(
+    sanitizeManualRefreshQuota({
+      allowed: true,
+      used_count: 2,
+      remaining_count: 1,
+      reset_at: "2026-07-29T15:00:00.000Z"
+    }),
+    {
+      allowed: true,
+      dailyLimit: 3,
+      used: 2,
+      remaining: 1,
+      resetAt: "2026-07-29T15:00:00.000Z"
+    }
+  );
+  assert.deepEqual(
+    sanitizeManualRefreshQuota({ allowed: false, used_count: 99, remaining_count: -4 }),
+    {
+      allowed: false,
+      dailyLimit: 3,
+      used: 3,
+      remaining: 0,
+      resetAt: null
+    }
+  );
 });
 
 test("progress responses discard invalid and non-finite values", () => {

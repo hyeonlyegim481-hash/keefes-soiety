@@ -633,7 +633,7 @@ if ("requestIdleCallback" in window) {
   window.setTimeout(initializeProfileWhenIdle, 1500);
 }
 
-elements.refreshButton.addEventListener("click", () => refreshSnapshot());
+elements.refreshButton.addEventListener("click", () => refreshSnapshot({ manual: true }));
 elements.marketStripPrevious?.addEventListener("click", () => scrollMarketStrip(-1));
 elements.marketStripNext?.addEventListener("click", () => scrollMarketStrip(1));
 elements.marketStrip?.addEventListener("scroll", scheduleMarketStripControls, { passive: true });
@@ -1371,13 +1371,59 @@ queueMicrotask(() => {
   }, 5 * 60_000);
 });
 
-async function refreshSnapshot() {
+function updateManualRefreshButton(quota = null) {
+  const remaining = Number(quota?.remaining);
+  const dailyLimit = Number(quota?.dailyLimit) || 3;
+  if (!Number.isFinite(remaining)) {
+    delete elements.refreshButton.dataset.remaining;
+    elements.refreshButton.title = "로그인 사용자 기준 하루 3회 최신 자료를 즉시 확인";
+    elements.refreshButton.setAttribute("aria-label", "최신 자료 즉시 확인");
+    return;
+  }
+  const safeRemaining = Math.min(dailyLimit, Math.max(0, Math.trunc(remaining)));
+  elements.refreshButton.dataset.remaining = String(safeRemaining);
+  elements.refreshButton.title = `최신 자료 즉시 확인 · 오늘 ${safeRemaining}/${dailyLimit}회 남음`;
+  elements.refreshButton.setAttribute(
+    "aria-label",
+    `최신 자료 즉시 확인, 오늘 ${safeRemaining}회 남음`
+  );
+}
+
+async function refreshSnapshot({ manual = false } = {}) {
   if (state.isRefreshing) return;
   state.isRefreshing = true;
-  setConnection("loading", "업데이트");
+  elements.refreshButton.disabled = true;
+  setConnection("loading", manual ? "최신 확인" : "업데이트");
 
   try {
-    const snapshot = await fetchSnapshot();
+    let snapshot;
+    if (manual) {
+      let controller;
+      try {
+        controller = await initProfileOnce();
+      } catch {
+        controller = null;
+      }
+      if (!controller?.isAuthenticated?.()) {
+        updateManualRefreshButton();
+        setConnection("partial", "로그인 필요");
+        openUtilityDrawer();
+        return;
+      }
+      const result = await controller.requestFreshSnapshot();
+      if (!result?.ok) {
+        updateManualRefreshButton(result?.data?.manualRefresh);
+        const error = new Error(result?.data?.error || "즉시 갱신에 실패했습니다.");
+        error.manualRefresh = true;
+        error.statusCode = Number(result?.status) || 0;
+        throw error;
+      }
+      snapshot = result.data;
+      updateManualRefreshButton(snapshot.manualRefresh);
+    } else {
+      snapshot = await fetchSnapshot();
+    }
+
     state.snapshot = snapshot;
     if (!snapshot.markets.some((market) => market.id === state.selectedMarket)) {
       state.selectedMarket = snapshot.markets[0]?.id || "kospi";
@@ -1394,8 +1440,21 @@ async function refreshSnapshot() {
     }
     render(snapshot);
     updateConnectionStatus(snapshot);
+    if (manual && snapshot.manualRefresh) {
+      const currentState = elements.connectionStatus.dataset.state || "live";
+      setConnection(currentState, `최신 · ${snapshot.manualRefresh.remaining}회 남음`);
+    }
   } catch (error) {
     console.error("[snapshot] refresh failed", error);
+    if (manual && state.snapshot) {
+      const label = Number(error?.statusCode) === 429
+        ? "오늘 3회 완료"
+        : Number(error?.statusCode) === 503
+          ? "갱신 설정 필요"
+          : "즉시 갱신 실패";
+      setConnection("error", label);
+      return;
+    }
     state.snapshot = null;
     state.sharedDataGraph = null;
     politicsController?.updateSnapshot(null);
@@ -1404,6 +1463,7 @@ async function refreshSnapshot() {
     setConnection("error", "자료 수집 실패");
   } finally {
     state.isRefreshing = false;
+    elements.refreshButton.disabled = false;
   }
 }
 

@@ -28,6 +28,7 @@ import {
   callProfileRpc,
   fetchProfileActivityStreak,
   getProfilePublicConfig,
+  sanitizeManualRefreshQuota,
   sanitizeProgressResult,
   validateQuizSubmission,
   validateSupabaseUser
@@ -47,6 +48,9 @@ const MARKET_CHART_INTERVAL = "1d";
 const MARKET_CHART_MAX_POINTS = 280;
 const NEWS_LOOKBACK_DAYS = 7;
 const NEWS_LOOKBACK_MS = NEWS_LOOKBACK_DAYS * 24 * 60 * 60 * 1000;
+const NEWS_HEADLINE_LIMIT = 54;
+const NEWS_ITEMS_PER_FEED = 18;
+const MANUAL_REFRESH_DAILY_LIMIT = 3;
 // This deployment is intentionally rule-based. AI API calls remain disabled.
 const AI_API_KEY = "";
 const AI_API_URL = "";
@@ -56,6 +60,7 @@ const AI_ON_DEMAND_ENABLED = false;
 
 let snapshotCache = null;
 let snapshotFetchPromise = null;
+let snapshotRefreshPromise = null;
 let newsFeedCache = null;
 let newsFetchPromise = null;
 const marketCache = new Map();
@@ -100,15 +105,15 @@ const headlineFeeds = [
 
 const newsSectionOrder = ["korea", "industry", "households", "politics", "security-disasters", "us", "china-asia", "europe-global", "commodities-fx"];
 const newsSectionQuotas = {
-  korea: 6,
-  industry: 5,
-  households: 4,
-  politics: 4,
-  "security-disasters": 5,
-  us: 4,
-  "china-asia": 3,
-  "europe-global": 2,
-  "commodities-fx": 3
+  korea: 9,
+  industry: 8,
+  households: 6,
+  politics: 6,
+  "security-disasters": 7,
+  us: 6,
+  "china-asia": 4,
+  "europe-global": 4,
+  "commodities-fx": 4
 };
 const topicRelevancePatterns = {
   "정책·지표": /기준금리|금통위|물가|소비자물가|GDP|성장률|수출|수입|무역|환율|재정|세금|취업자|실업률|금융위원회|금융감독원|한국은행|한은/i,
@@ -251,6 +256,40 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    if (url.pathname === "/api/snapshot-refresh") {
+      if (req.method !== "POST") {
+        res.setHeader("Allow", "POST");
+        sendJson(res, 405, { error: "Method not allowed" });
+        return;
+      }
+      try {
+        const token = String(req.headers.authorization || "").replace(/^Bearer\s+/i, "");
+        const snapshot = await refreshSnapshotForUser(token);
+        res.setHeader("Cache-Control", "private, no-store");
+        sendJson(res, 200, snapshot);
+      } catch (error) {
+        const statusCode = Number(error?.statusCode) || 500;
+        const quota = error?.quota || null;
+        if (statusCode === 429 && quota?.resetAt) {
+          const retryAfter = Math.max(
+            1,
+            Math.ceil((Date.parse(quota.resetAt) - Date.now()) / 1000)
+          );
+          res.setHeader("Retry-After", String(retryAfter));
+        }
+        sendJson(res, statusCode, {
+          error: statusCode === 429
+            ? "오늘 즉시 갱신 3회를 모두 사용했습니다."
+            : error instanceof Error
+              ? error.message
+              : "즉시 갱신에 실패했습니다.",
+          code: error?.code || "manual-refresh-failed",
+          manualRefresh: quota
+        });
+      }
+      return;
+    }
+
     if (url.pathname === "/api/snapshot") {
       const snapshot = await getSnapshot();
       sendJson(res, 200, snapshot);
@@ -328,23 +367,79 @@ if (process.argv[1] && path.resolve(process.argv[1]) === __filename) {
 }
 
 async function getSnapshot(options = {}) {
-  const forceNews = options.forceNews === true;
+  const forceRefresh = options.forceRefresh === true;
+  const forceNews = forceRefresh || options.forceNews === true;
+  const forceMacro = forceRefresh || options.forceMacro === true;
+  const bypassCache = forceRefresh || forceNews || forceMacro;
   const now = Date.now();
-  if (!forceNews && snapshotCache && now < snapshotCache.expiresAt) {
+  if (!bypassCache && snapshotCache && now < snapshotCache.expiresAt) {
     return snapshotCache.payload;
   }
-  if (!forceNews && snapshotFetchPromise) return snapshotFetchPromise;
-  const promise = buildSnapshot(options);
-  if (!forceNews) snapshotFetchPromise = promise;
+  if (forceRefresh && snapshotRefreshPromise) return snapshotRefreshPromise;
+  if (!bypassCache && snapshotFetchPromise) return snapshotFetchPromise;
+  const promise = buildSnapshot({
+    ...options,
+    forceNews,
+    forceMacro,
+    preferScheduledNews: forceRefresh ? false : options.preferScheduledNews
+  });
+  if (forceRefresh) snapshotRefreshPromise = promise;
+  else if (!bypassCache) snapshotFetchPromise = promise;
   try {
     return await promise;
   } finally {
     if (snapshotFetchPromise === promise) snapshotFetchPromise = null;
+    if (snapshotRefreshPromise === promise) snapshotRefreshPromise = null;
   }
+}
+
+async function refreshSnapshotForUser(accessToken, {
+  validateUser = validateSupabaseUser,
+  consumeQuota = (userId) => callProfileRpc("consume_manual_refresh", {
+    target_user: userId,
+    target_limit: MANUAL_REFRESH_DAILY_LIMIT
+  }),
+  loadSnapshot = getSnapshot
+} = {}) {
+  const user = await validateUser(accessToken);
+  let rawQuota;
+  try {
+    rawQuota = await consumeQuota(user.id);
+  } catch (error) {
+    if (Number(error?.statusCode) === 404) {
+      const unavailable = new Error("즉시 갱신 제한 설정이 아직 적용되지 않았습니다.");
+      unavailable.statusCode = 503;
+      unavailable.code = "manual-refresh-not-configured";
+      throw unavailable;
+    }
+    throw error;
+  }
+  const quota = sanitizeManualRefreshQuota(rawQuota, MANUAL_REFRESH_DAILY_LIMIT);
+  if (!quota.allowed) {
+    const exhausted = new Error("Manual refresh quota exhausted");
+    exhausted.statusCode = 429;
+    exhausted.code = "manual-refresh-limit";
+    exhausted.quota = quota;
+    throw exhausted;
+  }
+  const snapshot = await loadSnapshot({
+    forceRefresh: true,
+    forceNews: true,
+    forceMacro: true,
+    preferScheduledNews: false
+  });
+  return {
+    ...snapshot,
+    manualRefresh: {
+      ...quota,
+      refreshedAt: snapshot.generatedAt || new Date().toISOString()
+    }
+  };
 }
 
 async function buildSnapshot({
   forceNews = false,
+  forceMacro = false,
   preferScheduledNews = true,
   verifiedNewsFallback = null,
   allowLiveNews = true
@@ -359,7 +454,7 @@ async function buildSnapshot({
       verifiedFallback: verifiedNewsFallback,
       allowLive: allowLiveNews
     }),
-    fetchMacroIndicators()
+    fetchMacroIndicators({ force: forceMacro })
   ]);
   const markets = marketResults.map((result, index) =>
     result.status === "fulfilled"
@@ -436,7 +531,7 @@ async function buildSnapshot({
           : newsBundle.sourceMode === "unavailable"
             ? "뉴스 자료 수집 실패"
             : `Google News RSS (30분 캐시·최근 ${NEWS_LOOKBACK_DAYS}일·관련도 선별·중복 제거)`,
-      macro: "한국은행·국가데이터처·관세청 최신 공표"
+      macro: "한국은행·국가데이터처·산업통상부·관세청 공식 공표"
     },
     sourceDetails: {
       markets: {
@@ -452,7 +547,7 @@ async function buildSnapshot({
         status: "장중·장 마감·지연·마지막 정상값을 구분하며 제공처 지연 여부를 시장 상세에서 표시"
       },
       macro: {
-        provider: "한국은행·국가데이터처·관세청",
+        provider: "한국은행·국가데이터처·산업통상부·관세청",
         basisAt: macro.map((item) => `${item.label}: ${item.periodLabel || "기준 미확인"}`),
         updatedAt: macro.map((item) => item.fetchedAt).filter(Boolean).sort().at(-1) || generatedAt,
         revision: macro.some((item) => item.preliminary)
@@ -488,13 +583,11 @@ async function buildSnapshot({
     }
   };
 
-  if (!forceNews) {
-    snapshotCache = {
-      createdAt: now,
-      expiresAt: now + getSnapshotCacheTtl(markets),
-      payload
-    };
-  }
+  snapshotCache = {
+    createdAt: now,
+    expiresAt: now + getSnapshotCacheTtl(markets),
+    payload
+  };
   return payload;
 }
 
@@ -561,7 +654,7 @@ async function getNewsBundle({
       const scheduledAnalyses = scheduled.analyses || {};
       return {
         rawHeadlines: scheduled.headlines,
-        headlines: scheduled.headlines.slice(0, 36).map((headline) => ({
+        headlines: scheduled.headlines.slice(0, NEWS_HEADLINE_LIMIT).map((headline) => ({
           ...headline,
           analysisStatus:
             scheduledAnalyses[getHeadlineEventKey(headline)]?.aiGenerated === true
@@ -584,7 +677,7 @@ async function getNewsBundle({
   ) {
     return {
       rawHeadlines: verifiedFallback.headlines,
-      headlines: verifiedFallback.headlines.slice(0, 36).map((headline) => ({
+      headlines: verifiedFallback.headlines.slice(0, NEWS_HEADLINE_LIMIT).map((headline) => ({
         ...headline,
         analysisStatus: headline.analysisStatus || "rules"
       })),
@@ -620,7 +713,7 @@ async function getNewsBundle({
     const rankedHeadlines = rankAndDedupeHeadlines(rawHeadlines, now);
     const value = {
       rawHeadlines,
-      headlines: selectSectionedHeadlines(rankedHeadlines, 36).map(
+      headlines: selectSectionedHeadlines(rankedHeadlines, NEWS_HEADLINE_LIMIT).map(
         (headline) => ({
           ...headline,
           analysisStatus:
@@ -764,7 +857,7 @@ async function fetchHeadlines(feed) {
   }
 
   const xml = await response.text();
-  return [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].slice(0, 10).map((match) => {
+  return [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].slice(0, NEWS_ITEMS_PER_FEED).map((match) => {
     const item = match[1];
     const rawTitle = readTag(item, "title");
     const source = readSource(item);
@@ -820,7 +913,7 @@ function rankAndDedupeHeadlines(items, now = Date.now()) {
     }));
 }
 
-function selectSectionedHeadlines(items, limit = 36) {
+function selectSectionedHeadlines(items, limit = NEWS_HEADLINE_LIMIT) {
   const selected = [];
   for (const section of newsSectionOrder) {
     const candidates = items.filter((item) => item.section === section);
@@ -889,7 +982,22 @@ function scoreHeadline(item, now) {
   if (!isDomesticSection && !isCriticalEvent && majorImpactMatches === 0) return null;
 
   const ageHours = Math.max(0, age) / (60 * 60 * 1000);
-  const freshnessScore = ageHours <= 24 ? 6 : ageHours <= 72 ? 4 : 2;
+  const screeningFreshnessScore = ageHours <= 24 ? 6 : ageHours <= 72 ? 4 : 2;
+  const recencyScore = ageHours <= 1
+    ? 16
+    : ageHours <= 3
+      ? 14
+      : ageHours <= 6
+        ? 12
+        : ageHours <= 12
+          ? 10
+          : ageHours <= 24
+            ? 8
+            : ageHours <= 48
+              ? 5
+              : ageHours <= 72
+                ? 3
+                : 1;
   const koreaScore = koreaNewsPattern.test(title) ? 4 : 0;
   const topicScore = isDomesticSection ? 2 : 1;
   const sourceTier = primaryNewsSourcePattern.test(item.source)
@@ -900,7 +1008,7 @@ function scoreHeadline(item, now) {
   const sourceScore = sourceTier === "primary" ? 6 : sourceTier === "established" ? 3 : 0;
   const headlinePenalty = (clickbaitHeadlinePattern.test(title) ? 5 : 0) +
     (scheduleHeadlinePattern.test(title) ? 5 : 0);
-  const importanceScore = freshnessScore + majorImpactMatches * 5 + sourceScore + Math.min(4, relevanceMatches * 2) + (isCriticalEvent ? 2 : 0) - headlinePenalty;
+  const importanceScore = screeningFreshnessScore + majorImpactMatches * 5 + sourceScore + Math.min(4, relevanceMatches * 2) + (isCriticalEvent ? 2 : 0) - headlinePenalty;
   const minimumOtherSourceScore = isCriticalEvent ? 13 : 16;
   if (!isDomesticSection && sourceTier === "other" && majorImpactMatches < 2 && importanceScore < minimumOtherSourceScore) return null;
   const tokens = headlineTokens(title);
@@ -914,7 +1022,7 @@ function scoreHeadline(item, now) {
     importanceLabel: importanceScore >= 17 ? "최우선" : importanceScore >= 12 ? "주요" : "선별",
     impactArea: getHeadlineImpactArea(title),
     koreaImpactLabel: getKoreaImpactLabel(title),
-    relevanceScore: freshnessScore + relevanceMatches * 3 + koreaScore + topicScore + sourceScore + majorImpactMatches * 4 - headlinePenalty,
+    relevanceScore: recencyScore + relevanceMatches * 3 + koreaScore + topicScore + sourceScore + majorImpactMatches * 4 - headlinePenalty,
     fingerprint: normalizeHeadline(title),
     tokens,
     entities: headlineEntities(title),
@@ -2372,6 +2480,9 @@ export {
   getHeadlineEventKey,
   getNewsBundle,
   getSnapshot,
+  NEWS_HEADLINE_LIMIT,
+  NEWS_ITEMS_PER_FEED,
+  refreshSnapshotForUser,
   isAiConfigured,
   normalizeHeadlineInput,
   normalizeMarketSeries,

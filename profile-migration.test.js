@@ -15,6 +15,10 @@ const quizScoringMigrationUrl = new URL(
   "./supabase/migrations/005_quiz_scoring.sql",
   import.meta.url
 );
+const manualRefreshMigrationUrl = new URL(
+  "./supabase/migrations/006_manual_refresh_quota.sql",
+  import.meta.url
+);
 
 test("profile reward migration is atomic and service-role only", async () => {
   const sql = await readFile(migrationUrl, "utf8");
@@ -57,4 +61,18 @@ test("quiz scoring migration removes daily caps and applies signed XP safely", a
   assert.match(sql, /for update/);
   assert.match(sql, /grant execute .*service_role/is);
   assert.doesNotMatch(sql, /today_attempt_count|today_quiz_xp|daily quiz attempt limit/);
+});
+
+test("manual refresh quota migration is atomic, KST-based, and service-role only", async () => {
+  const sql = await readFile(manualRefreshMigrationUrl, "utf8");
+  assert.match(sql, /manual_refresh_on date/);
+  assert.match(sql, /manual_refresh_count smallint not null default 0/);
+  assert.match(sql, /manual_refresh_count between 0 and 3/);
+  assert.match(sql, /create or replace function public\.consume_manual_refresh/);
+  assert.match(sql, /timezone\('Asia\/Seoul', now\(\)\)/);
+  assert.match(sql, /for update/);
+  assert.match(sql, /manual_refresh_count >= target_limit/);
+  assert.match(sql, /revoke all .*public, anon, authenticated/is);
+  assert.match(sql, /grant execute .*service_role/is);
+  assert.doesNotMatch(sql, /create table[\s\S]+manual_refresh/i);
 });

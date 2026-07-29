@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { parseExportPeriod, parseExportValues } from "./macro-data.js";
 
 test("parses the official confirmed export sentence with inserted Korean spacing", () => {
@@ -32,4 +33,19 @@ test("reads the export month from an official policy briefing", () => {
     parseExportPeriod("6월 수출", "산업통상부가 발표한 2026년 6월 수출입 동향입니다."),
     { year: 2026, month: 6 }
   );
+});
+
+test("tries the official policy briefing before the frequently blocked Customs page", () => {
+  const source = readFileSync(new URL("./macro-data.js", import.meta.url), "utf8");
+  const start = source.indexOf("async function fetchExports() {");
+  const end = source.indexOf("async function fetchExportsFromCustoms()", start);
+  const body = source.slice(start, end);
+
+  assert.ok(start >= 0 && end > start);
+  assert.ok(body.indexOf("fetchExportsFromPolicyBriefing") >= 0);
+  assert.ok(
+    body.indexOf("fetchExportsFromPolicyBriefing") < body.indexOf("fetchExportsFromCustoms")
+  );
+  assert.match(source, /source: "산업통상부",\s+sourceUrl: POLICY_BRIEFING_RELEASES_URL/);
+  assert.match(source, /source = "관세청"/);
 });

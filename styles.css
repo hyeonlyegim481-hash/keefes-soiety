@@ -15981,3 +15981,36 @@ html[data-reader-layout="desktop"] .chart-canvas-wrap {
     width: 72px;
   }
 }
+/* v120: manual refresh quota badge */
+#refreshButton {
+  position: relative;
+  overflow: visible;
+}
+
+#refreshButton[data-remaining]::after {
+  content: attr(data-remaining);
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  display: grid;
+  width: 18px;
+  height: 18px;
+  place-items: center;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  background: #087b6d;
+  color: #ffffff;
+  font-size: 0.62rem;
+  font-weight: 900;
+  line-height: 1;
+  box-shadow: 0 2px 7px rgba(20, 33, 41, 0.2);
+}
+
+#refreshButton[data-remaining="0"]::after {
+  background: #697981;
+}
+
+#refreshButton:disabled {
+  cursor: wait;
+  opacity: 0.68;
+}

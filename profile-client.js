@@ -206,6 +206,7 @@ export async function createProfileController({
     openProfile,
     queuePreferenceSync,
     recordQuizAnswer,
+    requestFreshSnapshot,
     isAuthenticated: () => Boolean(state.session?.user)
   };
 
@@ -524,6 +525,40 @@ export async function createProfileController({
     }
   }
 
+  async function requestFreshSnapshot() {
+    const accessToken = state.session?.access_token;
+    if (!accessToken) {
+      return {
+        ok: false,
+        status: 401,
+        data: { error: "로그인하면 하루 3회 최신 자료를 즉시 확인할 수 있습니다." }
+      };
+    }
+    try {
+      const response = await fetch("/api/snapshot-refresh", {
+        method: "POST",
+        headers: {
+          accept: "application/json",
+          authorization: `Bearer ${accessToken}`
+        },
+        cache: "no-store",
+        signal: AbortSignal.timeout(28_000)
+      });
+      const data = await response.json().catch(() => ({
+        error: "즉시 갱신 응답을 확인하지 못했습니다."
+      }));
+      if (response.status === 401) await state.client.auth.signOut();
+      return { ok: response.ok, status: response.status, data };
+    } catch (error) {
+      console.error("[profile] snapshot refresh failed", error);
+      return {
+        ok: false,
+        status: 0,
+        data: { error: "즉시 갱신 요청이 시간 안에 완료되지 않았습니다." }
+      };
+    }
+  }
+
   async function recordQuizAnswer(question = {}) {
     if (!state.session?.access_token || !question.id || !question.selectedAnswer) return null;
     const result = await authenticatedPost("/api/profile-quiz", {
@@ -804,6 +839,13 @@ function createNoopController() {
     queuePreferenceSync() {},
     recordQuizAnswer() {
       return Promise.resolve(null);
+    },
+    requestFreshSnapshot() {
+      return Promise.resolve({
+        ok: false,
+        status: 503,
+        data: { error: "프로필 연결이 준비되지 않았습니다." }
+      });
     },
     isAuthenticated() {
       return false;
