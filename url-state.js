@@ -2,6 +2,7 @@ export const URL_STATE_EVENT = "keefes:url-state";
 
 export const CHAPTER_IDS = Object.freeze([
   "brief",
+  "dashboard",
   "markets",
   "korea",
   "indicators",

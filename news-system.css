@@ -871,6 +871,56 @@
   text-align: center;
 }
 
+#news .news-save-button,
+.news-analysis-save-button {
+  display: inline-flex;
+  min-width: 72px;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 7px 10px;
+  border: 1px solid #cbd7db;
+  border-radius: 5px;
+  background: #ffffff;
+  color: #42565f;
+  font: inherit;
+  font-size: 0.63rem;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+#news .news-save-button:hover,
+#news .news-save-button:focus-visible,
+.news-analysis-save-button:hover,
+.news-analysis-save-button:focus-visible {
+  border-color: #a57728;
+  color: #755116;
+}
+
+#news .news-save-button[data-saved="true"],
+.news-analysis-save-button[data-saved="true"] {
+  border-color: #d3a13f;
+  background: #fff9ec;
+  color: #7a5310;
+}
+
+#news .news-save-button[data-error="true"],
+.news-analysis-save-button[data-error="true"] {
+  border-color: #cf756d;
+  color: #a3312b;
+}
+
+#news .news-save-button[aria-busy="true"],
+.news-analysis-save-button[aria-busy="true"] {
+  opacity: 0.65;
+  cursor: progress;
+}
+
+.news-analysis-save-button {
+  justify-self: start;
+  min-height: 34px;
+  margin-top: 2px;
+}
 #news .news-original-button {
   display: inline-flex;
   min-width: 58px;

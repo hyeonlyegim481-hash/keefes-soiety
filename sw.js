@@ -11,6 +11,8 @@ const CORE_SHELL = [
   "/reader-settings.js",
   "/profile-data.js",
   "/profile-client.js",
+  "/personal-dashboard.js",
+  "/personal-dashboard.css",
   "/styles.css",
   "/app.js",
   "/economic-narrative.js",

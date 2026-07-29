@@ -78,6 +78,7 @@ let politicsController = null;
 let futureController = null;
 let profileController = null;
 let profileControllerPromise = null;
+let personalDashboardController = null;
 
 const GLOSSARY_PAGE_SIZE = 24;
 
@@ -887,6 +888,7 @@ const { loadFeature } = createFeatureLoader();
 const loadStylesheetOnce = createStylesheetLoader();
 const loadedChapters = new Set();
 const dynamicChapters = new Set([
+  "dashboard",
   "indicators",
   "future",
   "study",
@@ -921,6 +923,7 @@ function getChapterLoadState(chapter) {
 
 function getChapterLoadLabel(chapter) {
   return {
+    dashboard: "나의 경제",
     indicators: "지표",
     future: "미래",
     study: "공부",
@@ -1214,8 +1217,89 @@ function initPoliticsOnce() {
   });
 }
 
+function initPersonalDashboardOnce() {
+  return loadFeature("personal-dashboard", async ({ attempt }) => {
+    const [, module, controller] = await Promise.all([
+      loadStylesheetOnce(
+        "personal-dashboard-styles",
+        "/personal-dashboard.css",
+        { attempt }
+      ),
+      importVersioned("./personal-dashboard.js", { attempt }),
+      initProfileOnce()
+    ]);
+    personalDashboardController = module.initPersonalDashboard({
+      getSnapshot: () => state.snapshot,
+      getProfileController: () => profileController || controller,
+      onOpenProfile: async () => {
+        const current = profileController || await initProfileOnce();
+        if (current?.isAuthenticated?.()) current.openProfile?.();
+        else openUtilityDrawer();
+      },
+      onSignIn: async () => {
+        const current = profileController || await initProfileOnce();
+        if (current?.isAuthenticated?.()) current.openProfile?.();
+        else await current?.startSignIn?.();
+      },
+      onNavigate: handlePersonalDashboardNavigation,
+      onOpenNewsAnalysis: (headline) => {
+        openNewsAnalysisDialog(headline, state.snapshot?.analysis);
+      },
+      updateHeight: updateChapterHeight
+    });
+  });
+}
+
+function handlePersonalDashboardNavigation(target = {}) {
+  if (target.type === "market") {
+    if (!state.snapshot?.markets?.some((market) => market.id === target.id)) return;
+    state.selectedMarket = target.id;
+    state.marketView = "summary";
+    setActiveChapter("markets");
+    renderTabs(state.snapshot.markets);
+    renderMarketBrief(state.snapshot.markets);
+    renderMarketBoard(state.snapshot.markets);
+    renderMarketConnections(state.snapshot.markets, state.snapshot.analysis);
+    return;
+  }
+  if (target.type === "indicator") {
+    state.selectedIndicatorId = target.id || "fertility";
+    state.indicatorCategory = state.selectedIndicatorId.startsWith("production-")
+      ? "resources"
+      : "all";
+    state.indicatorQuery = "";
+    if (elements.indicatorSearch) elements.indicatorSearch.value = "";
+    setActiveChapter("indicators");
+    if (loadedChapters.has("indicators")) renderIndicators();
+    return;
+  }
+  if (target.type === "company") {
+    const industry = target.industry || "ai-chips";
+    syncUrlState(
+      { chapter: "future", future: "industries", industry },
+      { mode: "push", source: "personal-dashboard-company" }
+    );
+    setActiveChapter("future", { syncUrl: false });
+    return;
+  }
+  if (target.type === "term") {
+    state.glossaryQuery = target.label || "";
+    state.glossaryLevel = "all";
+    state.glossaryCategory = "전체";
+    state.glossaryLimit = GLOSSARY_PAGE_SIZE;
+    if (elements.glossarySearch) elements.glossarySearch.value = state.glossaryQuery;
+    setActiveChapter("glossary");
+    if (loadedChapters.has("glossary")) renderGlossary();
+    return;
+  }
+  if (target.type === "chapter" && target.chapter) {
+    setActiveChapter(target.chapter);
+  }
+}
 function performChapterLoad(chapter, attempt) {
   switch (chapter) {
+    case "dashboard":
+      return initPersonalDashboardOnce();
     case "indicators":
       return Promise.all([loadIndicatorData(), initLearningToolsOnce()]).then(() => {
         renderIndicators();
@@ -1472,6 +1556,7 @@ async function refreshSnapshot({ manual = false } = {}) {
     state.sharedDataGraph = null;
     politicsController?.updateSnapshot(null);
     futureController?.updateSnapshot(null);
+    personalDashboardController?.updateSnapshot(null);
     renderDataUnavailable();
     setConnection("error", "자료 수집 실패");
   } finally {
@@ -1539,6 +1624,7 @@ function render(snapshot) {
   renderNews(snapshot.headlines, snapshot.analysis, snapshot.dataQuality);
   politicsController?.updateSnapshot(snapshot);
   futureController?.updateSnapshot(snapshot);
+  personalDashboardController?.updateSnapshot(snapshot);
   drawChart();
   setActiveChapter(state.activeChapter, { skipAnimation: true, syncUrl: false });
 }
@@ -4570,6 +4656,20 @@ function createGlossaryCard(item) {
       </div>
     </div>
   `;
+  card.addEventListener("toggle", () => {
+    if (!card.open || card.dataset.learningRecorded) return;
+    card.dataset.learningRecorded = "pending";
+    void initProfileOnce()
+      .then((controller) => controller?.recordGlossaryView?.(item))
+      .then((saved) => {
+        if (saved) card.dataset.learningRecorded = "true";
+        else delete card.dataset.learningRecorded;
+      })
+      .catch((error) => {
+        delete card.dataset.learningRecorded;
+        console.warn("[profile] glossary view was not recorded", error);
+      });
+  });
   return card;
 }
 
@@ -5308,6 +5408,63 @@ function newsAnalysisStatusLabel(status) {
   return "규칙 기반 요약";
 }
 
+function setNewsSaveButtonState(button, headline) {
+  if (!button) return;
+  const saved = Boolean(profileController?.isArticleSaved?.(headline));
+  const analysisMode = button.dataset.saveMode === "analysis";
+  button.dataset.saved = String(saved);
+  button.setAttribute("aria-pressed", String(saved));
+  const icon = button.querySelector("[data-save-icon]");
+  const label = button.querySelector("[data-save-label]");
+  if (icon) icon.textContent = saved ? "★" : "☆";
+  if (label) {
+    label.textContent = saved
+      ? button.dataset.savedLabel || "저장됨"
+      : button.dataset.unsavedLabel || "저장";
+  }
+  button.title = saved
+    ? analysisMode ? "저장된 기사 분석 업데이트" : "저장 해제"
+    : analysisMode ? "기사와 현재 분석을 나의 경제에 저장" : "나의 경제에 기사 저장";
+}
+
+async function handleNewsSave(button, headline, analysis = null) {
+  if (!button || button.disabled) return;
+  button.disabled = true;
+  button.setAttribute("aria-busy", "true");
+  try {
+    const controller = profileController || await initProfileOnce();
+    if (!controller?.isAuthenticated?.()) {
+      openUtilityDrawer();
+      return;
+    }
+    const result = await controller.toggleSavedArticle?.(headline, analysis);
+    if (!result?.ok) {
+      button.dataset.error = "true";
+      button.title = result?.reason === "original-url-required"
+        ? "원문 주소가 확인된 기사만 저장할 수 있습니다."
+        : "저장 기능을 사용할 수 없습니다. 개인 대시보드 저장 설정을 확인해 주세요.";
+      return;
+    }
+    delete button.dataset.error;
+    setNewsSaveButtonState(button, headline);
+  } catch (error) {
+    button.dataset.error = "true";
+    button.title = "기사를 저장하지 못했습니다.";
+    console.error("[profile] news save action failed", error);
+  } finally {
+    button.disabled = false;
+    button.removeAttribute("aria-busy");
+  }
+}
+
+window.addEventListener("keefes:profile-state", () => {
+  document.querySelectorAll("[data-save-news][data-news-key]").forEach((button) => {
+    const headline = state.snapshot?.headlines?.find(
+      (item) => getNewsSummaryKey(item) === button.dataset.newsKey
+    );
+    if (headline) setNewsSaveButtonState(button, headline);
+  });
+});
 function createNewsItem(headline, index, analysis) {
   const item = document.createElement("article");
   const newsUrl = safeNewsUrl(headline.url);
@@ -5344,6 +5501,10 @@ function createNewsItem(headline, index, analysis) {
         </span>
         <i aria-hidden="true">↗</i>
       </button>
+      <button class="news-save-button" type="button" data-save-news data-unsaved-label="저장" data-saved-label="저장됨" data-news-key="${escapeHtml(getNewsSummaryKey(headline))}" aria-pressed="false" title="나의 경제에 기사 저장">
+        <span data-save-icon aria-hidden="true">☆</span>
+        <span data-save-label>저장</span>
+      </button>
       <a class="news-original-button" href="${escapeHtml(newsUrl)}" target="${newsUrl.startsWith("http") ? "_blank" : "_self"}" rel="noopener noreferrer">
         원문 <span aria-hidden="true">↗</span>
       </a>
@@ -5351,6 +5512,11 @@ function createNewsItem(headline, index, analysis) {
   `;
   item.querySelector("[data-open-news-analysis]")?.addEventListener("click", () => {
     openNewsAnalysisDialog(headline, analysis);
+  });
+  const saveButton = item.querySelector("[data-save-news]");
+  setNewsSaveButtonState(saveButton, headline);
+  saveButton?.addEventListener("click", () => {
+    void handleNewsSave(saveButton, headline);
   });
   return item;
 }
@@ -5528,13 +5694,13 @@ async function openNewsAnalysisDialog(headline, marketAnalysis) {
 
   const cachedSummary = state.newsSummaryResults.get(summaryKey);
   if (cachedSummary) {
-    renderNewsAnalysisResult(output, cachedSummary);
+    renderNewsAnalysisResult(output, cachedSummary, headline);
     return;
   }
 
   const result = await resolveNewsAnalysis(headline, marketAnalysis);
   if (state.activeNewsSummaryKey !== summaryKey || !dialog.open) return;
-  renderNewsAnalysisResult(output, result);
+  renderNewsAnalysisResult(output, result, headline);
 }
 
 async function resolveNewsAnalysis(headline, marketAnalysis) {
@@ -5566,7 +5732,7 @@ async function resolveNewsAnalysis(headline, marketAnalysis) {
   }
 }
 
-function renderNewsAnalysisResult(output, result) {
+function renderNewsAnalysisResult(output, result, headline = {}) {
   const checkpoints = Array.isArray(result.checkpoints) ? result.checkpoints.slice(0, 3) : [];
   const keyPoints = Array.isArray(result.keyPoints) ? result.keyPoints.slice(0, 5) : [];
   const transmissionPath = Array.isArray(result.transmissionPath) && result.transmissionPath.length
@@ -5600,6 +5766,10 @@ function renderNewsAnalysisResult(output, result) {
         <strong class="ai-summary-badge" data-ai="${isAiGenerated}">${isAiGenerated ? "AI 요약" : "AI 미사용 · 규칙 분석"}</strong>
       </div>
       <em>${escapeHtml(result.engineLabel || "규칙 기반 상세 분석")} · ${contentBasis} · ${marketBasis} · ${sourceBasis} · 신뢰도 ${escapeHtml(result.confidence || "중간")}</em>
+      <button class="news-analysis-save-button" type="button" data-save-news data-save-mode="analysis" data-unsaved-label="기사와 분석 저장" data-saved-label="분석 업데이트" data-news-key="${escapeHtml(getNewsSummaryKey(headline))}" aria-pressed="false">
+        <span data-save-icon aria-hidden="true">☆</span>
+        <span data-save-label>기사와 분석 저장</span>
+      </button>
     </div>
     <nav class="news-analysis-outline" aria-label="뉴스 분석 순서">
       <span><b>01</b><i>기사 핵심</i></span>
@@ -5717,6 +5887,11 @@ function renderNewsAnalysisResult(output, result) {
       </div>
     </section>
   `;
+  const saveButton = output.querySelector(".news-analysis-save-button");
+  setNewsSaveButtonState(saveButton, headline);
+  saveButton?.addEventListener("click", () => {
+    void handleNewsSave(saveButton, headline, result);
+  });
 }
 
 function drawChart() {

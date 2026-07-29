@@ -82,6 +82,7 @@
 
       <nav class="chapter-nav" aria-label="전문 섹션">
         <button class="chapter-tab" type="button" data-chapter="brief" aria-selected="true">핵심</button>
+        <button class="chapter-tab" type="button" data-chapter="dashboard" aria-selected="false">나의 경제</button>
         <button class="chapter-tab" type="button" data-chapter="markets" aria-selected="false">시장</button>
         <button class="chapter-tab" type="button" data-chapter="korea" aria-selected="false">한국</button>
         <button class="chapter-tab" type="button" data-chapter="indicators" aria-selected="false">지표</button>
@@ -173,6 +174,16 @@
                   </div>
                 </div>
                 <div class="chapter-board" id="briefBoard"></div>
+              </article>
+            </section>
+
+            <section class="chapter-pane chapter-single" id="dashboard" data-chapter-panel="dashboard" aria-label="나의 경제 대시보드">
+              <article class="personal-dashboard-panel" id="personalDashboard">
+                <div class="personal-dashboard-welcome" role="status">
+                  <span>MY ECONOMY</span>
+                  <h2>나의 경제 대시보드</h2>
+                  <p>프로필과 관심 데이터를 연결하고 있습니다.</p>
+                </div>
               </article>
             </section>
 
@@ -784,6 +795,15 @@
               <button id="profileCompanyAdd" type="button">추가</button>
             </div>
             <div class="profile-watch-list" id="profileCompanyList"></div>
+          </section>
+          <section class="profile-form-section">
+            <span class="profile-form-label">관심 경제지표</span>
+            <div class="profile-add-row">
+              <select id="profileIndicatorSelect" aria-label="관심 경제지표"></select>
+              <button id="profileIndicatorAdd" type="button">추가</button>
+            </div>
+            <div class="profile-watch-list" id="profileIndicatorList"></div>
+            <small>대시보드에서 한국 최신값을 우선 표시하며, 한국 자료가 없으면 세계값임을 따로 표시합니다.</small>
           </section>
           <p class="profile-form-message" id="profileFormMessage" hidden></p>
         </div>
