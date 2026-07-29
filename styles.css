@@ -15981,36 +15981,106 @@ html[data-reader-layout="desktop"] .chart-canvas-wrap {
     width: 72px;
   }
 }
-/* v120: manual refresh quota badge */
-#refreshButton {
+/* v121: separate cached refresh and limited live refresh */
+.latest-refresh-button {
   position: relative;
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
   overflow: visible;
+  padding: 8px 13px;
+  border: 1px solid #087b6d;
+  border-radius: 8px;
+  background: #087b6d;
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 850;
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow: 0 8px 20px rgba(8, 123, 109, 0.18);
+  transition: background-color 180ms ease, border-color 180ms ease, transform 180ms ease;
 }
 
-#refreshButton[data-remaining]::after {
+.latest-refresh-button:hover {
+  border-color: #06695e;
+  background: #06695e;
+  transform: translateY(-1px);
+}
+
+.latest-refresh-button:focus-visible {
+  outline: 3px solid rgba(8, 123, 109, 0.24);
+  outline-offset: 2px;
+}
+
+.latest-refresh-icon {
+  display: inline-block;
+  font-size: 0.96rem;
+  line-height: 1;
+}
+
+.latest-refresh-label-short {
+  display: none;
+}
+
+#latestRefreshButton[data-remaining]::after {
   content: attr(data-remaining);
   position: absolute;
-  top: -6px;
-  right: -6px;
+  top: -7px;
+  right: -7px;
   display: grid;
-  width: 18px;
-  height: 18px;
+  width: 19px;
+  height: 19px;
   place-items: center;
   border: 2px solid #ffffff;
   border-radius: 50%;
-  background: #087b6d;
+  background: #c6922c;
   color: #ffffff;
   font-size: 0.62rem;
   font-weight: 900;
   line-height: 1;
-  box-shadow: 0 2px 7px rgba(20, 33, 41, 0.2);
+  box-shadow: 0 2px 7px rgba(20, 33, 41, 0.22);
 }
 
-#refreshButton[data-remaining="0"]::after {
+#latestRefreshButton[data-remaining="0"]::after {
   background: #697981;
 }
 
-#refreshButton:disabled {
+#refreshButton:disabled,
+#latestRefreshButton:disabled {
   cursor: wait;
   opacity: 0.68;
+}
+
+#refreshButton[aria-busy="true"] span,
+#latestRefreshButton[aria-busy="true"] .latest-refresh-icon {
+  animation: refresh-turn 900ms linear infinite;
+}
+
+.top-actions:has(.connection-pill[data-state="loading"])
+  #refreshButton:not([aria-busy="true"]) span {
+  animation: none;
+}
+
+@media (max-width: 560px) {
+  .top-actions {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 420px) {
+  .latest-refresh-button {
+    gap: 5px;
+    padding-inline: 10px;
+  }
+
+  .latest-refresh-label-long {
+    display: none;
+  }
+
+  .latest-refresh-label-short {
+    display: inline;
+  }
 }
