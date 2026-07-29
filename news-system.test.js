@@ -3,8 +3,10 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import {
   buildAutomatedNewsAnalysis,
+  filterHeadlinesByLookback,
   NEWS_HEADLINE_LIMIT,
   NEWS_ITEMS_PER_FEED,
+  NEWS_LOOKBACK_DAYS,
   rankAndDedupeHeadlines,
   selectSectionedHeadlines
 } from "./server.mjs";
@@ -82,19 +84,22 @@ test("industry and household headlines survive relevance filtering as separate s
   );
 });
 
-test("news collection expands to fifty-four unique headlines with eighteen candidates per feed", () => {
+test("news collection expands to sixty unique headlines across twelve sections", () => {
   const sections = [
     "korea",
     "industry",
     "households",
     "politics",
     "security-disasters",
+    "disasters-climate",
     "us",
     "china-asia",
+    "japan-asia",
     "europe-global",
-    "commodities-fx"
+    "commodities-fx",
+    "fx-bonds"
   ];
-  const items = Array.from({ length: 81 }, (_, index) => ({
+  const items = Array.from({ length: 120 }, (_, index) => ({
     id: `item-${index}`,
     section: sections[index % sections.length],
     source: `source-${index % 20}`,
@@ -104,10 +109,52 @@ test("news collection expands to fifty-four unique headlines with eighteen candi
   }));
   const selected = selectSectionedHeadlines(items);
 
-  assert.equal(NEWS_HEADLINE_LIMIT, 54);
+  assert.equal(NEWS_HEADLINE_LIMIT, 60);
   assert.equal(NEWS_ITEMS_PER_FEED, 18);
   assert.equal(selected.length, NEWS_HEADLINE_LIMIT);
   assert.equal(new Set(selected.map((item) => item.id)).size, NEWS_HEADLINE_LIMIT);
+});
+
+test("news collection excludes articles older than the five-day window", () => {
+  const ranked = rankAndDedupeHeadlines(
+    [
+      {
+        id: "recent-five-day-window",
+        topic: "정책·지표",
+        section: "korea",
+        title: "한국은행 기준금리 결정과 원화 환율·물가 영향",
+        source: "Reuters",
+        url: "https://example.com/recent-five-day-window",
+        publishedAt: new Date(now - (NEWS_LOOKBACK_DAYS * 24 - 1) * 60 * 60 * 1000).toISOString()
+      },
+      {
+        id: "outside-five-day-window",
+        topic: "정책·지표",
+        section: "korea",
+        title: "정부 소비자물가 전망과 시장금리·소비 영향",
+        source: "Reuters",
+        url: "https://example.com/outside-five-day-window",
+        publishedAt: new Date(now - (NEWS_LOOKBACK_DAYS * 24 + 1) * 60 * 60 * 1000).toISOString()
+      }
+    ],
+    now
+  );
+
+  assert.equal(NEWS_LOOKBACK_DAYS, 5);
+  assert.deepEqual(ranked.map((headline) => headline.id), ["recent-five-day-window"]);
+});
+
+test("scheduled and last-known news caches obey the same five-day window", () => {
+  const filtered = filterHeadlinesByLookback(
+    [
+      { id: "cached-current", publishedAt: new Date(now - 4 * 24 * 60 * 60 * 1000).toISOString() },
+      { id: "cached-expired", publishedAt: new Date(now - 6 * 24 * 60 * 60 * 1000).toISOString() },
+      { id: "cached-invalid", publishedAt: "unknown" }
+    ],
+    now
+  );
+
+  assert.deepEqual(filtered.map((headline) => headline.id), ["cached-current"]);
 });
 
 test("otherwise comparable recent headlines rank above older headlines", () => {
@@ -149,6 +196,9 @@ test("news section navigator keeps the selected filter readable", () => {
   assert.match(selectedRule, /color:\s*#ffffff/);
   assert.match(app, /class="news-filter-current"/);
   assert.match(app, /class="news-section-number"/);
+  assert.match(app, /id: "disasters-climate"/);
+  assert.match(app, /id: "japan-asia"/);
+  assert.match(app, /id: "fx-bonds"/);
 });
 
 

@@ -438,7 +438,7 @@
 #news .news-filter-tabs {
   display: grid;
   min-width: 0;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1px;
   padding: 1px;
   overflow: visible;
@@ -589,6 +589,9 @@
   --filter-accent: #c4473d;
 }
 
+#news .news-filter-tabs button[data-news-filter="disasters-climate"] {
+  --filter-accent: #2f806d;
+}
 #news .news-filter-tabs button[data-news-filter="us"] {
   --filter-accent: #2f5f93;
 }
@@ -597,6 +600,9 @@
   --filter-accent: #b45b35;
 }
 
+#news .news-filter-tabs button[data-news-filter="japan-asia"] {
+  --filter-accent: #9b5460;
+}
 #news .news-filter-tabs button[data-news-filter="europe-global"] {
   --filter-accent: #665b91;
 }
@@ -605,6 +611,16 @@
   --filter-accent: #b47b19;
 }
 
+#news .news-filter-tabs button[data-news-filter="fx-bonds"] {
+  --filter-accent: #39778a;
+}
+
+@media (min-width: 901px) {
+  #news .news-filter-tabs button[data-news-filter="all"] {
+    min-height: 58px;
+    grid-column: 1 / -1;
+  }
+}
 #news .news-refresh-note {
   display: flex;
   min-width: 0;
@@ -673,6 +689,9 @@
   --news-accent: #c4473d;
 }
 
+#news .news-section-group[data-news-section="disasters-climate"] {
+  --news-accent: #2f806d;
+}
 #news .news-section-group[data-news-section="us"] {
   --news-accent: #2f5f93;
 }
@@ -681,6 +700,9 @@
   --news-accent: #b45b35;
 }
 
+#news .news-section-group[data-news-section="japan-asia"] {
+  --news-accent: #9b5460;
+}
 #news .news-section-group[data-news-section="europe-global"] {
   --news-accent: #665b91;
 }
@@ -689,6 +711,9 @@
   --news-accent: #b47b19;
 }
 
+#news .news-section-group[data-news-section="fx-bonds"] {
+  --news-accent: #39778a;
+}
 #news .news-section-heading {
   display: grid;
   min-height: 76px;

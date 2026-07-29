@@ -5085,21 +5085,25 @@ function cacheNewsSummary(summaryKey, result) {
 }
 
 const NEWS_SECTION_DEFINITIONS = [
-  { id: "korea", label: "한국 핵심", description: "거시지표·환율·정책·한국 시장" },
+  { id: "korea", label: "한국 경제·시장", description: "거시지표·환율·정책·국내 증시" },
   { id: "industry", label: "산업·기업", description: "실적·반도체·AI·자동차·조선·배터리" },
   { id: "households", label: "생활·부동산", description: "고용·소비·주택·가계대출·금융비용" },
   { id: "politics", label: "정치·법", description: "정부·의회·법률·예산이 경제에 미치는 변화" },
-  { id: "security-disasters", label: "전쟁·사고·재난", description: "안보·대형 사고·자연재해·인프라 충격" },
-  { id: "us", label: "미국", description: "연준·물가·고용·미국 시장" },
-  { id: "china-asia", label: "중국·아시아", description: "중국 수요·위안·일본은행·엔화" },
+  { id: "security-disasters", label: "전쟁·안보", description: "전쟁·제재·해상봉쇄와 공급망 충격" },
+  { id: "disasters-climate", label: "재난·기후", description: "재난·사고·사이버·기후·전력 충격" },
+  { id: "us", label: "미국 경제·시장", description: "연준·물가·고용·미국 증시" },
+  { id: "china-asia", label: "중국", description: "중국 경기·위안·부동산·증시" },
+  { id: "japan-asia", label: "일본·아시아", description: "일본은행·엔화·아시아 무역" },
   { id: "europe-global", label: "유럽·글로벌", description: "ECB·유로존·세계 성장과 무역" },
-  { id: "commodities-fx", label: "원자재·기후", description: "유가·금·달러·운임·전력·기후 비용" }
+  { id: "commodities-fx", label: "원자재·에너지", description: "유가·금·가스·운임과 비용 압력" },
+  { id: "fx-bonds", label: "외환·채권", description: "달러·원화·엔화·국채금리" }
 ];
 
 const DOMESTIC_NEWS_SECTIONS = new Set(["korea", "industry", "households"]);
+const CRITICAL_NEWS_SECTIONS = new Set(["security-disasters", "disasters-climate"]);
 
 function renderNews(headlines = [], analysis, dataQuality = {}) {
-  const lookbackDays = Number(dataQuality?.newsLookbackDays) || 7;
+  const lookbackDays = Number(dataQuality?.newsLookbackDays) || 5;
   const topicCounts = headlines.reduce((acc, headline) => {
     acc[headline.topic] = (acc[headline.topic] || 0) + 1;
     return acc;
@@ -5109,9 +5113,9 @@ function renderNews(headlines = [], analysis, dataQuality = {}) {
     .slice(0, 4);
   const firstTopic = topTopics[0]?.[0] || "선별 기사 없음";
   const domesticHeadlineCount = headlines.filter((headline) => DOMESTIC_NEWS_SECTIONS.has(headline.section)).length;
-  const criticalHeadlineCount = headlines.filter((headline) => headline.section === "security-disasters").length;
+  const criticalHeadlineCount = headlines.filter((headline) => CRITICAL_NEWS_SECTIONS.has(headline.section)).length;
   const globalHeadlineCount = headlines.filter(
-    (headline) => !DOMESTIC_NEWS_SECTIONS.has(headline.section) && headline.section !== "security-disasters"
+    (headline) => !DOMESTIC_NEWS_SECTIONS.has(headline.section) && !CRITICAL_NEWS_SECTIONS.has(headline.section)
   ).length;
   const freshCount = headlines.filter(
     (headline) => Date.now() - Date.parse(headline.publishedAt) < 24 * 60 * 60 * 1000
@@ -5132,7 +5136,7 @@ function renderNews(headlines = [], analysis, dataQuality = {}) {
     <article class="news-brief-lead">
       <div>
         <span>ECONOMIC NEWS DESK</span>
-        <strong>${headlines.length ? `${headlines.length}건을 9개 분야로 정리했습니다.` : "새 기사 수집을 기다리고 있습니다."}</strong>
+        <strong>${headlines.length ? `${headlines.length}건을 ${NEWS_SECTION_DEFINITIONS.length}개 분야로 정리했습니다.` : "새 기사 수집을 기다리고 있습니다."}</strong>
         <p>${escapeHtml(firstTopic)} 중심 · ${escapeHtml(riskText)}</p>
       </div>
       <dl>
@@ -5172,7 +5176,7 @@ function renderNews(headlines = [], analysis, dataQuality = {}) {
       {
         id: "all",
         label: "전체",
-        description: "9개 분야의 주요 흐름",
+        description: `${NEWS_SECTION_DEFINITIONS.length}개 분야의 주요 흐름`,
         count: headlines.length
       },
       ...NEWS_SECTION_DEFINITIONS.map((section) => ({
@@ -5193,7 +5197,7 @@ function renderNews(headlines = [], analysis, dataQuality = {}) {
         <div>
           <span class="news-filter-kicker">SECTION NAVIGATOR</span>
           <strong>분야별 뉴스</strong>
-          <p>경제 흐름을 국내·산업·생활·정치·세계 변수로 나눴습니다.</p>
+          <p>최근 ${lookbackDays}일 · 한국·산업·정책·안보·지역·자산시장으로 세분화했습니다.</p>
         </div>
         <div class="news-filter-current" aria-live="polite">
           <span>현재 보기</span>
@@ -5312,7 +5316,7 @@ function createNewsItem(headline, index, analysis) {
   const analysisStatus = headline.analysisStatus || "rules";
   item.className = "news-item";
   item.dataset.importance = headline.importanceLabel || "선별";
-  if (headline.section === "security-disasters") item.dataset.newsKind = "critical";
+  if (CRITICAL_NEWS_SECTIONS.has(headline.section)) item.dataset.newsKind = "critical";
   item.innerHTML = `
     <div class="news-item-head">
       <span class="news-index">${String(index).padStart(2, "0")}</span>
@@ -5359,9 +5363,9 @@ function renderNewsBoard(headlines, topTopics, analysis) {
     )
     .slice(0, 3);
   const domesticCount = headlines.filter((headline) => DOMESTIC_NEWS_SECTIONS.has(headline.section)).length;
-  const criticalCount = headlines.filter((headline) => headline.section === "security-disasters").length;
+  const criticalCount = headlines.filter((headline) => CRITICAL_NEWS_SECTIONS.has(headline.section)).length;
   const globalCount = headlines.filter(
-    (headline) => !DOMESTIC_NEWS_SECTIONS.has(headline.section) && headline.section !== "security-disasters"
+    (headline) => !DOMESTIC_NEWS_SECTIONS.has(headline.section) && !CRITICAL_NEWS_SECTIONS.has(headline.section)
   ).length;
   const readingMode = headlines.length === 0
     ? "새 기사 대기"
@@ -5411,7 +5415,7 @@ function renderNewsBoard(headlines, topTopics, analysis) {
 }
 
 function renderNewsIntelligence(headlines, topTopics, analysis, dataQuality = {}) {
-  const lookbackDays = Number(dataQuality?.newsLookbackDays) || 7;
+  const lookbackDays = Number(dataQuality?.newsLookbackDays) || 5;
   const fetchedCount = Number(dataQuality?.fetchedHeadlineCount) || headlines.length;
   const combined = headlines.map((headline) => headline.title).join(" ");
   const themes = [

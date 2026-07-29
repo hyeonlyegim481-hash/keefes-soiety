@@ -46,9 +46,9 @@ const MARKET_STALE_CACHE_MS = 6 * 60 * 60 * 1000;
 const MARKET_CHART_RANGE = "1y";
 const MARKET_CHART_INTERVAL = "1d";
 const MARKET_CHART_MAX_POINTS = 280;
-const NEWS_LOOKBACK_DAYS = 7;
+const NEWS_LOOKBACK_DAYS = 5;
 const NEWS_LOOKBACK_MS = NEWS_LOOKBACK_DAYS * 24 * 60 * 60 * 1000;
-const NEWS_HEADLINE_LIMIT = 54;
+const NEWS_HEADLINE_LIMIT = 60;
 const NEWS_ITEMS_PER_FEED = 18;
 const MANUAL_REFRESH_DAILY_LIMIT = 3;
 // This deployment is intentionally rule-based. AI API calls remain disabled.
@@ -81,40 +81,47 @@ const mimeTypes = {
 const marketConfig = MARKET_CONFIG;
 
 const headlineFeeds = [
-  { topic: "한국경제", section: "korea", query: "한국 경제 (환율 OR 금리 OR 물가 OR 수출 OR 반도체) when:7d" },
-  { topic: "한국시장", section: "korea", query: "(코스피 OR 코스닥 OR 원달러 OR 한국은행) when:7d" },
-  { topic: "정책·지표", section: "korea", query: "(기획재정부 OR 한국은행 OR 국가데이터처 OR 금융위원회 OR 관세청) (경제 OR 금리 OR 물가 OR 수출) when:7d" },
-  { topic: "한국 정치·법", section: "politics", query: "(대통령 OR 국회 OR 정부 OR 법안 OR 시행령 OR 상법) (경제 OR 예산 OR 세금 OR 노동 OR 기업 OR 금융 OR 부동산) when:7d" },
-  { topic: "세계 정치·정책", section: "politics", query: "(미국 의회 OR 백악관 OR 중국 국무원 OR 일본 내각 OR EU 집행위원회 OR 러시아 정부) (법안 OR 관세 OR 제재 OR 예산 OR 규제 OR 산업정책) when:7d" },
-  { topic: "산업·기업", section: "industry", query: "(기업 실적 OR 반도체 OR 자동차 OR 조선 OR 배터리 OR 설비투자) 한국 when:7d" },
-  { topic: "글로벌 기업·기술", section: "industry", query: "(AI 투자 OR 데이터센터 OR 반도체 공급망 OR 전기차 배터리 OR 글로벌 기업 실적) (매출 OR 투자 OR 수요 OR 규제) when:7d" },
-  { topic: "첨단산업·공급망", section: "industry", query: "(HBM OR 파운드리 OR 로봇 OR 바이오 OR 우주산업 OR 방산) (수주 OR 투자 OR 생산 OR 공급망) when:7d" },
-  { topic: "부동산·가계", section: "households", query: "(주택시장 OR 아파트값 OR 전세 OR 가계대출 OR 소비자심리 OR 자영업경기) 한국 when:7d" },
-  { topic: "노동·소비", section: "households", query: "(취업자 OR 실업률 OR 임금 OR 소비 OR 소매판매 OR 자영업) 한국 when:7d" },
-  { topic: "금융·신용", section: "households", query: "(가계대출 OR 연체율 OR 카드대금 OR 예금금리 OR 대출금리 OR 주택담보대출) 한국 when:7d" },
-  { topic: "전쟁·지정학", section: "security-disasters", query: "(전쟁 OR 공습 OR 미사일 OR 휴전 OR 군사충돌 OR 경제제재 OR 해상봉쇄) (한국 OR 국제유가 OR 환율 OR 공급망 OR 무역 OR 증시) when:7d" },
-  { topic: "사고·재난", section: "security-disasters", query: "(지진 OR 홍수 OR 산불 OR 태풍 OR 폭발 OR 붕괴 OR 항공사고 OR 열차사고 OR 선박사고) (한국 OR 경제 OR 생산 OR 물류 OR 공급망 OR 보험) when:7d" },
-  { topic: "인프라·사이버", section: "security-disasters", query: "(대규모 정전 OR 통신 장애 OR 사이버 공격 OR 항만 마비 OR 공장 화재 OR 원전 사고) (한국 OR 경제 OR 금융 OR 생산 OR 물류 OR 공급망) when:7d" },
-  { topic: "미국 핵심", section: "us", query: "(미국 연준 OR 미국 CPI OR 미국 고용 OR 미국 GDP OR 미국 국채금리 OR 미국 관세) when:7d" },
-  { topic: "미국 시장", section: "us", query: "(S&P500 OR 나스닥 OR 미국 증시) (연준 OR 물가 OR 고용 OR 실적 OR 관세) when:7d" },
-  { topic: "중국·아시아", section: "china-asia", query: "(중국 경기 OR 중국 인민은행 OR 위안화 OR 일본은행 OR 엔화 OR 중국 수출) when:7d" },
-  { topic: "유럽·글로벌", section: "europe-global", query: "(ECB OR 유로존 물가 OR 유럽 경제 OR IMF OR 세계은행 OR 글로벌 무역) when:7d" },
-  { topic: "원자재·환율", section: "commodities-fx", query: "(OPEC OR 국제유가 OR WTI OR 브렌트유 OR 금값 OR 달러인덱스 OR 해상운임) (글로벌 OR 미국 OR 중동 OR 국제) when:7d" },
-  { topic: "기후·에너지", section: "commodities-fx", query: "(폭염 OR 기후위기 OR 전력수요 OR 탄소배출권 OR 농산물 가격 OR 재생에너지) (경제 OR 기업 OR 공급망 OR 물가) when:7d" }
+  { topic: "한국경제", section: "korea", query: "한국 경제 (환율 OR 금리 OR 물가 OR 수출 OR 반도체) when:5d" },
+  { topic: "한국시장", section: "korea", query: "(코스피 OR 코스닥 OR 원달러 OR 한국은행) when:5d" },
+  { topic: "정책·지표", section: "korea", query: "(기획재정부 OR 한국은행 OR 국가데이터처 OR 금융위원회 OR 관세청) (경제 OR 금리 OR 물가 OR 수출) when:5d" },
+  { topic: "한국 정치·법", section: "politics", query: "(대통령 OR 국회 OR 정부 OR 법안 OR 시행령 OR 상법) (경제 OR 예산 OR 세금 OR 노동 OR 기업 OR 금융 OR 부동산) when:5d" },
+  { topic: "세계 정치·정책", section: "politics", query: "(미국 의회 OR 백악관 OR 중국 국무원 OR 일본 내각 OR EU 집행위원회 OR 러시아 정부) (법안 OR 관세 OR 제재 OR 예산 OR 규제 OR 산업정책) when:5d" },
+  { topic: "산업·기업", section: "industry", query: "(기업 실적 OR 반도체 OR 자동차 OR 조선 OR 배터리 OR 설비투자) 한국 when:5d" },
+  { topic: "글로벌 기업·기술", section: "industry", query: "(AI 투자 OR 데이터센터 OR 반도체 공급망 OR 전기차 배터리 OR 글로벌 기업 실적) (매출 OR 투자 OR 수요 OR 규제) when:5d" },
+  { topic: "첨단산업·공급망", section: "industry", query: "(HBM OR 파운드리 OR 로봇 OR 바이오 OR 우주산업 OR 방산) (수주 OR 투자 OR 생산 OR 공급망) when:5d" },
+  { topic: "부동산·가계", section: "households", query: "(주택시장 OR 아파트값 OR 전세 OR 가계대출 OR 소비자심리 OR 자영업경기) 한국 when:5d" },
+  { topic: "노동·소비", section: "households", query: "(취업자 OR 실업률 OR 임금 OR 소비 OR 소매판매 OR 자영업) 한국 when:5d" },
+  { topic: "금융·신용", section: "households", query: "(가계대출 OR 연체율 OR 카드대금 OR 예금금리 OR 대출금리 OR 주택담보대출) 한국 when:5d" },
+  { topic: "전쟁·지정학", section: "security-disasters", query: "(전쟁 OR 공습 OR 미사일 OR 휴전 OR 군사충돌 OR 경제제재 OR 해상봉쇄) (한국 OR 국제유가 OR 환율 OR 공급망 OR 무역 OR 증시) when:5d" },
+  { topic: "사고·재난", section: "disasters-climate", query: "(지진 OR 홍수 OR 산불 OR 태풍 OR 폭발 OR 붕괴 OR 항공사고 OR 열차사고 OR 선박사고) (한국 OR 경제 OR 생산 OR 물류 OR 공급망 OR 보험) when:5d" },
+  { topic: "인프라·사이버", section: "disasters-climate", query: "(대규모 정전 OR 통신 장애 OR 사이버 공격 OR 항만 마비 OR 공장 화재 OR 원전 사고) (한국 OR 경제 OR 금융 OR 생산 OR 물류 OR 공급망) when:5d" },
+  { topic: "미국 핵심", section: "us", query: "(미국 연준 OR 미국 CPI OR 미국 고용 OR 미국 GDP OR 미국 국채금리 OR 미국 관세) when:5d" },
+  { topic: "미국 시장", section: "us", query: "(S&P500 OR 나스닥 OR 미국 증시) (연준 OR 물가 OR 고용 OR 실적 OR 관세) when:5d" },
+  { topic: "중국 경제", section: "china-asia", query: "(중국 경기 OR 중국 인민은행 OR 위안화 OR 중국 수출 OR 중국 부동산 OR 중국 증시) when:5d" },
+  { topic: "일본·아시아", section: "japan-asia", query: "(일본은행 OR 엔화 OR 일본 경제 OR 일본 증시 OR 아시아 수출 OR 아시아 통화) (금리 OR 물가 OR 무역 OR 성장 OR 시장) when:5d" },
+  { topic: "유럽·글로벌", section: "europe-global", query: "(ECB OR 유로존 물가 OR 유럽 경제 OR IMF OR 세계은행 OR 글로벌 무역) when:5d" },
+  { topic: "원자재·에너지", section: "commodities-fx", query: "(OPEC OR 국제유가 OR WTI OR 브렌트유 OR 금값 OR 천연가스 OR 해상운임) when:5d" },
+  { topic: "농산물·원자재", section: "commodities-fx", query: "(곡물 가격 OR 구리 가격 OR 철광석 OR 원자재 가격 OR 해상운임) (물가 OR 수요 OR 공급 OR 중국 OR 글로벌) when:5d" },
+  { topic: "기후·에너지", section: "disasters-climate", query: "(폭염 OR 가뭄 OR 기후위기 OR 전력수요 OR 탄소배출권 OR 농산물 가격 OR 재생에너지) (경제 OR 기업 OR 공급망 OR 물가) when:5d" },
+  { topic: "외환·채권", section: "fx-bonds", query: "(달러인덱스 OR 원달러 환율 OR 미국 국채금리 OR 한국 국채금리 OR 엔화 OR 위안화) (연준 OR 금리 OR 물가 OR 시장 OR 한국) when:5d" }
 ];
 
-const newsSectionOrder = ["korea", "industry", "households", "politics", "security-disasters", "us", "china-asia", "europe-global", "commodities-fx"];
+const newsSectionOrder = ["korea", "industry", "households", "politics", "security-disasters", "disasters-climate", "us", "china-asia", "japan-asia", "europe-global", "commodities-fx", "fx-bonds"];
 const newsSectionQuotas = {
-  korea: 9,
-  industry: 8,
-  households: 6,
-  politics: 6,
-  "security-disasters": 7,
+  korea: 7,
+  industry: 7,
+  households: 5,
+  politics: 5,
+  "security-disasters": 5,
+  "disasters-climate": 5,
   us: 6,
   "china-asia": 4,
+  "japan-asia": 3,
   "europe-global": 4,
-  "commodities-fx": 4
+  "commodities-fx": 4,
+  "fx-bonds": 5
 };
+const criticalNewsSections = new Set(["security-disasters", "disasters-climate"]);
 const topicRelevancePatterns = {
   "정책·지표": /기준금리|금통위|물가|소비자물가|GDP|성장률|수출|수입|무역|환율|재정|세금|취업자|실업률|금융위원회|금융감독원|한국은행|한은/i,
   "산업·기업": /기업|실적|매출|영업이익|순이익|반도체|자동차|조선|배터리|설비투자|상장|수주|공장|CAPEX/i,
@@ -129,8 +136,13 @@ const topicRelevancePatterns = {
   "미국 핵심": /미국|연준|Fed|CPI|물가|고용|실업|GDP|국채|관세|달러/i,
   "미국 시장": /S&P\s*500|나스닥|미국\s*증시|연준|Fed|물가|고용|실적|관세/i,
   "중국·아시아": /중국|인민은행|PBOC|위안|일본|일본은행|BOJ|엔화|아시아|수출/i,
+  "중국 경제": /중국|인민은행|PBOC|위안|부동산|증시|수출|성장|경기/i,
+  "일본·아시아": /일본|일본은행|BOJ|엔화|아시아|수출|통화|금리|물가|무역|성장|시장/i,
   "유럽·글로벌": /ECB|유럽|유로존|IMF|세계은행|글로벌|세계경제|무역/i,
   "원자재·환율": /OPEC|유가|원유|WTI|브렌트|금값|금\s*가격|달러|환율|해상운임/i,
+  "원자재·에너지": /OPEC|유가|원유|WTI|브렌트|금값|금\s*가격|천연가스|에너지|해상운임/i,
+  "농산물·원자재": /곡물|밀|옥수수|대두|구리|철광석|원자재|해상운임|물가|수요|공급|중국|글로벌/i,
+  "외환·채권": /달러|원달러|환율|국채|채권|금리|엔화|위안|연준|시장/i,
   "기후·에너지": /폭염|기후|전력수요|탄소|배출권|농산물|재생에너지|전력망|물가|공급망/i,
   "한국 정치·법": /(?=.*(?:대통령|대통령실|국회|정부|법안|법률|상법|시행령))(?=.*(?:경제|예산|재정|세금|노동|기업|금융|부동산|투자|산업))/i,
   "세계 정치·정책": /(?=.*(?:백악관|의회|상원|하원|국무원|내각|집행위원회|정부|법안|법률))(?=.*(?:관세|제재|예산|규제|산업정책|경제|무역|투자|세금))/i
@@ -167,6 +179,7 @@ const newsRelevancePatterns = [
   /반도체|메모리|HBM|AI|인공지능|chip|semiconductor|technology/i,
   /중국|미국|유럽|일본|글로벌|세계경제|China|U\.S\.|Europe|Japan|global/i,
   /유가|원유|WTI|브렌트|OPEC|에너지|oil|crude|energy/i,
+  /금값|금\s*가격|천연가스|해상운임|원자재|곡물|구리|철광석|commodity|gold|natural\s*gas/i,
   /전쟁|공습|미사일|휴전|침공|교전|제재|봉쇄|war|missile|ceasefire|sanction/i,
   /지진|강진|홍수|산불|태풍|폭발|붕괴|추락|충돌|침몰|탈선|테러|인명피해|대규모\s*정전|통신\s*장애|사이버\s*공격|항만\s*마비|earthquake|flood|wildfire|typhoon|blackout|cyberattack/i,
   /대통령|국회|의회|백악관|내각|정부|법안|법률|상법|시행령|예산안|regulation|legislation|congress|parliament/i,
@@ -182,13 +195,14 @@ const globalMajorImpactPatterns = [
   /관세|무역전쟁|제재|수출통제|공급망|반도체\s*(?:규제|통제)/i,
   /국채금리|채권금리|달러\s*인덱스|위안화|엔화|환율/i,
   /OPEC|WTI|브렌트|국제유가|원유|해상운임|홍해|중동|전쟁/i,
+  /금값|금\s*가격|천연가스|원자재\s*가격|곡물\s*가격|구리\s*가격|철광석/i,
   /S&P\s*500|나스닥|증시\s*(?:급락|폭락|급등)|서킷브레이커|금융위기|은행\s*(?:위기|파산)/i,
   /실적|매출|영업이익|순이익|전망치|가이던스|반도체|AI\s*투자/i,
   /지진|홍수|산불|태풍|폭발|붕괴|대규모\s*정전|통신\s*장애|사이버\s*공격|항만\s*마비|원전\s*사고/i,
   /대통령|국회|의회|백악관|내각|정부|법안|법률|상법|시행령|예산안|조세개편|규제개편/i,
   /폭염|전력수요|전력망|탄소배출권|농산물\s*가격|기후\s*(?:위기|재난)|재생에너지/i
 ];
-const criticalEventPattern = /전쟁|공습|미사일|휴전|침공|교전|군사충돌|경제제재|봉쇄|테러|지진|강진|홍수|산불|태풍|폭발|붕괴|추락|충돌|침몰|탈선|인명피해|항공사고|열차사고|선박사고|대규모\s*정전|통신\s*장애|사이버\s*공격|항만\s*마비|공장\s*화재|원전\s*사고/i;
+const criticalEventPattern = /전쟁|공습|미사일|휴전|침공|교전|군사충돌|경제제재|봉쇄|테러|지진|강진|홍수|산불|태풍|폭발|붕괴|추락|충돌|침몰|탈선|인명피해|항공사고|열차사고|선박사고|대규모\s*정전|통신\s*장애|사이버\s*공격|항만\s*마비|공장\s*화재|원전\s*사고|폭염|가뭄|기후위기|전력수요|탄소배출권|농산물\s*가격/i;
 const clickbaitHeadlinePattern = /피눈물|대박|충격|발칵|이 사람들|그만할래|무조건|역대급|폭망|몰빵|개미군단|난리 났다/i;
 const scheduleHeadlinePattern = /\[(?:다음주|주간).*일정\]|주요 일정|경제 캘린더/i;
 const headlineStopWords = new Set([
@@ -635,6 +649,16 @@ export function createUnavailableMarket(item, error) {
   };
 }
 
+function filterHeadlinesByLookback(headlines, now = Date.now()) {
+  if (!Array.isArray(headlines)) return [];
+  return headlines.filter((headline) => {
+    const timestamp = Date.parse(headline?.publishedAt);
+    if (!Number.isFinite(timestamp)) return false;
+    const age = now - timestamp;
+    return age >= -10 * 60 * 1000 && age <= NEWS_LOOKBACK_MS;
+  });
+}
+
 async function getNewsBundle({
   now = Date.now(),
   force = false,
@@ -644,17 +668,17 @@ async function getNewsBundle({
 } = {}) {
   if (preferScheduled) {
     const scheduled = await readScheduledNewsCache();
+    const scheduledHeadlines = filterHeadlinesByLookback(scheduled?.headlines, now);
     const scheduledAt = Date.parse(scheduled?.updatedAt);
     if (
       Number.isFinite(scheduledAt) &&
       now - scheduledAt <= SCHEDULED_NEWS_MAX_AGE_MS &&
-      Array.isArray(scheduled?.headlines) &&
-      scheduled.headlines.length
+      scheduledHeadlines.length
     ) {
       const scheduledAnalyses = scheduled.analyses || {};
       return {
-        rawHeadlines: scheduled.headlines,
-        headlines: scheduled.headlines.slice(0, NEWS_HEADLINE_LIMIT).map((headline) => ({
+        rawHeadlines: scheduledHeadlines,
+        headlines: scheduledHeadlines.slice(0, NEWS_HEADLINE_LIMIT).map((headline) => ({
           ...headline,
           analysisStatus:
             scheduledAnalyses[getHeadlineEventKey(headline)]?.aiGenerated === true
@@ -671,13 +695,11 @@ async function getNewsBundle({
     }
   }
 
-  if (
-    Array.isArray(verifiedFallback?.headlines) &&
-    verifiedFallback.headlines.length
-  ) {
+  const fallbackHeadlines = filterHeadlinesByLookback(verifiedFallback?.headlines, now);
+  if (fallbackHeadlines.length) {
     return {
-      rawHeadlines: verifiedFallback.headlines,
-      headlines: verifiedFallback.headlines.slice(0, NEWS_HEADLINE_LIMIT).map((headline) => ({
+      rawHeadlines: fallbackHeadlines,
+      headlines: fallbackHeadlines.slice(0, NEWS_HEADLINE_LIMIT).map((headline) => ({
         ...headline,
         analysisStatus: headline.analysisStatus || "rules"
       })),
@@ -976,7 +998,7 @@ function scoreHeadline(item, now) {
 
   const section = newsSectionOrder.includes(item.section) ? item.section : "korea";
   const isDomesticSection = ["korea", "industry", "households"].includes(section);
-  const isCriticalEvent = section === "security-disasters";
+  const isCriticalEvent = criticalNewsSections.has(section);
   const majorImpactMatches = globalMajorImpactPatterns.filter((pattern) => pattern.test(title)).length;
   if (isCriticalEvent && !criticalEventPattern.test(title)) return null;
   if (!isDomesticSection && !isCriticalEvent && majorImpactMatches === 0) return null;
@@ -1054,7 +1076,7 @@ function getKoreaImpactLabel(title) {
 function isDuplicateHeadline(left, right) {
   if (left.fingerprint === right.fingerprint) return true;
   const timeGap = Math.abs(left.timestamp - right.timestamp);
-  const criticalPair = left.section === "security-disasters" && right.section === "security-disasters";
+  const criticalPair = left.section === right.section && criticalNewsSections.has(left.section);
   const maximumGap = criticalPair ? 72 * 60 * 60 * 1000 : 48 * 60 * 60 * 1000;
   if (timeGap > maximumGap) return false;
 
@@ -2477,11 +2499,13 @@ export {
   findScheduledNewsAnalysis,
   findTrustedHeadline,
   fetchMarket,
+  filterHeadlinesByLookback,
   getHeadlineEventKey,
   getNewsBundle,
   getSnapshot,
   NEWS_HEADLINE_LIMIT,
   NEWS_ITEMS_PER_FEED,
+  NEWS_LOOKBACK_DAYS,
   refreshSnapshotForUser,
   isAiConfigured,
   normalizeHeadlineInput,

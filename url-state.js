@@ -107,10 +107,13 @@ export const URL_STATE_VALUES = Object.freeze({
     "households",
     "politics",
     "security-disasters",
+    "disasters-climate",
     "us",
     "china-asia",
+    "japan-asia",
     "europe-global",
-    "commodities-fx"
+    "commodities-fx",
+    "fx-bonds"
   ])
 });
 
