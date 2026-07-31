@@ -1,0 +1,233 @@
+export const largeCompanyDataA = [
+  {
+    id: "qualcomm", name: "Qualcomm", ticker: "QCOM", country: "미국", sectorId: "ai-chips", role: "모바일·엣지 AI 반도체",
+    fiscal: "FY2024 · 2024.09.29 종료", revenue: "US$39.0B", revenueGrowth: 9, margin: 27.2,
+    profitability: "GAAP 영업이익률 27.2%", cashSignal: "영업현금흐름 US$12.2B",
+    healthParts: { profitability: 22, growth: 16, cash: 23, position: 24 },
+    business: "스마트폰·자동차·PC와 사물인터넷 기기에 들어가는 통신칩과 프로세서, 관련 특허 라이선스를 판매합니다.",
+    moat: "모바일 통신 표준특허와 모뎀 설계, 안드로이드 기기 생태계의 오랜 고객 인증이 높은 진입장벽을 만듭니다.",
+    risk: "스마트폰 수요와 중국 고객 의존, 대형 고객의 자체 칩 전환, 라이선스 규제 분쟁이 실적을 흔들 수 있습니다.",
+    watch: ["핸드셋 칩 매출", "자동차 수주잔고", "라이선스 매출·규제"],
+    source: { label: "Qualcomm FY2024 공식 실적", url: "https://investor.qualcomm.com/news-events/press-releases/news-details/2024/Qualcomm-Announces-Fourth-Quarter-and-Fiscal-2024-Results/" }
+  },
+  {
+    id: "intel", name: "Intel", ticker: "INTC", country: "미국", sectorId: "ai-chips", role: "CPU·파운드리",
+    fiscal: "FY2024 · 연결", revenue: "US$53.1B", revenueGrowth: -2, margin: -22.1,
+    profitability: "GAAP 영업이익률 -22.1% · 구조조정 포함", cashSignal: "영업현금흐름 US$8.3B",
+    healthParts: { profitability: 4, growth: 8, cash: 15, position: 21 },
+    business: "PC·서버용 CPU와 가속기, 네트워크 반도체를 설계하고 자체 공장과 외부고객 파운드리 사업을 운영합니다.",
+    moat: "x86 소프트웨어 호환성과 기업 고객 기반, 미국·유럽의 첨단 생산시설은 회복 시 활용할 수 있는 전략 자산입니다.",
+    risk: "공정 전환 지연과 대규모 설비투자, 파운드리 적자, 경쟁사 점유율 확대가 현금흐름에 큰 부담을 줄 수 있습니다.",
+    watch: ["제품 부문 총이익률", "파운드리 영업손실", "18A 공정 고객·수율"],
+    source: { label: "Intel FY2024 공식 실적", url: "https://www.intc.com/news-events/press-releases/detail/1730/intel-reports-fourth-quarter-and-full-year-2024-financial-results" }
+  },
+  {
+    id: "lam-research", name: "Lam Research", ticker: "LRCX", country: "미국", sectorId: "ai-chips", role: "반도체 식각·증착장비",
+    fiscal: "FY2025 · 2025.06.29 종료", revenue: "US$18.4B", revenueGrowth: 24, margin: 31.4,
+    profitability: "GAAP 영업이익률 약 31.4%", cashSignal: "영업현금흐름 약 US$6.0B",
+    healthParts: { profitability: 24, growth: 21, cash: 24, position: 24 },
+    business: "메모리와 로직 반도체 웨이퍼의 미세구조를 만드는 식각·증착·세정 장비와 장기 유지보수 서비스를 판매합니다.",
+    moat: "고객 공정에 맞춘 장비 레시피와 설치기반, 반복되는 부품·서비스 매출이 장비 교체의 전환비용을 높입니다.",
+    risk: "메모리 설비투자 주기와 중국 수출규제, 소수 고객 집중, 신공정 장비 인증 지연에 실적이 민감합니다.",
+    watch: ["메모리 장비 매출", "고객지원 매출", "중국 매출·수출규제"],
+    source: { label: "Lam Research FY2025 공식 실적", url: "https://investor.lamresearch.com/2025-07-30-Lam-Research-Corporation-Reports-Financial-Results-for-the-Quarter-Ended-June-29,-2025" }
+  },
+  {
+    id: "kla", name: "KLA", ticker: "KLAC", country: "미국", sectorId: "ai-chips", role: "반도체 검사·계측장비",
+    fiscal: "FY2025 · 2025.06.30 종료", revenue: "US$12.2B", revenueGrowth: 23, margin: 42.4,
+    profitability: "GAAP 영업이익률 약 42.4%", cashSignal: "영업현금흐름 약 US$4.4B",
+    healthParts: { profitability: 25, growth: 21, cash: 24, position: 25 },
+    business: "반도체 공정 중 결함을 찾고 치수와 수율을 측정하는 검사·계측 장비와 분석 소프트웨어를 공급합니다.",
+    moat: "미세 결함 데이터와 광학·전자빔 기술, 고객 생산라인에 축적된 공정 경험이 높은 기술 전환비용을 만듭니다.",
+    risk: "선단공정 투자 지연과 고객 집중, 대중국 장비 규제, 높은 기대 수준이 주문 변동을 주가에 확대할 수 있습니다.",
+    watch: ["선단공정 매출", "서비스 반복매출", "신규수주·수주잔고"],
+    source: { label: "KLA FY2025 공식 실적", url: "https://ir.kla.com/news-events/news-releases/detail/547/kla-corporation-reports-fiscal-2025-fourth-quarter-and-full-year-results" }
+  },
+  {
+    id: "tokyo-electron", name: "Tokyo Electron", ticker: "8035", country: "일본", sectorId: "ai-chips", role: "반도체 제조장비",
+    fiscal: "FY2025 · 2025.03.31 종료", revenue: "¥2.43T", revenueGrowth: 32.8, margin: 30.2,
+    profitability: "영업이익률 약 30.2%", cashSignal: "영업현금흐름 약 ¥542B",
+    healthParts: { profitability: 24, growth: 23, cash: 23, position: 24 },
+    business: "코터·디벨로퍼, 식각, 증착, 세정 등 반도체 전공정 장비와 설치 장비의 서비스를 전 세계 팹에 판매합니다.",
+    moat: "여러 핵심 공정 장비의 높은 점유율과 고객 공동개발, 장기간의 공정 인증이 신규 공급자의 진입을 어렵게 합니다.",
+    risk: "반도체 설비투자 주기, 엔화 변동과 중국 수출규제, 첨단 공정 전환 시 제품 경쟁력 변화가 주요 위험입니다.",
+    watch: ["웨이퍼팹 장비 수요", "중국 매출 비중", "연구개발비·신공정 점유율"],
+    source: { label: "Tokyo Electron FY2025 공식 실적", url: "https://www.tel.com/ir/library/report/" }
+  },
+  {
+    id: "mediatek", name: "MediaTek", ticker: "2454", country: "대만", sectorId: "ai-chips", role: "모바일·연결 반도체",
+    fiscal: "FY2024 · 연결", revenue: "NT$530.6B", revenueGrowth: 22.4, margin: 17.4,
+    profitability: "영업이익률 약 17.4%", cashSignal: "영업현금흐름 약 NT$136B",
+    healthParts: { profitability: 20, growth: 21, cash: 23, position: 22 },
+    business: "스마트폰용 시스템반도체와 TV·와이파이·자동차·엣지 AI용 연결 칩을 팹리스 방식으로 설계합니다.",
+    moat: "다양한 소비자 기기 고객과 통합형 칩 설계, 빠른 제품 출시와 원가 경쟁력이 중가 시장에서 강점입니다.",
+    risk: "스마트폰 경기와 중국 고객, 파운드리 의존, 프리미엄 칩 경쟁과 고객사의 자체 설계 확대가 위험입니다.",
+    watch: ["플래그십 칩 매출", "엣지 AI 제품 비중", "총이익률·파운드리 비용"],
+    source: { label: "MediaTek 2024 연차보고", url: "https://corp.mediatek.com/investor-relations/financial-information" }
+  },
+  {
+    id: "apple", name: "Apple", ticker: "AAPL", country: "미국", sectorId: "ai-platforms", role: "기기·서비스 생태계",
+    fiscal: "FY2024 · 2024.09.28 종료", revenue: "US$391.0B", revenueGrowth: 2, margin: 31.5,
+    profitability: "GAAP 영업이익률 약 31.5%", cashSignal: "영업현금흐름 US$118.3B",
+    healthParts: { profitability: 24, growth: 12, cash: 25, position: 25 },
+    business: "스마트폰·PC·웨어러블과 운영체제, 앱 유통·결제·클라우드·구독 서비스를 하나의 생태계로 판매합니다.",
+    moat: "기기와 운영체제, 반도체 설계, 유통망과 서비스가 연결돼 높은 고객 충성도와 전환비용을 만듭니다.",
+    risk: "아이폰 매출 집중과 중국 공급망·수요, 앱스토어 규제, AI 기능의 수익화 지연이 성장에 영향을 줍니다.",
+    watch: ["서비스 매출·마진", "활성 기기 수", "중국 매출·공급망"],
+    source: { label: "Apple FY2024 공식 실적", url: "https://www.apple.com/newsroom/2024/10/apple-reports-fourth-quarter-results/" }
+  },
+  {
+    id: "adobe", name: "Adobe", ticker: "ADBE", country: "미국", sectorId: "ai-platforms", role: "창작·문서 AI 소프트웨어",
+    fiscal: "FY2024 · 2024.11.29 종료", revenue: "US$21.5B", revenueGrowth: 11, margin: 31.5,
+    profitability: "GAAP 영업이익률 약 31.5%", cashSignal: "영업현금흐름 약 US$8.1B",
+    healthParts: { profitability: 23, growth: 17, cash: 24, position: 24 },
+    business: "Photoshop·Premiere·Acrobat와 기업용 마케팅 도구를 구독형으로 제공하고 생성형 AI 기능을 결합합니다.",
+    moat: "창작 파일 형식과 전문가 업무흐름, 방대한 교육·플러그인 생태계가 사용자의 전환비용을 높입니다.",
+    risk: "생성형 AI 경쟁과 무료 도구, 저작권 비용, 신규 AI 기능의 유료 전환 속도가 장기 성장의 변수입니다.",
+    watch: ["디지털 미디어 ARR", "Firefly 유료 사용", "구독 해지율·영업마진"],
+    source: { label: "Adobe FY2024 공식 실적", url: "https://news.adobe.com/news/2024/12/121124-adobe-reports-record-q4-and-fy2024-revenue" }
+  },
+  {
+    id: "tencent", name: "Tencent", ticker: "TCEHY", country: "중국", sectorId: "ai-platforms", role: "소셜·게임·클라우드 플랫폼",
+    fiscal: "FY2024 · 연결", revenue: "RMB 660.3B", revenueGrowth: 8, margin: 32.5,
+    profitability: "IFRS 영업이익률 약 32.5%", cashSignal: "잉여현금흐름 약 RMB 153B",
+    healthParts: { profitability: 23, growth: 16, cash: 24, position: 25 },
+    business: "WeChat 기반 소셜·결제·광고, 온라인게임과 클라우드·기업 서비스를 중국과 해외에 제공합니다.",
+    moat: "대규모 소셜 관계망과 결제·콘텐츠·미니프로그램이 연결돼 사용자와 사업자의 전환비용을 만듭니다.",
+    risk: "중국 게임·데이터 규제, 경기와 광고 수요, 투자자산 변동, 해외 확장의 정책 위험을 함께 봐야 합니다.",
+    watch: ["게임 매출 성장", "광고·핀테크 매출", "AI 투자와 잉여현금"],
+    source: { label: "Tencent FY2024 공식 실적", url: "https://www.tencent.com/en-us/investors/financial-news.html" }
+  },
+  {
+    id: "alibaba", name: "Alibaba Group", ticker: "BABA", country: "중국", sectorId: "ai-platforms", role: "전자상거래·클라우드",
+    fiscal: "FY2025 · 2025.03.31 종료", revenue: "RMB 996.3B", revenueGrowth: 6, margin: 14.0,
+    profitability: "조정 EBITA 마진 약 14.0%", cashSignal: "잉여현금흐름 약 RMB 74B",
+    healthParts: { profitability: 18, growth: 14, cash: 22, position: 24 },
+    business: "중국·해외 전자상거래 플랫폼과 물류, 클라우드 인프라·AI 모델 서비스를 판매자와 기업에 제공합니다.",
+    moat: "판매자·구매자 네트워크와 결제·물류 데이터, 중국 최대급 클라우드 설치기반이 교차판매를 돕습니다.",
+    risk: "중국 소비 둔화와 가격 경쟁, 규제, 해외사업 손실, AI 데이터센터 투자 증가가 수익성을 낮출 수 있습니다.",
+    watch: ["중국 커머스 고객관리 매출", "클라우드 성장", "해외사업 손실·현금흐름"],
+    source: { label: "Alibaba FY2025 공식 실적", url: "https://www.alibabagroup.com/en-US/document-1769182250214998016" }
+  },
+  {
+    id: "naver", name: "NAVER", ticker: "035420", country: "한국", sectorId: "ai-platforms", role: "검색·커머스·핀테크 AI",
+    fiscal: "FY2024 · 연결", revenue: "10.74조원", revenueGrowth: 11, margin: 18.4,
+    profitability: "영업이익률 약 18.4%", cashSignal: "영업이익 약 1.98조원",
+    healthParts: { profitability: 20, growth: 17, cash: 21, position: 23 },
+    business: "검색·광고·커머스·핀테크·콘텐츠·클라우드와 한국어 기반 AI 서비스를 소비자와 기업에 제공합니다.",
+    moat: "국내 검색·콘텐츠·쇼핑 데이터와 결제·판매자 생태계가 서비스 간 유입과 광고 효율을 높입니다.",
+    risk: "검색의 AI 전환과 글로벌 플랫폼 경쟁, 커머스 수수료 규제, 콘텐츠 투자 회수의 불확실성이 있습니다.",
+    watch: ["검색·커머스 매출", "핀테크 결제액", "AI·클라우드 유료 고객"],
+    source: { label: "NAVER 2024 공식 실적", url: "https://www.navercorp.com/investment/earningsRelease" }
+  },
+  {
+    id: "samsung-sds", name: "삼성SDS", ticker: "018260", country: "한국", sectorId: "ai-platforms", role: "기업 IT·클라우드·물류",
+    fiscal: "FY2024 · 연결", revenue: "13.83조원", revenueGrowth: 4.2, margin: 6.6,
+    profitability: "영업이익률 약 6.6%", cashSignal: "영업이익 약 0.91조원",
+    healthParts: { profitability: 15, growth: 12, cash: 22, position: 22 },
+    business: "기업용 클라우드·데이터센터·생성형 AI와 시스템 구축, 디지털 물류 플랫폼 서비스를 제공합니다.",
+    moat: "대형 제조·금융 고객의 핵심 시스템 운영 경험과 데이터센터, 물류 업무 데이터가 장기 계약을 지탱합니다.",
+    risk: "계열 고객 집중, 낮은 물류 마진과 운임 변동, 클라우드 투자 회수와 글로벌 경쟁이 주요 위험입니다.",
+    watch: ["클라우드 매출 성장", "AI 서비스 계약", "물류 부문 마진"],
+    source: { label: "삼성SDS FY2024 공식 실적", url: "https://www.samsungsds.com/kr/investor/ir/financial-information.html" }
+  },
+  {
+    id: "baidu", name: "Baidu", ticker: "BIDU", country: "중국", sectorId: "ai-platforms", role: "검색·생성형 AI·자율주행",
+    fiscal: "FY2024 · 연결", revenue: "RMB 133.1B", revenueGrowth: -1, margin: 17.6,
+    profitability: "GAAP 영업이익률 약 17.6%", cashSignal: "현금·단기투자 약 RMB 162B",
+    healthParts: { profitability: 19, growth: 9, cash: 24, position: 21 },
+    business: "중국 검색광고와 클라우드·생성형 AI 모델, 지도 및 Apollo 자율주행 서비스를 개발·운영합니다.",
+    moat: "중국어 검색 데이터와 지도·클라우드 인프라, 장기간 축적한 자율주행 시험 데이터가 핵심 자산입니다.",
+    risk: "검색광고 둔화와 중국 AI 가격 경쟁, 높은 모델·데이터센터 투자, 자율주행 규제가 부담입니다.",
+    watch: ["AI 클라우드 매출", "검색광고 성장", "Apollo 유료 운행"],
+    source: { label: "Baidu FY2024 공식 실적", url: "https://ir.baidu.com/news-releases/news-release-details/baidu-announces-fourth-quarter-and-fiscal-year-2024-results" }
+  },
+  {
+    id: "kia", name: "기아", ticker: "000270", country: "한국", sectorId: "battery-mobility", role: "자동차·전기차·PBV",
+    fiscal: "FY2024 · 연결", revenue: "107.45조원", revenueGrowth: 7.7, margin: 11.8,
+    profitability: "영업이익률 약 11.8%", cashSignal: "영업이익 약 12.67조원",
+    healthParts: { profitability: 20, growth: 15, cash: 21, position: 23 },
+    business: "내연기관·하이브리드·전기차와 목적기반차량을 글로벌 생산·판매망을 통해 소비자와 기업에 판매합니다.",
+    moat: "현대차그룹의 플랫폼·부품 공동개발과 높은 생산효율, SUV·하이브리드 제품 구성이 수익성을 지탱합니다.",
+    risk: "관세·환율과 자동차 경기, 전기차 가격 경쟁, 품질·보증 비용과 지역별 규제가 이익에 영향을 줍니다.",
+    watch: ["하이브리드·EV 판매", "차량당 인센티브", "북미 관세·영업마진"],
+    source: { label: "기아 FY2024 공식 실적", url: "https://worldwide.kia.com/int/company/ir/ir-library/financial-information" }
+  },
+  {
+    id: "general-motors", name: "General Motors", ticker: "GM", country: "미국", sectorId: "battery-mobility", role: "자동차·전기차·소프트웨어",
+    fiscal: "FY2024 · 연결", revenue: "US$187.4B", revenueGrowth: 9, margin: 6.9,
+    profitability: "GAAP 영업이익률 약 6.9%", cashSignal: "자동차 영업현금흐름 약 US$23.9B",
+    healthParts: { profitability: 14, growth: 16, cash: 21, position: 22 },
+    business: "북미 중심의 내연기관·전기차와 금융서비스, 차량 소프트웨어·배터리 플랫폼을 개발하고 판매합니다.",
+    moat: "대형 픽업·SUV 브랜드와 북미 유통망, 규모 있는 제조·금융 기반이 전기차 투자 재원을 제공합니다.",
+    risk: "자동차 경기와 가격 인센티브, 전기차 공장 가동률, 리콜·노무비와 중국 사업 부진이 위험입니다.",
+    watch: ["북미 차량당 이익", "EV 손익분기", "재고·인센티브"],
+    source: { label: "GM FY2024 공식 실적", url: "https://investor.gm.com/news-releases/news-release-details/2025/gm-releases-2024-fourth-quarter-and-full-year-results" }
+  },
+  {
+    id: "ford", name: "Ford Motor", ticker: "F", country: "미국", sectorId: "battery-mobility", role: "자동차·상용차·전기차",
+    fiscal: "FY2024 · 연결", revenue: "US$185.0B", revenueGrowth: 5, margin: 3.0,
+    profitability: "GAAP 영업이익률 약 3.0%", cashSignal: "자동차 영업현금흐름 약 US$15.4B",
+    healthParts: { profitability: 9, growth: 13, cash: 20, position: 21 },
+    business: "픽업·SUV·상용차와 전기차, 차량 금융 및 기업용 차량관리 소프트웨어를 북미·유럽 등에 판매합니다.",
+    moat: "F-Series와 상용차 고객 기반, 광범위한 딜러망과 차량관리 서비스가 반복적인 부품·금융 수요를 만듭니다.",
+    risk: "전기차 부문 손실과 품질보증 비용, 노무비·관세, 경기 하강 때 금융 자회사 신용손실이 커질 수 있습니다.",
+    watch: ["Ford Pro 마진", "EV 부문 손실", "보증비·재고"],
+    source: { label: "Ford FY2024 공식 실적", url: "https://shareholder.ford.com/investors/financials/default.aspx" }
+  },
+  {
+    id: "bmw", name: "BMW Group", ticker: "BMW", country: "독일", sectorId: "battery-mobility", role: "프리미엄 자동차·전동화",
+    fiscal: "FY2024 · 연결", revenue: "€142.4B", revenueGrowth: -8.4, margin: 7.7,
+    profitability: "자동차 부문 EBIT 마진 약 6.3%", cashSignal: "자동차 부문 잉여현금흐름 약 €4.9B",
+    healthParts: { profitability: 15, growth: 7, cash: 20, position: 23 },
+    business: "BMW·MINI·Rolls-Royce 브랜드의 내연기관·전기차와 금융서비스를 프리미엄 고객에게 판매합니다.",
+    moat: "강한 프리미엄 브랜드와 엔진·차체·소프트웨어 통합, 글로벌 생산 유연성이 가격 결정력을 뒷받침합니다.",
+    risk: "중국 프리미엄 수요 둔화와 가격 경쟁, 전동화 투자, 유럽 환경규제와 환율이 수익성을 흔들 수 있습니다.",
+    watch: ["자동차 EBIT 마진", "순수전기차 판매", "중국 판매·가격"],
+    source: { label: "BMW Group 2024 공식 실적", url: "https://www.bmwgroup.com/en/report/2024/index.html" }
+  },
+  {
+    id: "mercedes-benz", name: "Mercedes-Benz Group", ticker: "MBG", country: "독일", sectorId: "battery-mobility", role: "프리미엄 자동차·전동화",
+    fiscal: "FY2024 · 연결", revenue: "€145.6B", revenueGrowth: -4.5, margin: 8.8,
+    profitability: "승용차 조정 매출이익률 약 8.1%", cashSignal: "산업사업 잉여현금흐름 약 €9.2B",
+    healthParts: { profitability: 16, growth: 8, cash: 22, position: 23 },
+    business: "Mercedes-Benz 승용차·밴과 금융서비스, 전기차·차량 소프트웨어를 프리미엄 시장에 제공합니다.",
+    moat: "글로벌 프리미엄 브랜드와 고급차 고객 기반, 안전·파워트레인 기술이 평균판매가격을 지탱합니다.",
+    risk: "중국 고급차 수요와 할인 경쟁, 전기차 전환비용, 유럽 규제와 자율주행 소프트웨어 투자가 변수입니다.",
+    watch: ["승용차 매출이익률", "고급차·EV 판매", "중국 가격·재고"],
+    source: { label: "Mercedes-Benz 2024 공식 실적", url: "https://group.mercedes-benz.com/investors/reports-news/annual-reports/2024/" }
+  },
+  {
+    id: "honda", name: "Honda Motor", ticker: "7267", country: "일본", sectorId: "battery-mobility", role: "자동차·이륜차·전동화",
+    fiscal: "FY2025 · 2025.03.31 종료", revenue: "¥21.7T", revenueGrowth: 6.2, margin: 5.6,
+    profitability: "영업이익률 약 5.6%", cashSignal: "영업현금흐름 약 ¥2.1T",
+    healthParts: { profitability: 13, growth: 14, cash: 21, position: 23 },
+    business: "자동차·이륜차·범용엔진과 금융서비스를 전 세계에 판매하고 전기차·배터리·소프트웨어에 투자합니다.",
+    moat: "세계 최대급 이륜차 사업의 규모와 엔진 기술, 아시아 유통망이 자동차 경기 변동을 일부 분산합니다.",
+    risk: "자동차 경쟁력과 전기차 투자비, 북미 관세·리콜, 엔화와 아시아 이륜차 수요 변화가 주요 위험입니다.",
+    watch: ["이륜차 이익", "자동차 영업마진", "EV 투자·북미 판매"],
+    source: { label: "Honda FY2025 공식 실적", url: "https://global.honda/en/investors/library/financialresult.html" }
+  },
+  {
+    id: "lg-chem", name: "LG화학", ticker: "051910", country: "한국", sectorId: "battery-mobility", role: "배터리소재·석유화학·바이오",
+    fiscal: "FY2024 · 연결", revenue: "48.9조원", revenueGrowth: -11.5, margin: 3.7,
+    profitability: "영업이익률 약 3.7%", cashSignal: "영업이익 약 1.8조원",
+    healthParts: { profitability: 10, growth: 6, cash: 16, position: 21 },
+    business: "석유화학 제품과 양극재 등 첨단소재, 생명과학 사업을 운영하고 배터리 자회사를 보유합니다.",
+    moat: "소재 연구개발과 대형 고객 인증, 화학에서 배터리소재로 이어지는 생산 경험이 사업 전환의 기반입니다.",
+    risk: "석유화학 공급과잉과 배터리 수요 둔화, 대규모 증설·차입, 자회사 가치 변동이 재무에 영향을 줍니다.",
+    watch: ["양극재 출하·가격", "석유화학 스프레드", "순차입금·설비투자"],
+    source: { label: "LG화학 FY2024 공식 실적", url: "https://www.lgchem.com/company/information-center/ir-archive/earnings-release" }
+  },
+  {
+    id: "posco-future-m", name: "포스코퓨처엠", ticker: "003670", country: "한국", sectorId: "battery-mobility", role: "양극재·음극재",
+    fiscal: "FY2024 · 연결", revenue: "3.70조원", revenueGrowth: -22, margin: 0.2,
+    profitability: "영업이익률 약 0.2%", cashSignal: "영업이익 약 70억원",
+    healthParts: { profitability: 6, growth: 5, cash: 11, position: 20 },
+    business: "전기차 배터리용 양극재·음극재와 내화물·산업용 소재를 글로벌 배터리·완성차 고객에게 공급합니다.",
+    moat: "포스코그룹의 원료·소재 공급망과 양극재·음극재 동시 생산, 장기 고객계약이 성장 기반입니다.",
+    risk: "전기차 수요 둔화와 메탈 가격 하락, 낮은 공장 가동률, 대규모 증설 자금과 고객 집중이 위험입니다.",
+    watch: ["양극재 판매량·단가", "공장 가동률", "수주잔고·순차입금"],
+    source: { label: "포스코퓨처엠 FY2024 공식 자료", url: "https://www.poscofuturem.com/en/ir/financial.do" }
+  }
+];

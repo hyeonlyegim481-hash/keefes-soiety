@@ -459,7 +459,7 @@ async function fetchOfficialText(url, accept, timeoutMs = REQUEST_TIMEOUT_MS) {
     headers: {
       accept,
       "user-agent":
-        "Mozilla/5.0 (compatible; KeefesSociety/1.0; +https://keefes-soiety.vercel.app)"
+        "Mozilla/5.0 (compatible; KeefesSociety/1.0; +https://keefes-society.vercel.app)"
     },
     redirect: "follow",
     signal: AbortSignal.timeout(timeoutMs)

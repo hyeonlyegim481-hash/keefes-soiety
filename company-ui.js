@@ -191,7 +191,7 @@ function renderCompanyChapter() {
         <div>
           <p class="section-kicker">COMPANY TERMINAL</p>
           <h2>기업을 실적·가격·사업으로 함께 보기</h2>
-          <p>60개 기업의 공식 실적 스냅샷과 선택한 종목의 시세를 분리해 확인합니다.</p>
+          <p>${futureCompanies.length}개 기업의 공식 실적 스냅샷과 선택한 종목의 시세를 분리해 확인합니다.</p>
         </div>
         <button type="button" class="company-watch-button" data-company-profile>
           <span aria-hidden="true">＋</span><strong>관심 기업 설정</strong>

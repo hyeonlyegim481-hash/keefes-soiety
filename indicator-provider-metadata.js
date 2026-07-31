@@ -1,5 +1,5 @@
 export const indicatorProviderMetadata = {
-  "retrievedAt": "2026-07-27T07:31:06.475Z",
+  "retrievedAt": "2026-07-31T16:21:52.617Z",
   "indicators": {
     "SP.DYN.TFRT.IN": {
       "officialName": "Fertility rate, total (births per woman)",
@@ -290,6 +290,191 @@ export const indicatorProviderMetadata = {
       "officialName": "Logistics performance index: Overall (1=low to 5=high)",
       "sourceOrganization": "Connecting to Compete - Logistics Performance Index (LPI), World Bank (WB), uri: https://lpi.worldbank.org",
       "sourceNote": "The Logistics Performance Index overall score reflects perceptions of a country's logistics based on the efficiency of customs clearance process, quality of trade- and transport-related infrastructure, ease of arranging competitively priced shipments, quality of logistics services, ability to track and trace consignments, and frequency with which shipments reach the consignee within the scheduled time. The index ranges from 1 to 5, with a higher score representing better performance. \n\nData are from the Logistics Performance Index survey conducted by the World Bank in partnership with academic and international institutions and private companies and individuals engaged in international logistics. The 2023 LPI survey was conducted from September 6 to November 5, 2022. It provided 4,090 country assessments by 652 logistics professionals in 115 countries in all World Bank regions. Respondents evaluate eight countries on six core dimensions on a scale from 1 (worst) to 5 (best). The eight countries are chosen based on the most important export and import markets of the respondent's country, random selection, and, for landlocked countries, neighboring countries that connect them with international markets. \n\nScores for the six areas are averaged across all respondents and aggregated to a single score using principal components analysis. \n\nDetails of the survey methodology and index construction methodology are included in Appendix 5 of the 2023 LPI report available at: https://lpi.worldbank.org/report."
+    },
+    "SP.POP.TOTL": {
+      "officialName": "Population, total",
+      "sourceOrganization": "World Population Prospects, United Nations (UN), uri: https://population.un.org/wpp/, publisher: UN Population Division;\nStatistical databases and publications from national statistical offices, National Statistical Offices (NSOs), uri: https://unstats.un.org/home/nso_sites/, publisher: National Statistical Offices;\nEurostat: Demographic Statistics, Eurostat (ESTAT), uri: https://ec.europa.eu/eurostat/data/database?node_code=earn_ses_monthly, publisher: Eurostat;\nPopulation and Vital Statistics Report (various years), United Nations (UN), uri: https://unstats.un.org, publisher: UN Statistics Division",
+      "sourceNote": "Total population is based on the de facto definition of population, which counts all residents regardless of legal status or citizenship. The values shown are midyear estimates."
+    },
+    "SP.POP.1564.TO.ZS": {
+      "officialName": "Population ages 15-64 (% of total population)",
+      "sourceOrganization": "World Population Prospects, United Nations (UN), publisher: UN Population Division",
+      "sourceNote": "Total population between the ages 15 to 64 as a percentage of the total population. Population is based on the de facto definition of population, which counts all residents regardless of legal status or citizenship."
+    },
+    "SP.POP.0014.TO.ZS": {
+      "officialName": "Population ages 0-14 (% of total population)",
+      "sourceOrganization": "United Nations Population Division. World Population Prospects., United Nations Population Division, uri: https://population.un.org/wpp/, publisher: United Nations Population Division",
+      "sourceNote": "Population between the ages 0 to 14 as a percentage of the total population. Population is based on the de facto definition of population."
+    },
+    "SP.POP.DPND.OL": {
+      "officialName": "Age dependency ratio, old (% of working-age population)",
+      "sourceOrganization": "World Population Prospects, United Nations (UN), publisher: UN Population Division;\nStaff estimates, World Bank (WB)",
+      "sourceNote": "Age dependency ratio, old, is the ratio of older dependents--people older than 64--to the working-age population--those ages 15-64. Data are shown as the proportion of dependents per 100 working-age population."
+    },
+    "NY.GDP.MKTP.CD": {
+      "officialName": "GDP (current US$)",
+      "sourceOrganization": "Country official statistics, National Statistical Organizations and/or Central Banks;\nNational Accounts data files, Organisation for Economic Co-operation and Development (OECD);\nStaff estimates, World Bank (WB)",
+      "sourceNote": "Gross domestic product is the total income earned through the production of goods and services in an economic territory during an accounting period. It can be measured in three different ways: using either the expenditure approach, the income approach, or the production approach. This indicator is expressed in current prices, meaning no adjustment has been made to account for price changes over time. This indicator is expressed in United States dollars."
+    },
+    "NY.GNP.PCAP.CD": {
+      "officialName": "GNI per capita, Atlas method (current US$)",
+      "sourceOrganization": "Country official statistics, National Statistical Organizations and/or Central Banks;\nNational Accounts data files, Organisation for Economic Co-operation and Development (OECD);\nStaff estimates, World Bank (WB)",
+      "sourceNote": "Gross national income is the total income earned by all residents within an economic territory during an accounting period. It is equal to gross domestic product plus earned income receivable from abroad minus earned income payable abroad. This figure is converted to U.S. dollars using the World Bank Atlas method, and divided by the midyear population. GNI, calculated in national currency, is usually converted to U.S. dollars at official exchange rates for comparisons across economies, although an alternative rate is used when the official exchange rate is judged to diverge by an exceptionally large margin from the rate actually applied in international transactions. To smooth fluctuations in prices and exchange rates, a special Atlas method of conversion is used by the World Bank. This applies a conversion factor that averages the exchange rate for a given year and the two preceding years, adjusted for differences in rates of inflation between the country, and through 2000, the G-5 countries (France, Germany, Japan, the United Kingdom, and the United States). From 2001, these countries include the Euro area, Japan, the United Kingdom, and the United States. This indicator is expressed in current prices, meaning no adjustment has been made to account for price changes over time. This indicator is expressed in United States dollars."
+    },
+    "NV.AGR.TOTL.ZS": {
+      "officialName": "Agriculture, forestry, and fishing, value added (% of GDP)",
+      "sourceOrganization": "Country official statistics, National Statistical Organizations and/or Central Banks;\nNational Accounts data files, Organisation for Economic Co-operation and Development (OECD);\nStaff estimates, World Bank (WB)",
+      "sourceNote": "Agriculture, forestry, and fishing corresponds to ISIC (Rev. 4) divisions 01-03 and includes the exploitation of vegetal and animal natural resources, comprising the activities of growing of crops, raising and breeding of animals, harvesting of timber and other plants, animals or animal products from a farm or their natural habitats.Value added is the contribution to the economy by a producer or an industry or an institutional sector, which is estimated by the total value of output produced and deducting the total value of intermediate consumption of goods and services used to produce that output. This indicator is expressed as a percentage of Gross Domestic Product (GDP) which is the total income earned through the production of goods and services in an economic territory during an accounting period. Note: For VAB countries, gross value added at factor cost is used as the denominator."
+    },
+    "NV.IND.TOTL.ZS": {
+      "officialName": "Industry (including construction), value added (% of GDP)",
+      "sourceOrganization": "Country official statistics, National Statistical Offices (NSOs);\nNational Accounts data files, Central Banks;\nStaff estimates, World Bank (WB)",
+      "sourceNote": "Industry (including construction) corresponds to ISIC (Rev.4) divisions 05-43. It is comprised of mining, manufacturing, construction, electricity, water, and gas industries. Value added is the contribution to the economy by a producer or an industry or an institutional sector, which is estimated by the total value of output produced and deducting the total value of intermediate consumption of goods and services used to produce that output. This indicator is expressed as a percentage of Gross Domestic Product (GDP) which is the total income earned through the production of goods and services in an economic territory during an accounting period."
+    },
+    "NE.CON.PRVT.ZS": {
+      "officialName": "Households and NPISHs final consumption expenditure (% of GDP)",
+      "sourceOrganization": "Country official statistics, National Statistical Organizations and/or Central Banks;\nNational Accounts data files, Organisation for Economic Co-operation and Development (OECD);\nStaff estimates, World Bank (WB)",
+      "sourceNote": "This field includes expenditure on goods and services by the Household and NPISH sector for the direct satisfaction of human needs or wants, whether individual or collective. This indicator is expressed as a percentage of Gross Domestic Product (GDP) which is the total income earned through the production of goods and services in an economic territory during an accounting period."
+    },
+    "NE.CON.GOVT.ZS": {
+      "officialName": "General government final consumption expenditure (% of GDP)",
+      "sourceOrganization": "Country official statistics, National Statistical Offices (NSOs);\nNational Accounts data files, Central Banks;\nStaff estimates, World Bank (WB)",
+      "sourceNote": "Final consumption expenditure is expenditure on goods and services by resident institutional units for the direct satisfaction of human needs or wants, whether individual or collective. General government FCE includes all government current expenditures for purchases of goods and services (including compensation of employees), and most expenditures on national defense and security, but excludes government military expenditures that are part of government capital formation. This indicator is expressed as a percentage of Gross Domestic Product (GDP) which is the total income earned through the production of goods and services in an economic territory during an accounting period."
+    },
+    "SL.UEM.TOTL.FE.ZS": {
+      "officialName": "Unemployment, female (% of female labor force) (modeled ILO estimate)",
+      "sourceOrganization": "ILO Modelled Estimates database (ILOEST), International Labour Organization (ILO), uri: https://ilostat.ilo.org/data/bulk/, publisher: ILOSTAT, type: external database, date accessed: January 17, 2026",
+      "sourceNote": "Unemployment refers to the share of the labor force that is without work but available for and seeking employment."
+    },
+    "SL.EMP.VULN.ZS": {
+      "officialName": "Vulnerable employment, total (% of total employment) (modeled ILO estimate)",
+      "sourceOrganization": "ILO Modelled Estimates database (ILOEST), International Labour Organization (ILO), uri: https://ilostat.ilo.org/data/bulk/, publisher: ILOSTAT, type: estimates based on external database;\nStaff estimates, World Bank (WB)",
+      "sourceNote": "Vulnerable employment is contributing family workers and own-account workers as a percentage of total employment."
+    },
+    "SL.EMP.SELF.ZS": {
+      "officialName": "Self-employed, total (% of total employment) (modeled ILO estimate)",
+      "sourceOrganization": "ILO Modelled Estimates database (ILOEST), International Labour Organization (ILO), uri: https://ilostat.ilo.org/data/bulk/, publisher: ILOSTAT, type: external database, date accessed: January 17, 2026",
+      "sourceNote": "Self-employed workers are those workers who, working on their own account or with one or a few partners or in cooperative, hold the type of jobs defined as a \"self-employment jobs.\" i.e. jobs where the remuneration is directly dependent upon the profits derived from the goods and services produced. Self-employed workers include sub-categories of employers, own-account workers and members of producers' cooperatives and contributing family workers."
+    },
+    "SL.EMP.WORK.ZS": {
+      "officialName": "Wage and salaried workers, total (% of total employment) (modeled ILO estimate)",
+      "sourceOrganization": "ILO Modelled Estimates database (ILOEST), International Labour Organization (ILO), uri: https://ilostat.ilo.org/data/bulk/, publisher: ILOSTAT, type: external database, date accessed: January 17, 2026",
+      "sourceNote": "Wage and salaried workers (employees) are those workers who hold the type of jobs defined as \"paid employment jobs,\" where the incumbents hold explicit (written or oral) or implicit employment contracts that give them a basic remuneration that is not directly dependent upon the revenue of the unit for which they work."
+    },
+    "SH.XPD.CHEX.PC.CD": {
+      "officialName": "Current health expenditure per capita (current US$)",
+      "sourceOrganization": "Global Health Expenditure Database, updated December 12th, 2025, World Health Organization (WHO), uri: http://apps.who.int/nha/database",
+      "sourceNote": "Current expenditures on health per capita in current US dollars. Estimates of current health expenditures include healthcare goods and services consumed during each year."
+    },
+    "SH.STA.MMRT": {
+      "officialName": "Maternal mortality ratio (modeled estimate, per 100,000 live births)",
+      "sourceOrganization": "Trends in Maternal Mortality, World Health Organization (WHO), uri: https://www.who.int/news/item/23-02-2023-a-woman-dies-every-two-minutes-due-to-pregnancy-or-childbirth--un-agencies;\nUN Children's Fund (UNICEF), note: Trends in Maternal Mortality;\nUN Population Fund (UNFPA), note: Trends in Maternal Mortality;\nWorld Bank Group (WBG), note: Trends in Maternal Mortality",
+      "sourceNote": "Maternal mortality ratio is the number of women who die from pregnancy-related causes while pregnant or within 42 days of pregnancy termination per 100,000 live births. The data are estimated with a regression model using information on the proportion of maternal deaths among non-AIDS deaths in women ages 15-49, fertility, birth attendants, and GDP measured using purchasing power parities (PPPs)."
+    },
+    "SH.H2O.BASW.ZS": {
+      "officialName": "People using at least basic drinking water services (% of population)",
+      "sourceOrganization": "WHO/UNICEF Joint Monitoring Programme (JMP) for Water Supply, Sanitation and Hygiene, World Health Organization (WHO), uri: washdata.org, publisher: WHO/UNICEF Joint Monitoring Programme (JMP) for Water Supply, Sanitation and Hygiene (washdata.org), date accessed: 2025-09-30, date published: 2025-08-25;\nUN Children's Fund (UNICEF), uri: washdata.org, note: WHO/UNICEF Joint Monitoring Programme (JMP) for Water Supply, Sanitation and Hygiene",
+      "sourceNote": "The percentage of people using at least basic water services.  This indicator encompasses both people using basic water services as well as those using safely managed water services.  Basic drinking water services is defined as drinking water from an improved source, provided collection time is not more than 30 minutes for a round trip.  Improved water sources include piped water, boreholes or tubewells, protected dug wells, protected springs, and packaged or delivered water."
+    },
+    "SE.SEC.ENRR": {
+      "officialName": "School enrollment, secondary (% gross)",
+      "sourceOrganization": "Data API, UN Educational, Scientific and Cultural Organization (UNESCO), uri: https://databrowser.uis.unesco.org/resources, note: The data are obtained through the UIS API.  Detailed documentation is available at: https://api.uis.unesco.org/api/public/documentation/, publisher: UNESCO Institute for Statistics (UIS), type: Bulk file (csv), date accessed: 2026-03-19, date published: 2026-02",
+      "sourceNote": "Gross enrollment ratio is the ratio of total enrollment, regardless of age, to the population of the age group that officially corresponds to the level of education shown. Secondary education completes the provision of basic education that began at the primary level, and aims at laying the foundations for lifelong learning and human development, by offering more subject- or skill-oriented instruction using more specialized teachers."
+    },
+    "SE.XPD.TOTL.GD.ZS": {
+      "officialName": "Government expenditure on education, total (% of GDP)",
+      "sourceOrganization": "Data API, UN Educational, Scientific and Cultural Organization (UNESCO), uri: https://databrowser.uis.unesco.org/resources, note: The data are obtained through the UIS API.  Detailed documentation is available at: https://api.uis.unesco.org/api/public/documentation/, publisher: UNESCO Institute for Statistics (UIS), date accessed: 2026-03-19, date published: 2026-02",
+      "sourceNote": "General government expenditure on education (current, capital, and transfers) is expressed as a percentage of GDP. It includes expenditure funded by transfers from international sources to government. General government usually refers to local, regional and central governments."
+    },
+    "SP.POP.SCIE.RD.P6": {
+      "officialName": "Researchers in R&D (per million people)",
+      "sourceOrganization": "Stat Bulk Data Download Service, UN Educational, Scientific and Cultural Organization (UNESCO), uri: https://databrowser.uis.unesco.org/resources/bulk, publisher: UNESCO Institute for Statistics (UIS), date accessed: 2025-03-26, date published: 2025-02",
+      "sourceNote": "The number of researchers engaged in Research &Development (R&D), expressed as per million. Researchers are professionals who conduct research and improve or develop concepts, theories, models techniques instrumentation, software of operational methods. R&D covers basic research, applied research, and experimental development."
+    },
+    "EG.ELC.ACCS.ZS": {
+      "officialName": "Access to electricity (% of population)",
+      "sourceOrganization": "SDG 7.1.1 Electrification Dataset, World Bank (WB), uri: https://trackingsdg7.esmap.org/downloads, note: Data is downloaded from ESMAP website. Data is released when a new Tracking SDG7 report is released., publisher: World Bank (WB), date accessed: 2024-05-16, date published: 2023",
+      "sourceNote": "Access to electricity is the percentage of population with access to electricity. Electrification data are collected from industry, national surveys and international sources."
+    },
+    "EG.USE.ELEC.KH.PC": {
+      "officialName": "Electric power consumption (kWh per capita)",
+      "sourceOrganization": "IEA Energy Statistics Data Browser, International Energy Agency (IEA), uri: https://www.iea.org/data-and-statistics/data-tools/energy-statistics-data-browser, publisher: International Energy Agency (IEA), date accessed: 2025-03-25",
+      "sourceNote": "Electric power consumption measures the production of power plants and combined heat and power plants less transmission, distribution, and transformation losses and own use by heat and power plants."
+    },
+    "EG.IMP.CONS.ZS": {
+      "officialName": "Energy imports, net (% of energy use)",
+      "sourceOrganization": "IEA Energy Statistics Data Browser, International Energy Agency (IEA), uri: https://www.iea.org/data-and-statistics/data-tools/energy-statistics-data-browser, publisher: International Energy Agency (IEA), date accessed: 2025-03-25",
+      "sourceNote": "Net energy imports are estimated as gross imports less gross exports, both measured in tons of oil equivalents (toe). A negative value indicates that the country is a net exporter. Energy use refers to use of primary energy before transformation to other end-use fuels, which is equal to indigenous production plus imports and stock changes, minus exports and fuels supplied to ships and aircraft engaged in international transport."
+    },
+    "FB.AST.NPER.ZS": {
+      "officialName": "Bank nonperforming loans to total gross loans (%)",
+      "sourceOrganization": "Financial Soundness Indicators, International Monetary Fund (IMF), uri: https://data.imf.org/en/datasets/IMF:EXTERNAL_DATASET_CARDS/IMF.STA:LFSI",
+      "sourceNote": "The indicator measures the proportion of a deposit taker’s loan portfolio that is impaired or at risk of default. It is calculated as the ratio of non-performing loans (NPLs) to total gross loans, where NPLs are defined as loans that are past due by 90 days or more or are otherwise considered unlikely to be repaid in full without the realization of collateral. Both non-performing loans and total gross loans should be reported at their gross book value, without deducting for loan-loss provisions or collateral. This indicator provides a key measure of asset quality and potential credit risk in the banking system."
+    },
+    "FR.INR.LEND": {
+      "officialName": "Lending interest rate (%)",
+      "sourceOrganization": "International Financial Statistics database, International Monetary Fund (IMF)",
+      "sourceNote": "Lending rate is the bank rate that usually meets the short- and medium-term financing needs of the private sector. This rate is normally differentiated according to creditworthiness of borrowers and objectives of financing. The terms and conditions attached to these rates differ by country, however, limiting their comparability."
+    },
+    "FR.INR.DPST": {
+      "officialName": "Deposit interest rate (%)",
+      "sourceOrganization": "International Financial Statistics database, International Monetary Fund (IMF)",
+      "sourceNote": "Deposit interest rate is the rate paid by commercial or similar banks for demand, time, or savings deposits. The terms and conditions attached to these rates differ by country, however, limiting their comparability. This indicator is expressed as a percentage (a÷b)*100."
+    },
+    "CM.MKT.TRNR": {
+      "officialName": "Stocks traded, turnover ratio of domestic shares (%)",
+      "sourceOrganization": "World Federation of Exchanges database, World Federation of Exchanges (WFE)",
+      "sourceNote": "Turnover ratio is the value of domestic shares traded divided by their market capitalization. The value is annualized by multiplying the monthly average by 12."
+    },
+    "BX.TRF.PWKR.DT.GD.ZS": {
+      "officialName": "Personal remittances, received (% of GDP)",
+      "sourceOrganization": "Staff estimates, World Bank (WB);\nIMF balance of payments data, International Monetary Fund (IMF);\nWorld Bank GDP estimates, World Bank (WB);\nOECD GDP estimates, Organisation for Economic Co-operation and Development (OECD)",
+      "sourceNote": "Personal remittances comprise personal transfers and compensation of employees. Personal transfers consist of all current transfers in cash or in kind made or received by resident households to or from nonresident households. Personal transfers thus include all current transfers between resident and nonresident individuals. Compensation of employees refers to the income of border, seasonal, and other short-term workers who are employed in an economy where they are not resident and of residents employed by nonresident entities. Data are the sum of two items defined in the sixth edition of the IMF's Balance of Payments Manual: personal transfers and compensation of employees."
+    },
+    "FI.RES.TOTL.CD": {
+      "officialName": "Total reserves (includes gold, current US$)",
+      "sourceOrganization": "International Financial Statistics database, International Monetary Fund (IMF)",
+      "sourceNote": "Reserve assets are external assets, including monetary gold, that are readily available to and controlled by monetary authorities for meeting balance of payments financing needs, for intervention in exchange markets to affect the currency exchange rate, and for other related purposes (such as maintaining confidence in the currency and the economy, and serving as a basis for foreign borrowing). Reserve assets must be denominated and settled in foreign currency. This indicator is expressed in current prices, meaning no adjustment has been made to account for price changes over time. This indicator is expressed in United States dollars."
+    },
+    "NE.RSB.GNFS.ZS": {
+      "officialName": "External balance on goods and services (% of GDP)",
+      "sourceOrganization": "Country official statistics, National Statistical Organizations and/or Central Banks;\nNational Accounts data files, Organisation for Economic Co-operation and Development (OECD);\nStaff estimates, World Bank (WB)",
+      "sourceNote": "The balance of international trade in goods and services is the difference between the exports and imports of goods and services. This indicator is expressed as a percentage of Gross Domestic Product (GDP) which is the total income earned through the production of goods and services in an economic territory during an accounting period."
+    },
+    "TX.VAL.MRCH.CD.WT": {
+      "officialName": "Merchandise exports (current US$)",
+      "sourceOrganization": "World Trade Organization (WTO)",
+      "sourceNote": "Merchandise exports includes goods whose economic ownership is changed from a resident to a non-resident and that are not included in the following specific categories: goods under merchanting, non-monetary gold, and parts of travel, construction, and government goods and services n.i.e. This indicator is expressed in current prices, meaning no adjustment has been made to account for price changes over time. This indicator is expressed in United States dollars."
+    },
+    "TM.VAL.MRCH.CD.WT": {
+      "officialName": "Merchandise imports (current US$)",
+      "sourceOrganization": "World Trade Organization (WTO)",
+      "sourceNote": "Merchandise imports includes goods whose economic ownership is changed from a non-resident to a resident and that are not included in the following specific categories: goods under merchanting, non-monetary gold, and parts of travel, construction, and government goods and services n.i.e. This indicator is expressed in current prices, meaning no adjustment has been made to account for price changes over time. This indicator is expressed in United States dollars."
+    },
+    "GC.DOD.TOTL.GD.ZS": {
+      "officialName": "Central government debt, total (% of GDP)",
+      "sourceOrganization": "Government Finance Statistics Yearbook and data files, International Monetary Fund (IMF)",
+      "sourceNote": "Debt is the entire stock of direct government fixed-term contractual obligations to others outstanding on a particular date. It includes domestic and foreign liabilities such as currency and money deposits, securities other than shares, and loans. It is the gross amount of government liabilities reduced by the amount of equity and financial derivatives held by the government. Because debt is a stock rather than a flow, it is measured as of a given date, usually the last day of the fiscal year. Central government is the part of general government that includes all administrative departments of the national executive, legislative, and judicial functions, other central agencies and those non-market producers controlled by the central government, whose competence extends normally over the whole economic territory. This indicator is expressed as a percentage of Gross Domestic Product (GDP) which is the total income earned through the production of goods and services in an economic territory during an accounting period."
+    },
+    "GC.XPN.TOTL.GD.ZS": {
+      "officialName": "Expense (% of GDP)",
+      "sourceOrganization": "Government Finance Statistics Yearbook and data files, International Monetary Fund (IMF);\nWorld Development Indicators, World Bank (WB);\nNational Accounts data files, Organisation for Economic Co-operation and Development (OECD)",
+      "sourceNote": "Expense is a decrease in net worth resulting from a transaction. This indicator is expressed as a percentage of Gross Domestic Product (GDP) which is the total income earned through the production of goods and services in an economic territory during an accounting period."
+    },
+    "IT.NET.SECR.P6": {
+      "officialName": "Secure Internet servers (per 1 million people)",
+      "sourceOrganization": "Secure Server Survey, Netcraft, uri: http://www.netcraft.com/;\nWorld Bank population estimates, World Bank (WB)",
+      "sourceNote": "The number of distinct, publicly-trusted TLS/SSL certificates found in the Netcraft Secure Server Survey (by hosting country), per 1 million people."
+    },
+    "IS.AIR.PSGR": {
+      "officialName": "Air transport, passengers carried",
+      "sourceOrganization": "Civil Aviation Statistics of the World, International Civil Aviation Organization (ICAO), uri: https://data.icao.int/newdataplus/#:~:text=ICAO%20data%20is%20comprised%20of,information%20about%20commercial%20air%20carriers;\nICAO Staff estimates, International Civil Aviation Organization (ICAO), uri: https://data.icao.int/newdataplus/#:~:text=ICAO%20data%20is%20comprised%20of,information%20about%20commercial%20air%20carriers",
+      "sourceNote": "Air carrier data per country refers to passengers carried by airlines registered in that country regardless of the origin or destination of the passengers."
+    },
+    "IS.SHP.GOOD.TU": {
+      "officialName": "Container port traffic (TEU: 20 foot equivalent units)",
+      "sourceOrganization": "UN Conference on Trade and Development (UNCTAD), uri: http://unctad.org/en/Pages/statistics.aspx",
+      "sourceNote": "Port container traffic measures the flow of containers from land to sea transport modes, and vice versa, in twenty-foot equivalent units (TEUs), a standard-size container. Data refer to coastal shipping as well as international journeys. Transshipment traffic is counted as two lifts at the intermediate port (once to off-load and again as an outbound lift) and includes empty units."
     }
   }
 };

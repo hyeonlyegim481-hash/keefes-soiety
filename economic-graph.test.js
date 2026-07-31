@@ -29,6 +29,7 @@ import {
   indicatorDefinitions
 } from "./indicator-data.js";
 import { expandedIndicatorDefinitions } from "./indicator-expanded-data.js";
+import { broadIndicatorDefinitions } from "./indicator-broad-data.js";
 import { financeIndicatorDefinitions } from "./indicator-finance-data.js";
 import { countrySnapshots, lawChanges } from "./politics-data.js";
 
@@ -41,7 +42,8 @@ const markets = Object.entries(MARKET_KNOWLEDGE).map(([id, knowledge], index) =>
 const allIndicators = [
   ...indicatorDefinitions,
   ...financeIndicatorDefinitions,
-  ...expandedIndicatorDefinitions
+  ...expandedIndicatorDefinitions,
+  ...broadIndicatorDefinitions
 ];
 const glossarySeed = [
   ...glossaryTerms,

@@ -38,7 +38,7 @@ export async function enrichHeadlineWithArticle(headline) {
     const response = await fetch(articleUrl, {
       headers: {
         accept: "text/html,application/xhtml+xml",
-        "user-agent": "Mozilla/5.0 (compatible; KeefesSociety/1.0; +https://keefes-soiety.vercel.app)"
+        "user-agent": "Mozilla/5.0 (compatible; KeefesSociety/1.0; +https://keefes-society.vercel.app)"
       },
       redirect: "follow",
       signal

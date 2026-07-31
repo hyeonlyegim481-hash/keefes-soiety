@@ -23,7 +23,15 @@ test("maps company tickers to provider-specific exchange symbols", () => {
   assert.equal(getCompanyProviderSymbol(byId.get("siemens")), "SIE.DE");
   assert.equal(getCompanyProviderSymbol(byId.get("schneider-electric")), "SU.PA");
   assert.equal(getCompanyProviderSymbol(byId.get("catl")), "300750.SZ");
+  assert.equal(getCompanyProviderSymbol(byId.get("mediatek")), "2454.TW");
+  assert.equal(getCompanyProviderSymbol(byId.get("bmw")), "BMW.DE");
+  assert.equal(getCompanyProviderSymbol(byId.get("vestas")), "VWS.CO");
   assert.equal(getCompanyMarketConfig(byId.get("samsung-electronics")).quoteCurrency, "KRW");
+  assert.equal(getCompanyMarketConfig(byId.get("mediatek")).quoteCurrency, "TWD");
+  assert.equal(getCompanyMarketConfig(byId.get("bmw")).quoteCurrency, "EUR");
+  assert.equal(getCompanyMarketConfig(byId.get("vestas")).quoteCurrency, "DKK");
+  assert.equal(getCompanyMarketConfig(byId.get("alibaba")).quoteCurrency, "USD");
+  assert.equal(getCompanyMarketConfig(byId.get("byd")).quoteCurrency, "HKD");
 });
 
 test("parses Naver daily rows without evaluating remote script text", () => {

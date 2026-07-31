@@ -1,4 +1,6 @@
 import { expandedFutureCompanies } from "./future-company-expanded-data.js";
+import { largeCompanyDataA } from "./large-company-data-a.js";
+import { largeCompanyDataB } from "./large-company-data-b.js";
 
 export const futureIndustries = [
   {
@@ -20,7 +22,7 @@ export const futureIndustries = [
       { title: "틀릴 수 있는 조건", body: "고객의 투자수익이 낮아 데이터센터 투자가 줄거나, 자체 ASIC 전환이 빨라지거나, 공급이 급증해 칩과 메모리 가격이 하락하면 매출 성장보다 이익이 먼저 둔화할 수 있습니다." }
     ],
     signals: ["클라우드 3사의 설비투자", "HBM 출하량·평균판매가격", "첨단 패키징 가동률"],
-    companyIds: ["nvidia", "tsmc", "samsung-electronics", "sk-hynix", "amd", "asml", "broadcom", "micron", "arm", "applied-materials"]
+    companyIds: ["nvidia", "tsmc", "samsung-electronics", "sk-hynix", "amd", "asml", "broadcom", "micron", "arm", "applied-materials", "qualcomm", "intel", "lam-research", "kla", "tokyo-electron", "mediatek"]
   },
   {
     id: "ai-platforms",
@@ -41,7 +43,7 @@ export const futureIndustries = [
       { title: "투자비를 확인하는 이유", body: "매출이 늘어도 GPU와 데이터센터 지출이 더 빠르면 잉여현금흐름이 약해질 수 있습니다. 설비투자 증가와 클라우드 수주잔고를 나란히 봐야 합니다." }
     ],
     signals: ["클라우드 매출 성장률", "AI 유료 좌석·수주잔고", "설비투자 대비 잉여현금흐름"],
-    companyIds: ["microsoft", "alphabet", "amazon", "meta", "oracle", "salesforce", "sap", "servicenow"]
+    companyIds: ["microsoft", "alphabet", "amazon", "meta", "oracle", "salesforce", "sap", "servicenow", "apple", "adobe", "tencent", "alibaba", "naver", "samsung-sds", "baidu"]
   },
   {
     id: "battery-mobility",
@@ -62,7 +64,7 @@ export const futureIndustries = [
       { title: "물리 AI와의 연결", body: "자율주행차와 휴머노이드 로봇은 AI 칩뿐 아니라 안전하고 가벼운 배터리, 모터와 제어기를 필요로 합니다. 배터리 에너지밀도와 충전속도가 사용시간을 결정합니다." }
     ],
     signals: ["EV·ESS 출하량 구분", "보조금 제외 영업이익", "공장 가동률과 수주잔고"],
-    companyIds: ["tesla", "lg-energy-solution", "catl", "hyundai-motor", "byd", "panasonic", "samsung-sdi", "toyota"]
+    companyIds: ["tesla", "lg-energy-solution", "catl", "hyundai-motor", "byd", "panasonic", "samsung-sdi", "toyota", "kia", "general-motors", "ford", "bmw", "mercedes-benz", "honda", "lg-chem", "posco-future-m"]
   },
   {
     id: "bio-health",
@@ -83,7 +85,7 @@ export const futureIndustries = [
       { title: "숫자가 늦게 움직이는 이유", body: "임상, 허가, 보험 등재와 공장 검증에 수년이 걸립니다. 현재 매출보다 임상 단계와 규제 승인, 신규 공장 가동 시점이 미래 매출의 선행신호가 됩니다." }
     ],
     signals: ["임상 3상·허가 일정", "핵심 제품 매출 집중도", "CDMO 수주·공장 가동률"],
-    companyIds: ["eli-lilly", "samsung-biologics", "novo-nordisk", "roche", "johnson-johnson", "astrazeneca", "celltrion"]
+    companyIds: ["eli-lilly", "samsung-biologics", "novo-nordisk", "roche", "johnson-johnson", "astrazeneca", "celltrion", "pfizer", "merck", "abbvie", "amgen", "sanofi", "gilead"]
   },
   {
     id: "automation",
@@ -104,7 +106,7 @@ export const futureIndustries = [
       { title: "AI와 전력의 연결", body: "로봇이 복잡한 환경을 인식할수록 엣지 AI 칩과 배터리, 고효율 모터가 필요합니다. 로봇 산업은 반도체·배터리·자동화의 교차점입니다." }
     ],
     signals: ["주문 증가와 수주잔고", "소프트웨어·서비스 비중", "고객 투자회수기간"],
-    companyIds: ["abb", "siemens", "fanuc", "rockwell", "keyence", "yaskawa", "schneider-electric"]
+    companyIds: ["abb", "siemens", "fanuc", "rockwell", "keyence", "yaskawa", "schneider-electric", "honeywell", "mitsubishi-electric", "emerson", "caterpillar"]
   },
   {
     id: "energy-infra",
@@ -125,7 +127,7 @@ export const futureIndustries = [
       { title: "기업 체력을 보는 기준", body: "매출 성장뿐 아니라 수주 마진, 선수금, 운전자본, 보증 의무와 순차입금을 봐야 합니다. 장기 프로젝트는 회계상 이익과 실제 현금 유입 시점이 다를 수 있습니다." }
     ],
     signals: ["수주잔고와 신규수주", "프로젝트 영업이익률", "영업현금흐름·순차입금"],
-    companyIds: ["abb", "doosan-enerbility", "ge-vernova", "siemens", "schneider-electric", "eaton", "ls-electric", "hd-hyundai-electric"]
+    companyIds: ["abb", "doosan-enerbility", "ge-vernova", "siemens", "schneider-electric", "eaton", "ls-electric", "hd-hyundai-electric", "nextera-energy", "hitachi", "mitsubishi-heavy", "kepco", "vestas", "siemens-energy"]
   },
   {
     id: "cybersecurity",
@@ -146,7 +148,7 @@ export const futureIndustries = [
       { title: "관련 기업을 볼 때 주의", body: "대형 클라우드 기업은 보안을 별도 사업으로만 공시하지 않을 수 있습니다. 아래 기업 사례는 보안 순수기업의 직접 비교가 아니라 유통망, 현금흐름과 기술 투자를 보는 참고 사례입니다." }
     ],
     signals: ["보안 매출·수주잔고", "고객 갱신률과 제품 수", "침해사고·서비스 중단 건수"],
-    companyIds: ["microsoft", "alphabet", "palo-alto", "ibm", "crowdstrike", "fortinet", "cloudflare", "okta"]
+    companyIds: ["microsoft", "alphabet", "palo-alto", "ibm", "crowdstrike", "fortinet", "cloudflare", "okta", "cisco", "zscaler", "check-point"]
   },
   {
     id: "quantum-computing",
@@ -188,7 +190,7 @@ export const futureIndustries = [
       { title: "관련 기업 사례의 한계", body: "차량, AI 칩과 자동화 기업은 물류 외 사업 비중이 큽니다. 아래 수치는 자율물류 부문만의 실적이 아니라 기술 투자 여력과 기존 사업체력을 보는 참고 자료입니다." }
     ],
     signals: ["유료 자율운행 거리", "원격 개입·사고 빈도", "물류 단위당 처리비용"],
-    companyIds: ["tesla", "nvidia", "abb", "hyundai-motor", "mobileye", "aptiv", "denso", "toyota"]
+    companyIds: ["tesla", "nvidia", "abb", "hyundai-motor", "mobileye", "aptiv", "denso", "toyota", "uber", "caterpillar"]
   },
   {
     id: "climate-resilience",
@@ -209,7 +211,7 @@ export const futureIndustries = [
       { title: "관련 기업을 해석하는 법", body: "전력·자동화·플랜트 기업의 전체 실적에는 기후적응 외 사업이 포함됩니다. 아래 기업은 순수 기후적응 기업 순위가 아니라 인프라 수행 능력과 재무 여력을 살펴보는 사례입니다." }
     ],
     signals: ["물 재이용·방재 수주", "운영·유지관리 매출 비중", "보험손실과 극한기후 피해액"],
-    companyIds: ["abb", "doosan-enerbility", "xylem", "siemens", "ge-vernova", "veolia", "ecolab", "schneider-electric", "eaton"]
+    companyIds: ["abb", "doosan-enerbility", "xylem", "siemens", "ge-vernova", "veolia", "ecolab", "schneider-electric", "eaton", "trane-technologies", "nextera-energy"]
   }
 ];
 
@@ -682,11 +684,13 @@ export const futureCompanies = [
     watch: ["공공 물 인프라 주문", "조정 EBITDA 마진", "디지털 계측·서비스 매출"],
     source: { label: "Xylem FY2025 공식 실적", url: "https://www.xylem.com/en-150/resources/press-releases/xylem-reports-fourth-quarter-and-full-year-2025-results/" }
   },
-  ...expandedFutureCompanies
+  ...expandedFutureCompanies,
+  ...largeCompanyDataA,
+  ...largeCompanyDataB
 ];
 
 export const futureIndustryMethod = {
-  updatedAt: "2026-07-27",
+  updatedAt: "2026-08-01",
   title: "사업체력 100점 계산",
   description: "주가와 적정가치를 제외하고 최근 공식 실적의 수익성·성장·현금 및 재무·경쟁 위치를 각각 25점으로 점검한 교육용 지표입니다. 회사가 공개한 기준이 다를 때는 영업이익률, 조정 EBITDA 마진, 세전이익률 또는 순이익률을 이름과 함께 구분합니다.",
   parts: [

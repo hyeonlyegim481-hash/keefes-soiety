@@ -208,6 +208,12 @@ export function formatIndicatorDisplayValue(indicator, observation) {
   if (!Number.isFinite(value)) return "--";
   const formatted = formatIndicatorNumber(indicator, value);
 
+  if (indicator?.format === "compactCurrency") {
+    return `US$${formatCompactIndicatorNumber(value)}`;
+  }
+  if (indicator?.format === "compactNumber") {
+    return `${formatCompactIndicatorNumber(value)} ${indicator?.unit || ""}`.trim();
+  }
   if (indicator?.id === "gdp-per-capita") return `US$${formatted}/명`;
   if (indicator?.id === "gdp-per-capita-ppp") return `${formatted} 2021 국제달러/명`;
   if (indicator?.id === "labor-productivity") return `${formatted} 2021 PPP달러/취업자`;
@@ -224,6 +230,12 @@ export function formatIndicatorDisplayValue(indicator, observation) {
 export function formatIndicatorDisplayDelta(indicator, value) {
   if (!Number.isFinite(value)) return "--";
   const sign = value > 0 ? "+" : "";
+  if (indicator?.format === "compactCurrency") {
+    return `${sign}US$${formatCompactIndicatorNumber(value)}`;
+  }
+  if (indicator?.format === "compactNumber") {
+    return `${sign}${formatCompactIndicatorNumber(value)} ${indicator?.unit || ""}`.trim();
+  }
   if (indicator?.format === "currency") {
     return `${sign}US$${formatIndicatorNumber(indicator, value)}`;
   }
@@ -233,6 +245,12 @@ export function formatIndicatorDisplayDelta(indicator, value) {
 
 export function formatIndicatorDisplayMagnitude(indicator, value) {
   if (!Number.isFinite(value)) return "--";
+  if (indicator?.format === "compactCurrency") {
+    return `US$${formatCompactIndicatorNumber(value)}`;
+  }
+  if (indicator?.format === "compactNumber") {
+    return `${formatCompactIndicatorNumber(value)} ${indicator?.unit || ""}`.trim();
+  }
   if (indicator?.format === "currency") {
     return `US$${formatIndicatorNumber(indicator, value)}`;
   }
@@ -249,12 +267,13 @@ function inferSemantics(indicator) {
   const code = String(indicator?.code || "");
   const isPercent = isPercentUnit(unit);
   const isShare = isPercent && !/\.ZG$/.test(code);
+  const isUsdCurrency = ["currency", "compactCurrency"].includes(indicator?.format);
 
   return {
     displayUnit: normalizeDisplayUnit(unit),
-    nominalReal: NOT_APPLICABLE,
-    currency: NOT_APPLICABLE,
-    priceBasis: NOT_APPLICABLE,
+    nominalReal: isUsdCurrency ? "명목" : NOT_APPLICABLE,
+    currency: isUsdCurrency ? "미국달러(USD)" : NOT_APPLICABLE,
+    priceBasis: isUsdCurrency ? "현재가격" : NOT_APPLICABLE,
     baseYear: NOT_APPLICABLE,
     measureType: isShare ? "비율 수준값" : "수준값",
     changeBasis: /\.ZG$/.test(code) ? "YoY" : NOT_APPLICABLE,
@@ -306,6 +325,13 @@ function finiteOrNull(value) {
 
 function isPercentUnit(unit) {
   return String(unit || "").startsWith("%");
+}
+
+function formatCompactIndicatorNumber(value) {
+  return new Intl.NumberFormat("ko-KR", {
+    notation: "compact",
+    maximumFractionDigits: 1
+  }).format(value);
 }
 
 function formatIndicatorNumber(indicator, value) {

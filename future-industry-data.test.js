@@ -25,8 +25,8 @@ test("defines ten complete future industries with valid company links", () => {
   }
 });
 
-test("provides sixty sourced company snapshots and transparent health parts", () => {
-  assert.equal(futureCompanies.length, 60);
+test("provides 102 sourced company snapshots and transparent health parts", () => {
+  assert.equal(futureCompanies.length, 102);
   const ids = new Set();
   const partIds = futureIndustryMethod.parts.map((part) => part.id).sort();
 
@@ -58,7 +58,7 @@ test("provides sixty sourced company snapshots and transparent health parts", ()
 });
 
 test("keeps the financial snapshot basis explicit", () => {
-  assert.equal(futureIndustryMethod.updatedAt, "2026-07-27");
+  assert.equal(futureIndustryMethod.updatedAt, "2026-08-01");
   assert.equal(futureIndustryMethod.parts.length, 4);
   assert.match(futureIndustryMethod.caution, /통화와 연결·별도 기준/);
 

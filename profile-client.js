@@ -1043,16 +1043,18 @@ export async function createProfileController({
 
   async function loadIndicators() {
     if (state.indicators.length) return;
-    const [base, finance, expanded, production] = await Promise.all([
+    const [base, finance, expanded, broad, production] = await Promise.all([
       importVersioned("./indicator-data.js"),
       importVersioned("./indicator-finance-data.js"),
       importVersioned("./indicator-expanded-data.js"),
+      importVersioned("./indicator-broad-data.js"),
       importVersioned("./resource-production-data.js")
     ]);
     state.indicators = [
       ...base.indicatorDefinitions,
       ...finance.financeIndicatorDefinitions,
       ...expanded.expandedIndicatorDefinitions,
+      ...broad.broadIndicatorDefinitions,
       ...production.resourceProductionIndicators
     ].sort((left, right) => left.name.localeCompare(right.name, "ko"));
     if (!elements.indicatorSelect) return;

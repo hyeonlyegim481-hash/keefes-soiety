@@ -9,6 +9,7 @@ import {
 } from "./indicator-data.js";
 import { financeIndicatorDefinitions } from "./indicator-finance-data.js";
 import { expandedIndicatorDefinitions } from "./indicator-expanded-data.js";
+import { broadIndicatorDefinitions } from "./indicator-broad-data.js";
 import { indicatorSnapshot } from "./indicator-values.js";
 import { buildIndicatorCountryComparison } from "./indicator-comparison.js";
 import { formatIndicatorDisplayValue } from "./indicator-metadata.js";
@@ -21,7 +22,8 @@ import {
 const comparableIndicators = [
   ...baseIndicatorDefinitions,
   ...financeIndicatorDefinitions,
-  ...expandedIndicatorDefinitions
+  ...expandedIndicatorDefinitions,
+  ...broadIndicatorDefinitions
 ];
 
 const MIN_COMPARISON_COUNTRIES = 2;

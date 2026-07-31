@@ -1,0 +1,233 @@
+export const largeCompanyDataB = [
+  {
+    id: "pfizer", name: "Pfizer", ticker: "PFE", country: "미국", sectorId: "bio-health", role: "글로벌 제약·백신",
+    fiscal: "FY2024 · 연결", revenue: "US$63.6B", revenueGrowth: 7, margin: 19.7,
+    profitability: "GAAP 영업이익률 약 19.7%", cashSignal: "영업현금흐름 약 US$12.7B",
+    healthParts: { profitability: 20, growth: 15, cash: 21, position: 24 },
+    business: "백신·항암제·희귀질환·내과 치료제를 연구개발하고 규제 승인을 거쳐 전 세계 병원과 약국에 공급합니다.",
+    moat: "대규모 임상·허가 역량과 글로벌 영업망, 다양한 치료영역의 특허 제품과 생산시설이 진입장벽을 만듭니다.",
+    risk: "코로나 제품 감소와 주요 특허 만료, 인수한 파이프라인의 임상 실패, 약가 규제가 현금흐름을 낮출 수 있습니다.",
+    watch: ["비코로나 제품 성장", "항암 파이프라인", "특허만료·비용절감"],
+    source: { label: "Pfizer FY2024 공식 실적", url: "https://investors.pfizer.com/Investors/News/news-details/2025/PFIZER-REPORTS-STRONG-FULL-YEAR-2024-RESULTS/default.aspx" }
+  },
+  {
+    id: "merck", name: "Merck & Co.", ticker: "MRK", country: "미국", sectorId: "bio-health", role: "항암·백신·동물의약품",
+    fiscal: "FY2024 · 연결", revenue: "US$64.2B", revenueGrowth: 7, margin: 26.0,
+    profitability: "GAAP 영업이익률 약 26.0%", cashSignal: "영업현금흐름 약 US$20B",
+    healthParts: { profitability: 23, growth: 15, cash: 23, position: 24 },
+    business: "항암제 Keytruda와 백신, 병원용 의약품 및 동물의약품을 개발하고 전 세계 의료기관에 공급합니다.",
+    moat: "대형 항암 임상 데이터와 적응증 확대, 백신 생산·유통 및 동물의약품 포트폴리오가 경쟁력을 뒷받침합니다.",
+    risk: "Keytruda 매출 집중과 특허 만료, 임상 실패와 약가 정책, 신규 제품의 매출 대체 속도가 핵심 위험입니다.",
+    watch: ["Keytruda 매출 비중", "신제품 매출", "특허만료 대응 임상"],
+    source: { label: "Merck FY2024 공식 실적", url: "https://www.merck.com/news/merck-announces-fourth-quarter-and-full-year-2024-financial-results/" }
+  },
+  {
+    id: "abbvie", name: "AbbVie", ticker: "ABBV", country: "미국", sectorId: "bio-health", role: "면역·신경·미용의학",
+    fiscal: "FY2024 · 연결", revenue: "US$56.3B", revenueGrowth: 3.7, margin: 22.8,
+    profitability: "GAAP 영업이익률 약 22.8%", cashSignal: "영업현금흐름 약 US$18.8B",
+    healthParts: { profitability: 22, growth: 12, cash: 23, position: 23 },
+    business: "면역질환·혈액암·신경질환 치료제와 보툴리눔 톡신 등 미용의학 제품을 연구·생산·판매합니다.",
+    moat: "전문의약품 영업망과 임상·허가 경험, Skyrizi·Rinvoq 적응증 확대가 기존 제품 특허만료를 보완합니다.",
+    risk: "제품별 매출 집중과 약가 인하, 인수 관련 부채, 후속 임상 실패와 바이오시밀러 경쟁이 위험입니다.",
+    watch: ["Skyrizi·Rinvoq 성장", "Humira 감소", "순부채·신제품 임상"],
+    source: { label: "AbbVie FY2024 공식 실적", url: "https://investors.abbvie.com/news-releases/news-release-details/abbvie-reports-full-year-and-fourth-quarter-2024-financial" }
+  },
+  {
+    id: "amgen", name: "Amgen", ticker: "AMGN", country: "미국", sectorId: "bio-health", role: "바이오의약품·희귀질환",
+    fiscal: "FY2024 · 연결", revenue: "US$33.4B", revenueGrowth: 19, margin: 30.1,
+    profitability: "GAAP 영업이익률 약 30.1%", cashSignal: "영업현금흐름 약 US$10.5B",
+    healthParts: { profitability: 24, growth: 20, cash: 22, position: 23 },
+    business: "암·심혈관·염증·희귀질환 바이오의약품을 개발하고 대규모 세포배양 생산시설을 통해 공급합니다.",
+    moat: "바이오의약품 개발·생산 경험과 다양한 전문의약품 포트폴리오, 병원 영업망이 경쟁력을 만듭니다.",
+    risk: "대형 인수 후 부채와 통합비용, 주요 제품 경쟁, 임상 실패 및 미국 약가 협상이 수익성을 낮출 수 있습니다.",
+    watch: ["희귀질환 제품 성장", "비만 치료제 임상", "순부채·영업현금"],
+    source: { label: "Amgen FY2024 공식 실적", url: "https://www.amgen.com/newsroom/press-releases/2025/02/amgen-reports-fourth-quarter-and-full-year-2024-financial-results" }
+  },
+  {
+    id: "sanofi", name: "Sanofi", ticker: "SNY", country: "프랑스", sectorId: "bio-health", role: "면역·백신·희귀질환",
+    fiscal: "FY2024 · 연결", revenue: "€41.1B", revenueGrowth: 8.6, margin: 22.7,
+    profitability: "사업영업이익률 약 22.7%", cashSignal: "잉여현금흐름 약 €8.0B",
+    healthParts: { profitability: 21, growth: 16, cash: 22, position: 23 },
+    business: "면역질환 치료제와 백신, 희귀질환 의약품을 연구개발하고 글로벌 의료시장에 공급합니다.",
+    moat: "Dupixent의 광범위한 임상 적응증과 백신 생산·유통, 오랜 규제 승인 경험이 매출 기반을 만듭니다.",
+    risk: "핵심 제품 집중과 공동판매 수익배분, 임상 실패, 유럽·미국 약가 정책과 백신 수요 변동이 위험입니다.",
+    watch: ["Dupixent 적응증·매출", "백신 성장", "신약 파이프라인"],
+    source: { label: "Sanofi FY2024 공식 실적", url: "https://www.sanofi.com/en/investors/financial-results-and-events/financial-results" }
+  },
+  {
+    id: "gilead", name: "Gilead Sciences", ticker: "GILD", country: "미국", sectorId: "bio-health", role: "항바이러스·항암",
+    fiscal: "FY2024 · 연결", revenue: "US$28.8B", revenueGrowth: 6, margin: 27.0,
+    profitability: "제품 총이익 기반 높은 수익성 · GAAP 비용 변동", cashSignal: "영업현금흐름 약 US$10B",
+    healthParts: { profitability: 22, growth: 14, cash: 23, position: 23 },
+    business: "HIV·간질환 항바이러스제와 세포치료·항암제를 개발하고 전문 의료기관과 약국에 공급합니다.",
+    moat: "HIV 장기복용 제품군과 의사·환자 기반, 항바이러스 연구 경험 및 세포치료 생산망이 강점입니다.",
+    risk: "HIV 제품 집중과 특허 만료, 항암 인수자산 손상, 임상 실패와 약가 규제가 이익 변동을 키울 수 있습니다.",
+    watch: ["HIV 제품 성장", "항암 매출·임상", "특허만료·현금흐름"],
+    source: { label: "Gilead FY2024 공식 실적", url: "https://www.gilead.com/news/news-details/2025/gilead-sciences-announces-fourth-quarter-and-full-year-2024-financial-results" }
+  },
+  {
+    id: "honeywell", name: "Honeywell", ticker: "HON", country: "미국", sectorId: "automation", role: "산업자동화·항공·에너지",
+    fiscal: "FY2024 · 연결", revenue: "US$38.5B", revenueGrowth: 5, margin: 20.9,
+    profitability: "부문이익률 약 20.9%", cashSignal: "영업현금흐름 약 US$6.2B",
+    healthParts: { profitability: 21, growth: 13, cash: 22, position: 24 },
+    business: "항공전자·빌딩제어·공정 자동화와 에너지 전환 장비·소프트웨어를 산업·정부 고객에게 공급합니다.",
+    moat: "인증이 필요한 항공·산업 설치기반과 긴 교체주기, 유지보수·부품 매출이 반복적인 현금흐름을 만듭니다.",
+    risk: "대형 인수·사업분할 실행, 항공·산업 경기, 장기계약 원가와 공급망 지연이 실적에 영향을 줍니다.",
+    watch: ["수주잔고", "자동화 부문 성장", "사업분할·잉여현금"],
+    source: { label: "Honeywell FY2024 공식 실적", url: "https://investor.honeywell.com/news-events/news-releases/detail/1160/honeywell-reports-fourth-quarter-and-full-year-2024-results" }
+  },
+  {
+    id: "mitsubishi-electric", name: "Mitsubishi Electric", ticker: "6503", country: "일본", sectorId: "automation", role: "공장자동화·전력기기",
+    fiscal: "FY2025 · 2025.03.31 종료", revenue: "¥5.52T", revenueGrowth: 5.4, margin: 7.1,
+    profitability: "영업이익률 약 7.1%", cashSignal: "영업현금흐름 약 ¥600B",
+    healthParts: { profitability: 15, growth: 13, cash: 21, position: 23 },
+    business: "공장 자동화 제어기·모터, 빌딩 설비와 전력망·철도·방산·가전 제품을 글로벌 산업 고객에게 공급합니다.",
+    moat: "일본 제조업에 넓게 설치된 제어장비와 모터·전력반도체 통합, 장기간 유지보수 관계가 강점입니다.",
+    risk: "중국 설비투자와 자동차·전자 경기, 품질관리, 낮은 수익 사업의 구조개편 속도가 주요 변수입니다.",
+    watch: ["FA 시스템 주문", "전력·방산 수주", "영업마진 개선"],
+    source: { label: "Mitsubishi Electric FY2025 공식 실적", url: "https://www.mitsubishielectric.com/en/investors/financial/" }
+  },
+  {
+    id: "emerson", name: "Emerson Electric", ticker: "EMR", country: "미국", sectorId: "automation", role: "공정자동화·산업 소프트웨어",
+    fiscal: "FY2024 · 2024.09.30 종료", revenue: "US$17.5B", revenueGrowth: 15, margin: 19.0,
+    profitability: "GAAP 영업이익률 약 19.0%", cashSignal: "영업현금흐름 약 US$2.9B",
+    healthParts: { profitability: 20, growth: 19, cash: 21, position: 23 },
+    business: "에너지·화학·제약·전력 공정의 센서·밸브·제어시스템과 산업용 소프트웨어를 공급합니다.",
+    moat: "안전이 중요한 공정에 설치된 장비와 장기 고객 인증, 제어 데이터와 유지보수 관계가 전환비용을 높입니다.",
+    risk: "에너지·화학 설비투자 주기, 대형 인수 통합과 부채, 프로젝트 지연 및 원자재 비용이 위험입니다.",
+    watch: ["기초 주문 성장", "소프트웨어 매출", "인수 통합·부채"],
+    source: { label: "Emerson FY2024 공식 실적", url: "https://ir.emerson.com/news-events/news-releases/detail/633/emerson-reports-fourth-quarter-and-full-year-2024-results" }
+  },
+  {
+    id: "caterpillar", name: "Caterpillar", ticker: "CAT", country: "미국", sectorId: "automation", role: "건설·광산장비·자율운행",
+    fiscal: "FY2024 · 연결", revenue: "US$64.8B", revenueGrowth: -3, margin: 20.2,
+    profitability: "영업이익률 약 20.2%", cashSignal: "기업 영업현금흐름 약 US$12.0B",
+    healthParts: { profitability: 21, growth: 9, cash: 24, position: 24 },
+    business: "건설·광산·에너지 장비와 엔진, 부품·정비·금융 및 대형 광산 자율운행 시스템을 판매합니다.",
+    moat: "세계적인 딜러·부품망과 높은 장비 잔존가치, 현장 데이터와 금융서비스가 고객 전환비용을 만듭니다.",
+    risk: "건설·원자재 경기와 딜러 재고, 높은 장비 가격, 공급망·관세 및 금융 자회사 신용손실이 위험입니다.",
+    watch: ["딜러 재고", "서비스 매출", "광산·에너지 주문"],
+    source: { label: "Caterpillar FY2024 공식 실적", url: "https://investors.caterpillar.com/news/news-details/2025/Caterpillar-Reports-Fourth-Quarter-and-Full-Year-2024-Results/default.aspx" }
+  },
+  {
+    id: "nextera-energy", name: "NextEra Energy", ticker: "NEE", country: "미국", sectorId: "energy-infra", role: "전력망·재생에너지",
+    fiscal: "FY2024 · 연결", revenue: "US$24.8B", revenueGrowth: -12, margin: 29.0,
+    profitability: "GAAP 영업이익률 약 29.0%", cashSignal: "영업현금흐름 약 US$12B",
+    healthParts: { profitability: 22, growth: 6, cash: 20, position: 24 },
+    business: "플로리다 규제 전력회사와 미국 전역의 풍력·태양광·배터리·송전 자산을 개발하고 운영합니다.",
+    moat: "대규모 재생에너지 개발 경험과 장기 전력구매계약, 규제 전력망 현금흐름이 자금조달 기반을 만듭니다.",
+    risk: "금리와 대규모 자본조달, 프로젝트 인허가·송전망 지연, 기상재해와 전력 규제 변화가 위험입니다.",
+    watch: ["신규 재생에너지 수주", "규제자산 투자", "부채·자금조달비용"],
+    source: { label: "NextEra Energy FY2024 공식 실적", url: "https://www.nexteraenergy.com/news-and-events/news-releases/2025/01-24-2025.html" }
+  },
+  {
+    id: "hitachi", name: "Hitachi", ticker: "6501", country: "일본", sectorId: "energy-infra", role: "전력망·철도·디지털 인프라",
+    fiscal: "FY2025 · 2025.03.31 종료", revenue: "¥9.78T", revenueGrowth: 1.3, margin: 10.0,
+    profitability: "조정 EBITA 마진 약 10.0%", cashSignal: "영업현금흐름 약 ¥1.2T",
+    healthParts: { profitability: 18, growth: 11, cash: 23, position: 24 },
+    business: "전력망·철도·산업설비와 기업 IT·데이터 분석을 결합한 디지털 인프라 사업을 운영합니다.",
+    moat: "대형 사회 인프라 수행 경험과 설치기반, OT 장비 데이터와 Lumada 소프트웨어의 결합이 강점입니다.",
+    risk: "장기 프로젝트 원가와 인수 통합, 엔화·글로벌 설비투자, 복잡한 사업구조의 실행 위험을 봐야 합니다.",
+    watch: ["디지털 부문 성장", "전력망 수주", "조정 EBITA·현금전환"],
+    source: { label: "Hitachi FY2025 공식 실적", url: "https://www.hitachi.com/IR-e/library/fr/" }
+  },
+  {
+    id: "mitsubishi-heavy", name: "Mitsubishi Heavy Industries", ticker: "7011", country: "일본", sectorId: "energy-infra", role: "발전·방산·우주·산업설비",
+    fiscal: "FY2025 · 2025.03.31 종료", revenue: "¥5.03T", revenueGrowth: 8.5, margin: 7.6,
+    profitability: "사업이익률 약 7.6%", cashSignal: "영업현금흐름 약 ¥540B",
+    healthParts: { profitability: 16, growth: 16, cash: 20, position: 24 },
+    business: "가스터빈·원전·수소 설비와 항공·방산·우주, 물류·냉동 등 대형 산업 시스템을 제작합니다.",
+    moat: "대형 회전기계와 원전·방산의 장기 인증, 정부·전력 고객 관계와 서비스 설치기반이 진입장벽입니다.",
+    risk: "장기 프로젝트 원가와 납기, 방산·에너지 정책, 공급망과 환율, 대규모 개발비 회수 위험이 있습니다.",
+    watch: ["가스터빈·방산 수주", "수주잔고 마진", "영업현금·납기"],
+    source: { label: "MHI FY2025 공식 실적", url: "https://www.mhi.com/finance/library/result" }
+  },
+  {
+    id: "kepco", name: "한국전력", ticker: "015760", country: "한국", sectorId: "energy-infra", role: "전력망·전력판매",
+    fiscal: "FY2024 · 연결", revenue: "94.0조원", revenueGrowth: 6.0, margin: 8.9,
+    profitability: "영업이익률 약 8.9%", cashSignal: "영업이익 약 8.35조원 · 높은 연결부채",
+    healthParts: { profitability: 16, growth: 14, cash: 10, position: 25 },
+    business: "국내 송배전망과 전력판매를 중심으로 발전 자회사와 해외 발전·원전 사업을 연결 운영합니다.",
+    moat: "전국 송배전망과 규제된 전력판매 지위, 대규모 발전·계통 운영 경험이 대체하기 어려운 기반입니다.",
+    risk: "연료비와 전기요금 결정의 시차, 높은 부채·이자비용, 에너지 전환 투자와 정책 변화가 핵심 위험입니다.",
+    watch: ["연료비·전기요금", "연결부채·이자", "송배전망 투자"],
+    source: { label: "한국전력 FY2024 공식 실적", url: "https://home.kepco.co.kr/kepco/EN/B/htmlView/ENBAHP001.do?menuCd=EN020101" }
+  },
+  {
+    id: "vestas", name: "Vestas Wind Systems", ticker: "VWS", country: "덴마크", sectorId: "energy-infra", role: "풍력터빈·장기서비스",
+    fiscal: "FY2024 · 연결", revenue: "€17.3B", revenueGrowth: 12, margin: 4.3,
+    profitability: "특별항목 전 EBIT 마진 약 4.3%", cashSignal: "서비스 수주잔고 장기계약 기반",
+    healthParts: { profitability: 11, growth: 18, cash: 17, position: 24 },
+    business: "육상·해상 풍력터빈을 설계·제조하고 설치된 터빈의 장기 유지보수·부품 서비스를 제공합니다.",
+    moat: "세계적인 설치기반과 발전 데이터, 장기 서비스 수주잔고, 인증된 공급망이 반복매출을 만듭니다.",
+    risk: "터빈 원가·품질보증과 프로젝트 지연, 금리·인허가, 공급망 및 국가별 재생에너지 정책이 위험입니다.",
+    watch: ["터빈 수주·가격", "서비스 마진", "보증충당금·현금"],
+    source: { label: "Vestas 2024 공식 연차보고", url: "https://www.vestas.com/en/investor/reports-and-presentations/financial-reports" }
+  },
+  {
+    id: "siemens-energy", name: "Siemens Energy", ticker: "ENR", country: "독일", sectorId: "energy-infra", role: "전력망·발전·풍력",
+    fiscal: "FY2024 · 2024.09.30 종료", revenue: "€34.5B", revenueGrowth: 12.8, margin: 1.3,
+    profitability: "특별항목 전 이익률 약 1.3%", cashSignal: "잉여현금흐름 약 €1.5B",
+    healthParts: { profitability: 8, growth: 18, cash: 17, position: 24 },
+    business: "가스터빈·발전서비스와 초고압 송전·전력망 장비, 해상·육상 풍력터빈 사업을 운영합니다.",
+    moat: "전 세계 발전 설치기반과 장기 서비스 계약, 대형 송전장비 기술과 수주잔고가 경쟁 기반입니다.",
+    risk: "풍력 자회사 품질비용과 보증, 장기 프로젝트 원가, 공급망·정부 지원조건이 수익성에 영향을 줍니다.",
+    watch: ["Grid Technologies 수주", "풍력 손실", "보증·현금흐름"],
+    source: { label: "Siemens Energy FY2024 공식 실적", url: "https://www.siemens-energy.com/global/en/home/investor-relations/publications.html" }
+  },
+  {
+    id: "cisco", name: "Cisco Systems", ticker: "CSCO", country: "미국", sectorId: "cybersecurity", role: "네트워크·보안 플랫폼",
+    fiscal: "FY2025 · 2025.07.26 종료", revenue: "US$56.7B", revenueGrowth: 5, margin: 27.6,
+    profitability: "GAAP 영업이익률 약 27.6%", cashSignal: "영업현금흐름 약 US$14.2B",
+    healthParts: { profitability: 23, growth: 13, cash: 24, position: 24 },
+    business: "기업·통신사 네트워크 장비와 보안, 관측성·협업 소프트웨어를 구독과 장비 방식으로 판매합니다.",
+    moat: "대규모 기업 네트워크 설치기반과 인증 인력·파트너 생태계, 장비와 보안 정책의 결합이 전환비용을 만듭니다.",
+    risk: "클라우드 네이티브 경쟁과 장비 교체주기, 대형 인수 통합, 중국·통신사 수요와 공급망이 변수입니다.",
+    watch: ["제품 주문", "보안·관측성 ARR", "반복매출·영업현금"],
+    source: { label: "Cisco FY2025 공식 실적", url: "https://newsroom.cisco.com/c/r/newsroom/en/us/a/y2025/m08/cisco-reports-fourth-quarter-and-fiscal-year-2025-earnings.html" }
+  },
+  {
+    id: "zscaler", name: "Zscaler", ticker: "ZS", country: "미국", sectorId: "cybersecurity", role: "제로트러스트 클라우드 보안",
+    fiscal: "FY2025 · 2025.07.31 종료", revenue: "US$2.67B", revenueGrowth: 23, margin: -1.0,
+    profitability: "GAAP 영업손익률 약 -1% · 주식보상 영향", cashSignal: "잉여현금흐름 마진 약 27%",
+    healthParts: { profitability: 12, growth: 21, cash: 22, position: 23 },
+    business: "사용자와 기기, 애플리케이션 사이의 접속을 매번 검증하는 클라우드 기반 제로트러스트 보안을 구독형으로 제공합니다.",
+    moat: "전 세계 보안 클라우드와 트래픽 데이터, 기업 정책의 깊은 통합이 고객 확장과 높은 전환비용을 만듭니다.",
+    risk: "대형 보안 플랫폼의 번들 경쟁, 높은 주식보상과 밸류에이션, 서비스 장애·보안사고가 핵심 위험입니다.",
+    watch: ["청구액 성장", "대형 고객 수", "GAAP 마진·잉여현금"],
+    source: { label: "Zscaler FY2025 공식 실적", url: "https://ir.zscaler.com/news-releases/news-release-details/zscaler-reports-fourth-quarter-and-fiscal-2025-financial-results" }
+  },
+  {
+    id: "check-point", name: "Check Point Software", ticker: "CHKP", country: "이스라엘", sectorId: "cybersecurity", role: "네트워크·클라우드 보안",
+    fiscal: "FY2024 · 연결", revenue: "US$2.57B", revenueGrowth: 6, margin: 35.0,
+    profitability: "GAAP 영업이익률 약 35.0%", cashSignal: "영업현금흐름 약 US$1.0B",
+    healthParts: { profitability: 25, growth: 14, cash: 24, position: 22 },
+    business: "기업 네트워크·클라우드·이메일·모바일 환경의 위협 방지 제품과 보안 구독 서비스를 제공합니다.",
+    moat: "오랜 방화벽 설치기반과 높은 갱신률, 위협 인텔리전스·관리도구가 안정적인 반복매출을 만듭니다.",
+    risk: "성장 속도가 빠른 경쟁사와 플랫폼 통합 경쟁, 신규 제품 전환, 이스라엘 지역 위험을 확인해야 합니다.",
+    watch: ["보안 구독 성장", "청구액·갱신", "신규 플랫폼 고객"],
+    source: { label: "Check Point FY2024 공식 실적", url: "https://www.checkpoint.com/press-releases/check-point-software-reports-2024-fourth-quarter-and-full-year-financial-results/" }
+  },
+  {
+    id: "uber", name: "Uber Technologies", ticker: "UBER", country: "미국", sectorId: "autonomous-logistics", role: "모빌리티·배송 플랫폼",
+    fiscal: "FY2024 · 연결", revenue: "US$44.0B", revenueGrowth: 18, margin: 6.4,
+    profitability: "GAAP 영업이익률 약 6.4%", cashSignal: "잉여현금흐름 약 US$6.9B",
+    healthParts: { profitability: 15, growth: 20, cash: 23, position: 24 },
+    business: "승차호출·배달·화물 중개 플랫폼을 운영하고 자율주행 기술기업과 차량 공급 파트너십을 확대합니다.",
+    moat: "운전자·이용자·가맹점의 다면 네트워크와 지역별 수요 데이터, 하나의 앱 유통망이 규모효과를 만듭니다.",
+    risk: "운전자 고용지위 규제와 보험·안전 비용, 지역별 경쟁, 자율주행 전환 시 플랫폼 협상력이 위험입니다.",
+    watch: ["총예약액 성장", "이용자·운전자 공급", "자율주행 제휴·잉여현금"],
+    source: { label: "Uber FY2024 공식 실적", url: "https://investor.uber.com/news-events/news/press-release-details/2025/Uber-Announces-Results-for-Fourth-Quarter-and-Full-Year-2024/" }
+  },
+  {
+    id: "trane-technologies", name: "Trane Technologies", ticker: "TT", country: "아일랜드", sectorId: "climate-resilience", role: "냉난방·고효율 냉각",
+    fiscal: "FY2024 · 연결", revenue: "US$20.0B", revenueGrowth: 13, margin: 18.7,
+    profitability: "조정 영업이익률 약 18.7%", cashSignal: "잉여현금흐름 약 US$2.1B",
+    healthParts: { profitability: 20, growth: 18, cash: 21, position: 24 },
+    business: "상업용·주거용 냉난방과 냉동 운송, 고효율 냉각장비·제어 서비스를 건물과 데이터센터에 공급합니다.",
+    moat: "대규모 설치기반과 서비스망, 에너지 효율 규제 대응기술과 장비·제어 결합이 반복매출을 만듭니다.",
+    risk: "건설 경기와 원자재·관세, 데이터센터 투자 변동, 냉매 규제와 생산능력 확대의 실행 위험이 있습니다.",
+    watch: ["데이터센터 냉각 주문", "서비스 매출", "수주잔고·마진"],
+    source: { label: "Trane Technologies FY2024 공식 실적", url: "https://investors.tranetechnologies.com/news-and-events/news-releases/2025/trane-technologies-reports-strong-fourth-quarter-and-full-year-2024-results" }
+  }
+];

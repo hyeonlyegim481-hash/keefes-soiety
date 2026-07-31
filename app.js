@@ -1,4 +1,5 @@
 import { buildEconomicNarrative, getMarketDeepRead } from "./economic-narrative.js";
+import { buildKoreaDetailModel } from "./korea-detail.js";
 import { buildMarketDeepModel } from "./market-deep-analysis.js";
 import {
   buildSharedDataGraph,
@@ -1138,22 +1139,28 @@ function loadRelationshipData() {
 
 function loadIndicatorData() {
   return loadFeature("indicators", async ({ attempt }) => {
-    const [base, finance, expanded, values, production, productionUi, metadata, comparison] = await Promise.all([
+    const [base, finance, expanded, broad, values, production, productionUi, metadata, comparison] = await Promise.all([
       importVersioned("./indicator-data.js", { attempt }),
       importVersioned("./indicator-finance-data.js", { attempt }),
       importVersioned("./indicator-expanded-data.js", { attempt }),
+      importVersioned("./indicator-broad-data.js", { attempt }),
       importVersioned("./indicator-values.js", { attempt }),
       importVersioned("./resource-production-data.js", { attempt }),
       importVersioned("./resource-production-ui.js", { attempt }),
       importVersioned("./indicator-metadata.js", { attempt }),
       importVersioned("./indicator-comparison.js", { attempt })
     ]);
-    indicatorCategories = [...base.indicatorCategories, ...finance.financeIndicatorCategories];
+    indicatorCategories = [
+      ...base.indicatorCategories,
+      ...finance.financeIndicatorCategories,
+      ...broad.broadIndicatorCategories
+    ];
     indicatorCountries = base.indicatorCountries;
     indicatorDefinitions = [
       ...base.indicatorDefinitions,
       ...finance.financeIndicatorDefinitions,
-      ...expanded.expandedIndicatorDefinitions
+      ...expanded.expandedIndicatorDefinitions,
+      ...broad.broadIndicatorDefinitions
     ];
     resourceProductionIndicators = production.resourceProductionIndicators;
     allIndicatorDefinitions = [...indicatorDefinitions, ...resourceProductionIndicators];
@@ -4696,6 +4703,14 @@ function renderKoreaBoard(macro, analysis, narrative = state.narrative) {
 function renderKoreaImpact(macro, analysis, markets, narrative = state.narrative) {
   const korea = narrative?.korea || {};
   const limitations = narrative?.limitations || [];
+  const detail = buildKoreaDetailModel({ macro, markets, analysis, narrative });
+  const statusLabel = {
+    positive: "긍정 신호",
+    neutral: "중립·확인",
+    watch: "주의 신호",
+    negative: "부담 신호",
+    unavailable: "자료 부족"
+  };
 
   elements.koreaImpact.innerHTML = `
     <section class="expansion-section korea-impact-reading">
@@ -4730,6 +4745,90 @@ function renderKoreaImpact(macro, analysis, markets, narrative = state.narrative
         <span>현재 판단의 균형</span>
         <p><strong>긍정 근거</strong> ${escapeHtml(korea.good || "수출 흐름")}</p>
         <p><strong>부담 근거</strong> ${escapeHtml(korea.burden || "환율과 물가")}</p>
+      </div>
+      <div class="korea-detail-stack">
+        <details class="korea-detail-section" open>
+          <summary>
+            <span><b>부문별 상세 진단</b><small>한 지표로 한국 경제 전체를 판단하지 않습니다.</small></span>
+            <em>6개 부문</em>
+          </summary>
+          <div class="korea-sector-grid">
+            ${detail.sectors.map((sector) => `
+              <article data-status="${escapeHtml(sector.status)}">
+                <header>
+                  <span>${escapeHtml(sector.label)}</span>
+                  <em>${escapeHtml(statusLabel[sector.status] || "확인 필요")}</em>
+                </header>
+                <strong>${escapeHtml(sector.verdict)}</strong>
+                <p class="korea-sector-evidence">${escapeHtml(sector.evidence)}</p>
+                <p>${escapeHtml(sector.explanation)}</p>
+                <footer><b>다음 확인</b><span>${escapeHtml(sector.watch)}</span></footer>
+              </article>
+            `).join("")}
+          </div>
+        </details>
+        <details class="korea-detail-section">
+          <summary>
+            <span><b>경제 충격은 누구에게 다르게 작용하나</b><small>수혜와 부담을 같은 행에서 비교합니다.</small></span>
+            <em>4개 변수</em>
+          </summary>
+          <div class="korea-impact-matrix" role="table" aria-label="한국 경제 충격별 영향">
+            <div class="korea-impact-row korea-impact-head" role="row">
+              <b role="columnheader">변수·현재 신호</b>
+              <b role="columnheader">상대적으로 유리할 수 있음</b>
+              <b role="columnheader">부담이 커질 수 있음</b>
+              <b role="columnheader">해석할 때 주의</b>
+            </div>
+            ${detail.impacts.map((impact) => `
+              <div class="korea-impact-row" role="row">
+                <div role="cell"><strong>${escapeHtml(impact.label)}</strong><span>${escapeHtml(impact.signal)}</span></div>
+                <p role="cell">${escapeHtml(impact.helps)}</p>
+                <p role="cell">${escapeHtml(impact.burdens)}</p>
+                <p role="cell">${escapeHtml(impact.caution)}</p>
+              </div>
+            `).join("")}
+          </div>
+        </details>
+        <details class="korea-detail-section">
+          <summary>
+            <span><b>앞으로 판단이 바뀌는 조건</b><small>기본·개선·악화 시나리오를 조건과 함께 봅니다.</small></span>
+            <em>${detail.scenarios.length || 0}개 시나리오</em>
+          </summary>
+          <div class="korea-scenario-grid">
+            ${detail.scenarios.length ? detail.scenarios.map((scenario) => `
+              <article data-scenario="${escapeHtml(scenario.id || "base")}">
+                <span>${escapeHtml(scenario.label)}</span>
+                <strong>${escapeHtml(scenario.title)}</strong>
+                <p><b>성립 조건</b>${escapeHtml(scenario.trigger)}</p>
+                <p><b>의미</b>${escapeHtml(scenario.meaning)}</p>
+                <footer>${(scenario.checks || []).map((check) => `<span>${escapeHtml(check)}</span>`).join("")}</footer>
+              </article>
+            `).join("") : `<p class="korea-detail-empty">시나리오를 계산할 자료가 부족합니다.</p>`}
+          </div>
+          ${detail.tensions.length ? `
+            <div class="korea-counter-signals">
+              <strong>현재 결론과 반대로 볼 수 있는 신호</strong>
+              ${detail.tensions.map((item) => `<p>${escapeHtml(item)}</p>`).join("")}
+            </div>
+          ` : ""}
+        </details>
+        <details class="korea-detail-section">
+          <summary>
+            <span><b>자료 상태와 판단 기준</b><small>기준시점이 다른 자료를 섞어 단일 예측값으로 만들지 않습니다.</small></span>
+            <em>${escapeHtml(detail.dataQuality.label)} · ${detail.dataQuality.availableCount}/${detail.dataQuality.totalCount}</em>
+          </summary>
+          <div class="korea-data-quality-grid">
+            ${detail.dataQuality.items.map((item) => `
+              <article data-available="${item.available ? "true" : "false"}">
+                <span>${escapeHtml(item.label)}</span>
+                <strong>${item.available ? "확인됨" : "자료 수집 실패"}</strong>
+                <p>${escapeHtml(item.basis || "기준시각 확인 필요")}</p>
+                <em>${escapeHtml(item.source || "원자료 확인 필요")}</em>
+              </article>
+            `).join("")}
+          </div>
+          <p class="korea-methodology"><b>계산 기준</b>${escapeHtml(detail.methodology)}</p>
+        </details>
       </div>
       <p class="data-caveat">${escapeHtml(limitations[0] || "한국 공표지표는 실시간 시세가 아니라 발표 주기별 최신값입니다.")}</p>
     </section>

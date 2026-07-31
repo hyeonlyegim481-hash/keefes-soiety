@@ -11,6 +11,7 @@ import {
 import {
   expandedIndicatorDefinitions
 } from "./indicator-expanded-data.js";
+import { broadIndicatorDefinitions } from "./indicator-broad-data.js";
 import { indicatorSnapshot } from "./indicator-values.js";
 import {
   resourceProductionIndicators,
@@ -28,11 +29,12 @@ import {
 const wdiDefinitions = [
   ...baseIndicatorDefinitions,
   ...financeIndicatorDefinitions,
-  ...expandedIndicatorDefinitions
+  ...expandedIndicatorDefinitions,
+  ...broadIndicatorDefinitions
 ];
 
 test("official provider metadata covers every WDI definition", () => {
-  assert.equal(wdiDefinitions.length, 58);
+  assert.equal(wdiDefinitions.length, 95);
   assert.equal(
     Object.keys(indicatorProviderMetadata.indicators).length,
     wdiDefinitions.length

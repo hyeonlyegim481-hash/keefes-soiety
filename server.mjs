@@ -13,6 +13,7 @@ import {
   indicatorDefinitions
 } from "./indicator-data.js";
 import { expandedIndicatorDefinitions } from "./indicator-expanded-data.js";
+import { broadIndicatorDefinitions } from "./indicator-broad-data.js";
 import { financeIndicatorDefinitions } from "./indicator-finance-data.js";
 import { countrySnapshots, lawChanges } from "./politics-data.js";
 import { resourceProductionIndicators } from "./resource-production-data.js";
@@ -642,6 +643,7 @@ async function buildSnapshot({
       ...indicatorDefinitions,
       ...financeIndicatorDefinitions,
       ...expandedIndicatorDefinitions,
+      ...broadIndicatorDefinitions,
       ...resourceProductionIndicators
     ],
     countries: indicatorCountries,

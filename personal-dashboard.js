@@ -3,6 +3,7 @@ import { PROFILE_MARKETS, getProfileTierProgress } from "./profile-data.js";
 import { indicatorDefinitions } from "./indicator-data.js";
 import { financeIndicatorDefinitions } from "./indicator-finance-data.js";
 import { expandedIndicatorDefinitions } from "./indicator-expanded-data.js";
+import { broadIndicatorDefinitions } from "./indicator-broad-data.js";
 import {
   resourceProductionIndicators,
   resourceProductionMetadata
@@ -36,6 +37,7 @@ const indicatorCatalog = [
   ...indicatorDefinitions,
   ...financeIndicatorDefinitions,
   ...expandedIndicatorDefinitions,
+  ...broadIndicatorDefinitions,
   ...resourceProductionIndicators
 ];
 const indicatorById = new Map(indicatorCatalog.map((item) => [item.id, item]));

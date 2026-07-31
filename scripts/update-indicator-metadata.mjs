@@ -5,19 +5,34 @@ import { fileURLToPath } from "node:url";
 import { indicatorDefinitions as baseDefinitions } from "../indicator-data.js";
 import { financeIndicatorDefinitions } from "../indicator-finance-data.js";
 import { expandedIndicatorDefinitions } from "../indicator-expanded-data.js";
+import { broadIndicatorDefinitions } from "../indicator-broad-data.js";
+import { indicatorProviderMetadata as existingMetadata } from "../indicator-provider-metadata.js";
 
 const definitions = [
   ...baseDefinitions,
   ...financeIndicatorDefinitions,
-  ...expandedIndicatorDefinitions
+  ...expandedIndicatorDefinitions,
+  ...broadIndicatorDefinitions
 ];
-const metadataEntries = [];
+const requestedIds = new Set(process.argv.slice(2));
+const selectedDefinitions = requestedIds.size
+  ? definitions.filter((indicator) => requestedIds.has(indicator.id))
+  : definitions;
+const unknownIds = [...requestedIds].filter(
+  (id) => !definitions.some((indicator) => indicator.id === id)
+);
 
-for (const indicator of definitions) {
-  metadataEntries.push([
+if (unknownIds.length) {
+  throw new Error(`Unknown indicator ids: ${unknownIds.join(", ")}`);
+}
+
+const metadataEntries = new Map(Object.entries(existingMetadata.indicators || {}));
+
+for (const indicator of selectedDefinitions) {
+  metadataEntries.set(
     indicator.code,
     await fetchMetadata(indicator)
-  ]);
+  );
 }
 
 const output = {
@@ -36,7 +51,9 @@ await writeFile(
   "utf8"
 );
 
-console.log(`Updated official metadata for ${metadataEntries.length} indicators.`);
+console.log(
+  `Updated official metadata for ${selectedDefinitions.length} indicators (${definitions.length} total).`
+);
 
 async function fetchMetadata(indicator) {
   const endpoint =

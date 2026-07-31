@@ -5,12 +5,14 @@ import { fileURLToPath } from "node:url";
 import { indicatorCountries, indicatorDefinitions as baseDefinitions } from "../indicator-data.js";
 import { financeIndicatorDefinitions } from "../indicator-finance-data.js";
 import { expandedIndicatorDefinitions } from "../indicator-expanded-data.js";
+import { broadIndicatorDefinitions } from "../indicator-broad-data.js";
 import { indicatorSnapshot as existingSnapshot } from "../indicator-values.js";
 
 const definitions = [
   ...baseDefinitions,
   ...financeIndicatorDefinitions,
-  ...expandedIndicatorDefinitions
+  ...expandedIndicatorDefinitions,
+  ...broadIndicatorDefinitions
 ];
 const requestedIds = new Set(process.argv.slice(2));
 const selectedDefinitions = requestedIds.size
@@ -25,12 +27,10 @@ if (unknownIds.length) {
 }
 
 const updates = new Map(
-  await Promise.all(
-    selectedDefinitions.map(async (indicator) => [
-      indicator.id,
-      await fetchIndicator(indicator)
-    ])
-  )
+  await mapWithConcurrency(selectedDefinitions, 6, async (indicator) => [
+    indicator.id,
+    await fetchIndicator(indicator)
+  ])
 );
 
 const indicators = {};
@@ -154,6 +154,24 @@ function normalizeObservation(row) {
 function round(value, digits) {
   const multiplier = 10 ** digits;
   return Math.round(value * multiplier) / multiplier;
+}
+
+async function mapWithConcurrency(items, concurrency, task) {
+  const results = new Array(items.length);
+  let cursor = 0;
+
+  async function worker() {
+    while (cursor < items.length) {
+      const index = cursor;
+      cursor += 1;
+      results[index] = await task(items[index], index);
+    }
+  }
+
+  await Promise.all(
+    Array.from({ length: Math.min(concurrency, items.length) }, () => worker())
+  );
+  return results;
 }
 
 function delay(milliseconds) {

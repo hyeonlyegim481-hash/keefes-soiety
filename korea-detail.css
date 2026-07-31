@@ -1,0 +1,356 @@
+.korea-detail-stack {
+  display: grid;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.korea-detail-section {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.korea-detail-section > summary {
+  display: flex;
+  min-height: 64px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 13px 16px;
+  background: #f7fafb;
+  cursor: pointer;
+  list-style: none;
+}
+
+.korea-detail-section > summary::-webkit-details-marker {
+  display: none;
+}
+
+.korea-detail-section > summary::after {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 auto;
+  color: var(--teal);
+  font-size: 1rem;
+  font-weight: 850;
+  line-height: 24px;
+  text-align: center;
+  content: "+";
+}
+
+.korea-detail-section[open] > summary {
+  border-bottom: 1px solid var(--line);
+}
+
+.korea-detail-section[open] > summary::after {
+  content: "−";
+}
+
+.korea-detail-section > summary > span {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.korea-detail-section > summary b {
+  color: var(--ink);
+  font-size: 0.92rem;
+}
+
+.korea-detail-section > summary small,
+.korea-detail-section > summary em {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-style: normal;
+  font-weight: 680;
+  line-height: 1.4;
+}
+
+.korea-detail-section > summary em {
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.korea-sector-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.korea-sector-grid > article {
+  display: grid;
+  min-width: 0;
+  align-content: start;
+  gap: 8px;
+  padding: 16px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  border-top: 3px solid var(--line-strong);
+}
+
+.korea-sector-grid > article:nth-child(3n) {
+  border-right: 0;
+}
+
+.korea-sector-grid > article:nth-last-child(-n + 3) {
+  border-bottom: 0;
+}
+
+.korea-sector-grid > article[data-status="positive"] { border-top-color: var(--green); }
+.korea-sector-grid > article[data-status="watch"] { border-top-color: var(--amber); }
+.korea-sector-grid > article[data-status="negative"] { border-top-color: var(--red); }
+.korea-sector-grid > article[data-status="unavailable"] { border-top-color: #8a969c; background: #fafbfb; }
+
+.korea-sector-grid header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.korea-sector-grid header > span,
+.korea-scenario-grid > article > span,
+.korea-data-quality-grid span {
+  color: var(--teal);
+  font-size: 0.72rem;
+  font-weight: 850;
+}
+
+.korea-sector-grid header > em {
+  padding: 3px 6px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  color: #58666e;
+  font-size: 0.65rem;
+  font-style: normal;
+  font-weight: 760;
+}
+
+.korea-sector-grid > article > strong,
+.korea-scenario-grid > article > strong {
+  color: var(--ink);
+  font-size: 0.92rem;
+  line-height: 1.45;
+  word-break: keep-all;
+}
+
+.korea-sector-grid p,
+.korea-sector-grid footer,
+.korea-impact-row p,
+.korea-impact-row span,
+.korea-scenario-grid p,
+.korea-counter-signals p,
+.korea-data-quality-grid p,
+.korea-data-quality-grid em,
+.korea-methodology {
+  margin: 0;
+  color: #46545d;
+  font-size: 0.78rem;
+  font-style: normal;
+  font-weight: 620;
+  line-height: 1.55;
+  word-break: keep-all;
+}
+
+.korea-sector-evidence {
+  padding: 8px 9px;
+  border-left: 3px solid #a8c8c5;
+  background: #f4f8f8;
+  color: #263940 !important;
+  font-weight: 760 !important;
+}
+
+.korea-sector-grid footer {
+  display: grid;
+  gap: 3px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--line-strong);
+}
+
+.korea-sector-grid footer b,
+.korea-scenario-grid p b,
+.korea-methodology b {
+  margin-right: 6px;
+  color: #25343c;
+  font-size: 0.7rem;
+}
+
+.korea-impact-row {
+  display: grid;
+  grid-template-columns: minmax(150px, 0.8fr) repeat(3, minmax(180px, 1fr));
+}
+
+.korea-impact-row > * {
+  min-width: 0;
+  padding: 12px 14px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.korea-impact-row > *:last-child { border-right: 0; }
+.korea-impact-row:last-child > * { border-bottom: 0; }
+
+.korea-impact-head {
+  background: #172127;
+}
+
+.korea-impact-head > b {
+  color: #f4f7f8;
+  font-size: 0.72rem;
+}
+
+.korea-impact-row > div {
+  display: grid;
+  gap: 4px;
+}
+
+.korea-impact-row > div strong {
+  color: var(--ink);
+  font-size: 0.8rem;
+}
+
+.korea-impact-row > div span {
+  color: var(--teal);
+  font-size: 0.72rem;
+  font-weight: 760;
+}
+
+.korea-scenario-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.korea-scenario-grid > article {
+  display: grid;
+  align-content: start;
+  gap: 9px;
+  padding: 16px;
+  border-right: 1px solid var(--line);
+  border-top: 3px solid var(--line-strong);
+}
+
+.korea-scenario-grid > article:last-child { border-right: 0; }
+.korea-scenario-grid > article[data-scenario="better"] { border-top-color: var(--green); }
+.korea-scenario-grid > article[data-scenario="worse"] { border-top-color: var(--red); }
+.korea-scenario-grid > article[data-scenario="base"] { border-top-color: var(--amber); }
+
+.korea-scenario-grid footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding-top: 7px;
+  border-top: 1px solid var(--line);
+}
+
+.korea-scenario-grid footer span {
+  padding: 4px 6px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: #f7fafb;
+  color: #53616a;
+  font-size: 0.67rem;
+  font-weight: 750;
+}
+
+.korea-counter-signals {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid #ead8b8;
+  background: #fffaf1;
+}
+
+.korea-counter-signals > strong,
+.korea-counter-signals > p {
+  padding: 10px 15px;
+}
+
+.korea-counter-signals > strong {
+  color: #8b4c0b;
+  font-size: 0.76rem;
+}
+
+.korea-counter-signals > p {
+  border-top: 1px solid #efdfc3;
+}
+
+.korea-data-quality-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.korea-data-quality-grid article {
+  display: grid;
+  min-width: 0;
+  gap: 4px;
+  padding: 13px 15px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.korea-data-quality-grid article:nth-child(3n) { border-right: 0; }
+.korea-data-quality-grid article[data-available="false"] { background: #fff7f5; }
+
+.korea-data-quality-grid strong {
+  color: var(--ink);
+  font-size: 0.8rem;
+}
+
+.korea-data-quality-grid article[data-available="false"] strong { color: #a14236; }
+
+.korea-methodology {
+  padding: 13px 15px;
+  background: #f7fafb;
+}
+
+.korea-detail-empty {
+  margin: 0;
+  padding: 18px;
+  color: var(--muted);
+}
+
+@media (max-width: 960px) {
+  .korea-sector-grid,
+  .korea-data-quality-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .korea-sector-grid > article:nth-child(3n),
+  .korea-data-quality-grid article:nth-child(3n) { border-right: 1px solid var(--line); }
+  .korea-sector-grid > article:nth-child(2n),
+  .korea-data-quality-grid article:nth-child(2n) { border-right: 0; }
+  .korea-sector-grid > article:nth-last-child(-n + 3) { border-bottom: 1px solid var(--line); }
+  .korea-sector-grid > article:nth-last-child(-n + 2) { border-bottom: 0; }
+
+  .korea-impact-head { display: none; }
+  .korea-impact-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .korea-impact-row > div { grid-column: 1 / -1; border-right: 0; background: #f7fafb; }
+}
+
+@media (max-width: 700px) {
+  .korea-sector-grid,
+  .korea-scenario-grid,
+  .korea-data-quality-grid,
+  .korea-impact-row {
+    grid-template-columns: 1fr;
+  }
+
+  .korea-sector-grid > article,
+  .korea-sector-grid > article:nth-child(2n),
+  .korea-sector-grid > article:nth-child(3n),
+  .korea-data-quality-grid article,
+  .korea-data-quality-grid article:nth-child(2n),
+  .korea-data-quality-grid article:nth-child(3n),
+  .korea-scenario-grid > article,
+  .korea-impact-row > * {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .korea-sector-grid > article:last-child,
+  .korea-data-quality-grid article:last-child,
+  .korea-scenario-grid > article:last-child,
+  .korea-impact-row:last-child > *:last-child { border-bottom: 0; }
+
+  .korea-detail-section > summary { align-items: flex-start; gap: 8px; }
+  .korea-detail-section > summary em { display: none; }
+}

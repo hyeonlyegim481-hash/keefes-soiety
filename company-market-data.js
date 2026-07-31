@@ -4,8 +4,28 @@ const YAHOO_SYMBOL_OVERRIDES = Object.freeze({
   roche: "ROG.SW",
   siemens: "SIE.DE",
   "schneider-electric": "SU.PA",
-  veolia: "VIE.PA"
+  veolia: "VIE.PA",
+  mediatek: "2454.TW",
+  bmw: "BMW.DE",
+  "mercedes-benz": "MBG.DE",
+  vestas: "VWS.CO",
+  "siemens-energy": "ENR.DE"
 });
+
+const SYMBOL_SUFFIX_META = Object.freeze([
+  [".KS", { currency: "KRW", timezone: "Asia/Seoul" }],
+  [".KQ", { currency: "KRW", timezone: "Asia/Seoul" }],
+  [".T", { currency: "JPY", timezone: "Asia/Tokyo" }],
+  [".TW", { currency: "TWD", timezone: "Asia/Taipei" }],
+  [".SZ", { currency: "CNY", timezone: "Asia/Shanghai" }],
+  [".SS", { currency: "CNY", timezone: "Asia/Shanghai" }],
+  [".HK", { currency: "HKD", timezone: "Asia/Hong_Kong" }],
+  [".SW", { currency: "CHF", timezone: "Europe/Zurich" }],
+  [".DE", { currency: "EUR", timezone: "Europe/Berlin" }],
+  [".PA", { currency: "EUR", timezone: "Europe/Paris" }],
+  [".AS", { currency: "EUR", timezone: "Europe/Amsterdam" }],
+  [".CO", { currency: "DKK", timezone: "Europe/Copenhagen" }]
+]);
 
 const COUNTRY_MARKET_META = Object.freeze({
   한국: { currency: "KRW", timezone: "Asia/Seoul" },
@@ -47,9 +67,12 @@ export function getCompanyProviderSymbol(company = {}, provider = "yahoo") {
 }
 
 export function getCompanyMarketConfig(company = {}) {
-  const marketMeta = COUNTRY_MARKET_META[company.country]
-    || { currency: "USD", timezone: "UTC" };
   const symbol = getCompanyProviderSymbol(company, "yahoo");
+  const suffixMeta = SYMBOL_SUFFIX_META.find(([suffix]) => symbol.endsWith(suffix))?.[1];
+  const marketMeta = suffixMeta
+    || (/^[A-Z][A-Z0-9-]*$/.test(symbol)
+      ? { currency: "USD", timezone: "America/New_York" }
+      : COUNTRY_MARKET_META[company.country] || { currency: "USD", timezone: "UTC" });
   return {
     id: company.id,
     name: company.name,
