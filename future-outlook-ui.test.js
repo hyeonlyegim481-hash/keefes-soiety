@@ -8,11 +8,11 @@ import {
 } from "./future-outlook-ui.js";
 
 test("future outlook filters risk domains without losing the full board", () => {
-  assert.equal(filterOutlookRisks("all").length, 8);
+  assert.equal(filterOutlookRisks("all").length, 13);
   assert.equal(filterOutlookRisks("climate").length, 2);
-  assert.equal(filterOutlookRisks("essentials").length, 3);
-  assert.equal(filterOutlookRisks("society").length, 2);
-  assert.equal(filterOutlookRisks("systems").length, 1);
+  assert.equal(filterOutlookRisks("essentials").length, 4);
+  assert.equal(filterOutlookRisks("society").length, 4);
+  assert.equal(filterOutlookRisks("systems").length, 3);
   assert.equal(normalizeCategoryId("missing"), "all");
 });
 

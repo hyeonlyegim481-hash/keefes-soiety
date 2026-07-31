@@ -6,7 +6,12 @@ import { climateBusinessFramework } from "./climate-business-data.js";
 test("climate business framework covers mitigation, adaptation, and recovery", () => {
   const phaseIds = new Set(climateBusinessFramework.opportunities.map((item) => item.phase));
   assert.deepEqual([...phaseIds].sort(), ["adaptation", "mitigation", "recovery"]);
-  assert.ok(climateBusinessFramework.opportunities.length >= 8);
+  assert.ok(climateBusinessFramework.opportunities.length >= 14);
+});
+
+test("climate business map exposes primary institutional sources", () => {
+  assert.ok(climateBusinessFramework.sources.length >= 6);
+  assert.ok(climateBusinessFramework.sources.every((source) => /^https:\/\//.test(source.url)));
 });
 
 test("every climate opportunity explains the business and its risks", () => {

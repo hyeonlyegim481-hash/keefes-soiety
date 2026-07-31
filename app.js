@@ -5657,6 +5657,7 @@ function setNewsSaveButtonState(button, headline) {
   const saved = Boolean(profileController?.isArticleSaved?.(headline));
   const analysisMode = button.dataset.saveMode === "analysis";
   button.dataset.saved = String(saved);
+  button.dataset.saveState = saved ? "saved" : "idle";
   button.setAttribute("aria-pressed", String(saved));
   const icon = button.querySelector("[data-save-icon]");
   const label = button.querySelector("[data-save-label]");
@@ -5674,15 +5675,19 @@ function setNewsSaveButtonState(button, headline) {
 async function handleNewsSave(button, headline, analysis = null) {
   if (!button || button.disabled) return;
   button.disabled = true;
+  button.dataset.saveState = "saving";
   button.setAttribute("aria-busy", "true");
   try {
     const controller = profileController || await initProfileOnce();
     if (!controller?.isAuthenticated?.()) {
+      setNewsSaveButtonState(button, headline);
       openUtilityDrawer();
       return;
     }
     const result = await controller.toggleSavedArticle?.(headline, analysis);
     if (!result?.ok) {
+      setNewsSaveButtonState(button, headline);
+      button.dataset.saveState = "error";
       button.dataset.error = "true";
       button.title = result?.reason === "original-url-required"
         ? "원문 주소가 확인된 기사만 저장할 수 있습니다."
@@ -5692,12 +5697,16 @@ async function handleNewsSave(button, headline, analysis = null) {
     delete button.dataset.error;
     setNewsSaveButtonState(button, headline);
   } catch (error) {
+    setNewsSaveButtonState(button, headline);
+    button.dataset.saveState = "error";
     button.dataset.error = "true";
     button.title = "기사를 저장하지 못했습니다.";
     console.error("[profile] news save action failed", error);
   } finally {
     button.disabled = false;
     button.removeAttribute("aria-busy");
+    if (button.dataset.saveState === "saving") setNewsSaveButtonState(button, headline);
+    requestAnimationFrame(() => button.blur());
   }
 }
 

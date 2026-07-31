@@ -657,6 +657,16 @@ function renderClimateBusinessLab() {
     <footer class="climate-business-caution">
       <strong>사업성을 볼 때 주의</strong>
       <ul>${climateBusinessFramework.cautions.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+      <div class="climate-business-sources" aria-label="기후 대응 사업 지도 공식 근거">
+        <span>공식 근거</span>
+        ${climateBusinessFramework.sources.map((source) => `
+          <a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">
+            <strong>${escapeHtml(source.publisher)}</strong>
+            <em>${escapeHtml(source.title)}</em>
+            <i aria-hidden="true">↗</i>
+          </a>
+        `).join("")}
+      </div>
     </footer>
   `;
 }

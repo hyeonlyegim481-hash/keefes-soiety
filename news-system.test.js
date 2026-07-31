@@ -227,4 +227,8 @@ test("news save cancellation restores a neutral button without a yellow glow", (
   assert.match(unsavedRules, /box-shadow:\s*none/);
   assert.doesNotMatch(unsavedRules, /#fff9ec|#d3a13f|#a57728/);
   assert.match(app, /button\.dataset\.saved = String\(saved\)/);
+  assert.match(app, /button\.dataset\.saveState = saved \? "saved" : "idle"/);
+  assert.match(app, /requestAnimationFrame\(\(\) => button\.blur\(\)\)/);
+  assert.match(css, /background:\s*#9b6710/);
+  assert.match(css, /data-save-state="idle"/);
 });

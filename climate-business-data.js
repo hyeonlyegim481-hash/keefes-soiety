@@ -27,6 +27,44 @@ export const climateBusinessFramework = {
       description: "재난 직후 전력, 물류, 주거와 생산을 빠르게 정상화합니다."
     }
   ],
+  sources: [
+    {
+      id: "iea-methane-2026",
+      publisher: "IEA",
+      title: "Global Methane Tracker 2026",
+      url: "https://www.iea.org/reports/global-methane-tracker-2026"
+    },
+    {
+      id: "iea-grids",
+      publisher: "IEA",
+      title: "Electricity Grids and Secure Energy Transitions",
+      url: "https://www.iea.org/reports/electricity-grids-and-secure-energy-transitions"
+    },
+    {
+      id: "wmo-early-warning",
+      publisher: "WMO",
+      title: "Global Status of Multi-Hazard Early Warning Systems 2025",
+      url: "https://wmo.int/resources/publication-series/global-status-of-multi-hazard-early-warning-systems/global-status-of-multi-hazard-early-warning-systems-2025"
+    },
+    {
+      id: "unep-adaptation",
+      publisher: "UNEP",
+      title: "Adaptation Gap Report 2025",
+      url: "https://www.unep.org/resources/adaptation-gap-report-2025"
+    },
+    {
+      id: "iea-minerals",
+      publisher: "IEA",
+      title: "Global Critical Minerals Outlook 2026",
+      url: "https://www.iea.org/reports/global-critical-minerals-outlook-2026"
+    },
+    {
+      id: "ipcc-ar6",
+      publisher: "IPCC",
+      title: "AR6 Synthesis Report",
+      url: "https://www.ipcc.ch/report/ar6/syr/"
+    }
+  ],
   opportunities: [
     {
       id: "urban-cooling",
@@ -148,6 +186,96 @@ export const climateBusinessFramework = {
       firstStep: "보조금 없이도 에너지 절감으로 투자비를 회수할 수 있는지, 공정 중단 위험은 통제되는지 봅니다."
     },
     {
+      id: "methane-abatement",
+      phase: "mitigation",
+      category: "메탄·측정",
+      title: "메탄 누출 탐지와 회수",
+      horizon: "현재~8년",
+      capital: "낮음~중간",
+      plain: "위성·항공·현장 센서로 석유·가스·폐기물 시설의 메탄 누출을 찾고 회수하거나 연소해 단기 온난화 영향을 빠르게 낮춥니다.",
+      buyers: "에너지 회사, 매립지·폐수 운영사, 정부 규제기관, 위성 데이터 사업자",
+      revenueModel: "탐지 장비 판매, 시설별 모니터링 구독, 누출 수리 성과보수, 회수 가스 판매",
+      demandTrigger: "메탄 규제와 수입 기준 강화, 위성 관측 확대, 가스 손실 비용 상승",
+      moat: "오탐을 줄이는 검증 데이터, 누출 위치를 현장 수리까지 연결하는 운영망, 규제 보고 호환성이 핵심입니다.",
+      kpis: ["탐지 최소 누출량", "발견 후 수리시간", "회수 메탄량·톤당 감축비"],
+      risks: ["위성·센서 간 측정 차이", "저가 가스 지역의 회수 유인 약화", "규제 일정 지연"],
+      korea: "정유·석유화학, 폐기물과 하수처리 시설에서 측정 장비와 검증·보고 서비스를 묶어 해외 규제 대응 사업으로 확장할 수 있습니다.",
+      firstStep: "탐지 건수보다 실제 수리율과 재누출률, 회수한 가스 가치까지 확인합니다.",
+      sourceIds: ["iea-methane-2026"]
+    },
+    {
+      id: "grid-flexibility",
+      phase: "mitigation",
+      category: "전력망·저장",
+      title: "전력망 유연성과 장주기 저장",
+      horizon: "현재~15년",
+      capital: "높음",
+      plain: "태양광·풍력의 시간대 차이를 배터리, 수요반응과 전력망 제어로 흡수해 버려지는 전기와 정전 위험을 줄입니다.",
+      buyers: "전력회사, 발전사, 산업단지, 데이터센터, 대형 전력 소비자",
+      revenueModel: "저장장치 판매·운영, 계통 보조서비스 수입, 전력비 절감 공유, 제어 소프트웨어 구독",
+      demandTrigger: "재생에너지 접속 대기, 출력제어 증가, 피크요금과 정전 비용 상승",
+      moat: "배터리 수명 예측, 계통 인증, 전력시장 운용 경험과 장기 안전 데이터가 중요합니다.",
+      kpis: ["왕복효율·가동률", "저장 1kWh당 비용", "출력제어·피크전력 감소"],
+      risks: ["배터리 가격과 화재 위험", "전력시장 보상규칙 변경", "망 인허가·접속 지연"],
+      korea: "제조업 전력 품질과 재생에너지 변동을 함께 관리할 수 있어 ESS, 전력반도체와 공장 수요반응을 묶는 사업이 유리합니다.",
+      firstStep: "설치 용량보다 실제 충방전 수익, 배터리 열화와 계통 서비스 계약기간을 확인합니다.",
+      sourceIds: ["iea-grids", "iea-minerals"]
+    },
+    {
+      id: "low-carbon-materials",
+      phase: "mitigation",
+      category: "소재·순환",
+      title: "저탄소 소재와 핵심광물 재활용",
+      horizon: "3~20년",
+      capital: "높음",
+      plain: "철강·시멘트의 공정 배출을 낮추고 폐배터리·전자제품에서 광물을 회수해 수입 원료와 공급망 위험을 줄입니다.",
+      buyers: "건설사, 자동차·배터리 회사, 전자업체, 공공조달기관",
+      revenueModel: "저탄소 소재 판매, 폐기물 처리비, 회수 광물 판매, 장기 공급계약",
+      demandTrigger: "탄소국경조정, 공급망 배출 공시, 광물 수출통제와 원료 가격 변동",
+      moat: "불순물 관리, 회수율, 에너지 원단위, 안정적인 폐제품 확보와 고객 품질 인증이 진입장벽입니다.",
+      kpis: ["재활용 회수율", "제품당 탄소배출", "원료 확보량·장기계약 비중"],
+      risks: ["원료 가격 하락", "폐제품 확보 경쟁", "상업 규모 품질과 수율 불안"],
+      korea: "배터리·전자·철강 생산기반이 있어 도시광산, 소재 정제와 고객사 폐쇄형 재활용 계약을 연결할 여지가 큽니다.",
+      firstStep: "실험실 회수율보다 상업 설비 가동률, 고객 품질 인증과 원료 조달비를 봅니다.",
+      sourceIds: ["iea-minerals"]
+    },
+    {
+      id: "coastal-resilience",
+      phase: "adaptation",
+      category: "연안·자연",
+      title: "연안 방재와 자연 기반 복원",
+      horizon: "5~30년",
+      capital: "중간~높음",
+      plain: "방파제만 높이는 대신 습지·사구·도시 배수와 항만 시설을 함께 개선해 해수면 상승과 폭풍해일 피해를 줄입니다.",
+      buyers: "항만·지방정부, 산업단지, 관광개발사, 보험사, 수산업 협동조합",
+      revenueModel: "위험진단·설계, 토목·복원 공사, 장기 모니터링, 성과기반 유지관리",
+      demandTrigger: "해수면 상승, 폭풍해일 손실, 항만·산단의 보험료와 복구비 증가",
+      moat: "지역 해류·지반침하 데이터, 생태 복원 경험, 토목과 주민 협의를 함께 수행하는 능력이 중요합니다.",
+      kpis: ["침수 예상면적 감소", "해안선·습지 유지율", "피해회피액·유지관리비"],
+      risks: ["긴 인허가와 주민 갈등", "생태 복원 효과의 시간 지연", "극단재난이 설계기준 초과"],
+      korea: "항만과 해안 산업단지가 많아 지역 해수면, 지반침하와 폭풍해일을 합친 위험지도가 투자 우선순위를 가르는 핵심입니다.",
+      firstStep: "조성 면적보다 실제 파랑·침수 감소와 10년 이상 유지관리 예산이 확보됐는지 확인합니다.",
+      sourceIds: ["ipcc-ar6", "unep-adaptation"]
+    },
+    {
+      id: "multi-hazard-warning",
+      phase: "adaptation",
+      category: "경보·보건",
+      title: "다중재난 조기경보와 폭염 보건",
+      horizon: "현재~7년",
+      capital: "낮음~중간",
+      plain: "폭염·홍수·산불을 먼저 예측하고 병원, 학교, 사업장과 취약계층에게 행동 지침까지 전달해 인명과 업무중단을 줄입니다.",
+      buyers: "기상·재난기관, 지방정부, 병원, 학교, 산업안전 담당 기업",
+      revenueModel: "예보·위험 API, 관제 소프트웨어, 통신·경보 장비, 운영·훈련 계약",
+      demandTrigger: "극한기상 증가, 산업안전 의무 강화, 응급의료와 재난 대응 예산 확대",
+      moat: "지역별 예측 정확도보다 경보가 실제 대피·작업중지·의료 대응으로 이어지는 전달망과 신뢰가 중요합니다.",
+      kpis: ["경보 선행시간", "수신·행동 전환율", "인명피해·업무중단 감소"],
+      risks: ["잦은 오경보로 인한 무시", "취약계층 통신 격차", "기관 간 책임·데이터 단절"],
+      korea: "재난문자에 그치지 않고 독거노인, 야외노동자, 학교와 산업단지별 행동 프로토콜을 연결하는 서비스가 필요합니다.",
+      firstStep: "예측 정확도만 보지 말고 경보 수신 뒤 실제 행동률과 피해 감소 기록을 확인합니다.",
+      sourceIds: ["wmo-early-warning"]
+    },
+    {
       id: "rapid-recovery",
       phase: "recovery",
       category: "재난·복구",
@@ -163,6 +291,24 @@ export const climateBusinessFramework = {
       risks: ["평시 장비 유휴", "재난 수요의 변동성", "조달과 인증 절차"],
       korea: "인구와 산업시설이 밀집해 있어 이동형 배터리·정수·통신 장비를 권역별로 공유하는 서비스 모델이 효율적일 수 있습니다.",
       firstStep: "재난 때만 매출이 나는지, 평시 점검·임대·교육으로 반복 수익을 확보하는지 구분합니다."
+    },
+    {
+      id: "resilient-logistics",
+      phase: "recovery",
+      category: "물류·공급망",
+      title: "재난 복구 물류와 대체 공급망",
+      horizon: "현재~10년",
+      capital: "중간",
+      plain: "항만·도로·공장이 멈췄을 때 대체 운송과 재고를 빠르게 연결해 핵심 부품·의약품·식품의 공급중단 시간을 줄입니다.",
+      buyers: "제조사, 유통사, 항만·물류회사, 병원, 정부 비축기관, 보험사",
+      revenueModel: "위험지도 구독, 비상운송 계약, 재고·창고 운영료, 복구 성과보수",
+      demandTrigger: "홍수·산불·폭염에 따른 운송중단, 공급망 공시와 업무연속성 요구",
+      moat: "대체 운송망, 공급업체 실시간 데이터, 비상시 우선권 계약과 실제 복구 기록이 경쟁력입니다.",
+      kpis: ["대체 경로 전환시간", "공급중단 시간", "핵심재고 가용일수"],
+      risks: ["평시 유지비 부담", "동시다발 재난 때 대체망 부족", "협력사 데이터 품질"],
+      korea: "수출 제조업과 수도권 물류 집중도가 높아 항만·산단·창고의 대체 경로와 핵심 부품 비축을 함께 최적화할 수 있습니다.",
+      firstStep: "지도 화면보다 실제 비상운송 계약과 우선 배차 권한, 복구 훈련 결과를 확인합니다.",
+      sourceIds: ["unep-adaptation"]
     }
   ],
   cautions: [

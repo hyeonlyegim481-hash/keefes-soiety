@@ -27,8 +27,8 @@ test("future outlook separates observations, projections, and scenarios", () => 
   assert.equal(climateScenarios.find((item) => item.id === "high").temperatures.at(-1).best, 4.4);
 });
 
-test("humanity risk board has eight complete, sourced domains", () => {
-  assert.equal(humanityRisks.length, 8);
+test("humanity risk board has thirteen complete, sourced domains", () => {
+  assert.equal(humanityRisks.length, 13);
   const sourceIds = new Set(outlookSources.map((source) => source.id));
   const riskIds = new Set();
 
@@ -49,17 +49,18 @@ test("humanity risk board has eight complete, sourced domains", () => {
 });
 
 test("all outlook sources and timeline milestones expose their basis", () => {
-  assert.ok(outlookSources.length >= 10);
+  assert.ok(outlookSources.length >= 16);
   for (const source of outlookSources) {
     assert.match(source.url, /^https:\/\//);
     assert.match(source.publishedAt, /^\d{4}-\d{2}-\d{2}$/);
     assert.ok(source.basis.length >= 15);
   }
 
-  assert.equal(futureMilestones.length, 5);
+  assert.equal(futureMilestones.length, 6);
   assert.deepEqual(futureMilestones.map((item) => item.period), [
     "2030",
     "2035",
+    "2040",
     "2050",
     "2080s",
     "2100"

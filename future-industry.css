@@ -1080,16 +1080,72 @@ html[data-reader-contrast="strong"] #future .future-company-source > span {
   border-top: 0;
 }
 
+#future .climate-business-sources {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #d2dddf;
+}
+
+#future .climate-business-sources > span {
+  grid-column: 1 / -1;
+  color: #53676f;
+  font-size: 0.63rem;
+  font-weight: 900;
+}
+
+#future .climate-business-sources a {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 16px;
+  gap: 2px 7px;
+  padding: 9px 10px;
+  border: 1px solid #d4dee1;
+  background: #ffffff;
+  color: #24363f;
+  text-decoration: none;
+}
+
+#future .climate-business-sources a strong {
+  font-size: 0.61rem;
+}
+
+#future .climate-business-sources a em {
+  overflow: hidden;
+  color: #64767d;
+  font-size: 0.56rem;
+  font-style: normal;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#future .climate-business-sources a i {
+  grid-column: 2;
+  grid-row: 1 / 3;
+  align-self: center;
+  color: #0f766e;
+  font-style: normal;
+}
+
 @media (max-width: 920px) {
   #future .future-climate-reading {
     grid-template-columns: 1fr;
     gap: 17px;
+  }
+
+  #future .climate-business-sources {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 560px) {
   #future .future-climate-reading {
     padding: 18px;
+  }
+
+  #future .climate-business-sources {
+    grid-template-columns: 1fr;
   }
 
   #future .future-climate-reading ol {

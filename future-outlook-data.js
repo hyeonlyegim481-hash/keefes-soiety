@@ -2,7 +2,7 @@ export const futureOutlookMeta = {
   updatedAt: "2026-07-27",
   title: "인류 위험과 전환 신호",
   description:
-    "기후, 물, 식량, 건강, 인구와 전력 수요를 하나의 예언으로 합치지 않고 관측값·조건부 전망·시나리오 범위로 나눠 읽습니다.",
+    "기후, 물, 식량, 건강, 인구, 생태계, 일자리, 전력망과 핵심광물을 하나의 예언으로 합치지 않고 관측값·조건부 전망·시나리오 범위로 나눠 읽습니다.",
   principle:
     "전망은 미래를 확정하는 숫자가 아닙니다. 정책, 기술, 인구와 배출 경로가 달라지면 결과도 달라지므로 기준시점과 가정을 함께 표시합니다.",
   caution:
@@ -97,15 +97,55 @@ export const outlookSources = [
     publishedAt: "2019-07-01",
     url: "https://www.ilo.org/publications/working-warmer-planet-effect-heat-stress-productivity-and-decent-work",
     basis: "기온상승에 따른 2030년 노동시간 손실 모형"
+  },
+  {
+    id: "worldbank-groundswell",
+    publisher: "세계은행",
+    title: "Groundswell: Acting on Internal Climate Migration",
+    publishedAt: "2021-09-13",
+    url: "https://www.worldbank.org/en/news/press-release/2021/09/13/climate-change-could-force-216-million-people-to-migrate-within-their-own-countries-by-2050",
+    basis: "6개 권역의 2050년 국내 기후이동 시나리오"
+  },
+  {
+    id: "ilo-genai-2025",
+    publisher: "국제노동기구 ILO",
+    title: "Generative AI and jobs: A 2025 update",
+    publishedAt: "2025-05-20",
+    url: "https://www.ilo.org/publications/generative-ai-and-jobs-2025-update",
+    basis: "약 3만 개 직무과업을 이용한 생성형 AI 노출도 평가"
+  },
+  {
+    id: "iea-grids-2040",
+    publisher: "국제에너지기구 IEA",
+    title: "Electricity Grids and Secure Energy Transitions",
+    publishedAt: "2023-10-17",
+    url: "https://www.iea.org/reports/electricity-grids-and-secure-energy-transitions",
+    basis: "국가 에너지 목표에 필요한 2040년 전력망 확충 시나리오"
+  },
+  {
+    id: "iea-minerals-2026",
+    publisher: "국제에너지기구 IEA",
+    title: "Global Critical Minerals Outlook 2026",
+    publishedAt: "2026-07-16",
+    url: "https://www.iea.org/reports/global-critical-minerals-outlook-2026",
+    basis: "2025년 시장과 2035년 공급망 전망"
+  },
+  {
+    id: "ipbes-global-2019",
+    publisher: "생물다양성과학기구 IPBES",
+    title: "Global Assessment Report on Biodiversity and Ecosystem Services",
+    publishedAt: "2019-05-06",
+    url: "https://www.ipbes.net/global-assessment",
+    basis: "생물종·서식지·생태계 서비스의 세계 평가"
   }
 ];
 
 export const outlookCategories = [
-  { id: "all", label: "전체", short: "8개 위험과 전환 신호" },
+  { id: "all", label: "전체", short: "13개 위험과 전환 신호" },
   { id: "climate", label: "기후·해양", short: "온도와 해수면" },
-  { id: "essentials", label: "물·식량·건강", short: "생활 기반" },
-  { id: "society", label: "인구·노동", short: "사회의 구조" },
-  { id: "systems", label: "전력·대응", short: "전환 능력" }
+  { id: "essentials", label: "생활 기반", short: "물·식량·건강·생태" },
+  { id: "society", label: "인구·일자리", short: "이동과 노동 전환" },
+  { id: "systems", label: "전력·공급망", short: "망과 핵심광물" }
 ];
 
 export const policyTemperaturePaths = [
@@ -412,6 +452,151 @@ export const humanityRisks = [
     korea: "데이터센터 입지, 반도체 공장과 여름 냉방 피크가 겹치는 지역의 전력망 증설 속도를 확인해야 합니다.",
     limits: "IEA 기본경로는 효율 개선과 AI 도입 속도에 따라 크게 달라질 수 있습니다. UNEP는 별도로 2035년 개도국 적응재원을 연 3,100억~3,650억 달러로 추정합니다.",
     sourceIds: ["iea-energy-ai", "unep-adaptation-2025"]
+  },
+  {
+    id: "biodiversity",
+    order: "09",
+    category: "essentials",
+    categoryLabel: "생태계",
+    title: "생물다양성과 자연 기반 경제",
+    horizon: "현재~수십 년",
+    confidence: "중간~높음",
+    current: {
+      value: "100",
+      unit: "만 종",
+      label: "멸종위기 추정",
+      note: "약 800만 동식물종 중",
+      kind: "평가"
+    },
+    outlook: {
+      value: "50",
+      unit: "만 종+",
+      label: "서식지 부족 가능 종",
+      note: "복원 없으면 수십 년 내 위험",
+      kind: "조건부 평가"
+    },
+    plain: "생태계 손실은 자연 문제에 그치지 않고 수분, 어업, 홍수 완충과 원료 공급을 약하게 만들어 식품·보험·관광·바이오 산업의 비용으로 전달됩니다.",
+    chain: ["토지이용·오염·기후변화", "서식지와 종 감소", "수분·어업·방재 기능 약화", "생산비·보험손실 증가"],
+    signals: ["서식지 건전성", "위협종 비중", "산호·어족·수분매개체 변화"],
+    korea: "연안·갯벌·산림과 농업 생태계의 변화가 수산물, 농산물 생산성과 지역 관광 수입에 연결되는 경로를 함께 봐야 합니다.",
+    limits: "100만 종은 모든 종을 직접 센 값이 아니라 평가된 분류군과 알려진 종 수를 이용한 세계 추정치입니다.",
+    sourceIds: ["ipbes-global-2019"]
+  },
+  {
+    id: "climate-migration",
+    order: "10",
+    category: "society",
+    categoryLabel: "이동",
+    title: "기후 충격과 국내 인구이동",
+    horizon: "2030~2050",
+    confidence: "중간",
+    current: {
+      value: "6",
+      unit: "개 권역",
+      label: "세계은행 분석 범위",
+      note: "국경 내부 이동만 포함",
+      kind: "모형 범위"
+    },
+    outlook: {
+      value: "2.16",
+      unit: "억 명",
+      label: "2050년 상한 시나리오",
+      note: "고배출·불균등 발전 조건",
+      kind: "시나리오"
+    },
+    plain: "2.16억 명은 확정 인원이 아니라 물 부족, 작물 생산성 저하와 해수면 상승이 겹치는 비관적 조건의 국내 이동 상한입니다. 강한 대응은 규모를 크게 줄일 수 있습니다.",
+    chain: ["물·농업·연안 생계 충격", "거주·소득 안정성 저하", "도시·지역 간 이동", "주택·일자리·재정 수요 재배치"],
+    signals: ["지역별 순이동", "물 스트레스", "작물 생산성과 연안 노출"],
+    korea: "폭염·해수면·산업 재편이 지역 일자리와 주거 수요를 바꿀 수 있어 전국 합계보다 시군구별 인구이동을 확인해야 합니다.",
+    limits: "국제 난민과 단기 재난 대피는 포함하지 않으며, 개발·도시정책과 기후대응에 따라 전망이 크게 달라집니다.",
+    sourceIds: ["worldbank-groundswell"]
+  },
+  {
+    id: "ai-work",
+    order: "11",
+    category: "society",
+    categoryLabel: "일자리",
+    title: "생성형 AI와 직무 전환",
+    horizon: "현재~10년",
+    confidence: "중간",
+    current: {
+      value: "25",
+      unit: "%",
+      label: "일부 노출 직무 비중",
+      note: "전 세계 근로자 약 4명 중 1명",
+      kind: "노출 추정"
+    },
+    outlook: {
+      value: "3.3",
+      unit: "%",
+      label: "최고 노출 직무 비중",
+      note: "자동화 잠재력이 큰 범주",
+      kind: "과업 평가"
+    },
+    plain: "노출은 일자리가 바로 사라진다는 뜻이 아닙니다. ILO는 대부분 직업에서 완전 대체보다 업무 구성과 숙련 요구가 바뀌는 전환 가능성을 더 크게 봅니다.",
+    chain: ["생성형 AI 성능·보급", "반복 과업 자동화", "직무 재설계·생산성 변화", "임금·채용·재교육 수요 변화"],
+    signals: ["직무별 AI 사용률", "업무시간 절감", "채용공고의 숙련 요구 변화"],
+    korea: "사무·금융·콘텐츠 직무의 과업 변화와 함께 중소기업 도입 격차, 재교육 참여율과 생산성 개선을 같이 봐야 합니다.",
+    limits: "기술 노출도는 실제 도입률이나 해고 규모가 아니며, 조직 선택·규제·교육에 따라 고용 결과가 달라집니다.",
+    sourceIds: ["ilo-genai-2025"]
+  },
+  {
+    id: "electricity-grid",
+    order: "12",
+    category: "systems",
+    categoryLabel: "전력망",
+    title: "전기화와 송배전망 병목",
+    horizon: "현재~2040",
+    confidence: "중간~높음",
+    current: {
+      value: "1,500",
+      unit: "GW",
+      label: "접속 대기 프로젝트",
+      note: "IEA 2023 조사 당시 선진 단계",
+      kind: "집계"
+    },
+    outlook: {
+      value: "8,000",
+      unit: "만 km",
+      label: "2040년 추가·교체 필요",
+      note: "국가 기후·에너지 목표 조건",
+      kind: "조건부 전망"
+    },
+    plain: "발전소와 배터리를 늘려도 전력망 접속이 늦으면 실제 전기를 쓰지 못합니다. 8,000만 km는 현재 세계 전력망 전체 길이와 비슷한 추가·교체 규모입니다.",
+    chain: ["재생에너지·전기화 확대", "계통 접속 대기 증가", "송전·변압기·저장 투자", "전력가격·산업입지 변화"],
+    signals: ["계통 접속 대기용량", "송전선 인허가 기간", "망 투자와 변압기 납기"],
+    korea: "동해안 발전과 수도권 수요, 데이터센터·반도체 산업단지 사이의 송전 병목이 입지와 전력비를 좌우할 수 있습니다.",
+    limits: "8,000만 km는 모든 국가 목표가 이행되는 조건이며 실제 건설량은 인허가·자금조달·수요반응에 따라 달라집니다.",
+    sourceIds: ["iea-grids-2040"]
+  },
+  {
+    id: "critical-minerals",
+    order: "13",
+    category: "systems",
+    categoryLabel: "핵심광물",
+    title: "핵심광물 공급 집중과 산업 병목",
+    horizon: "현재~2035",
+    confidence: "중간",
+    current: {
+      value: "72",
+      unit: "%",
+      label: "최대 정제국 평균 점유",
+      note: "희토류 제외 · 2025년",
+      kind: "시장 집계"
+    },
+    outlook: {
+      value: "25",
+      unit: "%",
+      label: "2035년 구리 공급부족",
+      note: "현재 프로젝트 진행 기준",
+      kind: "조건부 전망"
+    },
+    plain: "광물 총량뿐 아니라 정제시설이 소수 국가에 몰린 점이 위험입니다. 공급 충격은 배터리·전력망·반도체·방산의 납기와 가격으로 빠르게 번질 수 있습니다.",
+    chain: ["광산·정제 집중", "수출통제·시설 차질", "소재가격·납기 충격", "첨단 제조 생산비 상승"],
+    signals: ["상위 정제국 점유율", "프로젝트 투자·인허가", "재활용률과 전략비축"],
+    korea: "배터리·반도체·전기차 비중이 높아 원광 확보보다 정제·소재 다변화, 재활용과 장기 구매계약을 함께 봐야 합니다.",
+    limits: "2035년 공급부족은 발표된 프로젝트가 예정대로 진행된다는 조건이며 가격·대체기술·재활용 확대에 따라 달라질 수 있습니다.",
+    sourceIds: ["iea-minerals-2026"]
   }
 ];
 
@@ -437,6 +622,17 @@ export const futureMilestones = [
       "현재 흐름 대비 필요액은 약 12~14배"
     ],
     sourceIds: ["unep-adaptation-2025"]
+  },
+  {
+    period: "2040",
+    label: "전력망 시험대",
+    title: "발전 설비보다 느린 망 확충이 전환 속도를 가를 수 있습니다.",
+    facts: [
+      "전 세계 전력선 8,000만 km 추가·교체 필요",
+      "현재 세계 전력망 전체 길이와 비슷한 규모",
+      "송전 인허가·변압기·핵심광물 공급망이 주요 병목"
+    ],
+    sourceIds: ["iea-grids-2040", "iea-minerals-2026"]
   },
   {
     period: "2050",
