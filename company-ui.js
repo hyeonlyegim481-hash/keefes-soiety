@@ -125,8 +125,7 @@ function bindCompanyEvents() {
     }
     const periodButton = event.target.closest?.("[data-company-period]");
     if (periodButton) {
-      viewState.period = periodButton.dataset.companyPeriod;
-      renderCompanyChart();
+      setCompanyPeriod(periodButton.dataset.companyPeriod);
       return;
     }
     const regionButton = event.target.closest?.("[data-company-region]");
@@ -578,6 +577,18 @@ async function ensureCompanyQuote(companyId, { force = false } = {}) {
     });
   viewState.quoteRequests.set(companyId, request);
   return request;
+}
+
+function setCompanyPeriod(periodId) {
+  if (!COMPANY_PERIODS.some((period) => period.id === periodId)) return;
+  viewState.period = periodId;
+  root?.querySelectorAll("[data-company-period]").forEach((button) => {
+    button.setAttribute(
+      "aria-selected",
+      String(button.dataset.companyPeriod === viewState.period)
+    );
+  });
+  renderCompanyChart();
 }
 
 function renderCompanyChart() {
