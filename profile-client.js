@@ -75,9 +75,15 @@ function setMessage(element, message = "", tone = "muted") {
 
 function setButtonBusy(button, busy, busyLabel) {
   if (!button) return;
-  if (!button.dataset.defaultLabel) button.dataset.defaultLabel = button.textContent.trim();
+  const label = button.querySelector("[data-button-label]");
+  const currentLabel = label?.textContent?.trim() || button.textContent.trim();
+  if (!button.dataset.defaultLabel) button.dataset.defaultLabel = currentLabel;
   button.disabled = Boolean(busy);
-  button.textContent = busy ? busyLabel : button.dataset.defaultLabel;
+  if (label) {
+    label.textContent = busy ? busyLabel : button.dataset.defaultLabel;
+  } else {
+    button.textContent = busy ? busyLabel : button.dataset.defaultLabel;
+  }
 }
 
 function createChip(row, label, onRemove) {

@@ -15805,7 +15805,7 @@ html[data-reader-layout="desktop"] body {
 
 html[data-reader-layout="desktop"] .chapter-window,
 html[data-reader-layout="desktop"] .chart-canvas-wrap {
-  touch-action: pan-y pinch-zoom;
+  touch-action: pan-x pan-y pinch-zoom;
 }
 
 .reader-layout-toggle {
@@ -16361,5 +16361,99 @@ html[data-reader-layout="desktop"] .chart-canvas-wrap {
 
   .refresh-help-panel dl > div {
     grid-template-columns: 82px minmax(0, 1fr);
+  }
+}
+
+
+/* Brand, Google sign-in, and desktop touch behavior v135 */
+.brand-mark {
+  display: grid;
+  aspect-ratio: 1;
+  place-items: center;
+  box-sizing: border-box;
+  padding: 3px;
+  overflow: hidden;
+}
+
+.brand-mark > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: 50% 50%;
+}
+
+.profile-login-button {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) 20px;
+  min-height: 46px;
+  gap: 12px;
+  padding: 0 14px;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  background: #ffffff;
+  color: #3c4043;
+  font-family: Roboto, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0;
+  box-shadow: 0 1px 2px rgba(60, 64, 67, 0.08);
+}
+
+.profile-login-button::after {
+  width: 20px;
+  height: 20px;
+  content: "";
+}
+
+.profile-google-logo {
+  display: block;
+  width: 18px;
+  height: 18px;
+  justify-self: center;
+}
+
+.profile-login-button .profile-google-label {
+  display: block;
+  width: auto;
+  height: auto;
+  place-items: initial;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  box-shadow: none;
+  line-height: 1.2;
+}
+
+.profile-login-button:hover {
+  border-color: #c3c7cd;
+  background: #f8faff;
+  color: #202124;
+  box-shadow: 0 1px 3px rgba(60, 64, 67, 0.16);
+}
+
+.profile-login-button:active {
+  background: #f1f3f4;
+  box-shadow: 0 1px 2px rgba(60, 64, 67, 0.12);
+}
+
+.profile-login-button:focus-visible {
+  outline: 3px solid rgba(26, 115, 232, 0.24);
+  outline-offset: 2px;
+  border-color: #1a73e8;
+}
+
+.profile-login-button:disabled {
+  cursor: wait;
+  color: #6f7378;
+  background: #f8f9fa;
+  opacity: 0.82;
+}
+
+@media (max-width: 720px) {
+  .brand-mark {
+    width: 44px;
+    height: 44px;
+    padding: 2px;
   }
 }

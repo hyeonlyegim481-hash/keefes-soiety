@@ -31,6 +31,7 @@ import {
   READER_SETTINGS_KEY,
   applyReaderSettings,
   applyReaderViewport,
+  isChapterSwipeEnabled,
   loadReaderSettings,
   normalizeReaderSettings,
   saveReaderSettings
@@ -839,7 +840,7 @@ document.addEventListener("keydown", (event) => {
 });
 
 elements.chapterWindow.addEventListener("pointerdown", (event) => {
-  if (event.pointerType === "mouse") {
+  if (!isChapterSwipeEnabled(readerSettings, event.pointerType)) {
     swipeStart = null;
     return;
   }
@@ -849,7 +850,10 @@ elements.chapterWindow.addEventListener("pointerdown", (event) => {
   };
 });
 elements.chapterWindow.addEventListener("pointerup", (event) => {
-  if (!swipeStart) return;
+  if (!swipeStart || !isChapterSwipeEnabled(readerSettings, event.pointerType)) {
+    swipeStart = null;
+    return;
+  }
   const deltaX = event.clientX - swipeStart.x;
   const deltaY = event.clientY - swipeStart.y;
   swipeStart = null;

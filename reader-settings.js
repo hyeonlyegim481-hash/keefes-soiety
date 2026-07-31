@@ -57,6 +57,11 @@ export function applyReaderSettings(settings, root = globalThis.document?.docume
   return normalized;
 }
 
+export function isChapterSwipeEnabled(settings, pointerType = "touch") {
+  const normalized = normalizeReaderSettings(settings);
+  return pointerType !== "mouse" && !normalized.desktopLayout;
+}
+
 export function applyReaderViewport(
   settings,
   viewport = globalThis.document?.querySelector?.('meta[name="viewport"]')
