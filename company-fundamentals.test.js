@@ -25,7 +25,15 @@ test("Yahoo fundamentals preserve basis dates and calculate ROE transparently", 
         yahooResult("quarterlyStockholdersEquity", [
           { asOfDate: "2025-04-30", periodType: "3M", currencyCode: "USD", reportedValue: { raw: 800 } },
           { asOfDate: "2026-04-30", periodType: "3M", currencyCode: "USD", reportedValue: { raw: 1_200 } }
-        ])
+        ]),
+        yahooResult("quarterlyTotalAssets", [{ asOfDate: "2026-04-30", periodType: "3M", currencyCode: "USD", reportedValue: { raw: 2_000 } }]),
+        yahooResult("quarterlyCurrentAssets", [{ asOfDate: "2026-04-30", periodType: "3M", currencyCode: "USD", reportedValue: { raw: 900 } }]),
+        yahooResult("quarterlyTotalNonCurrentAssets", [{ asOfDate: "2026-04-30", periodType: "3M", currencyCode: "USD", reportedValue: { raw: 1_100 } }]),
+        yahooResult("quarterlyCurrentLiabilities", [{ asOfDate: "2026-04-30", periodType: "3M", currencyCode: "USD", reportedValue: { raw: 300 } }]),
+        yahooResult("quarterlyTotalLiabilitiesNetMinorityInterest", [{ asOfDate: "2026-04-30", periodType: "3M", currencyCode: "USD", reportedValue: { raw: 800 } }]),
+        yahooResult("quarterlyCashCashEquivalentsAndShortTermInvestments", [{ asOfDate: "2026-04-30", periodType: "3M", currencyCode: "USD", reportedValue: { raw: 250 } }]),
+        yahooResult("quarterlyAccountsReceivable", [{ asOfDate: "2026-04-30", periodType: "3M", currencyCode: "USD", reportedValue: { raw: 200 } }]),
+        yahooResult("quarterlyInventory", [{ asOfDate: "2026-04-30", periodType: "3M", currencyCode: "USD", reportedValue: { raw: 150 } }])
       ]
     }
   };
@@ -41,6 +49,18 @@ test("Yahoo fundamentals preserve basis dates and calculate ROE transparently", 
   assert.match(result.metrics.profitMargin.formula, /TTM 매출/);
   assert.equal(result.metrics.roe.calculated, true);
   assert.match(result.metrics.roe.formula, /평균 자기자본/);
+  assert.equal(result.metrics.totalAssets.value, 2_000);
+  assert.equal(result.metrics.currentAssets.value, 900);
+  assert.equal(result.metrics.nonCurrentAssets.value, 1_100);
+  assert.equal(result.metrics.accountsReceivable.value, 200);
+  assert.equal(result.metrics.inventory.value, 150);
+  assert.equal(result.metrics.quickAssets.value, 450);
+  assert.equal(result.metrics.workingCapital.value, 600);
+  assert.equal(result.metrics.currentRatio.value, 300);
+  assert.equal(result.metrics.quickRatio.value, 150);
+  assert.ok(Math.abs(result.metrics.debtRatio.value - 66.6666666667) < 1e-8);
+  assert.equal(result.metrics.currentRatio.calculated, true);
+  assert.match(result.metrics.quickAssets.formula, /매출채권/);
 });
 
 test("Naver fundamentals parse Korean market cap without treating missing values as zero", () => {

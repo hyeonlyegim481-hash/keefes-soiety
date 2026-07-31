@@ -1,3 +1,4 @@
+import { renderCompanyBalanceSheet } from "./company-balance-sheet-ui.js";
 import {
   futureCompanies,
   futureIndustries,
@@ -280,7 +281,11 @@ function renderCompanyBrowser() {
     `;
     return button;
   }));
-  root.querySelector(`[data-company-id="${CSS.escape(viewState.companyId)}"]`)?.scrollIntoView?.({ block: "nearest" });
+  const selected = list.querySelector(`[data-company-id="${CSS.escape(viewState.companyId)}"]`);
+  if (selected) {
+    const centeredTop = selected.offsetTop - list.offsetTop - (list.clientHeight - selected.offsetHeight) / 2;
+    list.scrollTop = Math.max(0, centeredTop);
+  }
 }
 
 function renderCompanyDetail() {
@@ -558,6 +563,7 @@ function renderFinancials(company, industry, quoteState) {
       <div><span>사업체력</span><strong>${score}</strong><small>${escapeHtml(getHealthGrade(score))}</small></div>
     </section>
     ${renderDetailedValuation(quoteState)}
+    ${renderCompanyBalanceSheet(quoteState)}
     <div class="company-financial-grid">
       <article><span>매출</span><strong>${escapeHtml(company.revenue)}</strong><p>${formatSignedPercent(company.revenueGrowth)} 변화</p></article>
       <article><span>공표 수익성</span><strong>${Number.isFinite(Number(company.margin)) ? `${numberFormatter.format(company.margin)}%` : "계산 불가"}</strong><p>${escapeHtml(company.profitability)}</p></article>

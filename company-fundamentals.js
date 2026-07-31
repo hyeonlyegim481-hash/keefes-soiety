@@ -1,3 +1,9 @@
+import {
+  EMPTY_BALANCE_SHEET_METRICS,
+  YAHOO_BALANCE_SHEET_TYPES,
+  parseYahooBalanceSheet
+} from "./company-balance-sheet.js";
+
 export const YAHOO_FUNDAMENTAL_TYPES = Object.freeze([
   "trailingMarketCap",
   "trailingEnterpriseValue",
@@ -9,10 +15,12 @@ export const YAHOO_FUNDAMENTAL_TYPES = Object.freeze([
   "trailingDividendYield",
   "trailingTotalRevenue",
   "trailingNetIncomeCommonStockholders",
-  "quarterlyStockholdersEquity"
+  "quarterlyStockholdersEquity",
+  ...YAHOO_BALANCE_SHEET_TYPES
 ]);
 
 const EMPTY_METRICS = Object.freeze({
+  ...EMPTY_BALANCE_SHEET_METRICS,
   marketCap: null,
   enterpriseValue: null,
   per: null,
@@ -130,6 +138,7 @@ export function countFundamentalMetrics(metrics = {}) {
 }
 
 export function parseYahooFundamentals(payload = {}) {
+  const balanceSheetMetrics = parseYahooBalanceSheet(payload);
   const metrics = {
     ...EMPTY_METRICS,
     marketCap: latestYahooMetric(payload, "trailingMarketCap"),
@@ -143,12 +152,13 @@ export function parseYahooFundamentals(payload = {}) {
     dividendYield: latestYahooMetric(payload, "trailingDividendYield", { multiplier: 100 }),
     revenueTtm: latestYahooMetric(payload, "trailingTotalRevenue"),
     netIncomeTtm: latestYahooMetric(payload, "trailingNetIncomeCommonStockholders"),
-    profitMargin: calculateYahooProfitMargin(payload)
+    profitMargin: calculateYahooProfitMargin(payload),
+    ...balanceSheetMetrics
   };
   return {
     available: countFundamentalMetrics(metrics) >= 2,
     metrics,
-    basisLabel: "최근 12개월(TTM) 및 최근 공표 자기자본",
+    basisLabel: "최근 12개월(TTM) 가치평가 및 최근 공표 분기 재무상태표",
     metricCount: countFundamentalMetrics(metrics)
   };
 }

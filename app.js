@@ -1270,6 +1270,16 @@ function initPersonalDashboardOnce() {
   });
 }
 
+function scrollChapterStart(chapter) {
+  const pane = [...elements.chapterPanes].find((item) => item.dataset.chapterPanel === chapter);
+  const anchor = elements.chapterWindow || pane;
+  if (!anchor) return;
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    const top = anchor.getBoundingClientRect().top + window.scrollY;
+    window.scrollTo({ top: Math.max(0, Math.floor(top) - 8), left: 0, behavior: "auto" });
+  }));
+}
+
 function handlePersonalDashboardNavigation(target = {}) {
   if (target.type === "market") {
     if (!state.snapshot?.markets?.some((market) => market.id === target.id)) return;
@@ -1297,12 +1307,11 @@ function handlePersonalDashboardNavigation(target = {}) {
     if (!target.id) return;
     state.selectedCompany = target.id;
     state.companyView = "overview";
-    syncUrlState(
-      { chapter: "companies", company: target.id, companyView: "overview" },
-      { mode: "push", source: "personal-dashboard-company" }
-    );
-    setActiveChapter("companies", { syncUrl: false });
-    companyController?.openCompany?.(target.id, "overview");
+    const companyUrlState = { chapter: "companies", company: target.id, companyView: "overview" };
+    syncUrlState(companyUrlState, { mode: "push", source: "personal-dashboard-company" });
+    setActiveChapter("companies", { syncUrl: false, skipAnimation: true });
+    companyController?.applyUrlState?.(companyUrlState);
+    scrollChapterStart("companies");
     return;
   }
   if (target.type === "term") {
@@ -2696,12 +2705,11 @@ function handleGraphNavigation(button) {
   if (targetType === "company") {
     state.selectedCompany = entityId;
     state.companyView = "overview";
-    syncUrlState(
-      { chapter: "companies", company: entityId, companyView: "overview" },
-      { mode: "push", source: "graph-company" }
-    );
-    setActiveChapter("companies", { syncUrl: false });
-    companyController?.openCompany?.(entityId, "overview");
+    const companyUrlState = { chapter: "companies", company: entityId, companyView: "overview" };
+    syncUrlState(companyUrlState, { mode: "push", source: "graph-company" });
+    setActiveChapter("companies", { syncUrl: false, skipAnimation: true });
+    companyController?.applyUrlState?.(companyUrlState);
+    scrollChapterStart("companies");
     return;
   }
 

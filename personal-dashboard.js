@@ -1,3 +1,4 @@
+import { renderPersonalCompanyDetails } from "./personal-company-dashboard.js";
 import { PROFILE_MARKETS, getProfileTierProgress } from "./profile-data.js";
 import { indicatorDefinitions } from "./indicator-data.js";
 import { financeIndicatorDefinitions } from "./indicator-finance-data.js";
@@ -390,7 +391,7 @@ function renderMarkets(watchlists, snapshot) {
   `;
 }
 
-function renderCompanies(watchlists, snapshot) {
+function renderCompanies(watchlists, snapshot, companyMarkets = new Map()) {
   const watchedIds = watchlists
     .filter((row) => row.item_type === "company")
     .map((row) => row.target_id);
@@ -400,6 +401,7 @@ function renderCompanies(watchlists, snapshot) {
         const industry = industryById.get(company.sectorId);
         const headlines = matchCompanyHeadlines(company, snapshot?.headlines || []);
         const sourceUrl = safeUrl(company.source?.url);
+        const companyMarket = companyMarkets.get(company.id) || { status: "loading" };
         return `
           <article class="personal-company-item">
             <header>
@@ -410,7 +412,8 @@ function renderCompanies(watchlists, snapshot) {
               </div>
               <button type="button" data-dashboard-company="${escapeHtml(company.id)}" data-industry="${escapeHtml(company.sectorId || "")}">기업 상세 보기</button>
             </header>
-            <dl>
+            ${renderPersonalCompanyDetails(companyMarket)}
+            <dl class="personal-company-static-facts">
               <div><dt>최근 매출</dt><dd>${escapeHtml(company.revenue || "공식 수치 없음")}</dd></div>
               <div><dt>매출 변화</dt><dd data-tone="${Number(company.revenueGrowth) >= 0 ? "up" : "down"}">${Number.isFinite(Number(company.revenueGrowth)) ? `${Number(company.revenueGrowth) > 0 ? "+" : ""}${numberFormatter.format(company.revenueGrowth)}%` : "계산 불가"}</dd></div>
               <div><dt>기준</dt><dd>${escapeHtml(company.fiscal || "회계기간 미확인")}</dd></div>
@@ -604,7 +607,7 @@ function renderSignedOut(root, profileState) {
   `;
 }
 
-function renderDashboard(root, profileState, snapshot, now = new Date()) {
+function renderDashboard(root, profileState, snapshot, companyMarkets = new Map(), now = new Date()) {
   if (!profileState?.authenticated) {
     renderSignedOut(root, profileState);
     return;
@@ -652,7 +655,7 @@ function renderDashboard(root, profileState, snapshot, now = new Date()) {
         </div>
       ` : loading ? '<div class="personal-storage-loading" role="status">학습 기록과 저장 기사를 불러오는 중입니다.</div>' : ""}
       ${renderMarkets(watchlists, snapshot)}
-      ${renderCompanies(watchlists, snapshot)}
+      ${renderCompanies(watchlists, snapshot, companyMarkets)}
       <div class="personal-dashboard-split">
         ${renderIndicators(watchlists)}
         ${renderSchedule(now)}
@@ -684,9 +687,63 @@ export function initPersonalDashboard({
     authenticated: false
   };
   let unsubscribe = null;
+  let companyMarketKey = "";
+  let companyMarketRequest = null;
+  const companyMarkets = new Map();
+
+  const getWatchedCompanyIds = () => [...new Set(
+    (profileState.watchlists || [])
+      .filter((row) => row.item_type === "company" && companyById.has(row.target_id))
+      .map((row) => row.target_id)
+  )].slice(0, 6);
+
+  const loadWatchedCompanyMarkets = async ({ force = false } = {}) => {
+    const companyIds = getWatchedCompanyIds();
+    const requestKey = companyIds.join(",");
+    if (!requestKey) return;
+    if (!force && requestKey === companyMarketKey && companyIds.every((id) => companyMarkets.get(id)?.status === "loaded")) return;
+    if (!force && companyMarketRequest && requestKey === companyMarketKey) return companyMarketRequest;
+    companyMarketKey = requestKey;
+    companyIds.forEach((id) => companyMarkets.set(id, {
+      status: "loading",
+      data: companyMarkets.get(id)?.data || null
+    }));
+    render();
+    const endpoint = "/api/company-market-batch?ids=" + encodeURIComponent(requestKey) + (force ? "&refresh=" + Date.now() : "");
+    const request = fetch(endpoint, {
+      headers: { accept: "application/json" },
+      cache: force ? "reload" : "default",
+      signal: AbortSignal.timeout(24_000)
+    })
+      .then(async (response) => {
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.error || "HTTP " + response.status);
+        if (companyMarketKey !== requestKey) return data;
+        companyIds.forEach((id) => {
+          const result = data.companies?.[id];
+          companyMarkets.set(id, result?.ok
+            ? { status: "loaded", data: result.payload }
+            : { status: "error", data: null });
+        });
+        return data;
+      })
+      .catch((error) => {
+        console.error("[personal-dashboard] company batch failed", { requestKey, error });
+        if (companyMarketKey === requestKey) {
+          companyIds.forEach((id) => companyMarkets.set(id, { status: "error", data: null }));
+        }
+        return null;
+      })
+      .finally(() => {
+        if (companyMarketRequest === request) companyMarketRequest = null;
+        if (companyMarketKey === requestKey) render();
+      });
+    companyMarketRequest = request;
+    return request;
+  };
 
   const render = () => {
-    renderDashboard(root, profileState, snapshot);
+    renderDashboard(root, profileState, snapshot, companyMarkets);
     requestAnimationFrame(updateHeight);
   };
 
@@ -696,6 +753,7 @@ export function initPersonalDashboard({
     unsubscribe = profile?.subscribeDashboard?.((nextState) => {
       profileState = nextState;
       render();
+      void loadWatchedCompanyMarkets();
     }) || null;
     profileState = profile?.getDashboardState?.() || {
       available: Boolean(profile),
@@ -727,6 +785,7 @@ export function initPersonalDashboard({
       companyRefreshButton.setAttribute("aria-busy", "true");
       try {
         await onRequestLatestCompanies(companyIds);
+        await loadWatchedCompanyMarkets({ force: true });
       } finally {
         if (companyRefreshButton.isConnected) {
           companyRefreshButton.disabled = false;
@@ -791,6 +850,7 @@ export function initPersonalDashboard({
 
   bindProfile();
   render();
+  void loadWatchedCompanyMarkets();
 
   return {
     updateSnapshot(nextSnapshot) {

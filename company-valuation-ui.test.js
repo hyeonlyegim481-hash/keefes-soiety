@@ -24,3 +24,19 @@ test("valuation grids remain readable on desktop and mobile", () => {
   assert.match(cssSource, /@media \(max-width: 700px\)[\s\S]*?\.company-valuation-grid/);
   assert.match(cssSource, /@media \(max-width: 480px\)[\s\S]*?\.company-valuation-grid/);
 });
+
+test("company financials expose balance sheet and liquidity definitions", async () => {
+  const [ui, balanceUi, balanceData] = await Promise.all([
+    readFile(new URL("./company-ui.js", import.meta.url), "utf8"),
+    readFile(new URL("./company-balance-sheet-ui.js", import.meta.url), "utf8"),
+    readFile(new URL("./company-balance-sheet.js", import.meta.url), "utf8")
+  ]);
+  assert.match(ui, /renderCompanyBalanceSheet\(quoteState\)/);
+  assert.match(balanceUi, /재무상태표·유동성/);
+  assert.match(balanceUi, /유동자산/);
+  assert.match(balanceUi, /매출채권/);
+  assert.match(balanceUi, /재고자산/);
+  assert.match(balanceUi, /비유동자산/);
+  assert.match(balanceUi, /동일한 분기 기준일과 통화/);
+  assert.match(balanceData, /dates.size !== 1 || currencies.size !== 1/);
+});

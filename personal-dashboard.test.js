@@ -121,3 +121,29 @@ test("dashboard chapter, persistence RPCs, and bounded storage are wired", async
   assert.match(migration, /grant select on public\.learning_history, public\.saved_articles/);
   assert.doesNotMatch(migration, /grant (insert|update|delete) on public\.(learning_history|saved_articles)/);
 });
+
+test("dashboard company cards use one bounded batch request and richer financial facts", async () => {
+  const [dashboard, details, batch] = await Promise.all([
+    readFile(new URL("./personal-dashboard.js", import.meta.url), "utf8"),
+    readFile(new URL("./personal-company-dashboard.js", import.meta.url), "utf8"),
+    readFile(new URL("./company-market-batch.js", import.meta.url), "utf8")
+  ]);
+  assert.ok(dashboard.includes("/api/company-market-batch?ids="));
+  assert.ok(dashboard.includes(".slice(0, 6)"));
+  assert.match(details, /유동비율/);
+  assert.match(details, /매출채권/);
+  assert.match(details, /재고자산/);
+  assert.match(details, /시가총액/);
+  assert.match(batch, /Promise.all/);
+});
+
+test("dashboard company navigation resets the viewport without scrolling the whole company list into view", async () => {
+  const [app, companyUi] = await Promise.all([
+    readFile(new URL("./app.js", import.meta.url), "utf8"),
+    readFile(new URL("./company-ui.js", import.meta.url), "utf8")
+  ]);
+  assert.ok(app.includes('scrollChapterStart("companies")'));
+  assert.ok(app.includes("companyController?.applyUrlState"));
+  assert.doesNotMatch(companyUi, /scrollIntoView/);
+  assert.ok(companyUi.includes("list.scrollTop = Math.max"));
+});

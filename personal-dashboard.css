@@ -1009,3 +1009,63 @@
     flex-direction: column;
   }
 }
+
+/* Personal company data v136 */
+.personal-company-live {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px 12px;
+  margin-top: 14px;
+  padding: 11px 12px;
+  border: 1px solid #dbe4e7;
+  border-left: 3px solid #819097;
+  border-radius: 5px;
+  background: #f8fafb;
+}
+
+.personal-company-live > div { min-width: 0; display: grid; gap: 3px; }
+.personal-company-live span { color: #687982; font-size: 0.58rem; font-weight: 800; }
+.personal-company-live strong { color: #20343d; font-size: 0.79rem; overflow-wrap: anywhere; }
+.personal-company-live > small { grid-column: 1 / -1; color: #718089; font-size: 0.58rem; }
+.personal-company-live[data-status="up"] { border-left-color: #087f73; }
+.personal-company-live[data-status="up"] > div:nth-child(2) strong { color: #087f73; }
+.personal-company-live[data-status="down"] { border-left-color: #c43d36; }
+.personal-company-live[data-status="down"] > div:nth-child(2) strong { color: #c43d36; }
+.personal-company-live[data-status="loading"] strong,
+.personal-company-live[data-status="error"] strong { color: #6f7d84; }
+
+.personal-company-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 9px;
+  border: 1px solid #e0e6e9;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.personal-company-facts > div { min-width: 0; display: grid; gap: 4px; padding: 9px 10px; border-right: 1px solid #e0e6e9; border-bottom: 1px solid #e0e6e9; }
+.personal-company-facts > div:nth-child(3n) { border-right: 0; }
+.personal-company-facts > div:nth-last-child(-n + 3) { border-bottom: 0; }
+.personal-company-facts span { color: #6c7a82; font-size: 0.57rem; font-weight: 800; }
+.personal-company-facts strong { color: #24333b; font-size: 0.68rem; overflow-wrap: anywhere; }
+.personal-company-facts > div[data-available="false"] strong { color: #849198; }
+
+.personal-company-balance { margin-top: 9px; border: 1px solid #dfe6e8; border-radius: 4px; background: #fbfcfc; }
+.personal-company-balance summary { padding: 9px 11px; color: #27605d; font-size: 0.64rem; font-weight: 850; cursor: pointer; }
+.personal-company-balance dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 0; border-top: 1px solid #e1e7e9; }
+.personal-company-balance dl > div { min-width: 0; display: grid; gap: 3px; padding: 8px 10px; border-right: 1px solid #e1e7e9; border-bottom: 1px solid #e1e7e9; }
+.personal-company-balance dl > div:nth-child(even) { border-right: 0; }
+.personal-company-balance dt { color: #6a7a82; font-size: 0.56rem; font-weight: 800; }
+.personal-company-balance dd { margin: 0; color: #273b44; font-size: 0.66rem; font-weight: 800; overflow-wrap: anywhere; }
+.personal-company-balance > small { display: block; padding: 8px 10px; color: #718188; font-size: 0.56rem; line-height: 1.45; }
+.personal-company-static-facts { margin-top: 9px !important; }
+
+@media (max-width: 480px) {
+  .personal-company-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .personal-company-facts > div:nth-child(3n) { border-right: 1px solid #e0e6e9; }
+  .personal-company-facts > div:nth-child(2n) { border-right: 0; }
+  .personal-company-facts > div:nth-last-child(-n + 3) { border-bottom: 1px solid #e0e6e9; }
+  .personal-company-facts > div:nth-last-child(-n + 2) { border-bottom: 0; }
+  .personal-company-balance dl { grid-template-columns: 1fr; }
+  .personal-company-balance dl > div { border-right: 0; }
+}
