@@ -730,6 +730,8 @@
 }
 
 .company-chart-shell {
+  min-width: 0;
+  max-width: 100%;
   border: 1px solid #d5e0e3;
   border-radius: 7px;
   overflow: hidden;
@@ -821,6 +823,8 @@
 .company-chart-stage {
   position: relative;
   width: 100%;
+  min-width: 0;
+  overflow: hidden;
   height: clamp(310px, 42vw, 430px);
   min-height: 310px;
   background: #fff;
@@ -829,6 +833,8 @@
 .company-chart-stage canvas {
   display: block;
   width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   height: 100%;
   touch-action: pan-y;
 }
@@ -837,6 +843,9 @@
   position: absolute;
   z-index: 2;
   min-width: 130px;
+  max-width: calc(100% - 16px);
+  box-sizing: border-box;
+  overflow-wrap: anywhere;
   display: grid;
   gap: 3px;
   padding: 9px 11px;

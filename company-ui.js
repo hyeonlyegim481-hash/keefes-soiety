@@ -593,18 +593,20 @@ function renderCompanyChart() {
     caption.textContent = "선택 기간의 차트 자료가 부족합니다.";
     return;
   }
-  const rect = stage.getBoundingClientRect();
-  const width = Math.max(320, Math.floor(rect.width));
-  const height = Math.max(280, Math.floor(rect.height));
+  const bounds = stage.getBoundingClientRect();
+  const width = Math.max(1, Math.floor(stage.clientWidth || bounds.width));
+  const height = Math.max(240, Math.floor(stage.clientHeight || bounds.height));
   const ratio = Math.min(2, window.devicePixelRatio || 1);
   canvas.width = Math.floor(width * ratio);
   canvas.height = Math.floor(height * ratio);
-  canvas.style.width = `${width}px`;
-  canvas.style.height = `${height}px`;
+  canvas.style.width = "100%";
+  canvas.style.height = "100%";
   const context = canvas.getContext("2d");
   context.setTransform(ratio, 0, 0, ratio, 0, 0);
 
-  const padding = { top: 24, right: 22, bottom: 38, left: 66 };
+  const padding = width < 480
+    ? { top: 20, right: 12, bottom: 36, left: 52 }
+    : { top: 24, right: 22, bottom: 38, left: 66 };
   const plotWidth = width - padding.left - padding.right;
   const plotHeight = height - padding.top - padding.bottom;
   const values = points.map((point) => Number(point.value));
@@ -684,8 +686,10 @@ function renderCompanyChart() {
   caption.innerHTML = `<span>${formatPointDate(points[0].time)} ~ ${formatPointDate(points.at(-1).time)}</span><strong data-tone="${change >= 0 ? "up" : "down"}">${change >= 0 ? "+" : ""}${numberFormatter.format(change)}%</strong><small>${points.length}개 일별 종가 · ${escapeHtml(market.providerLabel || market.source || "제공처 미확인")}</small>`;
 
   canvas.onpointermove = (event) => {
-    const bounds = canvas.getBoundingClientRect();
-    const pointerX = Math.max(padding.left, Math.min(width - padding.right, event.clientX - bounds.left));
+    const canvasBounds = canvas.getBoundingClientRect();
+    if (!canvasBounds.width) return;
+    const layoutX = (event.clientX - canvasBounds.left) * (width / canvasBounds.width);
+    const pointerX = Math.max(padding.left, Math.min(width - padding.right, layoutX));
     const index = Math.max(0, Math.min(points.length - 1, Math.round(((pointerX - padding.left) / plotWidth) * (points.length - 1))));
     const point = points[index];
     const x = xAt(index);
@@ -695,8 +699,14 @@ function renderCompanyChart() {
     tooltip.hidden = false;
     tooltip.innerHTML = `<span>${formatPointDate(point.time)}</span><strong>${formatPrice(point.value, market.quoteCurrency || market.unit)}</strong>`;
     const tooltipWidth = tooltip.offsetWidth || 150;
-    tooltip.style.left = `${Math.min(width - tooltipWidth - 8, Math.max(8, x + 12))}px`;
-    tooltip.style.top = `${Math.max(8, y - 58)}px`;
+    const tooltipHeight = tooltip.offsetHeight || 54;
+    const preferredLeft = x + 12 + tooltipWidth <= width - 8
+      ? x + 12
+      : x - tooltipWidth - 12;
+    const maxLeft = Math.max(8, width - tooltipWidth - 8);
+    const maxTop = Math.max(8, height - tooltipHeight - 8);
+    tooltip.style.left = `${Math.min(maxLeft, Math.max(8, preferredLeft))}px`;
+    tooltip.style.top = `${Math.min(maxTop, Math.max(8, y - tooltipHeight / 2))}px`;
   };
   canvas.onpointerleave = () => {
     tooltip.hidden = true;
