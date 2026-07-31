@@ -521,7 +521,18 @@ export function buildMarketRecord({
     currentPoint,
     item
   );
-  const movement = calculateMarketChange(current, previousCloseInfo, item);
+  const rawMovement = calculateMarketChange(current, previousCloseInfo, item);
+  const publishedCurrent = roundByMagnitude(current);
+  const publishedPreviousClose = previousCloseInfo.available
+    ? roundByMagnitude(previousCloseInfo.value)
+    : null;
+  const movement = rawMovement.available
+    ? calculateMarketChange(
+        publishedCurrent,
+        { ...previousCloseInfo, value: publishedPreviousClose },
+        item
+      )
+    : rawMovement;
   const timing = buildMarketTiming(meta, asOf, now, item);
   const lastNormalizedPoint = normalized.series.at(-1);
   const appendCurrentPoint =
@@ -539,10 +550,8 @@ export function buildMarketRecord({
 
   return {
     ...item,
-    value: roundByMagnitude(current),
-    previousClose: previousCloseInfo.available
-      ? roundByMagnitude(previousCloseInfo.value)
-      : null,
+    value: publishedCurrent,
+    previousClose: publishedPreviousClose,
     previousCloseAsOf: previousCloseInfo.previousCloseAsOf || null,
     previousTradingDate: previousCloseInfo.previousTradingDate || null,
     previousCloseSource: previousCloseInfo.source || null,

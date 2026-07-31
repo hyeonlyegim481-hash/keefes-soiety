@@ -7,6 +7,7 @@ const CORE_SHELL = [
   "/",
   "/index.html",
   "/app-version.js",
+  "/telemetry-init.js",
   "/runtime-loader.js",
   "/reader-settings.js",
   "/profile-data.js",

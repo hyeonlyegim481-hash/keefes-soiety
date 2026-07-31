@@ -212,6 +212,11 @@ test("uses and appends a newer completed metadata session when the chart lags", 
 
   assert.equal(record.value, 6755.8);
   assert.equal(record.previousClose, 6690.6);
+  assert.equal(record.change, 65.2);
+  assert.equal(
+    Number((record.value - record.previousClose).toFixed(2)),
+    record.change
+  );
   assert.equal(record.previousTradingDate, "2026-07-24");
   assert.equal(record.changePercent, 0.97);
   assert.equal(record.asOf, new Date(currentTime).toISOString());

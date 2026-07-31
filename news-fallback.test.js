@@ -45,3 +45,28 @@ test("non-AI fallback rewrites the article instead of exposing extracted sentenc
   assert.match(result.marketImpact, /자료 부족/);
   assert.doesNotMatch(result.marketImpact, /(?:원\/달러|WTI) 0|\+0(?:\.0+)?%/);
 });
+
+test("headline fallback preserves a readable article collection reason", () => {
+  const result = buildAutomatedNewsAnalysis(
+    {
+      id: "headline-only",
+      title: "미국 금리와 한국 환율의 움직임",
+      source: "테스트경제",
+      publishedAt: "2026-07-24T01:00:00.000Z",
+      contentBasis: "headline",
+      contentStatus: "headline-fallback",
+      contentFailureCode: "fetch-timeout",
+      contentBasisReason: "원문 서버 응답 시간이 초과되어 제목만 사용했습니다."
+    },
+    {
+      markets: [],
+      macro: [],
+      analysis: { riskScore: 48 }
+    }
+  );
+
+  assert.equal(result.contentBasis, "headline");
+  assert.equal(result.contentStatus, "headline-fallback");
+  assert.equal(result.contentFailureCode, "fetch-timeout");
+  assert.match(result.contentBasisReason, /응답 시간이 초과/);
+});

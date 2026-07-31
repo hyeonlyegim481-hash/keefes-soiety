@@ -18,14 +18,22 @@ export async function enrichHeadlineWithArticle(headline) {
     articleAuthor: String(headline?.articleAuthor || headline?.author || ""),
     articlePublishedAt: headline?.articlePublishedAt || headline?.publishedAt || null,
     articleModifiedAt: headline?.articleModifiedAt || null,
-    contentBasis: "headline"
+    contentBasis: "headline",
+    contentStatus: "headline-fallback",
+    contentFailureCode: "not-fetched",
+    contentBasisReason: "언론사 원문 본문을 아직 확인하지 못했습니다."
   };
 
   try {
     const signal = AbortSignal.timeout(ARTICLE_TOTAL_TIMEOUT_MS);
     const articleUrl = await decodeGoogleNewsUrl(base.articleUrl, signal);
     let fallback = { ...base, articleUrl };
-    if (!isSafePublicUrl(articleUrl)) return rememberArticleResult(cacheKey, fallback);
+    if (!isSafePublicUrl(articleUrl)) {
+      return rememberArticleResult(
+        cacheKey,
+        withArticleFailure(fallback, "unsafe-url", "안전하게 확인할 수 있는 원문 주소가 없어 제목만 사용했습니다.")
+      );
+    }
 
     const response = await fetch(articleUrl, {
       headers: {
@@ -35,10 +43,24 @@ export async function enrichHeadlineWithArticle(headline) {
       redirect: "follow",
       signal
     });
-    if (!response.ok) return rememberArticleResult(cacheKey, fallback);
+    if (!response.ok) {
+      return rememberArticleResult(
+        cacheKey,
+        withArticleFailure(
+          fallback,
+          `publisher-http-${response.status}`,
+          `언론사 원문 서버가 본문 요청을 허용하지 않았습니다. (HTTP ${response.status})`
+        )
+      );
+    }
 
     const contentType = response.headers.get("content-type") || "";
-    if (!contentType.includes("text/html")) return rememberArticleResult(cacheKey, fallback);
+    if (!contentType.includes("text/html")) {
+      return rememberArticleResult(
+        cacheKey,
+        withArticleFailure(fallback, "unsupported-content-type", "원문이 분석 가능한 웹 문서 형식으로 제공되지 않았습니다.")
+      );
+    }
     const html = (await response.text()).slice(0, 1_500_000);
     fallback = {
       ...fallback,
@@ -48,28 +70,68 @@ export async function enrichHeadlineWithArticle(headline) {
       })
     };
     const articleContent = extractArticleContent(html);
-    if (
-      articleContent.length < 240 ||
-      isBlockedArticleContent(articleContent) ||
-      !hasArticleEvidence(articleContent, base.title)
-    ) {
-      return rememberArticleResult(cacheKey, fallback);
+    if (articleContent.length < 240) {
+      return rememberArticleResult(
+        cacheKey,
+        withArticleFailure(fallback, "content-too-short", "원문에서 분석에 필요한 길이의 본문을 찾지 못했습니다.")
+      );
+    }
+    if (isBlockedArticleContent(articleContent)) {
+      return rememberArticleResult(
+        cacheKey,
+        withArticleFailure(fallback, "access-blocked", "로그인·구독·브라우저 안내 화면만 확인되어 기사 본문을 사용하지 않았습니다.")
+      );
+    }
+    if (!hasArticleEvidence(articleContent, base.title)) {
+      return rememberArticleResult(
+        cacheKey,
+        withArticleFailure(fallback, "evidence-mismatch", "가져온 문서가 선택한 기사와 같은 내용인지 확인할 수 없어 제목만 사용했습니다.")
+      );
     }
 
     const articleDigest = buildArticleDigest(articleContent, base.title);
     if (articleDigest.summary.length < 45 || articleDigest.keyPoints.length < 2) {
-      return rememberArticleResult(cacheKey, fallback);
+      return rememberArticleResult(
+        cacheKey,
+        withArticleFailure(fallback, "digest-insufficient", "본문은 열렸지만 신뢰할 수 있는 핵심 단서를 충분히 추출하지 못했습니다.")
+      );
     }
     return rememberArticleResult(cacheKey, {
       ...fallback,
       articleContent: articleContent.slice(0, 7_000),
       articleSummary: articleDigest.summary,
       articleKeyPoints: articleDigest.keyPoints,
-      contentBasis: "article"
+      contentBasis: "article",
+      contentStatus: "article",
+      contentFailureCode: null,
+      contentBasisReason: "언론사 원문 본문을 확인해 요약과 분석에 사용했습니다."
     });
-  } catch {
-    return rememberArticleResult(cacheKey, base);
+  } catch (error) {
+    const timedOut = error?.name === "TimeoutError" || error?.name === "AbortError";
+    return rememberArticleResult(
+      cacheKey,
+      withArticleFailure(
+        base,
+        timedOut ? "fetch-timeout" : "fetch-failed",
+        timedOut
+          ? "원문 서버 응답 시간이 초과되어 제목만 사용했습니다."
+          : "원문을 불러오는 과정에서 오류가 발생해 제목만 사용했습니다."
+      )
+    );
   }
+}
+
+function withArticleFailure(headline, code, reason) {
+  return {
+    ...headline,
+    articleContent: "",
+    articleSummary: "",
+    articleKeyPoints: [],
+    contentBasis: "headline",
+    contentStatus: "headline-fallback",
+    contentFailureCode: code,
+    contentBasisReason: reason
+  };
 }
 
 function rememberArticleResult(cacheKey, result) {

@@ -13402,6 +13402,42 @@ h1 {
   color: #95600d;
 }
 
+.news-content-warning {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 5px 10px;
+  align-items: start;
+  padding: 10px 12px;
+  border: 1px solid #e5c985;
+  border-left: 4px solid #b7791f;
+  background: #fff9e9;
+}
+
+.news-content-warning strong {
+  color: #7b4f0b;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.news-content-warning p {
+  margin: 0;
+  color: #5f5140;
+  font-size: 0.72rem;
+  font-weight: 680;
+  line-height: 1.55;
+  word-break: keep-all;
+}
+
+.news-content-warning[data-status="analysis-fallback"] {
+  border-color: #e0b4ad;
+  border-left-color: #b4533f;
+  background: #fff5f2;
+}
+
+.news-content-warning[data-status="analysis-fallback"] strong {
+  color: #933c2b;
+}
+
 .news-source-panel {
   display: grid;
   gap: 8px;

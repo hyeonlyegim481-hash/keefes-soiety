@@ -5882,27 +5882,55 @@ async function resolveNewsAnalysis(headline, marketAnalysis) {
   if (cachedSummary) return cachedSummary;
 
   try {
-    const response = await fetch("/api/news-analysis", {
-      method: "POST",
-      headers: { "content-type": "application/json", accept: "application/json" },
-      signal: AbortSignal.timeout(20_000),
-      body: JSON.stringify({
-        id: headline.id,
-        title: headline.title,
-        topic: headline.topic,
-        source: headline.source,
-        publishedAt: headline.publishedAt
-      })
+    const headlineId = String(headline.id || "").trim();
+    if (!headlineId) {
+      const missingIdError = new Error("News analysis requires a trusted headline id");
+      missingIdError.status = 400;
+      throw missingIdError;
+    }
+    const response = await fetch(`/api/news-analysis?id=${encodeURIComponent(headlineId)}`, {
+      headers: { accept: "application/json" },
+      signal: AbortSignal.timeout(20_000)
     });
-    if (!response.ok) throw new Error(`News analysis failed: ${response.status}`);
+    if (!response.ok) {
+      const responseError = new Error(`News analysis failed: ${response.status}`);
+      responseError.status = response.status;
+      throw responseError;
+    }
     const result = await response.json();
     cacheNewsSummary(summaryKey, result);
     return result;
-  } catch {
-    const fallback = buildLocalNewsAnalysis(headline, marketAnalysis);
+  } catch (error) {
+    console.warn("[news-analysis] server analysis unavailable; using local rules", {
+      headlineId: String(headline.id || ""),
+      status: Number(error?.status) || null,
+      errorName: String(error?.name || "Error")
+    });
+    const fallback = buildLocalNewsAnalysis(
+      headline,
+      marketAnalysis,
+      describeNewsAnalysisFailure(error)
+    );
     cacheNewsSummary(summaryKey, fallback);
     return fallback;
   }
+}
+
+function describeNewsAnalysisFailure(error) {
+  if (error?.name === "TimeoutError" || error?.name === "AbortError") {
+    return "요약 서버의 응답 시간이 초과되어 원문 확인 없이 제목과 현재 시장 데이터만 사용했습니다.";
+  }
+  const status = Number(error?.status);
+  if (status === 429) {
+    return "요약 요청이 잠시 많아 서버 분석 대신 제목과 현재 시장 데이터만 사용했습니다.";
+  }
+  if (status === 404) {
+    return "뉴스 목록이 갱신되어 선택한 기사의 원문 분석 대상을 찾지 못했습니다.";
+  }
+  if (status >= 500) {
+    return "요약 서버에 일시적인 오류가 있어 원문 확인 없이 제목과 현재 시장 데이터만 사용했습니다.";
+  }
+  return "요약 서버에 연결하지 못해 원문 확인 없이 제목과 현재 시장 데이터만 사용했습니다.";
 }
 
 function renderNewsAnalysisResult(output, result, headline = {}) {
@@ -5920,6 +5948,15 @@ function renderNewsAnalysisResult(output, result, headline = {}) {
   const isArticleBased = result.contentBasis === "article";
   const isAiGenerated = result.aiGenerated === true;
   const contentBasis = isArticleBased ? "원문 확인 기반" : "제목 기반";
+  const contentBasisReason = String(
+    result.contentBasisReason
+      || (isArticleBased
+        ? "언론사 원문 본문을 확인했습니다."
+        : "언론사 원문 본문을 확인하지 못해 제목과 시장 데이터만 사용했습니다.")
+  );
+  const contentWarningTitle = result.contentStatus === "analysis-fallback"
+    ? "요약 서버 연결 실패"
+    : "원문 수집 미완료";
   const summaryLabel = isAiGenerated ? "AI 재작성 요약" : "규칙 기반 상세 요약";
   const pointsLabel = isArticleBased ? "확인된 핵심 단서" : "제목에서 읽을 수 있는 범위";
   const marketBasis = result.marketContextBasis === "post-article"
@@ -5944,6 +5981,12 @@ function renderNewsAnalysisResult(output, result, headline = {}) {
         <span data-save-label>기사와 분석 저장</span>
       </button>
     </div>
+    ${!isArticleBased ? `
+      <aside class="news-content-warning" data-status="${escapeHtml(result.contentStatus || "headline-fallback")}" role="note">
+        <strong>${escapeHtml(contentWarningTitle)}</strong>
+        <p>${escapeHtml(contentBasisReason)}</p>
+      </aside>
+    ` : ""}
     <nav class="news-analysis-outline" aria-label="뉴스 분석 순서">
       <span><b>01</b><i>기사 핵심</i></span>
       <span><b>02</b><i>경제 전달과 영향</i></span>
@@ -5959,6 +6002,7 @@ function renderNewsAnalysisResult(output, result, headline = {}) {
         <div><dt>기자·작성자</dt><dd>${escapeHtml(sourceInfo.author || "원문 메타데이터에서 확인되지 않음")}</dd></div>
         <div><dt>게시일</dt><dd>${escapeHtml(formatExactDate(sourceInfo.publishedAt, "확인되지 않음"))}</dd></div>
         <div><dt>수정일</dt><dd>${escapeHtml(formatExactDate(sourceInfo.modifiedAt, "수정 정보 없음"))}</dd></div>
+        <div><dt>본문 상태</dt><dd>${isArticleBased ? "원문 본문 확인 완료" : escapeHtml(contentBasisReason)}</dd></div>
         <div><dt>분석 기준</dt><dd>${isAiGenerated ? "생성형 AI가 확인 가능한 입력만 재작성" : isArticleBased ? "원문에서 주체·수치·방향을 추출해 규칙으로 재작성" : "본문 미확인 · 제목과 시장 데이터만 규칙으로 연결"}</dd></div>
       </dl>
     </section>
@@ -6614,7 +6658,7 @@ function renderScenarioCard(label, weight, condition, detail, tone) {
   `;
 }
 
-function buildLocalNewsAnalysis(headline, marketAnalysis = {}) {
+function buildLocalNewsAnalysis(headline, marketAnalysis = {}, contentBasisReason = "") {
   const text = `${headline.title || ""} ${headline.topic || ""}`;
   const hasRates = /금리|연준|Fed|채권|물가|inflation|CPI|yield/i.test(text);
   const hasFx = /환율|달러|원화|위안|엔화|dollar/i.test(text);
@@ -6666,6 +6710,9 @@ function buildLocalNewsAnalysis(headline, marketAnalysis = {}) {
     analysisMode: "rules",
     engineLabel: "헤드라인 규칙 기반 상세 분석",
     contentBasis: "headline",
+    contentStatus: "analysis-fallback",
+    contentFailureCode: "analysis-endpoint-unavailable",
+    contentBasisReason: contentBasisReason || "원문 분석 서버에 연결하지 못해 제목과 현재 시장 데이터만 사용했습니다.",
     marketContextBasis: "current",
     marketContextAt: null,
     relatedSourceCount: Number(headline.relatedSourceCount) || 1,

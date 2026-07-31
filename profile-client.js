@@ -130,6 +130,8 @@ function compactArticleAnalysis(result = null) {
     confidence: text(result.confidence, 60),
     engineLabel: text(result.engineLabel, 120),
     contentBasis: text(result.contentBasis, 40),
+    contentStatus: text(result.contentStatus, 40),
+    contentBasisReason: text(result.contentBasisReason, 500),
     summary: text(result.summary, 3000),
     keyPoints: list(result.keyPoints, 5),
     transmissionPath: list(result.transmissionPath, 4),

@@ -65,6 +65,7 @@ let newsFeedCache = null;
 let newsFetchPromise = null;
 const marketCache = new Map();
 const newsAnalysisCache = new Map();
+const newsAnalysisPromises = new Map();
 const newsAnalysisRateLimits = new Map();
 const NEWS_ANALYSIS_RATE_WINDOW_MS = 60_000;
 const NEWS_ANALYSIS_RATE_LIMIT = 12;
@@ -344,45 +345,78 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (url.pathname === "/api/news-analysis") {
-      if (req.method !== "POST") {
+      if (!["GET", "POST"].includes(req.method)) {
+        res.setHeader("Allow", "GET, POST");
+        res.setHeader("Cache-Control", "no-store");
         sendJson(res, 405, { error: "Method not allowed" });
         return;
       }
-      const quota = consumeNewsAnalysisQuota(getRequestClientKey(req));
-      if (!quota.allowed) {
-        res.setHeader("Retry-After", String(quota.retryAfter));
-        sendJson(res, 429, { error: "Too many analysis requests" });
+      const input = req.method === "GET"
+        ? Object.fromEntries(url.searchParams.entries())
+        : await readJsonBody(req);
+      const requestedHeadline = normalizeHeadlineInput(input);
+      if (req.method === "GET" && !requestedHeadline.id) {
+        res.setHeader("Cache-Control", "no-store");
+        sendJson(res, 400, { error: "Headline id is required" });
         return;
       }
-      const input = await readJsonBody(req);
-      const requestedHeadline = normalizeHeadlineInput(input);
-      if (!requestedHeadline.title) {
-        sendJson(res, 400, { error: "Headline title is required" });
+      if (!requestedHeadline.id && !requestedHeadline.title) {
+        res.setHeader("Cache-Control", "no-store");
+        sendJson(res, 400, { error: "Headline id or title is required" });
         return;
       }
       const snapshot = await getSnapshot();
       const trustedHeadline = findTrustedHeadline(snapshot, requestedHeadline);
       if (!trustedHeadline) {
+        res.setHeader("Cache-Control", "public, max-age=30, s-maxage=60");
         sendJson(res, 404, { error: "Headline is not in the current news list" });
         return;
       }
       const scheduledAnalysis = await findScheduledNewsAnalysis(trustedHeadline);
       if (scheduledAnalysis) {
+        res.setHeader("Cache-Control", "public, max-age=60, s-maxage=1800, stale-while-revalidate=3600");
+        res.setHeader("X-News-Analysis-Source", "scheduled");
         sendJson(res, 200, scheduledAnalysis);
         return;
       }
-      const headline = await enrichHeadlineWithArticle(trustedHeadline);
-      const cacheKey = hash(`${headline.id || headline.title}-${snapshot.generatedAt.slice(0, 13)}`);
+      const cacheKey = hash(`${trustedHeadline.id || trustedHeadline.title}-${snapshot.generatedAt.slice(0, 13)}`);
       const cached = newsAnalysisCache.get(cacheKey);
       if (cached) {
+        res.setHeader("Cache-Control", "public, max-age=60, s-maxage=1800, stale-while-revalidate=3600");
+        res.setHeader("X-News-Analysis-Source", "memory");
         sendJson(res, 200, cached);
         return;
       }
-      const automated = buildAutomatedNewsAnalysis(headline, snapshot);
-      const result = await enhanceNewsAnalysisWithAi(headline, snapshot, automated);
-      if (newsAnalysisCache.size > 80) newsAnalysisCache.clear();
-      newsAnalysisCache.set(cacheKey, result);
-      sendJson(res, 200, result);
+
+      let analysisPromise = newsAnalysisPromises.get(cacheKey);
+      if (!analysisPromise) {
+        const quota = consumeNewsAnalysisQuota(getRequestClientKey(req));
+        if (!quota.allowed) {
+          res.setHeader("Retry-After", String(quota.retryAfter));
+          res.setHeader("Cache-Control", "no-store");
+          sendJson(res, 429, { error: "Too many analysis requests" });
+          return;
+        }
+        analysisPromise = (async () => {
+          const headline = await enrichHeadlineWithArticle(trustedHeadline);
+          const automated = buildAutomatedNewsAnalysis(headline, snapshot);
+          return enhanceNewsAnalysisWithAi(headline, snapshot, automated);
+        })();
+        newsAnalysisPromises.set(cacheKey, analysisPromise);
+      }
+
+      try {
+        const result = await analysisPromise;
+        if (newsAnalysisCache.size > 80) newsAnalysisCache.clear();
+        newsAnalysisCache.set(cacheKey, result);
+        res.setHeader("Cache-Control", "public, max-age=60, s-maxage=1800, stale-while-revalidate=3600");
+        res.setHeader("X-News-Analysis-Source", "generated");
+        sendJson(res, 200, result);
+      } finally {
+        if (newsAnalysisPromises.get(cacheKey) === analysisPromise) {
+          newsAnalysisPromises.delete(cacheKey);
+        }
+      }
       return;
     }
 
@@ -1611,6 +1645,11 @@ function buildAutomatedNewsAnalysis(headline, snapshot) {
       ? "원문 확인 후 규칙 기반 재작성"
       : "헤드라인 규칙 기반 재작성",
     contentBasis: hasArticleContent ? "article" : "headline",
+    contentStatus: hasArticleContent ? "article" : headline.contentStatus || "headline-fallback",
+    contentFailureCode: hasArticleContent ? null : headline.contentFailureCode || "article-unavailable",
+    contentBasisReason: hasArticleContent
+      ? headline.contentBasisReason || "언론사 원문 본문을 확인해 요약과 분석에 사용했습니다."
+      : headline.contentBasisReason || "언론사 원문 본문을 확인하지 못해 제목만 사용했습니다.",
     marketContextBasis: marketContext.basis,
     marketContextAt: marketContext.referenceAt,
     relatedSourceCount,
@@ -1889,6 +1928,9 @@ function normalizeAiAnalysis(value, fallback, engineLabel = "") {
     analysisMode: "ai",
     engineLabel: engineLabel || (fallback.contentBasis === "article" ? "생성형 AI 원문 요약" : "생성형 AI 헤드라인 요약"),
     contentBasis: fallback.contentBasis,
+    contentStatus: fallback.contentStatus,
+    contentFailureCode: fallback.contentFailureCode,
+    contentBasisReason: fallback.contentBasisReason,
     marketContextBasis: fallback.marketContextBasis,
     marketContextAt: fallback.marketContextAt,
     relatedSourceCount: fallback.relatedSourceCount,
@@ -2481,9 +2523,10 @@ function sendJson(res, statusCode, payload) {
 }
 
 function sendText(res, statusCode, body, contentType) {
+  const cacheControl = res.getHeader("cache-control") || "no-store";
   res.writeHead(statusCode, {
     "content-type": contentType,
-    "cache-control": "no-store"
+    "cache-control": cacheControl
   });
   res.end(body);
 }
