@@ -306,7 +306,7 @@ function renderCompanyDetail() {
     <div class="company-view-body">
       ${viewState.view === "overview" ? renderOverview(company, industry, quoteState) : ""}
       ${viewState.view === "chart" ? renderChartView(company, quoteState) : ""}
-      ${viewState.view === "financials" ? renderFinancials(company, industry) : ""}
+      ${viewState.view === "financials" ? renderFinancials(company, industry, quoteState) : ""}
       ${viewState.view === "news" ? renderNewsAndRisk(company, industry) : ""}
     </div>
   `;
@@ -357,8 +357,9 @@ function renderOverview(company, industry, quoteState) {
       <div><dt>최근 매출</dt><dd>${escapeHtml(company.revenue)}</dd><small>${escapeHtml(company.fiscal)}</small></div>
       <div><dt>매출 변화</dt><dd data-tone="${Number(company.revenueGrowth) >= 0 ? "up" : "down"}">${formatSignedPercent(company.revenueGrowth)}</dd><small>직전 비교기간 대비</small></div>
       <div><dt>수익성</dt><dd>${Number.isFinite(Number(company.margin)) ? `${numberFormatter.format(company.margin)}%` : "계산 불가"}</dd><small>${escapeHtml(company.profitability)}</small></div>
-      <div><dt>현재 시세</dt><dd>${quote?.available ? formatPrice(quote.market.value, quote.market.quoteCurrency || quote.market.unit) : "자료 없음"}</dd><small>${quote?.available ? escapeHtml(quote.market.providerLabel) : "외부 시세와 공식 실적을 구분"}</small></div>
+      <div><dt>시가총액</dt><dd>${formatFundamentalValue(quote?.fundamentals?.metrics?.marketCap, "amount")}</dd><small>${quote?.fundamentals?.available ? escapeHtml(quote.fundamentals.providerLabel) : "수집 실패 시 임의 계산하지 않음"}</small></div>
     </dl>
+    ${renderCompactValuation(quoteState)}
     <div class="company-thesis-grid">
       <article data-kind="moat"><span>경쟁력이 생기는 이유</span><strong>${escapeHtml(company.moat)}</strong></article>
       <article data-kind="risk"><span>가장 먼저 볼 위험</span><strong>${escapeHtml(company.risk)}</strong></article>
@@ -420,7 +421,132 @@ function renderChartView(company, quoteState) {
   `;
 }
 
-function renderFinancials(company, industry) {
+function renderCompactValuation(quoteState) {
+  const fundamentals = quoteState?.data?.fundamentals;
+  const loading = quoteState?.status === "loading";
+  const metrics = fundamentals?.metrics || {};
+  const items = [
+    { label: "PER", metric: metrics.per, kind: "multiple", hint: "TTM 이익 대비" },
+    { label: "PBR", metric: metrics.pbr, kind: "multiple", hint: "순자산 대비" },
+    { label: "PSR", metric: metrics.psr, kind: "multiple", hint: "TTM 매출 대비" },
+    { label: "ROE", metric: metrics.roe, kind: "percent", hint: "자기자본 수익성" }
+  ];
+  return `
+    <section class="company-valuation-strip" data-available="${Boolean(fundamentals?.available)}">
+      <header>
+        <div><span>VALUATION SNAPSHOT</span><h4>가치평가 바로보기</h4></div>
+        <small>${loading ? "기업지표 확인 중" : escapeHtml(fundamentals?.providerLabel || "기업지표 자료 없음")}</small>
+      </header>
+      <div class="company-valuation-strip-grid">
+        ${items.map((item) => `
+          <div data-available="${Number.isFinite(item.metric?.value)}">
+            <span>${item.label}</span>
+            <strong>${loading ? "확인 중" : escapeHtml(formatFundamentalValue(item.metric, item.kind))}</strong>
+            <small>${Number.isFinite(item.metric?.value) ? escapeHtml(formatFundamentalBasis(item.metric)) : item.hint}</small>
+          </div>
+        `).join("")}
+      </div>
+      ${fundamentals?.warning ? `<p class="company-fundamental-warning">${escapeHtml(fundamentals.warning)}</p>` : ""}
+    </section>
+  `;
+}
+
+function renderDetailedValuation(quoteState) {
+  const payload = quoteState?.data || {};
+  const fundamentals = payload.fundamentals;
+  const metrics = fundamentals?.metrics || {};
+  const market = payload.market || {};
+  const loading = quoteState?.status === "loading";
+  const valuationItems = [
+    { label: "시가총액", metric: metrics.marketCap, kind: "amount", hint: "주식시장 전체 가치" },
+    { label: "기업가치 EV", metric: metrics.enterpriseValue, kind: "amount", hint: "시총에 순부채 등을 반영" },
+    { label: "PER", metric: metrics.per, kind: "multiple", hint: "TTM 이익 대비 주가" },
+    { label: "예상 PER", metric: metrics.forwardPer, kind: "multiple", hint: "예상 이익 기준" },
+    { label: "PBR", metric: metrics.pbr, kind: "multiple", hint: "순자산 대비 주가" },
+    { label: "PSR", metric: metrics.psr, kind: "multiple", hint: "TTM 매출 대비 시총" },
+    { label: "ROE", metric: metrics.roe, kind: "percent", hint: "자기자본 수익성" },
+    { label: "EPS", metric: metrics.eps, kind: "currency", hint: "주당순이익" },
+    { label: "배당수익률", metric: metrics.dividendYield, kind: "percent", hint: "주가 대비 배당" },
+    { label: "TTM 매출", metric: metrics.revenueTtm, kind: "amount", hint: "최근 12개월 매출" },
+    { label: "TTM 순이익", metric: metrics.netIncomeTtm, kind: "amount", hint: "최근 12개월 지배주주순이익" },
+    { label: "이익률", metric: metrics.profitMargin, kind: "percent", hint: "최근 12개월 순이익률" }
+  ];
+  const tradingItems = [
+    { label: "당일 고가", metric: resolveTradingMetric(market, metrics, "dayHigh"), kind: "currency" },
+    { label: "당일 저가", metric: resolveTradingMetric(market, metrics, "dayLow"), kind: "currency" },
+    { label: "52주 최고", metric: resolveTradingMetric(market, metrics, "week52High"), kind: "currency" },
+    { label: "52주 최저", metric: resolveTradingMetric(market, metrics, "week52Low"), kind: "currency" },
+    { label: "거래량", metric: resolveTradingMetric(market, metrics, "volume"), kind: "volume" },
+    { label: "베타", metric: metrics.beta, kind: "number", hint: "시장 대비 변동성" }
+  ];
+  const collectedAt = fundamentals?.collectedAt
+    ? formatHeadlineDate(fundamentals.collectedAt)
+    : "수집시각 없음";
+  const sourceUrl = safeUrl(fundamentals?.sourceUrl);
+  return `
+    <section class="company-valuation-panel" data-available="${Boolean(fundamentals?.available)}">
+      <header class="company-valuation-panel-head">
+        <div><span>MARKET VALUATION</span><h4>가치평가·시장지표</h4><p>현재 가격과 최근 공표 재무자료의 제공처·기준일을 구분해 표시합니다.</p></div>
+        <div><strong>${escapeHtml(fundamentals?.providerLabel || (loading ? "확인 중" : "자료 없음"))}</strong><small>${escapeHtml(collectedAt)}</small></div>
+      </header>
+      <div class="company-valuation-grid">
+        ${valuationItems.map((item) => renderValuationMetric(item, loading)).join("")}
+      </div>
+      <div class="company-trading-stats">
+        <header><strong>가격 범위와 거래</strong><small>시세 제공처 메타데이터 우선</small></header>
+        <div>${tradingItems.map((item) => renderValuationMetric(item, loading, true)).join("")}</div>
+      </div>
+      ${fundamentals?.warning ? `<p class="company-fundamental-warning">${escapeHtml(fundamentals.warning)}</p>` : ""}
+      <details class="company-valuation-method">
+        <summary>PER·PBR·PSR·ROE 뜻과 계산 기준</summary>
+        <dl>
+          <div><dt>시가총액</dt><dd>현재 주가에 발행주식 수를 곱한 주식시장의 기업 가치입니다.</dd></div>
+          <div><dt>PER</dt><dd>주가 또는 시가총액을 최근 12개월 순이익과 비교합니다. 적자 기업의 음수 PER은 단독 비교에 적합하지 않습니다.</dd></div>
+          <div><dt>예상 PER</dt><dd>향후 예상 이익을 사용하므로 실적 전망이 바뀌면 크게 달라질 수 있습니다.</dd></div>
+          <div><dt>PBR</dt><dd>주가를 주당순자산과 비교합니다. 금융·자본집약 업종과 무형자산 중심 업종의 의미가 다릅니다.</dd></div>
+          <div><dt>PSR</dt><dd>시가총액을 최근 12개월 매출과 비교합니다. 이익이 없는 성장기업도 비교할 수 있지만 수익성을 설명하지는 않습니다.</dd></div>
+          <div><dt>ROE</dt><dd>${escapeHtml(metrics.roe?.formula || "TTM 지배주주순이익 ÷ 최근·약 1년 전 평균 자기자본 × 100")}</dd></div>
+          <div><dt>기업가치 EV</dt><dd>시가총액에 부채와 현금 등을 반영한 값입니다. 인수 관점의 전체 사업가치 비교에 사용합니다.</dd></div>
+          <div><dt>주의</dt><dd>한 비율이 낮다는 이유만으로 저평가라고 단정하지 않습니다. 업종·성장률·회계기준·일회성 손익을 함께 봐야 합니다.</dd></div>
+        </dl>
+      </details>
+      <footer class="company-valuation-source">
+        <span>기준: ${escapeHtml(fundamentals?.basisLabel || "제공처별 최신 공표자료")}</span>
+        ${sourceUrl !== "#" ? `<a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">원자료 보기 <i aria-hidden="true">↗</i></a>` : ""}
+      </footer>
+    </section>
+  `;
+}
+
+function renderValuationMetric(item, loading, compact = false) {
+  const available = Number.isFinite(item.metric?.value);
+  const value = loading ? "확인 중" : formatFundamentalValue(item.metric, item.kind);
+  return `
+    <div class="company-valuation-metric" data-available="${available}" data-compact="${compact}">
+      <span>${escapeHtml(item.label)}</span>
+      <strong>${escapeHtml(value)}</strong>
+      <small>${available ? escapeHtml(formatFundamentalBasis(item.metric)) : escapeHtml(item.hint || "제공처 미지원 또는 수집 실패")}</small>
+    </div>
+  `;
+}
+
+function resolveTradingMetric(market, metrics, key) {
+  const rawMarketValue = market?.statistics?.[key];
+  const marketValue = rawMarketValue === null || rawMarketValue === undefined || rawMarketValue === ""
+    ? Number.NaN
+    : Number(rawMarketValue);
+  if (Number.isFinite(marketValue)) {
+    return {
+      value: marketValue,
+      currency: key === "volume" ? null : market.quoteCurrency || market.unit || null,
+      asOf: market.tradingDate || market.asOf || null,
+      periodType: key.startsWith("week52") ? "52주" : "당일"
+    };
+  }
+  return metrics?.[key] || null;
+}
+
+function renderFinancials(company, industry, quoteState) {
   const score = getHealthScore(company);
   return `
     <section class="company-financial-lead">
@@ -431,6 +557,7 @@ function renderFinancials(company, industry) {
       </div>
       <div><span>사업체력</span><strong>${score}</strong><small>${escapeHtml(getHealthGrade(score))}</small></div>
     </section>
+    ${renderDetailedValuation(quoteState)}
     <div class="company-financial-grid">
       <article><span>매출</span><strong>${escapeHtml(company.revenue)}</strong><p>${formatSignedPercent(company.revenueGrowth)} 변화</p></article>
       <article><span>공표 수익성</span><strong>${Number.isFinite(Number(company.margin)) ? `${numberFormatter.format(company.margin)}%` : "계산 불가"}</strong><p>${escapeHtml(company.profitability)}</p></article>
@@ -525,14 +652,18 @@ function renderPeerComparison(company, industry) {
 function renderProviderDetails(payload = {}) {
   const attempts = payload.attempts || [];
   const plan = payload.providerPlan || [];
+  const fundamentalAttempts = payload.fundamentalAttempts || [];
+  const fundamentalPlan = payload.fundamentalProviderPlan || [];
   return `
     <details class="company-provider-details">
       <summary>시세 제공처와 대체 경로 보기</summary>
       <div class="company-provider-body">
         <p>기본 제공처가 실패하면 준비된 보조 제공처를 순서대로 확인합니다. 서로 다른 기준의 값을 섞지 않고, 한 제공처에서 검증을 통과한 전체 시계열만 사용합니다.</p>
         ${attempts.length ? `<ol>${attempts.map((attempt) => `<li data-status="${escapeHtml(attempt.status)}"><strong>${escapeHtml(attempt.label)}</strong><span>${attempt.status === "success" ? "사용" : escapeHtml(attempt.reason || "실패")}</span></li>`).join("")}</ol>` : ""}
-        <div class="company-provider-plan">${plan.map((provider) => `<span data-enabled="${provider.enabled}">${escapeHtml(provider.label)} · ${provider.enabled ? "준비됨" : "키 미연결"}</span>`).join("")}</div>
-        <small>모든 제공처가 실패하고 마지막 정상 자료도 없으면 ‘자료 수집 실패’로 표시합니다. 실패한 가격을 실적 수치로 대체하지 않습니다.</small>
+        <div class="company-provider-plan">${plan.map((provider) => `<span data-enabled="${provider.enabled}">시세 · ${escapeHtml(provider.label)} · ${provider.enabled ? "준비됨" : "키 미연결"}</span>`).join("")}</div>
+        ${fundamentalAttempts.length ? `<h4>기업지표 수집 경로</h4><ol>${fundamentalAttempts.map((attempt) => `<li data-status="${escapeHtml(attempt.status)}"><strong>${escapeHtml(attempt.label)}</strong><span>${attempt.status === "success" ? "사용" : escapeHtml(attempt.reason || "실패")}</span></li>`).join("")}</ol>` : ""}
+        <div class="company-provider-plan">${fundamentalPlan.map((provider) => `<span data-enabled="${provider.enabled}">지표 · ${escapeHtml(provider.label)} · ${provider.enabled ? "준비됨" : "키 미연결"}</span>`).join("")}</div>
+        <small>모든 제공처가 실패하고 마지막 정상 자료도 없으면 ‘자료 수집 실패’로 표시합니다. 실패한 가격이나 재무비율을 다른 값으로 추정하지 않습니다.</small>
       </div>
     </details>
   `;
@@ -815,6 +946,45 @@ function formatMovement(market) {
   const sign = percent > 0 ? "+" : "";
   const text = `${sign}${numberFormatter.format(change)} · ${sign}${numberFormatter.format(percent)}%`;
   return { text, html: escapeHtml(text) };
+}
+
+function formatFundamentalValue(metric, kind = "number") {
+  const value = Number(metric?.value);
+  if (!Number.isFinite(value)) return "자료 없음";
+  if (kind === "amount") return formatLargeAmount(value, metric.currency);
+  if (kind === "multiple") return `${numberFormatter.format(value)}배`;
+  if (kind === "percent") return `${numberFormatter.format(value)}%`;
+  if (kind === "currency") return formatPrice(value, metric.currency);
+  if (kind === "volume") return `${integerFormatter.format(value)}주`;
+  return numberFormatter.format(value);
+}
+
+function formatLargeAmount(value, currency = "") {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return "자료 없음";
+  const absolute = Math.abs(number);
+  if (currency === "KRW") {
+    if (absolute >= 1_000_000_000_000) return `${numberFormatter.format(number / 1_000_000_000_000)}조원`;
+    if (absolute >= 100_000_000) return `${numberFormatter.format(number / 100_000_000)}억원`;
+    return `${integerFormatter.format(number)}원`;
+  }
+  const currencyLabel = {
+    USD: "달러",
+    EUR: "유로",
+    JPY: "엔",
+    CHF: "스위스프랑",
+    CNY: "위안",
+    HKD: "홍콩달러"
+  }[currency] || currency || "통화 미확인";
+  if (absolute >= 1_000_000_000_000) return `${numberFormatter.format(number / 1_000_000_000_000)}조 ${currencyLabel}`;
+  if (absolute >= 1_000_000_000) return `${numberFormatter.format(number / 1_000_000_000)}십억 ${currencyLabel}`;
+  if (absolute >= 1_000_000) return `${numberFormatter.format(number / 1_000_000)}백만 ${currencyLabel}`;
+  return `${numberFormatter.format(number)} ${currencyLabel}`;
+}
+
+function formatFundamentalBasis(metric) {
+  if (!metric) return "기준 미확인";
+  return [metric.periodType, metric.asOf].filter(Boolean).join(" · ") || "기준 미확인";
 }
 
 function formatPrice(value, currency = "") {

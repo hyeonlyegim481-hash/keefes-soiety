@@ -1,6 +1,13 @@
 import { futureCompanies } from "./future-industry-data.js";
 import { buildMarketRecord } from "./market-data.js";
 import {
+  YAHOO_FUNDAMENTAL_TYPES,
+  countFundamentalMetrics,
+  parseAlphaVantageFundamentals,
+  parseNaverFundamentals,
+  parseYahooFundamentals
+} from "./company-fundamentals.js";
+import {
   describeCompanyProviderPlan,
   getCompanyMarketConfig,
   getCompanyProviderSymbol,
@@ -55,6 +62,12 @@ function sanitizeProviderFailure(error) {
   return "응답 형식 또는 연결 오류";
 }
 
+function finiteOrNull(value) {
+  if (value === null || value === undefined || value === "") return null;
+  const number = Number(value);
+  return Number.isFinite(number) ? number : null;
+}
+
 async function requestExternal(url, accept, fetchImpl = globalThis.fetch) {
   const response = await fetchImpl(url, {
     headers: {
@@ -103,6 +116,13 @@ function buildCompanyMarketRecord({
     chartSource: provider.label,
     source: provider.label,
     sourceUrl,
+    statistics: {
+      dayHigh: finiteOrNull(meta?.regularMarketDayHigh),
+      dayLow: finiteOrNull(meta?.regularMarketDayLow),
+      volume: finiteOrNull(meta?.regularMarketVolume),
+      week52High: finiteOrNull(meta?.fiftyTwoWeekHigh),
+      week52Low: finiteOrNull(meta?.fiftyTwoWeekLow)
+    },
     ...(forceDailyClose
       ? {
           live: false,
@@ -226,6 +246,182 @@ async function fetchAlphaVantageCompany(company, apiKey, fetchImpl, now) {
   });
 }
 
+function withFundamentalSource(parsed, provider, sourceUrl, now) {
+  if (!parsed?.available || countFundamentalMetrics(parsed.metrics) < 2) {
+    throw new Error("No usable fundamental metrics");
+  }
+  return {
+    ...parsed,
+    providerId: provider.id,
+    providerLabel: provider.label,
+    providerRole: provider.role,
+    fallbackUsed: provider.role !== "primary",
+    sourceUrl,
+    collectedAt: new Date(now).toISOString(),
+    cacheState: "live"
+  };
+}
+
+async function fetchYahooFundamentals(company, hostname, fetchImpl, now) {
+  const symbol = getCompanyProviderSymbol(company, "yahoo");
+  if (!symbol) throw new Error("No Yahoo symbol");
+  const period1 = Math.floor((now - 3 * 366 * 24 * 60 * 60_000) / 1000);
+  const period2 = Math.floor((now + 24 * 60 * 60_000) / 1000);
+  const endpoint = `https://${hostname}/ws/fundamentals-timeseries/v1/finance/timeseries/${encodeURIComponent(symbol)}?symbol=${encodeURIComponent(symbol)}&type=${YAHOO_FUNDAMENTAL_TYPES.join(",")}&merge=false&period1=${period1}&period2=${period2}`;
+  const response = await requestExternal(endpoint, "application/json", fetchImpl);
+  const parsed = parseYahooFundamentals(await response.json());
+  const primary = hostname.startsWith("query2");
+  return withFundamentalSource(
+    parsed,
+    {
+      id: primary ? "yahoo-fundamentals" : "yahoo-fundamentals-secondary",
+      label: primary ? "Yahoo Finance 재무 시계열" : "Yahoo Finance 재무 보조 호스트",
+      role: primary ? "primary" : "secondary-host"
+    },
+    `https://finance.yahoo.com/quote/${encodeURIComponent(symbol)}/key-statistics`,
+    now
+  );
+}
+
+async function fetchNaverFundamentals(company, fetchImpl, now) {
+  const symbol = getCompanyProviderSymbol(company, "naver");
+  if (!symbol) throw new Error("No Naver symbol");
+  const endpoint = `https://m.stock.naver.com/api/stock/${encodeURIComponent(symbol)}/integration`;
+  const response = await requestExternal(endpoint, "application/json", fetchImpl);
+  const parsed = parseNaverFundamentals(await response.json());
+  return withFundamentalSource(
+    parsed,
+    { id: "naver-fundamentals", label: "네이버 증권 기업지표", role: "alternate" },
+    `https://m.stock.naver.com/domestic/stock/${encodeURIComponent(symbol)}/total`,
+    now
+  );
+}
+
+async function fetchAlphaVantageFundamentals(company, apiKey, fetchImpl, now) {
+  const symbol = getCompanyProviderSymbol(company, "alpha-vantage");
+  if (!symbol) throw new Error("No Alpha Vantage symbol");
+  const endpoint = `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${encodeURIComponent(symbol)}&apikey=${encodeURIComponent(apiKey)}`;
+  const response = await requestExternal(endpoint, "application/json", fetchImpl);
+  const parsed = parseAlphaVantageFundamentals(await response.json());
+  return withFundamentalSource(
+    parsed,
+    { id: "alpha-vantage-fundamentals", label: "Alpha Vantage 기업개요", role: "alternate" },
+    "https://www.alphavantage.co/",
+    now
+  );
+}
+
+export function describeCompanyFundamentalProviderPlan(company = {}, environment = {}) {
+  const plan = [
+    { id: "yahoo-fundamentals", label: "Yahoo Finance 재무 시계열", enabled: true }
+  ];
+  if (company.country === "한국" && getCompanyProviderSymbol(company, "naver")) {
+    plan.push({ id: "naver-fundamentals", label: "네이버 증권 기업지표", enabled: true });
+  }
+  plan.push({
+    id: "alpha-vantage-fundamentals",
+    label: "Alpha Vantage 기업개요",
+    enabled: Boolean(environment.ALPHA_VANTAGE_API_KEY)
+  });
+  plan.push({
+    id: "yahoo-fundamentals-secondary",
+    label: "Yahoo Finance 재무 보조 호스트",
+    enabled: true
+  });
+  return plan;
+}
+
+export function buildCompanyFundamentalProviders(
+  company,
+  {
+    environment = process.env,
+    fetchImpl = globalThis.fetch,
+    now = Date.now()
+  } = {}
+) {
+  const providers = [
+    {
+      id: "yahoo-fundamentals",
+      label: "Yahoo Finance 재무 시계열",
+      load: () => fetchYahooFundamentals(company, "query2.finance.yahoo.com", fetchImpl, now)
+    }
+  ];
+  if (company.country === "한국" && getCompanyProviderSymbol(company, "naver")) {
+    providers.push({
+      id: "naver-fundamentals",
+      label: "네이버 증권 기업지표",
+      load: () => fetchNaverFundamentals(company, fetchImpl, now)
+    });
+  }
+  if (environment.ALPHA_VANTAGE_API_KEY) {
+    providers.push({
+      id: "alpha-vantage-fundamentals",
+      label: "Alpha Vantage 기업개요",
+      load: () => fetchAlphaVantageFundamentals(
+        company,
+        environment.ALPHA_VANTAGE_API_KEY,
+        fetchImpl,
+        now
+      )
+    });
+  }
+  providers.push({
+    id: "yahoo-fundamentals-secondary",
+    label: "Yahoo Finance 재무 보조 호스트",
+    load: () => fetchYahooFundamentals(company, "query1.finance.yahoo.com", fetchImpl, now)
+  });
+  return providers;
+}
+
+export async function loadCompanyFundamentalsFromProviders(providers = []) {
+  const attempts = [];
+  for (const provider of providers) {
+    try {
+      const fundamentals = await provider.load();
+      if (!fundamentals?.available || countFundamentalMetrics(fundamentals.metrics) < 2) {
+        throw new Error("No usable fundamental metrics");
+      }
+      attempts.push({ id: provider.id, label: provider.label, status: "success" });
+      return { fundamentals, attempts };
+    } catch (error) {
+      attempts.push({
+        id: provider.id,
+        label: provider.label,
+        status: "failed",
+        reason: sanitizeProviderFailure(error)
+      });
+    }
+  }
+  return { fundamentals: null, attempts };
+}
+
+function resolveCompanyFundamentals(result, cached, now, providerPlan) {
+  if (result.fundamentals) return result.fundamentals;
+  const cachedFundamentals = cached?.payload?.fundamentals;
+  if (
+    cachedFundamentals?.available
+    && now - cached.createdAt < STALE_CACHE_MS
+  ) {
+    const ageMinutes = Math.max(0, Math.round((now - cached.createdAt) / 60_000));
+    return {
+      ...cachedFundamentals,
+      cacheState: "last-known",
+      warning: `현재 기업지표 제공처에 연결하지 못해 약 ${ageMinutes}분 전 정상 자료를 표시합니다.`
+    };
+  }
+  return {
+    available: false,
+    metrics: {},
+    metricCount: 0,
+    providerLabel: null,
+    sourceUrl: null,
+    collectedAt: null,
+    cacheState: "unavailable",
+    reason: "기업 가치평가 자료를 가져오지 못했습니다.",
+    providerPlan
+  };
+}
+
 export function buildCompanyMarketProviders(
   company,
   {
@@ -347,20 +543,39 @@ export async function getCompanyMarket(companyId, options = {}) {
 
   const promise = (async () => {
     const environment = options.environment || process.env;
+    const fetchImpl = options.fetchImpl || globalThis.fetch;
     const providerPlan = describeCompanyProviderPlan(company, environment);
     const providers = options.providers || buildCompanyMarketProviders(company, {
       environment,
-      fetchImpl: options.fetchImpl || globalThis.fetch,
+      fetchImpl,
       now
     });
-    const result = await loadCompanyMarketFromProviders(providers);
+    const fundamentalProviderPlan = describeCompanyFundamentalProviderPlan(company, environment);
+    const fundamentalProviders = Object.hasOwn(options, "fundamentalProviders")
+      ? options.fundamentalProviders
+      : options.providers
+        ? []
+        : buildCompanyFundamentalProviders(company, { environment, fetchImpl, now });
+    const [result, fundamentalResult] = await Promise.all([
+      loadCompanyMarketFromProviders(providers),
+      loadCompanyFundamentalsFromProviders(fundamentalProviders)
+    ]);
+    const fundamentals = resolveCompanyFundamentals(
+      fundamentalResult,
+      cached,
+      now,
+      fundamentalProviderPlan
+    );
     if (result.market) {
       const payload = {
         available: true,
         company: getCompanyPublicIdentity(company),
         market: result.market,
+        fundamentals,
         attempts: result.attempts,
         providerPlan,
+        fundamentalAttempts: fundamentalResult.attempts,
+        fundamentalProviderPlan,
         cacheState: "live",
         collectedAt: new Date(now).toISOString(),
         servedAt: new Date(now).toISOString()
@@ -376,8 +591,11 @@ export async function getCompanyMarket(companyId, options = {}) {
       available: false,
       company: getCompanyPublicIdentity(company),
       reason: "모든 시세 제공처에서 자료를 가져오지 못했습니다.",
+      fundamentals,
       attempts: result.attempts,
       providerPlan,
+      fundamentalAttempts: fundamentalResult.attempts,
+      fundamentalProviderPlan,
       cacheState: "unavailable",
       collectedAt: null,
       servedAt: new Date(now).toISOString()
