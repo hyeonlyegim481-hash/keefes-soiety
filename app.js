@@ -80,6 +80,7 @@ let futureController = null;
 let profileController = null;
 let profileControllerPromise = null;
 let personalDashboardController = null;
+let companyController = null;
 
 const GLOSSARY_PAGE_SIZE = 24;
 
@@ -472,6 +473,8 @@ let state = {
   narrative: null,
   selectedMarket: initialUrlState.market || "kospi",
   marketView: initialUrlState.marketView || "summary",
+  selectedCompany: initialUrlState.company || "samsung-electronics",
+  companyView: initialUrlState.companyView || "overview",
   marketPeriod: "1y",
   isRefreshing: false,
   activeChapter: initialChapter,
@@ -891,6 +894,7 @@ const loadStylesheetOnce = createStylesheetLoader();
 const loadedChapters = new Set();
 const dynamicChapters = new Set([
   "dashboard",
+  "companies",
   "indicators",
   "future",
   "study",
@@ -926,6 +930,7 @@ function getChapterLoadState(chapter) {
 function getChapterLoadLabel(chapter) {
   return {
     dashboard: "나의 경제",
+    companies: "기업",
     indicators: "지표",
     future: "미래",
     study: "공부",
@@ -1185,6 +1190,24 @@ function initFutureIndustryOnce() {
   });
 }
 
+function initCompanyChapterOnce() {
+  return loadFeature("company-chapter", async ({ attempt }) => {
+    const [, module] = await Promise.all([
+      loadStylesheetOnce("company-styles", "/company.css", { attempt }),
+      importVersioned("./company-ui.js", { attempt })
+    ]);
+    companyController = module.initCompanyChapter({
+      updateHeight: updateChapterHeight,
+      getSnapshot: () => state.snapshot,
+      onOpenProfile: async () => {
+        const current = profileController || await initProfileOnce();
+        if (current?.isAuthenticated?.()) current.openProfile?.();
+        else openUtilityDrawer();
+      }
+    });
+  });
+}
+
 function initResourceLibraryOnce() {
   return loadFeature("resource-library", async ({ attempt }) => {
     const [, module] = await Promise.all([
@@ -1267,12 +1290,15 @@ function handlePersonalDashboardNavigation(target = {}) {
     return;
   }
   if (target.type === "company") {
-    const industry = target.industry || "ai-chips";
+    if (!target.id) return;
+    state.selectedCompany = target.id;
+    state.companyView = "overview";
     syncUrlState(
-      { chapter: "future", future: "industries", industry },
+      { chapter: "companies", company: target.id, companyView: "overview" },
       { mode: "push", source: "personal-dashboard-company" }
     );
-    setActiveChapter("future", { syncUrl: false });
+    setActiveChapter("companies", { syncUrl: false });
+    companyController?.openCompany?.(target.id, "overview");
     return;
   }
   if (target.type === "term") {
@@ -1293,6 +1319,8 @@ function performChapterLoad(chapter, attempt) {
   switch (chapter) {
     case "dashboard":
       return initPersonalDashboardOnce();
+    case "companies":
+      return initCompanyChapterOnce();
     case "indicators":
       return Promise.all([loadIndicatorData(), initLearningToolsOnce()]).then(() => {
         renderIndicators();
@@ -1559,6 +1587,7 @@ async function refreshSnapshot({ manual = false, companyIds = [] } = {}) {
     politicsController?.updateSnapshot(null);
     futureController?.updateSnapshot(null);
     personalDashboardController?.updateSnapshot(null);
+    companyController?.updateSnapshot(null);
     renderDataUnavailable();
     setConnection("error", "자료 수집 실패");
   } finally {
@@ -1627,6 +1656,7 @@ function render(snapshot) {
   politicsController?.updateSnapshot(snapshot);
   futureController?.updateSnapshot(snapshot);
   personalDashboardController?.updateSnapshot(snapshot);
+  companyController?.updateSnapshot(snapshot);
   drawChart();
   setActiveChapter(state.activeChapter, { skipAnimation: true, syncUrl: false });
 }
@@ -2158,6 +2188,13 @@ function getChapterUrlState(chapter) {
       marketView: state.marketView
     };
   }
+  if (chapter === "companies") {
+    return companyController?.getUrlState?.() || {
+      chapter,
+      company: state.selectedCompany,
+      companyView: state.companyView
+    };
+  }
   if (chapter === "indicators") {
     return { chapter, indicator: state.selectedIndicatorId };
   }
@@ -2235,6 +2272,10 @@ function applyUrlStateToScreen(urlState) {
   const marketChanged =
     urlState.chapter === "markets"
     && state.selectedMarket !== (urlState.market || "kospi");
+  const companyChanged =
+    urlState.chapter === "companies"
+    && (state.selectedCompany !== (urlState.company || "samsung-electronics")
+      || state.companyView !== (urlState.companyView || "overview"));
   const indicatorChanged =
     urlState.chapter === "indicators"
     && state.selectedIndicatorId !== (urlState.indicator || "fertility");
@@ -2246,6 +2287,10 @@ function applyUrlStateToScreen(urlState) {
     state.selectedMarket = urlState.market || "kospi";
     state.marketView = urlState.marketView || "summary";
   }
+  if (urlState.chapter === "companies") {
+    state.selectedCompany = urlState.company || "samsung-electronics";
+    state.companyView = urlState.companyView || "overview";
+  }
   if (urlState.chapter === "indicators") {
     state.selectedIndicatorId = urlState.indicator || "fertility";
     state.indicatorCategory = state.selectedIndicatorId.startsWith("production-")
@@ -2256,6 +2301,10 @@ function applyUrlStateToScreen(urlState) {
   }
   if (urlState.chapter === "news") {
     state.newsSection = urlState.news || "all";
+  }
+
+  if (companyChanged) {
+    companyController?.applyUrlState?.(urlState);
   }
 
   if (state.snapshot && marketChanged) {
@@ -2640,10 +2689,20 @@ function handleGraphNavigation(button) {
     return;
   }
 
-  if (targetType === "industry" || targetType === "company") {
-    const industryId = targetType === "industry"
-      ? entityId
-      : entity.parentId || getMarketKnowledge(state.selectedMarket)?.industries?.[0]?.id;
+  if (targetType === "company") {
+    state.selectedCompany = entityId;
+    state.companyView = "overview";
+    syncUrlState(
+      { chapter: "companies", company: entityId, companyView: "overview" },
+      { mode: "push", source: "graph-company" }
+    );
+    setActiveChapter("companies", { syncUrl: false });
+    companyController?.openCompany?.(entityId, "overview");
+    return;
+  }
+
+  if (targetType === "industry") {
+    const industryId = entityId;
     if (!industryId) return;
     syncUrlState(
       { chapter: "future", future: "industries", industry: industryId },

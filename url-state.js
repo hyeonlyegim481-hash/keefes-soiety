@@ -4,6 +4,7 @@ export const CHAPTER_IDS = Object.freeze([
   "brief",
   "dashboard",
   "markets",
+  "companies",
   "korea",
   "indicators",
   "future",
@@ -18,6 +19,19 @@ export const CHAPTER_IDS = Object.freeze([
 export const URL_STATE_VALUES = Object.freeze({
   market: Object.freeze(["kospi", "kosdaq", "usdkrw", "sp500", "nasdaq", "vix", "wti", "gold"]),
   marketView: Object.freeze(["summary", "chart", "deep"]),
+  company: Object.freeze([
+    "nvidia", "tsmc", "samsung-electronics", "sk-hynix", "microsoft", "alphabet",
+    "tesla", "lg-energy-solution", "eli-lilly", "samsung-biologics", "abb",
+    "doosan-enerbility", "amd", "asml", "amazon", "meta", "catl", "hyundai-motor",
+    "novo-nordisk", "siemens", "ge-vernova", "palo-alto", "ibm", "xylem",
+    "broadcom", "micron", "arm", "applied-materials", "oracle", "salesforce",
+    "sap", "servicenow", "byd", "panasonic", "samsung-sdi", "toyota", "roche",
+    "johnson-johnson", "astrazeneca", "celltrion", "fanuc", "rockwell", "keyence",
+    "yaskawa", "schneider-electric", "eaton", "ls-electric", "hd-hyundai-electric",
+    "crowdstrike", "fortinet", "cloudflare", "okta", "ionq", "rigetti", "dwave",
+    "mobileye", "aptiv", "denso", "veolia", "ecolab"
+  ]),
+  companyView: Object.freeze(["overview", "chart", "financials", "news"]),
   indicator: Object.freeze([
     "fertility",
     "population-growth",
@@ -121,6 +135,8 @@ export const URL_STATE_VALUES = Object.freeze({
 const DEFAULTS = Object.freeze({
   market: "kospi",
   marketView: "summary",
+  company: "samsung-electronics",
+  companyView: "overview",
   indicator: "fertility",
   indicatorView: "explorer",
   study: "today",
@@ -178,6 +194,13 @@ export function normalizeUrlState(input = "") {
           URL_STATE_VALUES.marketView,
           DEFAULTS.marketView
         );
+  } else if (chapter === "companies") {
+    state.company = oneOf(params.get("company"), URL_STATE_VALUES.company, DEFAULTS.company);
+    state.companyView = oneOf(
+      params.get("companyView"),
+      URL_STATE_VALUES.companyView,
+      DEFAULTS.companyView
+    );
   } else if (chapter === "indicators") {
     state.indicator = oneOf(
       params.get("indicator"),
@@ -229,6 +252,11 @@ export function buildUrlForState(input, baseHref = "https://keefes.local/") {
     if (state.market !== DEFAULTS.market) url.searchParams.set("market", state.market);
     if (state.marketView !== DEFAULTS.marketView) {
       url.searchParams.set("marketView", state.marketView);
+    }
+  } else if (state.chapter === "companies") {
+    if (state.company !== DEFAULTS.company) url.searchParams.set("company", state.company);
+    if (state.companyView !== DEFAULTS.companyView) {
+      url.searchParams.set("companyView", state.companyView);
     }
   } else if (state.chapter === "indicators") {
     if (state.indicator !== DEFAULTS.indicator) {

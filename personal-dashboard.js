@@ -408,7 +408,7 @@ function renderCompanies(watchlists, snapshot) {
                 <h4>${escapeHtml(company.name)}</h4>
                 <p>${escapeHtml(company.ticker || company.country || "")}</p>
               </div>
-              <button type="button" data-dashboard-company="${escapeHtml(company.id)}" data-industry="${escapeHtml(company.sectorId || "")}">산업에서 보기</button>
+              <button type="button" data-dashboard-company="${escapeHtml(company.id)}" data-industry="${escapeHtml(company.sectorId || "")}">기업 상세 보기</button>
             </header>
             <dl>
               <div><dt>최근 매출</dt><dd>${escapeHtml(company.revenue || "공식 수치 없음")}</dd></div>

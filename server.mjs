@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { fetchMacroIndicators } from "./macro-data.js";
 import { buildSharedDataGraph } from "./economic-graph.js";
 import { futureCompanies, futureIndustries } from "./future-industry-data.js";
+import { getCompanyMarket } from "./company-market-server.js";
 import { historyEvents } from "./history-data.js";
 import {
   indicatorCountries,
@@ -333,6 +334,27 @@ const server = http.createServer(async (req, res) => {
               : "즉시 갱신에 실패했습니다.",
           code: error?.code || "manual-refresh-failed",
           manualRefresh: quota
+        });
+      }
+      return;
+    }
+
+    if (url.pathname === "/api/company-market") {
+      if (req.method !== "GET") {
+        res.setHeader("Allow", "GET");
+        sendJson(res, 405, { error: "Method not allowed" });
+        return;
+      }
+      try {
+        const result = await getCompanyMarket(url.searchParams.get("id"));
+        res.setHeader("Cache-Control", "public, max-age=60, s-maxage=300, stale-while-revalidate=1800");
+        sendJson(res, 200, result);
+      } catch (error) {
+        const status = Number(error?.statusCode) || 500;
+        res.setHeader("Cache-Control", "no-store");
+        sendJson(res, status, {
+          error: status === 404 ? "확인할 수 없는 기업입니다." : "기업 시세 수집에 실패했습니다.",
+          code: error?.code || "company-market-failed"
         });
       }
       return;
