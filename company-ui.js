@@ -1,9 +1,13 @@
 import { renderCompanyBalanceSheet } from "./company-balance-sheet-ui.js";
 import {
   futureCompanies,
-  futureIndustries,
   futureIndustryMethod
 } from "./future-industry-data.js";
+import {
+  companyIndustryCatalog,
+  getCompanyIndustry,
+  getCompanyIndustryId
+} from "./company-industry-data.js";
 import {
   readUrlState,
   subscribeUrlState,
@@ -12,6 +16,7 @@ import {
 
 const DEFAULT_COMPANY_ID = "samsung-electronics";
 const COMPANY_VIEWS = new Set(["overview", "chart", "financials", "news"]);
+const COMPANY_REGIONS = new Set(["all", "korea", "global"]);
 const COMPANY_PERIODS = Object.freeze([
   { id: "1m", label: "1개월", days: 31 },
   { id: "3m", label: "3개월", days: 93 },
@@ -22,7 +27,6 @@ const COMPANY_PERIODS = Object.freeze([
 ]);
 
 const companyById = new Map(futureCompanies.map((company) => [company.id, company]));
-const industryById = new Map(futureIndustries.map((industry) => [industry.id, industry]));
 const initialUrlState = readUrlState();
 const initialCompanyId = companyById.has(initialUrlState.company)
   ? initialUrlState.company
@@ -131,8 +135,7 @@ function bindCompanyEvents() {
     }
     const regionButton = event.target.closest?.("[data-company-region]");
     if (regionButton) {
-      viewState.region = regionButton.dataset.companyRegion;
-      renderCompanyBrowser();
+      setCompanyRegion(regionButton.dataset.companyRegion);
       return;
     }
     if (event.target.closest?.("[data-company-profile]")) {
@@ -191,7 +194,7 @@ function renderCompanyChapter() {
         <div>
           <p class="section-kicker">COMPANY TERMINAL</p>
           <h2>기업을 실적·가격·사업으로 함께 보기</h2>
-          <p>${futureCompanies.length}개 기업의 공식 실적 스냅샷과 선택한 종목의 시세를 분리해 확인합니다.</p>
+          <p>${futureCompanies.length}개 기업의 검증된 실적 스냅샷 또는 공식 공시 연결과 선택 종목 시세를 분리해 확인합니다.</p>
         </div>
         <button type="button" class="company-watch-button" data-company-profile>
           <span aria-hidden="true">＋</span><strong>관심 기업 설정</strong>
@@ -206,7 +209,7 @@ function renderCompanyChapter() {
             </label>
             <select data-company-sector aria-label="산업 선택">
               <option value="all">모든 산업</option>
-              ${futureIndustries.map((industry) => `<option value="${escapeHtml(industry.id)}" ${viewState.sector === industry.id ? "selected" : ""}>${escapeHtml(industry.shortLabel)}</option>`).join("")}
+              ${companyIndustryCatalog.map((industry) => `<option value="${escapeHtml(industry.id)}" ${viewState.sector === industry.id ? "selected" : ""}>${escapeHtml(industry.label)}</option>`).join("")}
             </select>
           </div>
           <div class="company-region-switch" role="group" aria-label="기업 지역">
@@ -234,9 +237,9 @@ function getFilteredCompanies() {
     .filter((company) => {
       if (viewState.region === "korea" && company.country !== "한국") return false;
       if (viewState.region === "global" && company.country === "한국") return false;
-      if (viewState.sector !== "all" && company.sectorId !== viewState.sector) return false;
+      if (viewState.sector !== "all" && getCompanyIndustryId(company) !== viewState.sector) return false;
       if (!query) return true;
-      const industry = industryById.get(company.sectorId);
+      const industry = getCompanyIndustry(company);
       return normalizeText([
         company.name,
         company.ticker,
@@ -253,18 +256,34 @@ function getFilteredCompanies() {
     });
 }
 
+function setCompanyRegion(region) {
+  if (!COMPANY_REGIONS.has(region)) return;
+  viewState.region = region;
+  renderCompanyBrowser();
+}
+
+function syncCompanyRegionControls() {
+  root.querySelectorAll("[data-company-region]").forEach((button) => {
+    button.setAttribute(
+      "aria-pressed",
+      String(button.dataset.companyRegion === viewState.region)
+    );
+  });
+}
+
 function renderCompanyBrowser() {
   const list = root.querySelector("#companyBrowserList");
   const summary = root.querySelector("#companyBrowserSummary");
   if (!list || !summary) return;
+  syncCompanyRegionControls();
   const companies = getFilteredCompanies();
-  summary.innerHTML = `<strong>${companies.length}개</strong><span>공식 실적 연결 기업</span>`;
+  summary.innerHTML = `<strong>${companies.length}개</strong><span>시세·공식 공시 연결 기업</span>`;
   if (!companies.length) {
     list.innerHTML = `<div class="company-browser-empty"><strong>검색 결과가 없습니다.</strong><span>검색어나 산업 필터를 바꿔보세요.</span></div>`;
     return;
   }
   list.replaceChildren(...companies.map((company) => {
-    const industry = industryById.get(company.sectorId);
+    const industry = getCompanyIndustry(company);
     const score = getHealthScore(company);
     const button = document.createElement("button");
     button.type = "button";
@@ -277,7 +296,7 @@ function renderCompanyBrowser() {
         <strong>${escapeHtml(company.name)}</strong>
         <small>${escapeHtml(company.ticker)} · ${escapeHtml(industry?.shortLabel || company.country)}</small>
       </span>
-      <span class="company-browser-score"><strong>${score}</strong><small>체력</small></span>
+      <span class="company-browser-score"><strong>${score === null ? "LIVE" : score}</strong><small>${score === null ? "시세" : "체력"}</small></span>
     `;
     return button;
   }));
@@ -292,7 +311,7 @@ function renderCompanyDetail() {
   const detail = root?.querySelector("#companyDetail");
   const company = companyById.get(viewState.companyId);
   if (!detail || !company) return;
-  const industry = industryById.get(company.sectorId);
+  const industry = getCompanyIndustry(company);
   const quoteState = viewState.quoteCache.get(company.id);
   detail.innerHTML = `
     ${renderCompanyIdentity(company, industry, quoteState)}
@@ -339,7 +358,7 @@ function renderCompanyIdentity(company, industry, quoteState) {
           ? `<span>시세 확인 중</span><strong>불러오는 중</strong><small>선택 종목만 요청합니다.</small>`
           : available
             ? `<span>${escapeHtml(market.marketStateLabel || "시세")}</span><strong>${formatPrice(market.value, market.quoteCurrency || market.unit)}</strong><small>${movement.html}</small>`
-            : `<span>시세 자료</span><strong>수집 실패</strong><small>공식 실적 정보는 계속 볼 수 있습니다.</small>`}
+            : `<span>시세 자료</span><strong>수집 실패</strong><small>${company.snapshotStatus === "profile-only" ? "사업 설명과 공식 공시 경로는 계속 볼 수 있습니다." : "공식 실적 정보는 계속 볼 수 있습니다."}</small>`}
       </div>
     </header>
   `;
@@ -355,13 +374,13 @@ function renderOverview(company, industry, quoteState) {
         <h4>${escapeHtml(company.business)}</h4>
       </div>
       <div class="company-overview-score" data-tone="${getHealthTone(score)}">
-        <span>사업체력</span><strong>${score}<small>/100</small></strong><p>${escapeHtml(getHealthGrade(score))} · 교육용 비교 점수</p>
+        <span>${score === null ? "실적 검증" : "사업체력"}</span><strong>${score === null ? "대기" : `${score}<small>/100</small>`}</strong><p>${escapeHtml(getHealthGrade(score))}${score === null ? "" : " · 교육용 비교 점수"}</p>
       </div>
     </section>
     <dl class="company-key-metrics">
       <div><dt>최근 매출</dt><dd>${escapeHtml(company.revenue)}</dd><small>${escapeHtml(company.fiscal)}</small></div>
-      <div><dt>매출 변화</dt><dd data-tone="${Number(company.revenueGrowth) >= 0 ? "up" : "down"}">${formatSignedPercent(company.revenueGrowth)}</dd><small>직전 비교기간 대비</small></div>
-      <div><dt>수익성</dt><dd>${Number.isFinite(Number(company.margin)) ? `${numberFormatter.format(company.margin)}%` : "계산 불가"}</dd><small>${escapeHtml(company.profitability)}</small></div>
+      <div><dt>매출 변화</dt><dd data-tone="${getMetricTone(company.revenueGrowth)}">${formatSignedPercent(company.revenueGrowth)}</dd><small>${hasMetricValue(company.revenueGrowth) ? "직전 비교기간 대비" : "검증된 수치만 표시"}</small></div>
+      <div><dt>수익성</dt><dd>${formatStaticMargin(company.margin)}</dd><small>${escapeHtml(company.profitability)}</small></div>
       <div><dt>시가총액</dt><dd>${formatFundamentalValue(quote?.fundamentals?.metrics?.marketCap, "amount")}</dd><small>${quote?.fundamentals?.available ? escapeHtml(quote.fundamentals.providerLabel) : "수집 실패 시 임의 계산하지 않음"}</small></div>
     </dl>
     ${renderCompactValuation(quoteState)}
@@ -560,23 +579,23 @@ function renderFinancials(company, industry, quoteState) {
         <h4>${escapeHtml(company.fiscal)}</h4>
         <p>통화·회계기준·연결 여부가 다른 기업을 매출액 크기만으로 직접 순위화하지 않습니다.</p>
       </div>
-      <div><span>사업체력</span><strong>${score}</strong><small>${escapeHtml(getHealthGrade(score))}</small></div>
+      <div><span>${score === null ? "실적 검증" : "사업체력"}</span><strong>${score === null ? "대기" : score}</strong><small>${escapeHtml(getHealthGrade(score))}</small></div>
     </section>
     ${renderDetailedValuation(quoteState)}
     ${renderCompanyBalanceSheet(quoteState)}
     <div class="company-financial-grid">
       <article><span>매출</span><strong>${escapeHtml(company.revenue)}</strong><p>${formatSignedPercent(company.revenueGrowth)} 변화</p></article>
-      <article><span>공표 수익성</span><strong>${Number.isFinite(Number(company.margin)) ? `${numberFormatter.format(company.margin)}%` : "계산 불가"}</strong><p>${escapeHtml(company.profitability)}</p></article>
+      <article><span>공표 수익성</span><strong>${formatStaticMargin(company.margin)}</strong><p>${escapeHtml(company.profitability)}</p></article>
       <article><span>현금·재무 신호</span><strong>${escapeHtml(company.cashSignal)}</strong><p>회사별 공표 항목이 달라 같은 정의의 현금흐름은 아닐 수 있습니다.</p></article>
     </div>
     <section class="company-health-method">
-      <header><div><span>점수 구성</span><h4>${escapeHtml(futureIndustryMethod.title)}</h4></div><strong>${score}/100</strong></header>
-      <div class="company-health-parts">
-        ${futureIndustryMethod.parts.map((part) => {
-          const value = Number(company.healthParts?.[part.id]) || 0;
-          return `<div><span>${escapeHtml(part.label)}</span><i><b style="width:${Math.min(100, value * 4)}%"></b></i><strong>${value}/25</strong><small>${escapeHtml(part.detail)}</small></div>`;
-        }).join("")}
-      </div>
+      <header><div><span>점수 구성</span><h4>${escapeHtml(futureIndustryMethod.title)}</h4></div><strong>${score === null ? "검증 대기" : `${score}/100`}</strong></header>
+      ${score === null
+        ? `<div class="company-health-pending"><strong>임의 점수를 만들지 않았습니다.</strong><p>이 기업은 시세·시장 재무지표를 먼저 연결하며, 공식 실적의 회계기준과 현금흐름을 검증한 뒤 사업체력 점수를 제공합니다.</p></div>`
+        : `<div class="company-health-parts">${futureIndustryMethod.parts.map((part) => {
+            const value = Number(company.healthParts?.[part.id]);
+            return `<div><span>${escapeHtml(part.label)}</span><i><b style="width:${Math.min(100, value * 4)}%"></b></i><strong>${value}/25</strong><small>${escapeHtml(part.detail)}</small></div>`;
+          }).join("")}</div>`}
       <details>
         <summary>계산 기준과 한계 보기</summary>
         <div><p>${escapeHtml(futureIndustryMethod.description)}</p><p>${escapeHtml(futureIndustryMethod.caution)}</p></div>
@@ -623,9 +642,12 @@ function renderPeerSnapshot(company, industry) {
   const peers = getPeers(company).slice(0, 4);
   return `
     <section class="company-peer-snapshot">
-      <header><div><span>동종기업 읽기</span><h4>${escapeHtml(industry?.shortLabel || "같은 산업")} 안에서 비교</h4></div><small>매출 통화가 달라 성장률·수익성·사업체력만 비교</small></header>
+      <header><div><span>동종기업 읽기</span><h4>${escapeHtml(industry?.shortLabel || "같은 산업")} 안에서 비교</h4></div><small>검증된 값만 표시하며 미확인 값은 순위에 쓰지 않습니다.</small></header>
       <div>
-        ${peers.map((peer) => `<button type="button" data-company-id="${escapeHtml(peer.id)}"><span>${escapeHtml(peer.name)}</span><strong>${getHealthScore(peer)}</strong><small>${formatSignedPercent(peer.revenueGrowth)} · 마진 ${numberFormatter.format(peer.margin)}%</small></button>`).join("")}
+        ${peers.map((peer) => {
+          const score = getHealthScore(peer);
+          return `<button type="button" data-company-id="${escapeHtml(peer.id)}"><span>${escapeHtml(peer.name)}</span><strong>${score === null ? "LIVE" : score}</strong><small>${formatSignedPercent(peer.revenueGrowth)} · 마진 ${formatStaticMargin(peer.margin)}</small></button>`;
+        }).join("")}
       </div>
     </section>
   `;
@@ -633,28 +655,29 @@ function renderPeerSnapshot(company, industry) {
 
 function renderPeerComparison(company, industry) {
   const peers = [company, ...getPeers(company).slice(0, 5)]
-    .sort((left, right) => getHealthScore(right) - getHealthScore(left));
+    .sort((left, right) => compareHealthScores(left, right));
   return `
     <section class="company-peer-table">
       <header><div><span>PEER TABLE</span><h4>${escapeHtml(industry?.label || "동종기업")} 비교</h4></div><small>적정가치나 매수 순위가 아닙니다.</small></header>
       <div class="company-peer-table-scroll">
         <table>
           <thead><tr><th>기업</th><th>사업체력</th><th>매출 변화</th><th>공표 수익성</th><th>실적 기준</th></tr></thead>
-          <tbody>${peers.map((peer) => `
+          <tbody>${peers.map((peer) => {
+            const score = getHealthScore(peer);
+            return `
             <tr data-current="${peer.id === company.id}">
               <th><button type="button" data-company-id="${escapeHtml(peer.id)}">${escapeHtml(peer.name)}<small>${escapeHtml(peer.ticker)}</small></button></th>
-              <td><strong>${getHealthScore(peer)}</strong>/100</td>
-              <td data-tone="${Number(peer.revenueGrowth) >= 0 ? "up" : "down"}">${formatSignedPercent(peer.revenueGrowth)}</td>
-              <td>${numberFormatter.format(peer.margin)}%<small>${escapeHtml(peer.profitability)}</small></td>
+              <td><strong>${score === null ? "검증 대기" : score}</strong>${score === null ? "" : "/100"}</td>
+              <td data-tone="${getMetricTone(peer.revenueGrowth)}">${formatSignedPercent(peer.revenueGrowth)}</td>
+              <td>${formatStaticMargin(peer.margin)}<small>${escapeHtml(peer.profitability)}</small></td>
               <td>${escapeHtml(peer.fiscal)}</td>
             </tr>
-          `).join("")}</tbody>
+          `; }).join("")}</tbody>
         </table>
       </div>
     </section>
   `;
 }
-
 function renderProviderDetails(payload = {}) {
   const attempts = payload.attempts || [];
   const plan = payload.providerPlan || [];
@@ -902,8 +925,8 @@ function filterSeries(series = [], days = 366) {
 
 function getPeers(company) {
   return futureCompanies
-    .filter((peer) => peer.sectorId === company.sectorId && peer.id !== company.id)
-    .sort((left, right) => getHealthScore(right) - getHealthScore(left));
+    .filter((peer) => getCompanyIndustryId(peer) === getCompanyIndustryId(company) && peer.id !== company.id)
+    .sort(compareHealthScores);
 }
 
 function matchCompanyHeadlines(company, headlines) {
@@ -921,10 +944,22 @@ function matchCompanyHeadlines(company, headlines) {
 }
 
 function getHealthScore(company) {
-  return Object.values(company.healthParts || {}).reduce((sum, value) => sum + Number(value || 0), 0);
+  const values = futureIndustryMethod.parts.map((part) => company.healthParts?.[part.id]);
+  if (!values.every((value) => hasMetricValue(value))) return null;
+  return values.reduce((sum, value) => sum + Number(value), 0);
+}
+
+function compareHealthScores(left, right) {
+  const leftScore = getHealthScore(left);
+  const rightScore = getHealthScore(right);
+  if (leftScore === null && rightScore === null) return left.name.localeCompare(right.name, "ko");
+  if (leftScore === null) return 1;
+  if (rightScore === null) return -1;
+  return rightScore - leftScore;
 }
 
 function getHealthGrade(score) {
+  if (score === null) return "공식 실적 검증 후 제공";
   if (score >= 90) return "매우 단단함";
   if (score >= 80) return "단단함";
   if (score >= 70) return "보통 이상";
@@ -933,9 +968,23 @@ function getHealthGrade(score) {
 }
 
 function getHealthTone(score) {
+  if (score === null) return "pending";
   if (score >= 85) return "strong";
   if (score >= 70) return "steady";
   return "watch";
+}
+
+function hasMetricValue(value) {
+  return value !== null && value !== undefined && value !== "" && Number.isFinite(Number(value));
+}
+
+function getMetricTone(value) {
+  if (!hasMetricValue(value)) return "unavailable";
+  return Number(value) >= 0 ? "up" : "down";
+}
+
+function formatStaticMargin(value) {
+  return hasMetricValue(value) ? `${numberFormatter.format(Number(value))}%` : "검증 대기";
 }
 
 function getSymbolMonogram(company) {
@@ -1008,8 +1057,8 @@ function formatAxisValue(value) {
 }
 
 function formatSignedPercent(value) {
+  if (!hasMetricValue(value)) return "검증 대기";
   const number = Number(value);
-  if (!Number.isFinite(number)) return "계산 불가";
   return `${number > 0 ? "+" : ""}${numberFormatter.format(number)}%`;
 }
 
@@ -1044,4 +1093,3 @@ function escapeHtml(value) {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
 }
-

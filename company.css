@@ -120,7 +120,12 @@
 .company-region-switch button[aria-pressed="true"] {
   background: #fff;
   color: #087f73;
-  box-shadow: 0 1px 4px rgba(23, 42, 52, 0.1);
+  box-shadow: 0 1px 4px rgba(23, 42, 52, 0.1), inset 0 0 0 1px rgba(8, 127, 115, 0.22);
+}
+
+.company-region-switch button:focus-visible {
+  outline: 2px solid rgba(8, 127, 115, 0.45);
+  outline-offset: 1px;
 }
 
 .company-browser-summary {
@@ -443,6 +448,11 @@
 
 .company-overview-score[data-tone="watch"] > strong {
   color: #b15c2a;
+}
+
+.company-overview-score[data-tone="pending"] > strong {
+  color: #52666f;
+  font-size: 25px;
 }
 
 .company-key-metrics {
@@ -1052,6 +1062,25 @@
 .company-health-method > header > strong {
   color: #087f73;
   font-size: 21px;
+}
+
+.company-health-pending {
+  padding: 15px;
+  border: 1px solid #cfdcde;
+  border-radius: 5px;
+  background: #f5f8f9;
+}
+
+.company-health-pending strong {
+  color: #20343d;
+  font-size: 12px;
+}
+
+.company-health-pending p {
+  margin: 6px 0 0;
+  color: #64767e;
+  font-size: 10px;
+  line-height: 1.65;
 }
 
 .company-health-parts {

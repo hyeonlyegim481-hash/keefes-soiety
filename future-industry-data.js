@@ -1,6 +1,7 @@
 import { expandedFutureCompanies } from "./future-company-expanded-data.js";
 import { largeCompanyDataA } from "./large-company-data-a.js";
 import { largeCompanyDataB } from "./large-company-data-b.js";
+import { koreanExpandedCompanies } from "./korean-company-expanded-data.js";
 
 export const futureIndustries = [
   {
@@ -686,7 +687,8 @@ export const futureCompanies = [
   },
   ...expandedFutureCompanies,
   ...largeCompanyDataA,
-  ...largeCompanyDataB
+  ...largeCompanyDataB,
+  ...koreanExpandedCompanies
 ];
 
 export const futureIndustryMethod = {

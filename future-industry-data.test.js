@@ -25,8 +25,8 @@ test("defines ten complete future industries with valid company links", () => {
   }
 });
 
-test("provides 102 sourced company snapshots and transparent health parts", () => {
-  assert.equal(futureCompanies.length, 102);
+test("provides 147 sourced company profiles with transparent snapshot status", () => {
+  assert.equal(futureCompanies.length, 147);
   const ids = new Set();
   const partIds = futureIndustryMethod.parts.map((part) => part.id).sort();
 
@@ -42,14 +42,21 @@ test("provides 102 sourced company snapshots and transparent health parts", () =
     assert.ok(company.profitability);
     assert.ok(company.cashSignal);
     assert.ok(futureIndustries.some((industry) => industry.id === company.sectorId));
-    assert.equal(typeof company.revenueGrowth, "number");
-    assert.equal(typeof company.margin, "number");
     assert.ok(company.business.length >= 35);
     assert.ok(company.moat.length >= 35);
     assert.ok(company.risk.length >= 35);
     assert.equal(company.watch.length, 3);
     assert.match(company.source.url, /^https:\/\//);
 
+    if (company.snapshotStatus === "profile-only") {
+      assert.equal(company.revenueGrowth, null);
+      assert.equal(company.margin, null);
+      assert.equal(company.healthParts, null);
+      continue;
+    }
+
+    assert.equal(typeof company.revenueGrowth, "number");
+    assert.equal(typeof company.margin, "number");
     assert.deepEqual(Object.keys(company.healthParts).sort(), partIds);
     const score = Object.values(company.healthParts).reduce((sum, value) => sum + value, 0);
     assert.ok(score >= 0 && score <= 100);

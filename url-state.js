@@ -36,7 +36,18 @@ export const URL_STATE_VALUES = Object.freeze({
     "posco-future-m", "pfizer", "merck", "abbvie", "amgen", "sanofi", "gilead",
     "honeywell", "mitsubishi-electric", "emerson", "caterpillar", "nextera-energy",
     "hitachi", "mitsubishi-heavy", "kepco", "vestas", "siemens-energy", "cisco",
-    "zscaler", "check-point", "uber", "trane-technologies"
+    "zscaler", "check-point", "uber", "trane-technologies",
+    "kb-financial", "shinhan-financial", "hana-financial", "woori-financial",
+    "samsung-life", "mirae-asset-securities", "sk-telecom", "kt", "lg-uplus",
+    "cj-cheiljedang", "amorepacific", "lg-household-healthcare", "shinsegae",
+    "hybe", "krafton", "ncsoft", "kakao", "lotte-chemical", "korea-zinc",
+    "posco-holdings", "hd-hyundai-heavy", "hanwha-ocean", "samsung-heavy",
+    "hanwha-aerospace", "korea-aerospace-industries", "lig-nex1",
+    "hyundai-engineering-construction", "samsung-ct", "dl-enc", "hyundai-glovis",
+    "korean-air", "hmm", "cj-logistics", "nongshim", "orion", "yuhan",
+    "sk-biopharmaceuticals", "gc-biopharma", "korea-gas", "s-oil",
+    "sk-innovation", "samsung-electro-mechanics", "lg-innotek", "db-hitek",
+    "hanmi-semiconductor"
   ]),
   companyView: Object.freeze(["overview", "chart", "financials", "news"]),
   indicator: Object.freeze([

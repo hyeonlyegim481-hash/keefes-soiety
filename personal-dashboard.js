@@ -9,7 +9,8 @@ import {
   resourceProductionMetadata
 } from "./resource-production-data.js";
 import { indicatorSnapshot } from "./indicator-values.js";
-import { futureCompanies, futureIndustries } from "./future-industry-data.js";
+import { futureCompanies } from "./future-industry-data.js";
+import { getCompanyIndustry } from "./company-industry-data.js";
 import { scenarioQuestions } from "./quiz-data.js";
 import { extraScenarioQuestions } from "./quiz-scenario-extra-data.js";
 import { moreScenarioQuestions } from "./quiz-scenario-more-data.js";
@@ -42,7 +43,6 @@ const indicatorCatalog = [
 ];
 const indicatorById = new Map(indicatorCatalog.map((item) => [item.id, item]));
 const companyById = new Map(futureCompanies.map((item) => [item.id, item]));
-const industryById = new Map(futureIndustries.map((item) => [item.id, item]));
 const quizById = new Map(
   [
     ...scenarioQuestions,
@@ -400,7 +400,7 @@ function renderCompanies(watchlists, snapshot, companyMarkets = new Map()) {
   const companies = watchedIds.map((id) => companyById.get(id)).filter(Boolean);
   const content = companies.length
     ? `<div class="personal-company-list">${companies.map((company) => {
-        const industry = industryById.get(company.sectorId);
+        const industry = getCompanyIndustry(company);
         const headlines = matchCompanyHeadlines(company, snapshot?.headlines || []);
         const sourceUrl = safeUrl(company.source?.url);
         const companyMarket = companyMarkets.get(company.id) || { status: "loading" };
@@ -417,7 +417,7 @@ function renderCompanies(watchlists, snapshot, companyMarkets = new Map()) {
             ${renderPersonalCompanyDetails(companyMarket)}
             <dl class="personal-company-static-facts">
               <div><dt>최근 매출</dt><dd>${escapeHtml(company.revenue || "공식 수치 없음")}</dd></div>
-              <div><dt>매출 변화</dt><dd data-tone="${Number(company.revenueGrowth) >= 0 ? "up" : "down"}">${Number.isFinite(Number(company.revenueGrowth)) ? `${Number(company.revenueGrowth) > 0 ? "+" : ""}${numberFormatter.format(company.revenueGrowth)}%` : "계산 불가"}</dd></div>
+              <div><dt>매출 변화</dt><dd data-tone="${company.revenueGrowth === null || company.revenueGrowth === undefined || !Number.isFinite(Number(company.revenueGrowth)) ? "unavailable" : Number(company.revenueGrowth) >= 0 ? "up" : "down"}">${company.revenueGrowth !== null && company.revenueGrowth !== undefined && Number.isFinite(Number(company.revenueGrowth)) ? `${Number(company.revenueGrowth) > 0 ? "+" : ""}${numberFormatter.format(company.revenueGrowth)}%` : "검증 대기"}</dd></div>
               <div><dt>기준</dt><dd>${escapeHtml(company.fiscal || "회계기간 미확인")}</dd></div>
             </dl>
             <p class="personal-company-signal">${escapeHtml(company.profitability || company.cashSignal || "실적 설명 준비 중")}</p>
