@@ -47,7 +47,7 @@ test("company URL allowlist matches all companies and drops invalid IDs", () => 
 });
 
 test("company UI separates price collection from official business analysis", () => {
-  assert.match(ui, /기업을 실적·가격·사업으로 함께 보기/);
+  assert.match(ui, /기업 한눈에 보기/);
   assert.match(ui, /시세가 없을 때 실적 수치로 현재 주가를 추정하지 않습니다/);
   assert.match(ui, /개요/);
   assert.match(ui, /차트·시세/);
@@ -55,6 +55,30 @@ test("company UI separates price collection from official business analysis", ()
   assert.match(ui, /뉴스·위험/);
   assert.match(ui, /data-company-period/);
   assert.match(ui, /providerPlan/);
+});
+
+test("company overview presents catalog, market, and official results in scan order", () => {
+  assert.match(ui, /company-terminal-stats/);
+  assert.match(ui, /companyCatalogStats\.industries/);
+
+  assert.match(ui, /한눈에 보는 시장 지표/);
+  assert.match(ui, /최근 공식 실적/);
+  assert.match(ui, /현금·재무 신호/);
+  assert.match(css, /Company glance layout v142[\s\S]*?\.company-valuation-strip-grid\s*\{[\s\S]*?repeat\(5,/);
+  assert.match(css, /\.company-view-tabs button\[aria-selected="true"\][\s\S]*?#edf7f5/);
+});
+
+test("company discovery uses a compact industry menu and bounded progressive list", () => {
+  assert.match(ui, /const COMPANY_PAGE_SIZE = 24/);
+  assert.match(ui, /data-company-sector-option/);
+  assert.match(ui, /companyIndustryCounts/);
+  assert.match(ui, /const regionalCompanies = futureCompanies\.filter/);
+  assert.match(ui, /data-company-load-more/);
+  assert.match(ui, /selectedCompany && !firstCompanies\.some/);
+  assert.doesNotMatch(ui, /company-browser-name[\s\S]{0,300}<em>/);
+  assert.match(css, /Company discovery controls v143/);
+  assert.match(css, /\.company-industry-options[\s\S]*?font-size:\s*9px/);
+  assert.match(css, /\.company-browser-item[\s\S]*?min-height:\s*58px/);
 });
 
 test("company API is available locally and on Vercel with shared caching", () => {
@@ -65,7 +89,7 @@ test("company API is available locally and on Vercel with shared caching", () =>
 });
 
 test("company layout supports desktop and narrow mobile screens", () => {
-  assert.match(css, /grid-template-columns:\s*minmax\(250px, 294px\) minmax\(0, 1fr\)/);
+  assert.match(css, /grid-template-columns:\s*minmax\(300px, 336px\) minmax\(0, 1fr\)/);
   assert.match(css, /@media \(max-width: 720px\)/);
   assert.match(css, /overflow-x:\s*auto/);
   assert.match(css, /company-chart-stage/);

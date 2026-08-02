@@ -4,6 +4,7 @@ import {
   buildAnalysis,
   buildArticleMarketContext,
   fetchMarket,
+  getStaticCacheControl,
   rankAndDedupeHeadlines,
   resolveMarketPoint,
   resolveMarketStatus,
@@ -14,6 +15,12 @@ import {
 const hour = 60 * 60 * 1000;
 const now = Date.UTC(2026, 6, 13, 11, 0, 0);
 
+test("bootstrap version files always revalidate while versioned assets stay cacheable", () => {
+  assert.equal(getStaticCacheControl("/index.html", "text/html; charset=utf-8"), "no-store");
+  assert.equal(getStaticCacheControl("/app-version.js", "text/javascript; charset=utf-8"), "no-cache, max-age=0, must-revalidate");
+  assert.equal(getStaticCacheControl("/sw.js", "text/javascript; charset=utf-8"), "no-cache, max-age=0, must-revalidate");
+  assert.equal(getStaticCacheControl("/company-ui.js", "text/javascript; charset=utf-8"), "public, max-age=3600");
+});
 test("uses Yahoo previousClose before range-level chartPreviousClose", () => {
   const baseline = resolvePreviousClose(
     { previousClose: 7475.94, chartPreviousClose: 8051.33 },

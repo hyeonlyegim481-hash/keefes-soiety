@@ -4,8 +4,9 @@ import { readFileSync } from "node:fs";
 
 test("Vercel security headers protect the app without blocking required services", () => {
   const config = JSON.parse(readFileSync(new URL("./vercel.json", import.meta.url), "utf8"));
+  const securityRule = config.headers.find((item) => item.source === "/(.*)");
   const headers = Object.fromEntries(
-    config.headers[0].headers.map((header) => [header.key.toLowerCase(), header.value])
+    securityRule.headers.map((header) => [header.key.toLowerCase(), header.value])
   );
   const csp = headers["content-security-policy"];
 
@@ -19,6 +20,15 @@ test("Vercel security headers protect the app without blocking required services
   assert.equal(headers["x-content-type-options"], "nosniff");
   assert.equal(headers["referrer-policy"], "strict-origin-when-cross-origin");
   assert.match(headers["permissions-policy"], /camera=\(\)/);
+});
+
+test("Vercel always revalidates the app version and service worker", () => {
+  const config = JSON.parse(readFileSync(new URL("./vercel.json", import.meta.url), "utf8"));
+  for (const source of ["/app-version.js", "/sw.js"]) {
+    const rule = config.headers.find((item) => item.source === source);
+    const headers = Object.fromEntries(rule.headers.map((header) => [header.key.toLowerCase(), header.value]));
+    assert.equal(headers["cache-control"], "no-cache, max-age=0, must-revalidate");
+  }
 });
 
 test("telemetry initialization uses an external CSP-compatible shell asset", () => {

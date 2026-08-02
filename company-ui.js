@@ -17,6 +17,7 @@ import {
 const DEFAULT_COMPANY_ID = "samsung-electronics";
 const COMPANY_VIEWS = new Set(["overview", "chart", "financials", "news"]);
 const COMPANY_REGIONS = new Set(["all", "korea", "global"]);
+const COMPANY_PAGE_SIZE = 24;
 const COMPANY_PERIODS = Object.freeze([
   { id: "1m", label: "1개월", days: 31 },
   { id: "3m", label: "3개월", days: 93 },
@@ -27,6 +28,17 @@ const COMPANY_PERIODS = Object.freeze([
 ]);
 
 const companyById = new Map(futureCompanies.map((company) => [company.id, company]));
+const companyCatalogStats = Object.freeze({
+  total: futureCompanies.length,
+  korea: futureCompanies.filter((company) => company.country === "한국").length,
+  global: futureCompanies.filter((company) => company.country !== "한국").length,
+  industries: companyIndustryCatalog.length
+});
+const companyIndustryCounts = new Map(companyIndustryCatalog.map((industry) => [industry.id, 0]));
+futureCompanies.forEach((company) => {
+  const industryId = getCompanyIndustryId(company);
+  companyIndustryCounts.set(industryId, (companyIndustryCounts.get(industryId) || 0) + 1);
+});
 const initialUrlState = readUrlState();
 const initialCompanyId = companyById.has(initialUrlState.company)
   ? initialUrlState.company
@@ -39,6 +51,7 @@ const viewState = {
   query: "",
   region: "all",
   sector: "all",
+  visibleCount: COMPANY_PAGE_SIZE,
   quoteCache: new Map(),
   quoteRequests: new Map(),
   snapshot: null
@@ -109,13 +122,8 @@ function bindCompanyEvents() {
   root.addEventListener("input", (event) => {
     if (!event.target.matches("[data-company-search]")) return;
     viewState.query = event.target.value;
+    viewState.visibleCount = COMPANY_PAGE_SIZE;
     renderCompanyBrowser();
-  });
-  root.addEventListener("change", (event) => {
-    if (event.target.matches("[data-company-sector]")) {
-      viewState.sector = event.target.value;
-      renderCompanyBrowser();
-    }
   });
   root.addEventListener("click", (event) => {
     const companyButton = event.target.closest?.("[data-company-id]");
@@ -136,6 +144,17 @@ function bindCompanyEvents() {
     const regionButton = event.target.closest?.("[data-company-region]");
     if (regionButton) {
       setCompanyRegion(regionButton.dataset.companyRegion);
+      return;
+    }
+    const sectorButton = event.target.closest?.("[data-company-sector-option]");
+    if (sectorButton) {
+      setCompanySector(sectorButton.dataset.companySectorOption);
+      sectorButton.closest("details")?.removeAttribute("open");
+      return;
+    }
+    if (event.target.closest?.("[data-company-load-more]")) {
+      viewState.visibleCount += COMPANY_PAGE_SIZE;
+      renderCompanyBrowser({ preserveScroll: true });
       return;
     }
     if (event.target.closest?.("[data-company-profile]")) {
@@ -191,14 +210,22 @@ function renderCompanyChapter() {
   root.innerHTML = `
     <div class="company-terminal">
       <header class="company-terminal-head">
-        <div>
+        <div class="company-terminal-intro">
           <p class="section-kicker">COMPANY TERMINAL</p>
-          <h2>기업을 실적·가격·사업으로 함께 보기</h2>
-          <p>${futureCompanies.length}개 기업의 검증된 실적 스냅샷 또는 공식 공시 연결과 선택 종목 시세를 분리해 확인합니다.</p>
+          <h2>기업 한눈에 보기</h2>
+          <p>사업 구조, 현재 시세, 공식 실적과 위험을 한 화면에서 비교합니다.</p>
         </div>
-        <button type="button" class="company-watch-button" data-company-profile>
-          <span aria-hidden="true">＋</span><strong>관심 기업 설정</strong>
-        </button>
+        <div class="company-terminal-tools">
+          <dl class="company-terminal-stats" aria-label="기업 데이터 현황">
+            <div><dt>전체</dt><dd>${companyCatalogStats.total}</dd></div>
+            <div><dt>한국</dt><dd>${companyCatalogStats.korea}</dd></div>
+            <div><dt>해외</dt><dd>${companyCatalogStats.global}</dd></div>
+            <div><dt>산업</dt><dd>${companyCatalogStats.industries}</dd></div>
+          </dl>
+          <button type="button" class="company-watch-button" data-company-profile>
+            <span aria-hidden="true">＋</span><strong>관심 기업 설정</strong>
+          </button>
+        </div>
       </header>
       <div class="company-terminal-grid">
         <aside class="company-browser" aria-label="기업 찾기">
@@ -207,10 +234,17 @@ function renderCompanyChapter() {
               <span>기업명·종목코드 검색</span>
               <input type="search" data-company-search value="${escapeHtml(viewState.query)}" placeholder="삼성전자, NVDA, 반도체" autocomplete="off" />
             </label>
-            <select data-company-sector aria-label="산업 선택">
-              <option value="all">모든 산업</option>
-              ${companyIndustryCatalog.map((industry) => `<option value="${escapeHtml(industry.id)}" ${viewState.sector === industry.id ? "selected" : ""}>${escapeHtml(industry.label)}</option>`).join("")}
-            </select>
+            <details class="company-industry-menu">
+              <summary>
+                <span>산업</span>
+                <strong data-company-sector-label>${escapeHtml(companyIndustryCatalog.find((industry) => industry.id === viewState.sector)?.label || "모든 산업")}</strong>
+                <i aria-hidden="true">▾</i>
+              </summary>
+              <div class="company-industry-options" role="group" aria-label="산업 선택">
+                <button type="button" data-company-sector-option="all" aria-pressed="${viewState.sector === "all"}"><span>모든 산업</span><small>${futureCompanies.length}</small></button>
+                ${companyIndustryCatalog.map((industry) => `<button type="button" data-company-sector-option="${escapeHtml(industry.id)}" aria-pressed="${viewState.sector === industry.id}"><span>${escapeHtml(industry.label)}</span><small>${companyIndustryCounts.get(industry.id) || 0}</small></button>`).join("")}
+              </div>
+            </details>
           </div>
           <div class="company-region-switch" role="group" aria-label="기업 지역">
             ${[
@@ -259,6 +293,14 @@ function getFilteredCompanies() {
 function setCompanyRegion(region) {
   if (!COMPANY_REGIONS.has(region)) return;
   viewState.region = region;
+  viewState.visibleCount = COMPANY_PAGE_SIZE;
+  renderCompanyBrowser();
+}
+
+function setCompanySector(sector) {
+  if (sector !== "all" && !companyIndustryCounts.has(sector)) return;
+  viewState.sector = sector;
+  viewState.visibleCount = COMPANY_PAGE_SIZE;
   renderCompanyBrowser();
 }
 
@@ -271,18 +313,50 @@ function syncCompanyRegionControls() {
   });
 }
 
-function renderCompanyBrowser() {
+function syncCompanySectorControls() {
+  const selectedIndustry = companyIndustryCatalog.find((industry) => industry.id === viewState.sector);
+  const label = root.querySelector("[data-company-sector-label]");
+  if (label) label.textContent = selectedIndustry?.label || "모든 산업";
+  const regionalCompanies = futureCompanies.filter((company) => {
+    if (viewState.region === "korea") return company.country === "한국";
+    if (viewState.region === "global") return company.country !== "한국";
+    return true;
+  });
+  const regionalCounts = new Map(companyIndustryCatalog.map((industry) => [industry.id, 0]));
+  regionalCompanies.forEach((company) => {
+    const industryId = getCompanyIndustryId(company);
+    regionalCounts.set(industryId, (regionalCounts.get(industryId) || 0) + 1);
+  });
+  root.querySelectorAll("[data-company-sector-option]").forEach((button) => {
+    const sector = button.dataset.companySectorOption;
+    button.setAttribute("aria-pressed", String(sector === viewState.sector));
+    const count = button.querySelector("small");
+    if (count) count.textContent = String(sector === "all" ? regionalCompanies.length : regionalCounts.get(sector) || 0);
+  });
+}
+
+function renderCompanyBrowser({ preserveScroll = false } = {}) {
   const list = root.querySelector("#companyBrowserList");
   const summary = root.querySelector("#companyBrowserSummary");
   if (!list || !summary) return;
+  const previousScrollTop = list.scrollTop;
   syncCompanyRegionControls();
+  syncCompanySectorControls();
   const companies = getFilteredCompanies();
-  summary.innerHTML = `<strong>${companies.length}개</strong><span>시세·공식 공시 연결 기업</span>`;
+  const regionLabel = viewState.region === "korea" ? "한국" : viewState.region === "global" ? "해외" : "전체";
+  const selectedIndustry = companyIndustryCatalog.find((industry) => industry.id === viewState.sector);
+  const visibleLimit = Math.min(viewState.visibleCount, companies.length);
+  const firstCompanies = companies.slice(0, visibleLimit);
+  const selectedCompany = companies.find((company) => company.id === viewState.companyId);
+  const visibleCompanies = selectedCompany && !firstCompanies.some((company) => company.id === selectedCompany.id)
+    ? [selectedCompany, ...firstCompanies.slice(0, Math.max(0, visibleLimit - 1))]
+    : firstCompanies;
+  summary.innerHTML = `<strong>${companies.length}개</strong><span>${regionLabel} · ${escapeHtml(selectedIndustry?.label || "모든 산업")}</span><small>${visibleCompanies.length}개 표시</small>`;
   if (!companies.length) {
     list.innerHTML = `<div class="company-browser-empty"><strong>검색 결과가 없습니다.</strong><span>검색어나 산업 필터를 바꿔보세요.</span></div>`;
     return;
   }
-  list.replaceChildren(...companies.map((company) => {
+  const companyButtons = visibleCompanies.map((company) => {
     const industry = getCompanyIndustry(company);
     const score = getHealthScore(company);
     const button = document.createElement("button");
@@ -299,9 +373,22 @@ function renderCompanyBrowser() {
       <span class="company-browser-score"><strong>${score === null ? "LIVE" : score}</strong><small>${score === null ? "시세" : "체력"}</small></span>
     `;
     return button;
-  }));
+  });
+  if (visibleLimit < companies.length) {
+    const loadMore = document.createElement("button");
+    loadMore.type = "button";
+    loadMore.className = "company-browser-more";
+    loadMore.dataset.companyLoadMore = "";
+    loadMore.innerHTML = `<strong>기업 더 보기</strong><span>남은 ${companies.length - visibleLimit}개</span>`;
+    companyButtons.push(loadMore);
+  }
+  list.replaceChildren(...companyButtons);
+  if (preserveScroll) {
+    list.scrollTop = previousScrollTop;
+    return;
+  }
   const selected = list.querySelector(`[data-company-id="${CSS.escape(viewState.companyId)}"]`);
-  if (selected) {
+  if (selected && selected !== list.firstElementChild) {
     const centeredTop = selected.offsetTop - list.offsetTop - (list.clientHeight - selected.offsetHeight) / 2;
     list.scrollTop = Math.max(0, centeredTop);
   }
@@ -366,24 +453,28 @@ function renderCompanyIdentity(company, industry, quoteState) {
 
 function renderOverview(company, industry, quoteState) {
   const score = getHealthScore(company);
-  const quote = quoteState?.data;
   return `
     <section class="company-overview-hero">
       <div>
         <span>이 회사는 무엇으로 버는가</span>
+        <small>${escapeHtml(company.role || industry?.label || "핵심 사업")}</small>
         <h4>${escapeHtml(company.business)}</h4>
       </div>
       <div class="company-overview-score" data-tone="${getHealthTone(score)}">
         <span>${score === null ? "실적 검증" : "사업체력"}</span><strong>${score === null ? "대기" : `${score}<small>/100</small>`}</strong><p>${escapeHtml(getHealthGrade(score))}${score === null ? "" : " · 교육용 비교 점수"}</p>
       </div>
     </section>
+    ${renderCompactValuation(quoteState)}
+    <div class="company-metric-section-head">
+      <div><span>OFFICIAL RESULTS</span><h4>최근 공식 실적</h4></div>
+      <small>시장 수치와 발표 기준일이 다를 수 있습니다.</small>
+    </div>
     <dl class="company-key-metrics">
       <div><dt>최근 매출</dt><dd>${escapeHtml(company.revenue)}</dd><small>${escapeHtml(company.fiscal)}</small></div>
       <div><dt>매출 변화</dt><dd data-tone="${getMetricTone(company.revenueGrowth)}">${formatSignedPercent(company.revenueGrowth)}</dd><small>${hasMetricValue(company.revenueGrowth) ? "직전 비교기간 대비" : "검증된 수치만 표시"}</small></div>
       <div><dt>수익성</dt><dd>${formatStaticMargin(company.margin)}</dd><small>${escapeHtml(company.profitability)}</small></div>
-      <div><dt>시가총액</dt><dd>${formatFundamentalValue(quote?.fundamentals?.metrics?.marketCap, "amount")}</dd><small>${quote?.fundamentals?.available ? escapeHtml(quote.fundamentals.providerLabel) : "수집 실패 시 임의 계산하지 않음"}</small></div>
+      <div><dt>현금·재무 신호</dt><dd class="company-key-metric-text">${escapeHtml(company.cashSignal || "자료 확인 중")}</dd><small>회사별 공식 공표 기준</small></div>
     </dl>
-    ${renderCompactValuation(quoteState)}
     <div class="company-thesis-grid">
       <article data-kind="moat"><span>경쟁력이 생기는 이유</span><strong>${escapeHtml(company.moat)}</strong></article>
       <article data-kind="risk"><span>가장 먼저 볼 위험</span><strong>${escapeHtml(company.risk)}</strong></article>
@@ -450,6 +541,7 @@ function renderCompactValuation(quoteState) {
   const loading = quoteState?.status === "loading";
   const metrics = fundamentals?.metrics || {};
   const items = [
+    { label: "시가총액", metric: metrics.marketCap, kind: "amount", hint: "주식시장 전체 가치" },
     { label: "PER", metric: metrics.per, kind: "multiple", hint: "TTM 이익 대비" },
     { label: "PBR", metric: metrics.pbr, kind: "multiple", hint: "순자산 대비" },
     { label: "PSR", metric: metrics.psr, kind: "multiple", hint: "TTM 매출 대비" },
@@ -458,7 +550,7 @@ function renderCompactValuation(quoteState) {
   return `
     <section class="company-valuation-strip" data-available="${Boolean(fundamentals?.available)}">
       <header>
-        <div><span>VALUATION SNAPSHOT</span><h4>가치평가 바로보기</h4></div>
+        <div><span>MARKET SNAPSHOT</span><h4>한눈에 보는 시장 지표</h4></div>
         <small>${loading ? "기업지표 확인 중" : escapeHtml(fundamentals?.providerLabel || "기업지표 자료 없음")}</small>
       </header>
       <div class="company-valuation-strip-grid">

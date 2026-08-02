@@ -1994,6 +1994,14 @@ function normalizeAiAnalysis(value, fallback, engineLabel = "") {
   };
 }
 
+export function getStaticCacheControl(pathname, contentType = "") {
+  if (String(contentType).includes("html")) return "no-store";
+  if (pathname === "/app-version.js" || pathname === "/sw.js") {
+    return "no-cache, max-age=0, must-revalidate";
+  }
+  return "public, max-age=3600";
+}
+
 async function serveStatic(pathname, res) {
   const requestedPath = pathname === "/" ? "/index.html" : pathname;
   const safePath = path
@@ -2009,10 +2017,11 @@ async function serveStatic(pathname, res) {
   try {
     const file = await readFile(filePath);
     const ext = path.extname(filePath);
-    sendBuffer(res, 200, file, mimeTypes[ext] || "application/octet-stream");
+    const contentType = mimeTypes[ext] || "application/octet-stream";
+    sendBuffer(res, 200, file, contentType, getStaticCacheControl(requestedPath, contentType));
   } catch {
     const index = await readFile(path.join(__dirname, "index.html"));
-    sendBuffer(res, 200, index, mimeTypes[".html"]);
+    sendBuffer(res, 200, index, mimeTypes[".html"], "no-store");
   }
 }
 
@@ -2576,10 +2585,10 @@ function sendText(res, statusCode, body, contentType) {
   res.end(body);
 }
 
-function sendBuffer(res, statusCode, body, contentType) {
+function sendBuffer(res, statusCode, body, contentType, cacheControl = getStaticCacheControl("", contentType)) {
   res.writeHead(statusCode, {
     "content-type": contentType,
-    "cache-control": contentType.includes("html") ? "no-store" : "public, max-age=3600"
+    "cache-control": cacheControl
   });
   res.end(body);
 }
