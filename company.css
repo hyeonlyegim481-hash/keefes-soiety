@@ -2748,3 +2748,251 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+/* KOSPI official catalog v145 */
+.company-catalog-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 154px;
+  min-height: 184px;
+  border: 1px solid #b9ced1;
+  border-left: 4px solid #087f73;
+  border-radius: 6px;
+  background: #f8fbfb;
+  overflow: hidden;
+}
+
+.company-catalog-hero > div {
+  min-width: 0;
+  padding: 24px 26px;
+}
+
+.company-catalog-hero > div > span,
+.company-catalog-profile header span,
+.company-catalog-news-note span {
+  color: #087f73;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 0;
+}
+
+.company-catalog-hero > div > small {
+  display: block;
+  margin-top: 7px;
+  color: #5c7078;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.company-catalog-hero h4 {
+  margin: 12px 0 8px;
+  color: #142831;
+  font-size: 20px;
+  line-height: 1.45;
+}
+
+.company-catalog-hero p {
+  max-width: 760px;
+  margin: 0;
+  color: #4c626b;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.company-catalog-hero > aside {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px;
+  border-left: 1px solid #cfdddf;
+  background: #edf6f4;
+  text-align: center;
+}
+
+.company-catalog-hero > aside span,
+.company-catalog-hero > aside small {
+  color: #5f747c;
+  font-size: 10px;
+}
+
+.company-catalog-hero > aside strong {
+  margin: 5px 0 7px;
+  color: #087f73;
+  font-size: 22px;
+}
+
+.company-catalog-profile {
+  border: 1px solid #cad9dc;
+  border-radius: 6px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.company-catalog-profile > header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 18px 13px;
+  border-bottom: 1px solid #d6e1e3;
+}
+
+.company-catalog-profile h4,
+.company-catalog-news-note h4 {
+  margin: 3px 0 0;
+  color: #172d36;
+  font-size: 16px;
+}
+
+.company-catalog-profile > header > small {
+  color: #687b82;
+  font-size: 10px;
+}
+
+.company-catalog-facts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0;
+}
+
+.company-catalog-facts > div {
+  min-width: 0;
+  padding: 14px 16px;
+  border-right: 1px solid #e0e8ea;
+  border-bottom: 1px solid #e0e8ea;
+}
+
+.company-catalog-facts > div:nth-child(4n) {
+  border-right: 0;
+}
+
+.company-catalog-facts dt {
+  color: #6b7e85;
+  font-size: 9px;
+  font-weight: 750;
+}
+
+.company-catalog-facts dd {
+  margin: 5px 0 0;
+  color: #1b3039;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.company-catalog-profile > footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #f6f9fa;
+}
+
+.company-catalog-profile > footer a {
+  color: #0b6f68;
+  font-size: 10px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.company-catalog-notice,
+.company-catalog-news-note {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+  padding: 16px 18px;
+  border: 1px solid #cad9dc;
+  border-left: 4px solid #c7942f;
+  border-radius: 5px;
+  background: #fffdf8;
+}
+
+.company-catalog-notice strong {
+  color: #6b4d12;
+  font-size: 12px;
+}
+
+.company-catalog-notice p,
+.company-catalog-news-note p {
+  margin: 0;
+  color: #4e626a;
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.company-catalog-news-note {
+  grid-template-columns: minmax(190px, 0.38fr) minmax(0, 1fr);
+  border-left-color: #087f73;
+  background: #f7fbfa;
+}
+
+.company-catalog-financial-lead > div:last-child strong {
+  font-size: 17px;
+}
+
+@media (max-width: 900px) {
+  .company-catalog-facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .company-catalog-facts > div:nth-child(4n) {
+    border-right: 1px solid #e0e8ea;
+  }
+
+  .company-catalog-facts > div:nth-child(2n) {
+    border-right: 0;
+  }
+}
+
+@media (max-width: 720px) {
+  .company-catalog-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .company-catalog-hero > div {
+    padding: 18px 16px;
+  }
+
+  .company-catalog-hero h4 {
+    font-size: 17px;
+  }
+
+  .company-catalog-hero > aside {
+    align-items: baseline;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 9px;
+    padding: 12px 16px;
+    border-top: 1px solid #cfdddf;
+    border-left: 0;
+    text-align: left;
+  }
+
+  .company-catalog-hero > aside strong {
+    margin: 0;
+    font-size: 15px;
+  }
+
+  .company-catalog-profile > header {
+    align-items: start;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .company-catalog-facts {
+    grid-template-columns: 1fr;
+  }
+
+  .company-catalog-facts > div,
+  .company-catalog-facts > div:nth-child(2n),
+  .company-catalog-facts > div:nth-child(4n) {
+    border-right: 0;
+  }
+
+  .company-catalog-notice,
+  .company-catalog-news-note {
+    grid-template-columns: 1fr;
+    gap: 7px;
+  }
+}

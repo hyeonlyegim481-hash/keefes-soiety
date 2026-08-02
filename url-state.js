@@ -228,6 +228,12 @@ function oneOf(value, allowed, fallback) {
   return allowed.includes(value) ? value : fallback;
 }
 
+function normalizeCompanyValue(value) {
+  const compact = String(value || "").trim().toLowerCase();
+  if (URL_STATE_VALUES.company.includes(compact)) return compact;
+  return /^kospi-[0-9a-z]{6}$/.test(compact) ? compact : DEFAULTS.company;
+}
+
 export function normalizeUrlState(input = "") {
   const params = asSearchParams(input);
   const rawChapter = params.get("chapter") || "brief";
@@ -250,7 +256,7 @@ export function normalizeUrlState(input = "") {
           DEFAULTS.marketView
         );
   } else if (chapter === "companies") {
-    state.company = oneOf(params.get("company"), URL_STATE_VALUES.company, DEFAULTS.company);
+    state.company = normalizeCompanyValue(params.get("company"));
     state.companyView = oneOf(
       params.get("companyView"),
       URL_STATE_VALUES.companyView,

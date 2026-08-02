@@ -8,6 +8,7 @@
     "test": "node --test",
     "update:indicators": "node scripts/update-indicators.mjs",
     "update:indicator-metadata": "node scripts/update-indicator-metadata.mjs",
+    "update:kospi": "node scripts/update-kospi-companies.mjs",
     "update:news": "node scripts/update-news-cache.mjs",
     "update:blob": "node scripts/publish-blob-version.mjs"
   },

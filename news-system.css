@@ -939,7 +939,9 @@
 #news .news-save-button[data-error="true"],
 .news-analysis-save-button[data-error="true"] {
   border-color: #cf756d;
+  background: #fff5f4;
   color: #a3312b;
+  box-shadow: none;
 }
 
 #news .news-save-button[aria-busy="true"],

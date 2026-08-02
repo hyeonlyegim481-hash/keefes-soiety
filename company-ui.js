@@ -1,7 +1,8 @@
 import { renderCompanyBalanceSheet } from "./company-balance-sheet-ui.js";
 import {
   futureCompanies,
-  futureIndustryMethod
+  futureIndustryMethod,
+  kospiCatalogMetadata
 } from "./future-industry-data.js";
 import {
   companyIndustryCatalog,
@@ -32,6 +33,8 @@ const companyCatalogStats = Object.freeze({
   total: futureCompanies.length,
   korea: futureCompanies.filter((company) => company.country === "한국").length,
   global: futureCompanies.filter((company) => company.country !== "한국").length,
+  kospi: kospiCatalogMetadata.count,
+  detailed: futureCompanies.filter((company) => !company.catalogOnly).length,
   industries: companyIndustryCatalog.length
 });
 const companyIndustryCounts = new Map(companyIndustryCatalog.map((industry) => [industry.id, 0]));
@@ -94,6 +97,12 @@ export function initCompanyChapter({
     if (urlState.chapter !== "companies") return;
     applyCompanyUrlState(urlState);
   });
+  if (initialUrlState.chapter === "companies" && initialUrlState.company !== initialCompanyId) {
+    syncUrlState(
+      { chapter: "companies", company: initialCompanyId, companyView: viewState.view },
+      { mode: "replace", emit: false, source: "company-initial-canonicalize" }
+    );
+  }
   renderCompanyChapter();
   void ensureCompanyQuote(viewState.companyId);
 
@@ -198,6 +207,12 @@ function applyCompanyUrlState(urlState = {}) {
   const companyView = COMPANY_VIEWS.has(urlState.companyView)
     ? urlState.companyView
     : "overview";
+  if (urlState.chapter === "companies" && urlState.company !== companyId) {
+    syncUrlState(
+      { chapter: "companies", company: companyId, companyView },
+      { mode: "replace", emit: false, source: "company-canonicalize" }
+    );
+  }
   const changed = companyId !== viewState.companyId || companyView !== viewState.view;
   viewState.companyId = companyId;
   viewState.view = companyView;
@@ -213,13 +228,13 @@ function renderCompanyChapter() {
         <div class="company-terminal-intro">
           <p class="section-kicker">COMPANY TERMINAL</p>
           <h2>기업 한눈에 보기</h2>
-          <p>사업 구조, 현재 시세, 공식 실적과 위험을 한 화면에서 비교합니다.</p>
+          <p>코스피 전체 기업과 해외 주요 기업을 사업·시세·공식자료 기준으로 탐색합니다.</p>
         </div>
         <div class="company-terminal-tools">
           <dl class="company-terminal-stats" aria-label="기업 데이터 현황">
             <div><dt>전체</dt><dd>${companyCatalogStats.total}</dd></div>
-            <div><dt>한국</dt><dd>${companyCatalogStats.korea}</dd></div>
-            <div><dt>해외</dt><dd>${companyCatalogStats.global}</dd></div>
+            <div><dt>코스피</dt><dd>${companyCatalogStats.kospi}</dd></div>
+            <div><dt>상세</dt><dd>${companyCatalogStats.detailed}</dd></div>
             <div><dt>산업</dt><dd>${companyCatalogStats.industries}</dd></div>
           </dl>
           <button type="button" class="company-watch-button" data-company-profile>
@@ -370,7 +385,7 @@ function renderCompanyBrowser({ preserveScroll = false } = {}) {
         <strong>${escapeHtml(company.name)}</strong>
         <small>${escapeHtml(company.ticker)} · ${escapeHtml(industry?.shortLabel || company.country)}</small>
       </span>
-      <span class="company-browser-score"><strong>${score === null ? "LIVE" : score}</strong><small>${score === null ? "시세" : "체력"}</small></span>
+      <span class="company-browser-score"><strong>${company.catalogOnly ? "KRX" : score === null ? "LIVE" : score}</strong><small>${company.catalogOnly ? "공식" : score === null ? "시세" : "체력"}</small></span>
     `;
     return button;
   });
@@ -406,8 +421,8 @@ function renderCompanyDetail() {
       ${[
         ["overview", "개요", "사업과 핵심 수치"],
         ["chart", "차트·시세", "최대 5년 흐름"],
-        ["financials", "실적·체력", "재무와 비교"],
-        ["news", "뉴스·위험", "사건과 확인점"]
+        ["financials", company.catalogOnly ? "재무정보" : "실적·체력", company.catalogOnly ? "수집 자료와 기준" : "재무와 비교"],
+        ["news", company.catalogOnly ? "관련 뉴스" : "뉴스·위험", company.catalogOnly ? "직접 일치 기사" : "사건과 확인점"]
       ].map(([id, label, hint]) => `
         <button type="button" role="tab" data-company-view="${id}" aria-selected="${viewState.view === id}">
           <strong>${label}</strong><span>${hint}</span>
@@ -415,10 +430,10 @@ function renderCompanyDetail() {
       `).join("")}
     </nav>
     <div class="company-view-body">
-      ${viewState.view === "overview" ? renderOverview(company, industry, quoteState) : ""}
+      ${viewState.view === "overview" ? (company.catalogOnly ? renderCatalogOverview(company, industry, quoteState) : renderOverview(company, industry, quoteState)) : ""}
       ${viewState.view === "chart" ? renderChartView(company, quoteState) : ""}
-      ${viewState.view === "financials" ? renderFinancials(company, industry, quoteState) : ""}
-      ${viewState.view === "news" ? renderNewsAndRisk(company, industry) : ""}
+      ${viewState.view === "financials" ? (company.catalogOnly ? renderCatalogFinancials(company, quoteState) : renderFinancials(company, industry, quoteState)) : ""}
+      ${viewState.view === "news" ? (company.catalogOnly ? renderCatalogNews(company, industry) : renderNewsAndRisk(company, industry)) : ""}
     </div>
   `;
   if (viewState.view === "chart") renderCompanyChart();
@@ -445,10 +460,113 @@ function renderCompanyIdentity(company, industry, quoteState) {
           ? `<span>시세 확인 중</span><strong>불러오는 중</strong><small>선택 종목만 요청합니다.</small>`
           : available
             ? `<span>${escapeHtml(market.marketStateLabel || "시세")}</span><strong>${formatPrice(market.value, market.quoteCurrency || market.unit)}</strong><small>${movement.html}</small>`
-            : `<span>시세 자료</span><strong>수집 실패</strong><small>${company.snapshotStatus === "profile-only" ? "사업 설명과 공식 공시 경로는 계속 볼 수 있습니다." : "공식 실적 정보는 계속 볼 수 있습니다."}</small>`}
+            : `<span>시세 자료</span><strong>수집 실패</strong><small>${company.catalogOnly ? "한국거래소 기본정보는 계속 볼 수 있습니다." : company.snapshotStatus === "profile-only" ? "사업 설명과 공식 공시 경로는 계속 볼 수 있습니다." : "공식 실적 정보는 계속 볼 수 있습니다."}</small>`}
       </div>
     </header>
   `;
+}
+
+function renderCatalogOverview(company, industry, quoteState) {
+  const homepage = safeUrl(company.homepage);
+  return `
+    <section class="company-catalog-hero">
+      <div>
+        <span>KRX OFFICIAL CATALOG</span>
+        <small>${escapeHtml(company.krxIndustry || industry?.label || "업종 미공표")}</small>
+        <h4>${escapeHtml(company.products || "주요제품 미공표")}</h4>
+        <p>한국거래소가 공표한 기본정보입니다. 확인되지 않은 사업평가·경쟁력·위험 문장을 만들지 않았습니다.</p>
+      </div>
+      <aside>
+        <span>시장</span>
+        <strong>KOSPI</strong>
+        <small>${escapeHtml(formatCatalogDate(company.catalogCollectedAt))} 수집</small>
+      </aside>
+    </section>
+    ${renderCompactValuation(quoteState)}
+    <section class="company-catalog-profile">
+      <header>
+        <div><span>OFFICIAL PROFILE</span><h4>상장기업 기본정보</h4></div>
+        <small>회사별 대표 종목 기준</small>
+      </header>
+      <dl class="company-catalog-facts">
+        ${renderCatalogFact("시장", company.market || "KOSPI")}
+        ${renderCatalogFact("종목코드", company.ticker)}
+        ${renderCatalogFact("공식 업종", company.krxIndustry)}
+        ${renderCatalogFact("상장일", company.listedAt)}
+        ${renderCatalogFact("결산월", company.fiscalMonth)}
+        ${renderCatalogFact("대표자", company.representative)}
+        ${renderCatalogFact("지역", company.region)}
+        ${renderCatalogFact("분류", industry?.label)}
+      </dl>
+      <footer>
+        <a href="${escapeHtml(safeUrl(company.source?.url))}" target="_blank" rel="noopener noreferrer">KIND 상장법인목록 <i aria-hidden="true">↗</i></a>
+        ${homepage !== "#" ? `<a href="${escapeHtml(homepage)}" target="_blank" rel="noopener noreferrer">기업 홈페이지 <i aria-hidden="true">↗</i></a>` : ""}
+      </footer>
+    </section>
+    <section class="company-catalog-notice" role="note">
+      <strong>상세 분석 연결 전</strong>
+      <p>기업별 공식 재무제표와 공시가 검증되기 전에는 매출·수익성·사업체력 점수를 표시하지 않습니다. 시세 제공처가 실제 값을 반환하면 시장지표만 별도로 표시합니다.</p>
+    </section>
+  `;
+}
+
+function renderCatalogFinancials(company, quoteState) {
+  return `
+    <section class="company-financial-lead company-catalog-financial-lead">
+      <div>
+        <span>수집 자료와 기준</span>
+        <h4>시장 재무지표 확인</h4>
+        <p>KIND 기본정보와 시세 제공처 자료를 구분합니다. 제공되지 않은 재무계정은 추정하거나 0으로 바꾸지 않습니다.</p>
+      </div>
+      <div><span>공식 실적 분석</span><strong>연결 전</strong><small>DART 검증 필요</small></div>
+    </section>
+    ${renderDetailedValuation(quoteState)}
+    ${renderCompanyBalanceSheet(quoteState)}
+    <section class="company-catalog-notice" role="note">
+      <strong>왜 일부 값이 비어 있나요?</strong>
+      <p>${escapeHtml(company.name)}의 회계기준·연결 여부·공표기간이 확인된 재무제표를 아직 연결하지 않았습니다. 외부 제공처가 반환한 값에는 제공처와 기준일을 함께 표시하며, 실패하면 자료 없음으로 남깁니다.</p>
+    </section>
+    <footer class="company-source-footer">
+      <span>상장기업 기본정보</span>
+      <a href="${escapeHtml(safeUrl(company.source?.url))}" target="_blank" rel="noopener noreferrer">${escapeHtml(company.source?.label || "한국거래소 KIND")} <i aria-hidden="true">↗</i></a>
+    </footer>
+  `;
+}
+
+function renderCatalogNews(company, industry) {
+  const headlines = matchCompanyHeadlines(company, viewState.snapshot?.headlines || []);
+  return `
+    <section class="company-catalog-news-note">
+      <div><span>ANALYSIS STATUS</span><h4>기업별 위험 분석 연결 전</h4></div>
+      <p>공식 공시와 사업보고서 확인 전에는 위험요인이나 경쟁력을 임의로 작성하지 않습니다. 현재는 ${escapeHtml(industry?.label || company.krxIndustry || "해당 산업")} 분류와 직접 일치 뉴스만 제공합니다.</p>
+    </section>
+    <section class="company-news-panel">
+      <header><div><span>RELATED NEWS</span><h4>${escapeHtml(company.name)} 관련 최근 뉴스</h4></div><small>최근 5일 · 회사명 직접 일치 또는 기업 ID 연결</small></header>
+      ${headlines.length
+        ? `<div class="company-news-list">${headlines.map((headline) => `
+            <a href="${escapeHtml(safeUrl(headline.url))}" target="_blank" rel="noopener noreferrer">
+              <span>${escapeHtml(headline.source || "출처 미확인")} · ${formatHeadlineDate(headline.publishedAt)}</span>
+              <strong>${escapeHtml(headline.title)}</strong>
+              <small>${escapeHtml(headline.topic || "기업 뉴스")}</small>
+            </a>
+          `).join("")}</div>`
+        : `<div class="company-news-empty"><strong>직접 연결된 최근 뉴스가 없습니다.</strong><p>회사명과 직접 일치하지 않는 기사를 억지로 연결하지 않았습니다.</p></div>`}
+    </section>
+    <footer class="company-source-footer">
+      <span>기업 기본정보</span>
+      <a href="${escapeHtml(safeUrl(company.source?.url))}" target="_blank" rel="noopener noreferrer">${escapeHtml(company.source?.label || "한국거래소 KIND")} <i aria-hidden="true">↗</i></a>
+    </footer>
+  `;
+}
+
+function renderCatalogFact(label, value) {
+  const display = String(value || "").trim() || "공표 자료 없음";
+  return `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(display)}</dd></div>`;
+}
+
+function formatCatalogDate(value) {
+  const timestamp = Date.parse(value || "");
+  return Number.isFinite(timestamp) ? dateFormatter.format(new Date(timestamp)) : "기준일 미확인";
 }
 
 function renderOverview(company, industry, quoteState) {
@@ -498,7 +616,7 @@ function renderChartView(company, quoteState) {
       <div class="company-data-state" data-kind="error" role="status">
         <span aria-hidden="true">!</span>
         <strong>현재 시세 자료를 가져오지 못했습니다.</strong>
-        <p>가격을 추정하거나 0으로 표시하지 않았습니다. 공식 실적과 사업 분석은 다른 탭에서 계속 확인할 수 있습니다.</p>
+        <p>가격을 추정하거나 0으로 표시하지 않았습니다. ${company.catalogOnly ? "한국거래소 기본정보는 개요 탭에서 확인할 수 있습니다." : "공식 실적과 사업 분석은 다른 탭에서 계속 확인할 수 있습니다."}</p>
         <button type="button" data-company-retry>다시 시도</button>
       </div>
       ${renderProviderDetails(quoteState.data || { attempts, providerPlan: [] })}

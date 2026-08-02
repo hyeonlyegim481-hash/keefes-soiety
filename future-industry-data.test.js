@@ -25,12 +25,13 @@ test("defines ten complete future industries with valid company links", () => {
   }
 });
 
-test("provides 147 sourced company profiles with transparent snapshot status", () => {
-  assert.equal(futureCompanies.length, 147);
+test("keeps 147 detailed company profiles with transparent snapshot status", () => {
+  const detailedCompanies = futureCompanies.filter((company) => !company.catalogOnly);
+  assert.equal(detailedCompanies.length, 147);
   const ids = new Set();
   const partIds = futureIndustryMethod.parts.map((part) => part.id).sort();
 
-  for (const company of futureCompanies) {
+  for (const company of detailedCompanies) {
     assert.ok(!ids.has(company.id), company.id + " must be unique");
     ids.add(company.id);
     assert.ok(company.name);

@@ -7,7 +7,7 @@ import {
   getCompanyIndustryId
 } from "./company-industry-data.js";
 import { getCompanyProviderSymbol } from "./company-market-data.js";
-import { futureCompanies } from "./future-industry-data.js";
+import { futureCompanies, kospiCatalogMetadata } from "./future-industry-data.js";
 import { koreanExpandedCompanies } from "./korean-company-expanded-data.js";
 
 const uiSource = await readFile(new URL("./company-ui.js", import.meta.url), "utf8");
@@ -36,10 +36,18 @@ test("adds 45 Korean companies across diverse industries without duplicate IDs",
   }
 });
 
-test("expands the catalog to 147 companies including 61 Korean companies", () => {
-  assert.equal(futureCompanies.length, 147);
-  assert.equal(futureCompanies.filter((company) => company.country === "한국").length, 61);
-  assert.equal(new Set(futureCompanies.map((company) => company.id)).size, 147);
+test("keeps 147 detailed profiles while covering the full official KOSPI catalog", () => {
+  const detailedCompanies = futureCompanies.filter((company) => !company.catalogOnly);
+  const detailedKorean = detailedCompanies.filter((company) => company.country === "한국");
+  const catalogOnly = futureCompanies.filter((company) => company.catalogOnly);
+  const koreanCompanies = futureCompanies.filter((company) => company.country === "한국");
+
+  assert.equal(detailedCompanies.length, 147);
+  assert.equal(detailedKorean.length, 61);
+  assert.equal(koreanCompanies.length, kospiCatalogMetadata.count);
+  assert.equal(catalogOnly.length, kospiCatalogMetadata.count - detailedKorean.length);
+  assert.equal(futureCompanies.length, 147 + catalogOnly.length);
+  assert.equal(new Set(futureCompanies.map((company) => company.id)).size, futureCompanies.length);
   assert.ok(futureCompanies.every((company) => industryIds.has(getCompanyIndustryId(company))));
 });
 

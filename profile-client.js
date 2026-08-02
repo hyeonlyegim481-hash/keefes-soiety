@@ -124,30 +124,85 @@ function isMissingDashboardStorageError(error) {
     );
 }
 
-function compactArticleAnalysis(result = null) {
-  if (!result || typeof result !== "object") return {};
-  const text = (value, limit = 1400) => String(value || "").slice(0, limit);
-  const list = (value, limit = 5) => Array.isArray(value)
-    ? value.slice(0, limit).map((item) => text(item, 500))
+export const SAVED_ANALYSIS_MAX_BYTES = 14_000;
+const savedAnalysisEncoder = new TextEncoder();
+
+function utf8ByteLength(value) {
+  return savedAnalysisEncoder.encode(String(value || "")).byteLength;
+}
+
+function truncateUtf8(value, maxBytes) {
+  const text = String(value || "").trim();
+  if (utf8ByteLength(text) <= maxBytes) return text;
+  const characters = Array.from(text);
+  let low = 0;
+  let high = characters.length;
+  while (low < high) {
+    const middle = Math.ceil((low + high) / 2);
+    if (utf8ByteLength(characters.slice(0, middle).join("")) <= maxBytes) {
+      low = middle;
+    } else {
+      high = middle - 1;
+    }
+  }
+  return characters.slice(0, low).join("").trimEnd();
+}
+
+function compactAnalysisList(value, itemLimit, itemBytes) {
+  return Array.isArray(value)
+    ? value.slice(0, itemLimit)
+      .map((item) => truncateUtf8(item, itemBytes))
+      .filter(Boolean)
     : [];
-  return {
-    signal: text(result.signal, 80),
-    tone: text(result.tone, 40),
-    confidence: text(result.confidence, 60),
-    engineLabel: text(result.engineLabel, 120),
-    contentBasis: text(result.contentBasis, 40),
-    contentStatus: text(result.contentStatus, 40),
-    contentBasisReason: text(result.contentBasisReason, 500),
-    summary: text(result.summary, 3000),
-    keyPoints: list(result.keyPoints, 5),
-    transmissionPath: list(result.transmissionPath, 4),
-    checkpoints: list(result.checkpoints, 3),
-    counterSignals: list(result.counterSignals, 2),
-    whyItMatters: text(result.whyItMatters),
-    marketImpact: text(result.marketImpact),
-    koreaImpact: text(result.koreaImpact),
-    limitation: text(result.limitation)
+}
+
+export function compactArticleAnalysis(result = null) {
+  if (!result || typeof result !== "object") return {};
+  const compact = {
+    signal: truncateUtf8(result.signal, 180),
+    tone: truncateUtf8(result.tone, 80),
+    confidence: truncateUtf8(result.confidence, 120),
+    engineLabel: truncateUtf8(result.engineLabel, 300),
+    contentBasis: truncateUtf8(result.contentBasis, 100),
+    contentStatus: truncateUtf8(result.contentStatus, 100),
+    contentBasisReason: truncateUtf8(result.contentBasisReason, 600),
+    summary: truncateUtf8(result.summary, 2_400),
+    keyPoints: compactAnalysisList(result.keyPoints, 4, 450),
+    transmissionPath: compactAnalysisList(result.transmissionPath, 4, 400),
+    checkpoints: compactAnalysisList(result.checkpoints, 3, 350),
+    counterSignals: compactAnalysisList(result.counterSignals, 2, 350),
+    whyItMatters: truncateUtf8(result.whyItMatters, 600),
+    marketImpact: truncateUtf8(result.marketImpact, 600),
+    koreaImpact: truncateUtf8(result.koreaImpact, 600),
+    limitation: truncateUtf8(result.limitation, 600)
   };
+  if (utf8ByteLength(JSON.stringify(compact)) <= SAVED_ANALYSIS_MAX_BYTES) {
+    return compact;
+  }
+  return {
+    signal: compact.signal,
+    tone: compact.tone,
+    confidence: compact.confidence,
+    engineLabel: compact.engineLabel,
+    contentBasis: compact.contentBasis,
+    contentStatus: compact.contentStatus,
+    contentBasisReason: truncateUtf8(compact.contentBasisReason, 350),
+    summary: truncateUtf8(compact.summary, 1_800),
+    keyPoints: compactAnalysisList(compact.keyPoints, 3, 350),
+    transmissionPath: compactAnalysisList(compact.transmissionPath, 3, 300),
+    checkpoints: compactAnalysisList(compact.checkpoints, 2, 300),
+    counterSignals: compactAnalysisList(compact.counterSignals, 1, 300),
+    whyItMatters: truncateUtf8(compact.whyItMatters, 450),
+    marketImpact: truncateUtf8(compact.marketImpact, 450),
+    koreaImpact: truncateUtf8(compact.koreaImpact, 450),
+    limitation: truncateUtf8(compact.limitation, 450)
+  };
+}
+
+export function normalizeSavedArticleDate(value) {
+  if (!value) return null;
+  const timestamp = Date.parse(String(value));
+  return Number.isFinite(timestamp) ? new Date(timestamp).toISOString() : null;
 }
 
 export async function createProfileController({
@@ -780,7 +835,7 @@ export async function createProfileController({
   }
 
   async function removeSavedArticle(articleKey) {
-    if (!state.session?.user || !articleKey || state.dashboard.storageReady === false) {
+    if (!state.session?.user || !articleKey) {
       return { ok: false, reason: "unavailable" };
     }
     const { error } = await state.client.rpc("delete_own_article", {
@@ -791,6 +846,8 @@ export async function createProfileController({
       markDashboardStorageFailure(error);
       return { ok: false, reason: "save-failed" };
     }
+    state.dashboard.storageReady = true;
+    state.dashboard.error = null;
     state.dashboard.savedArticles = state.dashboard.savedArticles.filter(
       (article) => article.article_key !== articleKey
     );
@@ -801,20 +858,23 @@ export async function createProfileController({
   async function toggleSavedArticle(headline = {}, analysis = null) {
     if (!state.session?.user) return { ok: false, reason: "authentication-required" };
     const articleKey = getArticleKey(headline);
-    if (isArticleSaved(articleKey) && !analysis) {
+    if (isArticleSaved(articleKey)) {
       return removeSavedArticle(articleKey);
     }
-    const originalUrl = String(headline.url || headline.original_url || "");
+    const originalUrl = String(headline.url || headline.original_url || "").trim();
     if (!/^https?:\/\//i.test(originalUrl)) {
       return { ok: false, reason: "original-url-required" };
     }
     const analysisSnapshot = compactArticleAnalysis(analysis);
+    const publishedAt = normalizeSavedArticleDate(
+      headline.publishedAt || headline.published_at
+    );
     const { error } = await state.client.rpc("save_own_article", {
       target_article_key: articleKey,
       target_title: String(headline.title || "제목 미확인").slice(0, 500),
       target_source: String(headline.source || "").slice(0, 120),
       target_original_url: originalUrl.slice(0, 2048),
-      target_published_at: headline.publishedAt || headline.published_at || null,
+      target_published_at: publishedAt,
       target_section: String(headline.section || headline.topic || "").slice(0, 80),
       target_analysis: analysisSnapshot
     });
@@ -831,12 +891,13 @@ export async function createProfileController({
       title: String(headline.title || "제목 미확인"),
       source: String(headline.source || ""),
       original_url: originalUrl,
-      published_at: headline.publishedAt || headline.published_at || null,
+      published_at: publishedAt,
       section: String(headline.section || headline.topic || ""),
       analysis: Object.keys(analysisSnapshot).length ? analysisSnapshot : previous?.analysis || {},
       saved_at: new Date().toISOString()
     };
     state.dashboard.storageReady = true;
+    state.dashboard.error = null;
     state.dashboard.savedArticles = [
       row,
       ...state.dashboard.savedArticles.filter((article) => article.article_key !== articleKey)

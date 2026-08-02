@@ -5757,6 +5757,8 @@ function setNewsSaveButtonState(button, headline) {
   const analysisMode = button.dataset.saveMode === "analysis";
   button.dataset.saved = String(saved);
   button.dataset.saveState = saved ? "saved" : "idle";
+  delete button.dataset.error;
+  delete button.dataset.errorAction;
   button.setAttribute("aria-pressed", String(saved));
   const icon = button.querySelector("[data-save-icon]");
   const label = button.querySelector("[data-save-label]");
@@ -5767,14 +5769,36 @@ function setNewsSaveButtonState(button, headline) {
       : button.dataset.unsavedLabel || "저장";
   }
   button.title = saved
-    ? analysisMode ? "저장된 기사 분석 업데이트" : "저장 해제"
-    : analysisMode ? "기사와 현재 분석을 나의 경제에 저장" : "나의 경제에 기사 저장";
+    ? "저장 해제"
+    : analysisMode
+      ? "기사와 현재 분석을 나의 경제에 저장"
+      : "나의 경제에 기사 저장";
+}
+
+function syncNewsSaveButtons(headline) {
+  const newsKey = getNewsSummaryKey(headline);
+  document.querySelectorAll("[data-save-news][data-news-key]").forEach((button) => {
+    if (button.dataset.newsKey === newsKey) setNewsSaveButtonState(button, headline);
+  });
+}
+
+function setNewsSaveError(button, headline, action, message) {
+  setNewsSaveButtonState(button, headline);
+  button.dataset.saveState = "error";
+  button.dataset.error = "true";
+  button.dataset.errorAction = action;
+  button.title = message;
+  const icon = button.querySelector("[data-save-icon]");
+  const label = button.querySelector("[data-save-label]");
+  if (icon) icon.textContent = "!";
+  if (label) label.textContent = action === "remove" ? "해제 실패" : "저장 실패";
 }
 
 async function handleNewsSave(button, headline, analysis = null) {
   if (!button || button.disabled) return;
   button.disabled = true;
   button.dataset.saveState = "saving";
+  delete button.dataset.error;
   button.setAttribute("aria-busy", "true");
   try {
     const controller = profileController || await initProfileOnce();
@@ -5783,32 +5807,38 @@ async function handleNewsSave(button, headline, analysis = null) {
       openUtilityDrawer();
       return;
     }
+    const wasSaved = Boolean(controller.isArticleSaved?.(headline));
     const result = await controller.toggleSavedArticle?.(headline, analysis);
     if (!result?.ok) {
-      setNewsSaveButtonState(button, headline);
-      button.dataset.saveState = "error";
-      button.dataset.error = "true";
-      button.title = result?.reason === "original-url-required"
+      syncNewsSaveButtons(headline);
+      const action = wasSaved ? "remove" : "save";
+      const message = result?.reason === "original-url-required"
         ? "원문 주소가 확인된 기사만 저장할 수 있습니다."
-        : "저장 기능을 사용할 수 없습니다. 개인 대시보드 저장 설정을 확인해 주세요.";
+        : result?.reason === "unavailable"
+          ? "로그인 또는 개인 대시보드 저장 상태를 다시 확인해 주세요."
+          : wasSaved
+            ? "저장 해제를 완료하지 못했습니다. 잠시 뒤 다시 시도해 주세요."
+            : "기사를 저장하지 못했습니다. 잠시 뒤 다시 시도해 주세요.";
+      setNewsSaveError(button, headline, action, message);
       return;
     }
-    delete button.dataset.error;
-    setNewsSaveButtonState(button, headline);
+    syncNewsSaveButtons(headline);
   } catch (error) {
-    setNewsSaveButtonState(button, headline);
-    button.dataset.saveState = "error";
-    button.dataset.error = "true";
-    button.title = "기사를 저장하지 못했습니다.";
+    syncNewsSaveButtons(headline);
+    setNewsSaveError(
+      button,
+      headline,
+      profileController?.isArticleSaved?.(headline) ? "remove" : "save",
+      "저장 서버 연결 중 오류가 발생했습니다. 잠시 뒤 다시 시도해 주세요."
+    );
     console.error("[profile] news save action failed", error);
   } finally {
     button.disabled = false;
     button.removeAttribute("aria-busy");
-    if (button.dataset.saveState === "saving") setNewsSaveButtonState(button, headline);
+    if (button.dataset.saveState === "saving") syncNewsSaveButtons(headline);
     requestAnimationFrame(() => button.blur());
   }
 }
-
 window.addEventListener("keefes:profile-state", () => {
   document.querySelectorAll("[data-save-news][data-news-key]").forEach((button) => {
     const headline = state.snapshot?.headlines?.find(
@@ -6155,7 +6185,7 @@ function renderNewsAnalysisResult(output, result, headline = {}) {
         <strong class="ai-summary-badge" data-ai="${isAiGenerated}">${isAiGenerated ? "AI 요약" : "AI 미사용 · 규칙 분석"}</strong>
       </div>
       <em>${escapeHtml(result.engineLabel || "규칙 기반 상세 분석")} · ${contentBasis} · ${marketBasis} · ${sourceBasis} · 신뢰도 ${escapeHtml(result.confidence || "중간")}</em>
-      <button class="news-analysis-save-button" type="button" data-save-news data-save-mode="analysis" data-unsaved-label="기사와 분석 저장" data-saved-label="분석 업데이트" data-news-key="${escapeHtml(getNewsSummaryKey(headline))}" aria-pressed="false">
+      <button class="news-analysis-save-button" type="button" data-save-news data-save-mode="analysis" data-unsaved-label="기사와 분석 저장" data-saved-label="저장됨" data-news-key="${escapeHtml(getNewsSummaryKey(headline))}" aria-pressed="false">
         <span data-save-icon aria-hidden="true">☆</span>
         <span data-save-label>기사와 분석 저장</span>
       </button>

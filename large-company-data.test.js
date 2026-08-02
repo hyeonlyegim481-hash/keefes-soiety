@@ -7,11 +7,11 @@ import { futureCompanies, futureIndustries } from "./future-industry-data.js";
 
 const addedCompanies = [...largeCompanyDataA, ...largeCompanyDataB];
 
-test("keeps the 42-company global expansion inside the 147-company catalog", () => {
+test("keeps the 42-company global expansion inside the detailed company catalog", () => {
   assert.equal(largeCompanyDataA.length, 21);
   assert.equal(largeCompanyDataB.length, 21);
   assert.equal(addedCompanies.length, 42);
-  assert.equal(futureCompanies.length, 147);
+  assert.equal(futureCompanies.filter((company) => !company.catalogOnly).length, 147);
   assert.equal(new Set(addedCompanies.map((company) => company.id)).size, 42);
 });
 

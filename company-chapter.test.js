@@ -24,14 +24,19 @@ test("company chapter is a lazy-loaded top-level chapter", () => {
   assert.match(app, /loadStylesheetOnce\("company-styles", "\/company\.css"/);
 });
 
-test("company URL allowlist matches all companies and drops invalid IDs", () => {
-  assert.deepEqual(
-    [...URL_STATE_VALUES.company].sort(),
-    futureCompanies.map((company) => company.id).sort()
-  );
+test("company URL state supports detailed IDs and lazy KOSPI catalog IDs", () => {
+  const detailedCompanyIds = futureCompanies
+    .filter((company) => !company.catalogOnly)
+    .map((company) => company.id)
+    .sort();
+  assert.deepEqual([...URL_STATE_VALUES.company].sort(), detailedCompanyIds);
   assert.deepEqual(
     normalizeUrlState("https://example.test/?chapter=companies&company=nvidia&companyView=chart"),
     { chapter: "companies", company: "nvidia", companyView: "chart" }
+  );
+  assert.deepEqual(
+    normalizeUrlState("https://example.test/?chapter=companies&company=kospi-000020&companyView=financials"),
+    { chapter: "companies", company: "kospi-000020", companyView: "financials" }
   );
   assert.deepEqual(
     normalizeUrlState("https://example.test/?chapter=companies&company=made-up&companyView=bad"),
@@ -39,13 +44,14 @@ test("company URL allowlist matches all companies and drops invalid IDs", () => 
   );
   assert.equal(
     buildUrlForState(
-      { chapter: "companies", company: "nvidia", companyView: "financials" },
+      { chapter: "companies", company: "kospi-000020", companyView: "financials" },
       "https://example.test/"
     ).search,
-    "?chapter=companies&company=nvidia&companyView=financials"
+    "?chapter=companies&company=kospi-000020&companyView=financials"
   );
+  assert.match(ui, /company-initial-canonicalize/);
+  assert.match(ui, /company-canonicalize/);
 });
-
 test("company UI separates price collection from official business analysis", () => {
   assert.match(ui, /기업 한눈에 보기/);
   assert.match(ui, /시세가 없을 때 실적 수치로 현재 주가를 추정하지 않습니다/);
@@ -77,6 +83,8 @@ test("company discovery uses a compact industry menu and bounded progressive lis
   assert.match(ui, /selectedCompany && !firstCompanies\.some/);
   assert.doesNotMatch(ui, /company-browser-name[\s\S]{0,300}<em>/);
   assert.match(css, /Company discovery controls v143/);
+  assert.match(css, /KOSPI official catalog v145/);
+  assert.match(css, /\.company-catalog-facts[\s\S]*?repeat\(4,/);
   assert.match(css, /\.company-industry-options[\s\S]*?font-size:\s*9px/);
   assert.match(css, /\.company-browser-item[\s\S]*?min-height:\s*58px/);
 });
@@ -94,4 +102,3 @@ test("company layout supports desktop and narrow mobile screens", () => {
   assert.match(css, /overflow-x:\s*auto/);
   assert.match(css, /company-chart-stage/);
 });
-

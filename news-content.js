@@ -1,4 +1,5 @@
-const ARTICLE_TOTAL_TIMEOUT_MS = 6_000;
+const GOOGLE_NEWS_RESOLVE_TIMEOUT_MS = 6_000;
+const ARTICLE_FETCH_TIMEOUT_MS = 10_000;
 const articleCache = new Map();
 
 export async function enrichHeadlineWithArticle(headline) {
@@ -25,9 +26,21 @@ export async function enrichHeadlineWithArticle(headline) {
   };
 
   try {
-    const signal = AbortSignal.timeout(ARTICLE_TOTAL_TIMEOUT_MS);
-    const articleUrl = await decodeGoogleNewsUrl(base.articleUrl, signal);
+    const articleUrl = await decodeGoogleNewsUrl(
+      base.articleUrl,
+      AbortSignal.timeout(GOOGLE_NEWS_RESOLVE_TIMEOUT_MS)
+    );
     let fallback = { ...base, articleUrl };
+    if (isGoogleNewsUrl(articleUrl)) {
+      return rememberArticleResult(
+        cacheKey,
+        withArticleFailure(
+          fallback,
+          "google-news-url-unresolved",
+          "Google News 중간 주소를 언론사 원문 주소로 변환하지 못했습니다. 잠시 뒤 다시 시도해 주세요."
+        )
+      );
+    }
     if (!isSafePublicUrl(articleUrl)) {
       return rememberArticleResult(
         cacheKey,
@@ -38,11 +51,24 @@ export async function enrichHeadlineWithArticle(headline) {
     const response = await fetch(articleUrl, {
       headers: {
         accept: "text/html,application/xhtml+xml",
+        "accept-language": "ko-KR,ko;q=0.9,en;q=0.7",
         "user-agent": "Mozilla/5.0 (compatible; KeefesSociety/1.0; +https://keefes-society.vercel.app)"
       },
       redirect: "follow",
-      signal
+      signal: AbortSignal.timeout(ARTICLE_FETCH_TIMEOUT_MS)
     });
+    const finalUrl = String(response.url || articleUrl);
+    if (!isSafePublicUrl(finalUrl) || isGoogleNewsUrl(finalUrl)) {
+      return rememberArticleResult(
+        cacheKey,
+        withArticleFailure(
+          fallback,
+          "publisher-redirect-invalid",
+          "언론사 원문으로 이어지는 안전한 주소를 확인하지 못했습니다."
+        )
+      );
+    }
+    fallback = { ...fallback, articleUrl: finalUrl };
     if (!response.ok) {
       return rememberArticleResult(
         cacheKey,
@@ -66,7 +92,7 @@ export async function enrichHeadlineWithArticle(headline) {
       ...fallback,
       ...extractArticleMetadata(html, {
         fallbackPublishedAt: base.articlePublishedAt,
-        fallbackUrl: articleUrl
+        fallbackUrl: finalUrl
       })
     };
     const articleContent = extractArticleContent(html);
@@ -142,7 +168,10 @@ function rememberArticleResult(cacheKey, result) {
   return result;
 }
 
-async function decodeGoogleNewsUrl(sourceUrl, signal = AbortSignal.timeout(ARTICLE_TOTAL_TIMEOUT_MS)) {
+async function decodeGoogleNewsUrl(
+  sourceUrl,
+  signal = AbortSignal.timeout(GOOGLE_NEWS_RESOLVE_TIMEOUT_MS)
+) {
   const url = new URL(sourceUrl);
   const pathParts = url.pathname.split("/").filter(Boolean);
   const articleIndex = pathParts.findIndex((part) => part === "articles" || part === "read");
@@ -154,8 +183,16 @@ async function decodeGoogleNewsUrl(sourceUrl, signal = AbortSignal.timeout(ARTIC
   const oldStyleUrl = decodeLegacyArticleUrl(binary);
   if (oldStyleUrl) return oldStyleUrl;
 
-  const articlePage = await fetch(`https://news.google.com/articles/${articleId}`, {
-    headers: { "user-agent": "Mozilla/5.0" },
+  const articlePageUrl = new URL(sourceUrl);
+  articlePageUrl.searchParams.set("hl", articlePageUrl.searchParams.get("hl") || "ko");
+  articlePageUrl.searchParams.set("gl", articlePageUrl.searchParams.get("gl") || "KR");
+  articlePageUrl.searchParams.set("ceid", articlePageUrl.searchParams.get("ceid") || "KR:ko");
+  const articlePage = await fetch(articlePageUrl, {
+    headers: {
+      accept: "text/html,application/xhtml+xml",
+      "accept-language": "ko-KR,ko;q=0.9,en;q=0.7",
+      "user-agent": "Mozilla/5.0"
+    },
     signal
   });
   if (!articlePage.ok) return sourceUrl;
@@ -177,17 +214,27 @@ async function decodeGoogleNewsUrl(sourceUrl, signal = AbortSignal.timeout(ARTIC
   const body = new URLSearchParams({ "f.req": JSON.stringify([[[...requestPayload]]]) });
   const decodedResponse = await fetch("https://news.google.com/_/DotsSplashUi/data/batchexecute", {
     method: "POST",
-    headers: { "content-type": "application/x-www-form-urlencoded;charset=UTF-8" },
+    headers: {
+      accept: "*/*",
+      "content-type": "application/x-www-form-urlencoded;charset=UTF-8",
+      "user-agent": "Mozilla/5.0"
+    },
     body,
     signal
   });
   if (!decodedResponse.ok) return sourceUrl;
   const responseText = await decodedResponse.text();
-  const payloadLine = responseText.split("\n\n").find((line) => line.trim().startsWith("[["));
+  const payloadLine = responseText
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .find((line) => line.startsWith("[["));
   if (!payloadLine) return sourceUrl;
   const outer = JSON.parse(payloadLine);
   const inner = JSON.parse(outer[0][2]);
-  return typeof inner?.[1] === "string" ? inner[1] : sourceUrl;
+  const decodedUrl = typeof inner?.[1] === "string" ? inner[1] : "";
+  return isSafePublicUrl(decodedUrl) && !isGoogleNewsUrl(decodedUrl)
+    ? decodedUrl
+    : sourceUrl;
 }
 
 function decodeBase64Url(value) {
@@ -209,13 +256,23 @@ function decodeLegacyArticleUrl(bytes) {
 }
 
 function extractArticleContent(html) {
-  const jsonBody = html.match(/"articleBody"\s*:\s*"((?:\\.|[^"\\])*)"/i)?.[1];
-  const jsonText = stripBoilerplatePhrases(cleanPlainText(jsonBody ? decodeJsonString(jsonBody) : ""));
+  const jsonText = readJsonLdObjects(html)
+    .filter(isArticleJsonLdObject)
+    .map((item) => stripBoilerplatePhrases(cleanPlainText(item.articleBody || "")))
+    .filter((text) => text.length >= 120 && !isBoilerplate(text))
+    .sort((left, right) => right.length - left.length)[0]
+    || stripBoilerplatePhrases(cleanPlainText(
+      decodeJsonString(html.match(/"articleBody"\s*:\s*"((?:\\.|[^"\\])*)"/i)?.[1] || "")
+    ));
   const metaDescription = stripBoilerplatePhrases(readMetaDescription(html));
   const paragraphTexts = [...html.matchAll(/<p\b[^>]*>([\s\S]*?)<\/p>/gi)]
     .map((match) => stripBoilerplatePhrases(cleanHtmlText(match[1])))
-    .filter((text) => text.length >= 45 && !isBoilerplate(text));
-  const uniqueParagraphs = [...new Set(paragraphTexts)].slice(0, 30);
+    .filter((text) => text.length >= 24 && !isBoilerplate(text));
+  const semanticTexts = extractSemanticArticleTexts(html);
+  const embeddedTexts = extractEmbeddedArticleTexts(html);
+  const uniqueParagraphs = [
+    ...new Set([...paragraphTexts, ...semanticTexts, ...embeddedTexts])
+  ].slice(0, 60);
   const paragraphContent = uniqueParagraphs.join(" ");
 
   if (jsonText.length >= 240 && !isBoilerplate(jsonText)) {
@@ -228,6 +285,33 @@ function extractArticleContent(html) {
     .filter((text, index, list) => text && !isBoilerplate(text) && list.indexOf(text) === index)
     .join(" ")
     .slice(0, 12_000);
+}
+
+function isArticleJsonLdObject(item) {
+  const types = Array.isArray(item?.["@type"]) ? item["@type"] : [item?.["@type"]];
+  return types.some((type) =>
+    /(?:NewsArticle|Article|ReportageNewsArticle|AnalysisNewsArticle)/i.test(String(type || ""))
+  ) && typeof item?.articleBody === "string";
+}
+
+function extractSemanticArticleTexts(html) {
+  const blocks = [
+    ...html.matchAll(/<article\b[^>]*>([\s\S]*?)<\/article>/gi),
+    ...html.matchAll(/<(?:main|section|div)\b[^>]*(?:id|class)\s*=\s*(["'])[^"']*(?:article[-_ ]?(?:body|content|view)|news[-_ ]?(?:body|content|view)|story[-_ ]?(?:body|content)|newsct_article|dic_area|go_trans)[^"']*\1[^>]*>([\s\S]*?)<\/(?:main|section|div)>/gi)
+  ];
+  return blocks
+    .map((match) => stripBoilerplatePhrases(cleanHtmlText(match[2] || match[1] || "")))
+    .filter((text) => text.length >= 120 && !isBoilerplate(text))
+    .slice(0, 8);
+}
+
+function extractEmbeddedArticleTexts(html) {
+  if (!/"content_elements"\s*:/.test(html)) return [];
+  return [...html.matchAll(/"content"\s*:\s*"((?:\\.|[^"\\])*)"/gi)]
+    .map((match) => stripBoilerplatePhrases(cleanHtmlText(decodeJsonString(match[1]))))
+    .filter((text) => text.length >= 35 && !isBoilerplate(text))
+    .filter((text, index, list) => list.indexOf(text) === index)
+    .slice(0, 60);
 }
 
 function readMetaDescription(html) {
@@ -387,7 +471,14 @@ function hasArticleEvidence(content, title) {
     .filter((word) => word.length >= 2 && !articleKeywordStopWords.has(word))
     .slice(0, 12);
   if (titleKeywords.length === 0) return text.length >= 500 && sentences.length >= 3;
-  return titleKeywords.some((word) => text.includes(word));
+  const compactText = text.replace(/[^0-9A-Za-z가-힣]+/g, "");
+  return titleKeywords.some((word) =>
+    text.includes(word)
+    || (
+      word.length >= 3
+      && compactText.includes(word.replace(/[^0-9A-Za-z가-힣]+/g, ""))
+    )
+  );
 }
 
 function stripBoilerplatePhrases(value) {
@@ -458,6 +549,7 @@ function cleanHtmlText(value) {
     String(value || "")
       .replace(/<script\b[\s\S]*?<\/script>/gi, " ")
       .replace(/<style\b[\s\S]*?<\/style>/gi, " ")
+      .replace(/<(?:br|\/p|\/div|\/li|\/h[1-6])\s*\/?>/gi, " ")
       .replace(/<[^>]+>/g, " ")
   );
 }
@@ -515,6 +607,14 @@ function isSafePublicUrl(value) {
     if (/^(127\.|10\.|0\.|169\.254\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(host)) return false;
     if (host === "::1" || host.startsWith("fc") || host.startsWith("fd") || host.startsWith("fe80:")) return false;
     return true;
+  } catch {
+    return false;
+  }
+}
+
+function isGoogleNewsUrl(value) {
+  try {
+    return new URL(value).hostname.toLowerCase() === "news.google.com";
   } catch {
     return false;
   }

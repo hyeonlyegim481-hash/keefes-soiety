@@ -2,6 +2,7 @@ import { expandedFutureCompanies } from "./future-company-expanded-data.js";
 import { largeCompanyDataA } from "./large-company-data-a.js";
 import { largeCompanyDataB } from "./large-company-data-b.js";
 import { koreanExpandedCompanies } from "./korean-company-expanded-data.js";
+import { kospiCatalogMetadata, kospiCompanyCatalog } from "./kospi-company-catalog.js";
 
 export const futureIndustries = [
   {
@@ -216,7 +217,7 @@ export const futureIndustries = [
   }
 ];
 
-export const futureCompanies = [
+const featuredCompanies = [
   {
     id: "nvidia",
     name: "NVIDIA",
@@ -690,6 +691,16 @@ export const futureCompanies = [
   ...largeCompanyDataB,
   ...koreanExpandedCompanies
 ];
+
+const detailedKoreanTickers = new Set(featuredCompanies
+  .filter((company) => company.country === "한국")
+  .map((company) => String(company.ticker || "").trim().toUpperCase()));
+
+export const futureCompanies = Object.freeze([
+  ...featuredCompanies,
+  ...kospiCompanyCatalog.filter((company) => !detailedKoreanTickers.has(company.ticker))
+]);
+export { kospiCatalogMetadata };
 
 export const futureIndustryMethod = {
   updatedAt: "2026-08-01",

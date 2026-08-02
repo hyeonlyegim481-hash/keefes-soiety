@@ -54,13 +54,13 @@ export function getCompanyProviderSymbol(company = {}, provider = "yahoo") {
   const ticker = compactTicker(company.ticker);
   if (!ticker) return "";
   if (provider === "naver") {
-    return company.country === "한국" && /^\d{6}$/.test(ticker) ? ticker : "";
+    return company.country === "한국" && /^[0-9A-Z]{6}$/.test(ticker) ? ticker : "";
   }
   if (provider === "alpha-vantage" || provider === "twelve-data") {
     return getCompanyProviderSymbol(company, "yahoo");
   }
   if (YAHOO_SYMBOL_OVERRIDES[company.id]) return YAHOO_SYMBOL_OVERRIDES[company.id];
-  if (company.country === "한국" && /^\d{6}$/.test(ticker)) return `${ticker}.KS`;
+  if (company.country === "한국" && /^[0-9A-Z]{6}$/.test(ticker)) return `${ticker}.KS`;
   if (company.country === "일본" && /^\d{4}$/.test(ticker)) return `${ticker}.T`;
   if (company.id === "byd" && ticker.endsWith(".HK")) return ticker;
   return ticker;
@@ -184,4 +184,3 @@ export function describeCompanyProviderPlan(company = {}, environment = {}) {
   });
   return plan;
 }
-

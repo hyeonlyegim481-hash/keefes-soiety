@@ -16,6 +16,7 @@ export const companyIndustryCatalog = Object.freeze([
   { id: "power-utilities", label: "에너지·전력·유틸리티", shortLabel: "에너지·전력", plain: "전기·가스·정유와 전력기기를 생산·공급해 산업과 생활 인프라를 지탱합니다." },
   { id: "security-it", label: "보안·IT 인프라", shortLabel: "보안·IT", plain: "네트워크, 데이터와 업무 시스템의 안전한 연결과 운영을 지원합니다." },
   { id: "quantum-deeptech", label: "양자·딥테크", shortLabel: "양자·딥테크", plain: "양자컴퓨팅과 고난도 원천기술을 상용 장비·서비스로 전환하는 초기 산업입니다." },
+  { id: "diversified-other", label: "지주·서비스·기타", shortLabel: "기타 산업", plain: "지주회사, 전문서비스와 기존 분류 하나로 설명하기 어려운 복합 사업을 별도로 확인합니다." },
   { id: "climate-water", label: "기후·물·환경", shortLabel: "기후·환경", plain: "물, 냉각, 재활용과 기후 적응 인프라로 자원 효율과 회복력을 높입니다." }
 ]);
 
