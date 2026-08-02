@@ -5782,7 +5782,7 @@ function syncNewsSaveButtons(headline) {
   });
 }
 
-function setNewsSaveError(button, headline, action, message) {
+function setNewsSaveError(button, headline, action, message, labelText = "") {
   setNewsSaveButtonState(button, headline);
   button.dataset.saveState = "error";
   button.dataset.error = "true";
@@ -5791,7 +5791,9 @@ function setNewsSaveError(button, headline, action, message) {
   const icon = button.querySelector("[data-save-icon]");
   const label = button.querySelector("[data-save-label]");
   if (icon) icon.textContent = "!";
-  if (label) label.textContent = action === "remove" ? "해제 실패" : "저장 실패";
+  if (label) {
+    label.textContent = labelText || (action === "remove" ? "해제 실패" : "저장 실패");
+  }
 }
 
 async function handleNewsSave(button, headline, analysis = null) {
@@ -5814,12 +5816,20 @@ async function handleNewsSave(button, headline, analysis = null) {
       const action = wasSaved ? "remove" : "save";
       const message = result?.reason === "original-url-required"
         ? "원문 주소가 확인된 기사만 저장할 수 있습니다."
+        : result?.reason === "storage-migration-required"
+          ? "기사 저장 공간 설정이 아직 완료되지 않았습니다. 관리자 SQL 적용 후 새로고침해 주세요."
         : result?.reason === "unavailable"
           ? "로그인 또는 개인 대시보드 저장 상태를 다시 확인해 주세요."
           : wasSaved
             ? "저장 해제를 완료하지 못했습니다. 잠시 뒤 다시 시도해 주세요."
             : "기사를 저장하지 못했습니다. 잠시 뒤 다시 시도해 주세요.";
-      setNewsSaveError(button, headline, action, message);
+      setNewsSaveError(
+        button,
+        headline,
+        action,
+        message,
+        result?.reason === "storage-migration-required" ? "저장 준비 필요" : ""
+      );
       return;
     }
     syncNewsSaveButtons(headline);

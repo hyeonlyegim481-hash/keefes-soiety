@@ -298,3 +298,6 @@ grant execute on function public.replace_own_watchlists(jsonb)
   to authenticated;
 
 commit;
+
+-- Make newly created tables and RPCs visible to PostgREST immediately.
+notify pgrst, 'reload schema';

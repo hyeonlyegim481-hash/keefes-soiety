@@ -113,14 +113,18 @@ function createEmptyDashboardState(status = "idle") {
   };
 }
 
-function isMissingDashboardStorageError(error) {
+export function isMissingDashboardStorageError(error) {
   const code = String(error?.code || "");
-  const message = String(error?.message || "");
+  const message = [error?.message, error?.details, error?.hint]
+    .filter(Boolean)
+    .map(String)
+    .join(" ");
   return code === "42P01"
+    || code === "PGRST202"
     || code === "PGRST205"
     || (
-      /learning_history|saved_articles/i.test(message)
-      && /not find|does not exist|schema cache/i.test(message)
+      /learning_history|saved_articles|save_own_article|delete_own_article|record_own_learning_item/i.test(message)
+      && /not find|does not exist|schema cache|no matches were found/i.test(message)
     );
 }
 
@@ -838,13 +842,21 @@ export async function createProfileController({
     if (!state.session?.user || !articleKey) {
       return { ok: false, reason: "unavailable" };
     }
+    if (state.dashboard.storageReady === false) {
+      return { ok: false, reason: "storage-migration-required" };
+    }
     const { error } = await state.client.rpc("delete_own_article", {
       target_article_key: String(articleKey).slice(0, 160)
     });
     if (error) {
       console.error("[profile] saved article delete failed", error);
       markDashboardStorageFailure(error);
-      return { ok: false, reason: "save-failed" };
+      return {
+        ok: false,
+        reason: isMissingDashboardStorageError(error)
+          ? "storage-migration-required"
+          : "save-failed"
+      };
     }
     state.dashboard.storageReady = true;
     state.dashboard.error = null;
@@ -858,6 +870,9 @@ export async function createProfileController({
   async function toggleSavedArticle(headline = {}, analysis = null) {
     if (!state.session?.user) return { ok: false, reason: "authentication-required" };
     const articleKey = getArticleKey(headline);
+    if (state.dashboard.storageReady === false) {
+      return { ok: false, reason: "storage-migration-required" };
+    }
     if (isArticleSaved(articleKey)) {
       return removeSavedArticle(articleKey);
     }
@@ -881,7 +896,12 @@ export async function createProfileController({
     if (error) {
       console.error("[profile] saved article write failed", error);
       markDashboardStorageFailure(error);
-      return { ok: false, reason: "save-failed" };
+      return {
+        ok: false,
+        reason: isMissingDashboardStorageError(error)
+          ? "storage-migration-required"
+          : "save-failed"
+      };
     }
     const previous = state.dashboard.savedArticles.find(
       (article) => article.article_key === articleKey
