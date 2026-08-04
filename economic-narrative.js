@@ -43,6 +43,97 @@ function hasOfficialMacro(item) {
   return item?.status === "official" && Number.isFinite(Number(item.value));
 }
 
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+function normalizeNewsText(value) {
+  return String(value || "")
+    .toLocaleLowerCase("ko-KR")
+    .replace(/[^0-9a-z가-힣]/g, "");
+}
+
+function getCauseMarketBasis(reason, markets) {
+  const marketIds = new Set(Array.isArray(reason?.marketIds) ? reason.marketIds : []);
+  return (Array.isArray(markets) ? markets : [])
+    .filter((market) => marketIds.has(market.id) && Number.isFinite(Date.parse(market.asOf)))
+    .map((market) => ({
+      timestamp: Date.parse(market.asOf),
+      asOf: market.asOf,
+      tradingDate: market.tradingDate || String(market.asOf).slice(0, 10)
+    }))
+    .sort((left, right) => right.timestamp - left.timestamp)[0] || null;
+}
+
+function connectNewsToCause(reason, headlines, markets, limit = 3) {
+  const terms = Array.isArray(reason?.newsTerms) ? reason.newsTerms.filter(Boolean) : [];
+  const allowedSections = new Set(Array.isArray(reason?.newsSections) ? reason.newsSections : []);
+  const marketBasis = getCauseMarketBasis(reason, markets);
+  const scored = (Array.isArray(headlines) ? headlines : [])
+    .map((headline) => {
+      const normalizedTitle = normalizeNewsText(headline?.title);
+      const matchedTerms = terms.filter((term) => normalizedTitle.includes(normalizeNewsText(term)));
+      const sectionMatch = allowedSections.has(headline?.section);
+      if (!matchedTerms.length || (!sectionMatch && matchedTerms.length < 2)) return null;
+
+      const publishedTimestamp = Date.parse(headline?.publishedAt);
+      let timing = "unknown";
+      let timingLabel = "시각 비교 불가";
+      let timingRank = 0;
+      if (marketBasis && Number.isFinite(publishedTimestamp)) {
+        const marketDateEnd = marketBasis.timestamp + DAY_MS;
+        if (publishedTimestamp > marketDateEnd) {
+          timing = "after";
+          timingLabel = "마감 후 후속 기사 · 원인 증거 아님";
+          timingRank = 1;
+        } else if (publishedTimestamp >= marketBasis.timestamp - (2 * DAY_MS)) {
+          timing = "near";
+          timingLabel = "같은 거래일 전후 기사 · 선후관계 미확인";
+          timingRank = 3;
+        } else {
+          timing = "background";
+          timingLabel = "사전 배경 기사 · 직접 원인 미확인";
+          timingRank = 2;
+        }
+      }
+
+      const sourceCount = Math.max(1, Number(headline?.relatedSourceCount) || 1);
+      const score = (matchedTerms.length * 6)
+        + (sectionMatch ? 3 : 0)
+        + (headline?.importanceLabel === "최우선" ? 2 : headline?.importanceLabel === "주요" ? 1 : 0)
+        + Math.min(2, sourceCount - 1);
+      return {
+        id: headline?.id || headline?.eventKey || headline?.title,
+        title: headline?.title || "제목 확인 불가",
+        source: headline?.source || "출처 확인 중",
+        url: headline?.url || "",
+        publishedAt: headline?.publishedAt || null,
+        importanceLabel: headline?.importanceLabel || "선별",
+        relatedSourceCount: sourceCount,
+        matchedTerms: matchedTerms.slice(0, 3),
+        timing,
+        timingLabel,
+        canSupportCause: timing === "near",
+        score,
+        timingRank,
+        publishedTimestamp: Number.isFinite(publishedTimestamp) ? publishedTimestamp : 0
+      };
+    })
+    .filter(Boolean)
+    .sort((left, right) =>
+      right.timingRank - left.timingRank
+      || right.score - left.score
+      || right.publishedTimestamp - left.publishedTimestamp
+    )
+    .slice(0, limit)
+    .map(({ score, timingRank, publishedTimestamp, ...headline }) => headline);
+
+  return {
+    ...reason,
+    newsBasisAt: marketBasis?.asOf || null,
+    newsBasisLabel: marketBasis?.tradingDate || null,
+    newsEvidence: scored
+  };
+}
+
 function buildUnavailableNarrative(snapshot, missingIds, reason = "market-value") {
   const markets = snapshot?.markets || [];
   const names = {
@@ -85,6 +176,11 @@ function buildUnavailableNarrative(snapshot, missingIds, reason = "market-value"
       label: "자료 연결 상태",
       fact: notice,
       meaning: "자료가 다시 수집된 뒤 분석을 제공합니다.",
+      hypothesis: "필수 가격과 이전 종가가 확인되지 않아 원인 가설을 만들지 않습니다.",
+      path: ["원자료 미수집", "가격 검증 불가", "원인 분석 보류"],
+      koreaImpact: "확인되지 않은 값으로 한국 경제 영향을 추정하지 않습니다.",
+      invalidation: "필수 시장 8개의 현재값·이전 종가·기준시각이 모두 확인될 때 분석을 재개합니다.",
+      checks: ["시장 API 응답", "이전 종가", "기준시각"],
       confidence: "분석 보류",
       tone: "negative"
     }],
@@ -270,27 +366,98 @@ export function buildEconomicNarrative(snapshot) {
 
   const coreReasons = [
     {
-      label: "한국 시장 폭",
+      label: splitKorea ? "대형주·반도체 영향 가능성" : "한국 시장 폭",
       fact: `KOSPI ${signed(kospiChange)}% · KOSDAQ ${signed(kosdaqChange)}%`,
       meaning: splitKorea ? "대형주 상승과 중소형주 급락이 갈라져 시장 전체 회복이 아닙니다." : `두 시장의 차이는 ${signed(koreaGap)}%p입니다.`,
+      hypothesis: splitKorea
+        ? "시가총액 상위 대형주에 매수세가 집중돼 KOSPI가 방어됐을 가능성이 있습니다. 반도체 기여도는 별도 업종 자료가 필요하므로 가능성으로만 봅니다."
+        : broadKoreaWeakness
+          ? "특정 업종보다 한국 주식 전반에서 위험을 줄이는 수급이 우세했을 가능성이 있습니다."
+          : "대형주와 중소형주의 방향 차이가 아직 뚜렷하지 않아 시장 전체 수급을 추가로 확인해야 합니다.",
+      path: splitKorea
+        ? ["시총 상위주 상대강세", "KOSPI 지수 방어", "중소형주 체감경기와 괴리"]
+        : ["국내 주식 수급 변화", "KOSPI·KOSDAQ 등락", "기업 규모별 체감 차이"],
+      koreaImpact: splitKorea
+        ? "지수는 강해 보여도 중소형 성장기업의 자금조달과 투자심리는 약할 수 있습니다. 대형 수출주와 내수·성장주의 체감이 갈라질 수 있습니다."
+        : "두 지수가 같은 방향으로 움직이면 국내 위험선호가 넓게 변하는 신호일 수 있지만, 업종별 차이는 따로 봐야 합니다.",
+      invalidation: splitKorea
+        ? "KOSDAQ 낙폭이 빠르게 줄고 상승 종목 수와 업종 기여도가 넓어지면 대형주 쏠림 해석은 약해집니다."
+        : "KOSPI와 KOSDAQ의 방향 차이가 확대되면 시장 전체 흐름이라는 해석을 바꿔야 합니다.",
+      checks: ["업종별 지수 기여도", "외국인 현물·선물 수급", "상승·하락 종목 수"],
+      caveat: "반도체 중심 여부는 현재 가격만으로 확정할 수 없습니다. 업종 기여도와 외국인 순매수 자료가 추가되면 결론이 바뀔 수 있습니다.",
       confidence: Math.abs(koreaGap) >= 2 ? "근거 강함" : "추가 확인",
-      tone: splitKorea || broadKoreaWeakness ? "negative" : "neutral"
+      tone: splitKorea || broadKoreaWeakness ? "negative" : "neutral",
+      marketIds: ["kospi", "kosdaq"],
+      newsTerms: ["코스피", "KOSPI", "코스닥", "KOSDAQ", "반도체", "대형주", "외국인", "증시", "수급", "숏커버"],
+      newsSections: ["korea"]
     },
     {
-      label: "미국 위험선호",
+      label: "미국 기술주와 위험선호",
       fact: `S&P 500 ${signed(spChange)}% · NASDAQ ${signed(nasdaqChange)}% · VIX ${formatNumber(vix)}`,
       meaning: globalRead,
+      hypothesis: nasdaqChange < spChange - 0.5
+        ? "금리에 민감한 기술·성장주의 부담이 미국 시장 약세를 주도했을 가능성이 있습니다."
+        : vix >= 20
+          ? "특정 업종 조정보다 시장 전반의 위험회피가 강해졌을 가능성이 있습니다."
+          : "미국 시장 신호가 한 방향으로 모이지 않아 단기 포지션 조정일 가능성도 남아 있습니다.",
+      path: ["미국 금리·실적 기대", "NASDAQ·S&P 500 위험선호", "외국인 수급과 한국 성장주"],
+      koreaImpact: "미국 기술주 약세가 이어지면 국내 반도체·인터넷·바이오 등 성장주 평가와 외국인 수급에 부담이 전달될 수 있습니다.",
+      invalidation: "NASDAQ이 S&P 500보다 강해지고 VIX가 낮아지면 기술주 중심 위험회피 가설은 약해집니다.",
+      checks: ["미국 국채금리", "NASDAQ 상대수익률", "VIX 20선", "반도체 지수"],
+      caveat: "같은 날 함께 움직였다는 사실만으로 미국 시장이 한국 시장의 원인이라고 확정할 수 없습니다.",
       confidence: vix >= 20 || Math.abs(usTechGap) >= 0.5 ? "근거 중간" : "추가 확인",
-      tone: spChange < 0 || nasdaqChange < 0 ? "negative" : "positive"
+      tone: spChange < 0 || nasdaqChange < 0 ? "negative" : "positive",
+      marketIds: ["sp500", "nasdaq", "vix"],
+      newsTerms: ["나스닥", "NASDAQ", "S&P", "SP500", "빅테크", "미국 증시", "기술주", "연준", "미 국채", "반도체"],
+      newsSections: ["us", "industry", "fx-bonds"]
     },
     {
-      label: "한국 비용 압력",
-      fact: `원/달러 ${formatNumber(usdkrwValue)}원 · WTI ${formatMarket(wti)} (${signed(wtiChange)}%)`,
-      meaning: costRead,
-      confidence: importedCostPressure ? "근거 강함" : "근거 중간",
-      tone: importedCostPressure || usdkrwValue > 1380 ? "negative" : "neutral"
+      label: "원화 가치와 수입 비용",
+      fact: `원/달러 ${formatNumber(usdkrwValue)}원 · 당일 ${signed(usdkrwChange)}%`,
+      meaning: usdkrwValue > 1380
+        ? `원/달러의 당일 방향과 별개로 ${formatNumber(usdkrwValue)}원이라는 높은 수준은 수입기업과 물가에 부담입니다.`
+        : "환율 수준만으로 급격한 수입비용 충격을 단정하기는 어렵습니다.",
+      hypothesis: usdkrwValue > 1380
+        ? "달러 수요와 원화 약세가 이어져 수입 원가와 외국인 자금 흐름에 부담을 주고 있을 가능성이 있습니다."
+        : "환율이 극단적으로 높은 구간은 아니며 당일 방향이 기업 비용에 실제로 전달되는지 확인해야 합니다.",
+      path: ["달러 수요·원화 가치", "원유·원자재·부품 수입단가", "기업 원가·소비자물가·금리 여력"],
+      koreaImpact: "항공·운송·유통·원재료 수입기업은 비용 부담이 커질 수 있고, 달러 매출이 많은 수출기업은 원화 환산 매출에 일부 도움이 될 수 있습니다.",
+      invalidation: "원/달러가 여러 거래일 하락하고 수입물가와 외국인 순매도가 함께 안정되면 환율 부담 해석은 약해집니다.",
+      checks: ["달러인덱스", "외국인 순매수", "수입물가지수", "환헤지 비용"],
+      caveat: "환율 상승이 모든 수출기업에 유리한 것은 아닙니다. 달러 비용과 해외 생산 비중에 따라 영향이 달라집니다.",
+      confidence: usdkrwValue > 1380 ? "근거 중간" : "추가 확인",
+      tone: usdkrwValue > 1380 ? "negative" : "neutral",
+      marketIds: ["usdkrw"],
+      newsTerms: ["원/달러", "원달러", "환율", "원화", "달러", "외환", "수입물가", "달러인덱스"],
+      newsSections: ["commodities-fx", "fx-bonds", "korea"]
+    },
+    {
+      label: "유가와 에너지 비용",
+      fact: `WTI ${formatMarket(wti)} · 당일 ${signed(wtiChange)}%`,
+      meaning: Math.abs(wtiChange) > 2
+        ? `유가가 하루 ${signed(wtiChange)}% 움직여 운송·화학·항공 비용 경로를 확인해야 합니다.`
+        : "유가의 당일 움직임만으로 광범위한 물가 충격을 단정하기는 어렵습니다.",
+      hypothesis: wtiChange > 2
+        ? "공급 우려나 지정학적 위험이 에너지 가격을 밀어 올려 비용 부담을 키웠을 가능성이 있습니다."
+        : wtiChange < -2
+          ? "수요 둔화 우려 또는 공급 확대 기대가 유가를 낮췄을 가능성이 있습니다."
+          : "유가는 뚜렷한 충격보다 기존 범위 안에서 움직였을 가능성이 큽니다.",
+      path: ["원유 공급·수요 기대", "정유·운송·전력 비용", "기업 마진·소비자물가"],
+      koreaImpact: "에너지 수입 비중이 큰 한국은 유가 상승이 무역수지와 물가에 부담이 될 수 있습니다. 정유사는 제품 가격과 정제마진에 따라 영향이 달라집니다.",
+      invalidation: "유가가 며칠 안에 상승분을 되돌리고 해상운임·정제마진·기대인플레이션이 반응하지 않으면 비용 충격 가설은 약해집니다.",
+      checks: ["브렌트유", "정제마진", "해상운임", "기대인플레이션"],
+      caveat: "하루 유가 변화는 재고 발표나 선물 만기 같은 일시 요인일 수 있어 최소 며칠의 지속성을 확인해야 합니다.",
+      confidence: Math.abs(wtiChange) > 2 ? "근거 중간" : "추가 확인",
+      tone: wtiChange > 2 ? "negative" : wtiChange < -2 ? "positive" : "neutral",
+      marketIds: ["wti"],
+      newsTerms: ["WTI", "유가", "원유", "석유", "OPEC", "에너지", "중동", "호르무즈", "정제마진"],
+      newsSections: ["commodities-fx", "security-disasters", "disasters-climate", "europe-global", "korea"]
     }
   ];
+
+  const connectedCoreReasons = coreReasons.map((reason) =>
+    connectNewsToCause(reason, snapshot?.headlines, markets)
+  );
 
   const components = scoreComponents({ vix, usdkrw: usdkrwValue, kospiChange, spChange, wtiChange });
   const rebuiltRisk = Math.max(12, Math.min(88, components.reduce((sum, item) => sum + item.points, 0)));
@@ -451,7 +618,7 @@ export function buildEconomicNarrative(snapshot) {
     riskComponents: components,
     rebuiltRisk,
     breadth: { rising: risingCount, falling: fallingCount, total: markets.length },
-    coreReasons,
+    coreReasons: connectedCoreReasons,
     nextChecks: [
       splitKorea ? "KOSDAQ 낙폭이 줄고 KOSPI와 같은 방향으로 움직이는지" : "KOSPI와 KOSDAQ의 방향이 같아지는지",
       `VIX ${formatNumber(vix)}가 20 아래에 머무는지`,

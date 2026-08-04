@@ -1882,6 +1882,12 @@ function renderDataProvenance(snapshot) {
   elements.dataProvenance.open = wasOpen;
 }
 
+function getCauseToneLabel(tone) {
+  if (tone === "positive") return "완화·긍정 가능성";
+  if (tone === "negative") return "부담 가능성";
+  return "방향 미확정";
+}
+
 function renderBriefBoard(snapshot, narrative = state.narrative) {
   const { analysis } = snapshot;
   const tone = getRiskTone(analysis);
@@ -1898,18 +1904,35 @@ function renderBriefBoard(snapshot, narrative = state.narrative) {
       <p>${escapeHtml(narrative?.meaning || analysis.pulse)}</p>
     </section>
 
-    <section class="reason-ledger" aria-label="오늘의 흐름을 만든 이유">
+    <section class="reason-ledger" aria-label="왜 이렇게 움직였나">
       <div class="board-heading">
         <div>
-          <p class="section-kicker">숫자에서 결론까지</p>
-          <h3>왜 이렇게 해석하는가</h3>
+          <p class="section-kicker">가격에서 가능한 원인까지</p>
+          <h3>왜 이렇게 움직였나</h3>
         </div>
-        <span>사실 → 의미</span>
+        <span>추정 영향 순서 · 클릭해서 상세 확인</span>
+      </div>
+      <div class="cause-reading-guide">
+        <div class="cause-hypothesis-warning">
+          <strong>원인으로 확인된 사실이 아닙니다</strong>
+          <span>가격의 동시 움직임과 기사 제목·게시 시각을 연결한 규칙 기반 가설입니다. 수급·업종 기여도·기사 원문에 따라 틀릴 수 있습니다.</span>
+        </div>
+        <div class="cause-tone-legend" aria-label="옆선 색상 의미">
+          <span data-tone="negative"><i aria-hidden="true"></i>부담 가능성</span>
+          <span data-tone="positive"><i aria-hidden="true"></i>완화·긍정 가능성</span>
+          <span data-tone="neutral"><i aria-hidden="true"></i>방향 미확정</span>
+        </div>
+        <small>옆선 색은 예상 영향 방향이며, 확률이나 분석 확실도를 뜻하지 않습니다.</small>
       </div>
       <ol class="cause-list">
         ${reasons
           .map(
-            (item, index) => `
+            (item, index) => {
+              const path = Array.isArray(item.path) ? item.path.filter(Boolean) : [];
+              const checks = Array.isArray(item.checks) ? item.checks.filter(Boolean) : [];
+              const newsEvidence = Array.isArray(item.newsEvidence) ? item.newsEvidence : [];
+              const toneLabel = getCauseToneLabel(item.tone);
+              return `
               <li data-tone="${item.tone || "neutral"}">
                 <span class="cause-number">${String(index + 1).padStart(2, "0")}</span>
                 <div class="cause-fact">
@@ -1921,13 +1944,77 @@ function renderBriefBoard(snapshot, narrative = state.narrative) {
                 <div class="cause-meaning">
                   <em>쉽게 말하면</em>
                   <p>${escapeHtml(item.meaning)}</p>
-                  <small>${escapeHtml(item.confidence)}</small>
+                  <small>${escapeHtml(toneLabel)} · ${escapeHtml(item.confidence)} · 원인 확정 아님</small>
                 </div>
+                <details class="cause-detail">
+                  <summary>
+                    <span>가설 · 원인 확정 아님</span>
+                    <strong>${escapeHtml(item.hypothesis || "추가 자료를 확인해야 원인 가설을 만들 수 있습니다.")}</strong>
+                    <em>자세히 보기</em>
+                  </summary>
+                  <div class="cause-detail-grid">
+                    <section class="cause-path-block">
+                      <span>전달 경로</span>
+                      <ol class="cause-path">
+                        ${path.map((step) => `<li>${escapeHtml(step)}</li>`).join("") || "<li>전달 경로 자료 부족</li>"}
+                      </ol>
+                    </section>
+                    <section>
+                      <span>한국에는 어떤 영향?</span>
+                      <p>${escapeHtml(item.koreaImpact || "한국 경제 영향 자료를 추가로 확인해야 합니다.")}</p>
+                    </section>
+                    <section data-kind="counter">
+                      <span>이 설명이 틀렸다고 볼 조건</span>
+                      <p>${escapeHtml(item.invalidation || "반대 방향의 가격과 수급이 확인되면 해석을 다시 계산합니다.")}</p>
+                    </section>
+                  </div>
+                  <section class="cause-news-evidence" aria-label="관련 뉴스 정황">
+                    <header>
+                      <div>
+                        <span>뉴스로 추가 확인</span>
+                        <strong>${newsEvidence.length ? `${newsEvidence.length}건의 연관 후보` : "연결 가능한 기사 없음"}</strong>
+                      </div>
+                      <em>${item.newsBasisLabel ? `${escapeHtml(item.newsBasisLabel)} 거래일 기준` : "시장 기준시각 확인 필요"}</em>
+                    </header>
+                    ${newsEvidence.length
+                      ? `<ul class="cause-news-list">
+                          ${newsEvidence.map((headline) => {
+                            const newsUrl = safeNewsUrl(headline.url);
+                            const sourceCountLabel = Number(headline.relatedSourceCount) > 1
+                              ? `교차보도 ${Number(headline.relatedSourceCount)}곳`
+                              : "단일 출처";
+                            return `<li data-timing="${escapeHtml(headline.timing || "unknown")}">
+                              <div class="cause-news-labels">
+                                <span>${escapeHtml(headline.timingLabel || "시각 비교 불가")}</span>
+                                <em>${escapeHtml(sourceCountLabel)}</em>
+                              </div>
+                              <a href="${escapeHtml(newsUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(headline.title)}</a>
+                              <p>${escapeHtml(headline.source)} · ${escapeHtml(formatExactDate(headline.publishedAt, "게시일 미확인"))} · 연결 단어 ${escapeHtml((headline.matchedTerms || []).join("·") || "분류 정보")}</p>
+                            </li>`;
+                          }).join("")}
+                        </ul>`
+                      : `<div class="cause-news-empty">
+                          <strong>현재 수집된 기사에서 직접 연결할 제목을 찾지 못했습니다.</strong>
+                          <p>기사 수가 없다는 뜻이 아니라, 이 원인 가설과 연결할 수 있는 단어·분야·게시 시각을 확인하지 못했다는 뜻입니다.</p>
+                        </div>`}
+                    <p class="cause-news-warning">기사 제목이 원인을 입증하지 않습니다. 특히 시장 마감 뒤 나온 기사는 후속 해설일 뿐, 앞선 가격 변동의 원인으로 사용하지 않습니다.</p>
+                  </section>
+                  <footer class="cause-checks">
+                    <strong>다음 확인</strong>
+                    ${checks.map((check) => `<span>${escapeHtml(check)}</span>`).join("") || "<span>추가 원자료</span>"}
+                  </footer>
+                  <p class="cause-caveat"><strong>틀릴 수 있음</strong>${escapeHtml(item.caveat || "현재 가격에 기반한 규칙형 가설이며 실제 원인과 다를 수 있습니다.")}</p>
+                </details>
               </li>
-            `
+            `;
+            }
           )
           .join("")}
       </ol>
+      <p class="reason-method-note">
+        <strong>해석 주의</strong>
+        가격·기간 흐름·다른 시장의 움직임과 뉴스 제목을 함께 본 가설입니다. 뉴스는 원인 증명이 아니며, 업종 기여도·수급·기사 원문·정확한 발생 시점이 추가되면 순서와 결론이 바뀔 수 있습니다.
+      </p>
     </section>
 
     <section class="brief-two-up">

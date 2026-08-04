@@ -50,16 +50,76 @@ test("explains a KOSPI and KOSDAQ split as concentration, not broad recovery", (
   assert.match(narrative.title, /대형주 쏠림/);
   assert.equal(narrative.metrics.koreaGap, 4);
   assert.match(narrative.coreReasons[0].meaning, /시장 전체 회복이 아닙니다/);
+  assert.equal(narrative.coreReasons.length, 4);
+  for (const reason of narrative.coreReasons) {
+    assert.ok(reason.hypothesis.length > 20);
+    assert.ok(reason.path.length >= 3);
+    assert.ok(reason.koreaImpact.length > 20);
+    assert.ok(reason.invalidation.length > 20);
+    assert.ok(reason.checks.length >= 3);
+    assert.ok(reason.marketIds.length >= 1);
+    assert.ok(reason.newsTerms.length >= 5);
+  }
 });
 
 test("rebuilds the disclosed risk score from the same components", () => {
   const narrative = buildEconomicNarrative(snapshot);
 
   assert.equal(narrative.rebuiltRisk, 64);
+  assert.ok(narrative.coreReasons.every((reason) => Array.isArray(reason.newsEvidence)));
   assert.deepEqual(
     narrative.riskComponents.map((item) => item.points),
     [42, 3, 14, 0, 0, 5]
   );
+});
+
+test("keeps post-close news as context instead of treating it as a cause", () => {
+  const timedSnapshot = {
+    ...snapshot,
+    markets: snapshot.markets.map((item) => ({
+      ...item,
+      asOf: "2026-07-31T00:00:00Z",
+      tradingDate: "2026-07-31"
+    })),
+    headlines: [
+      {
+        id: "near",
+        title: "코스피 반도체 대형주 수급 변화",
+        source: "테스트경제",
+        section: "korea",
+        publishedAt: "2026-07-31T04:00:00Z",
+        importanceLabel: "주요",
+        relatedSourceCount: 2
+      },
+      {
+        id: "after",
+        title: "코스피 반도체 상승을 돌아본 후속 분석",
+        source: "테스트뉴스",
+        section: "korea",
+        publishedAt: "2026-08-02T08:00:00Z",
+        importanceLabel: "최우선",
+        relatedSourceCount: 1
+      },
+      {
+        id: "unrelated",
+        title: "주말 문화 행사 안내",
+        source: "테스트일보",
+        section: "korea",
+        publishedAt: "2026-07-31T05:00:00Z"
+      }
+    ]
+  };
+
+  const narrative = buildEconomicNarrative(timedSnapshot);
+  const koreaReason = narrative.coreReasons[0];
+
+  assert.equal(koreaReason.newsBasisLabel, "2026-07-31");
+  assert.deepEqual(koreaReason.newsEvidence.map((item) => item.id), ["near", "after"]);
+  assert.equal(koreaReason.newsEvidence[0].timing, "near");
+  assert.equal(koreaReason.newsEvidence[0].canSupportCause, true);
+  assert.equal(koreaReason.newsEvidence[1].timing, "after");
+  assert.equal(koreaReason.newsEvidence[1].canSupportCause, false);
+  assert.match(koreaReason.newsEvidence[1].timingLabel, /원인 증거 아님/);
 });
 
 test("separates the USDKRW daily direction from its absolute level", () => {
