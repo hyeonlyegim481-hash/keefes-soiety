@@ -134,6 +134,55 @@ test("separates the USDKRW daily direction from its absolute level", () => {
   assert.equal(read.checks.length, 3);
 });
 
+test("core narrative reuses multi-horizon statistics and disclosed confidence", () => {
+  const statisticalMarkets = Object.fromEntries(snapshot.markets.map((item) => [
+    item.id,
+    {
+      id: item.id,
+      name: item.name,
+      horizons: {
+        "1d": { label: "1일", status: "available", value: item.changePercent },
+        "5d": { label: "5일", status: "available", value: item.changePercent * 2 },
+        "20d": { label: "20일", status: "available", value: item.changePercent * 3 },
+        "3m": { label: "3개월", status: "insufficient", value: null },
+        "1y": { label: "1년", status: "insufficient", value: null }
+      },
+      assessment: {
+        label: item.changePercent > 0 ? "상승 우위" : "하락 우위",
+        persistenceRate: 66.7,
+        position: { label: "확보 구간 중간" }
+      },
+      analogs: { status: "insufficient", matches: [] }
+    }
+  ]));
+  const enriched = {
+    ...snapshot,
+    analysis: {
+      statisticalAnalysis: {
+        methodologyVersion: "2.0",
+        currentRegime: "확정 전: 금융불안 (2/3)",
+        confidence: { score: 68, label: "보통", components: [] },
+        dataQuality: { score: 82, label: "양호", components: [] },
+        directionAgreement: {
+          rate: 71.4,
+          dominant: "위험 확대",
+          knownSignalCount: 7,
+          totalEligibleCount: 7
+        },
+        markets: statisticalMarkets,
+        drivers: { adverse: [], favorable: [], counter: [] },
+        limitations: ["20일 이후 자료는 일부 시장만 확인"]
+      }
+    }
+  };
+  const narrative = buildEconomicNarrative(enriched);
+  assert.equal(narrative.statisticalSummary.available, true);
+  assert.equal(narrative.statisticalSummary.currentRegime, "확정 전: 금융불안 (2/3)");
+  assert.equal(narrative.statisticalSummary.confidence.score, 68);
+  assert.match(narrative.coreReasons[0].fact, /20일/);
+  assert.match(narrative.coreReasons[0].meaning, /기간 흐름/);
+});
+
 test("does not invent missing market values", () => {
   const partial = {
     ...snapshot,

@@ -308,7 +308,7 @@
   background: #f5f7fa;
 }
 
-.deep-hypothesis-card[data-kind="invalidate"] {
+.deep-hypothesis-card[data-kind="cross"] {
   background: #fff8ee;
 }
 
@@ -316,7 +316,7 @@
   color: var(--deep-blue);
 }
 
-.deep-hypothesis-card[data-kind="invalidate"] > span {
+.deep-hypothesis-card[data-kind="cross"] > span {
   color: var(--deep-amber);
 }
 
@@ -333,6 +333,171 @@
   font-size: 0.75rem;
   line-height: 1.55;
   word-break: keep-all;
+}
+
+.deep-hypothesis-card footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--deep-line);
+}
+
+.deep-hypothesis-card footer b,
+.deep-hypothesis-card footer em {
+  color: var(--deep-muted);
+  font-size: 0.64rem;
+  font-style: normal;
+}
+
+.deep-invalidation-strip {
+  display: grid;
+  grid-template-columns: minmax(130px, 190px) minmax(0, 1fr);
+  gap: 16px;
+  padding: 14px 20px;
+  border-top: 1px solid var(--deep-line);
+  background: #fff9f0;
+}
+
+.deep-invalidation-strip > strong {
+  color: var(--deep-amber);
+  font-size: 0.73rem;
+}
+
+.deep-invalidation-strip ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px 18px;
+  margin: 0;
+  padding-left: 17px;
+}
+
+.deep-invalidation-strip li {
+  color: #536169;
+  font-size: 0.7rem;
+  line-height: 1.5;
+}
+
+.historical-pattern-panel {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #d7e1de;
+}
+
+.historical-pattern-panel > header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.historical-pattern-panel > header div {
+  display: grid;
+  gap: 3px;
+}
+
+.historical-pattern-panel > header span,
+.historical-pattern-panel > header em {
+  color: #60716c;
+  font-size: 0.66rem;
+  font-style: normal;
+}
+
+.historical-pattern-panel > header strong {
+  color: #1d302b;
+  font-size: 0.82rem;
+}
+
+.historical-pattern-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.historical-pattern-grid article {
+  display: grid;
+  gap: 5px;
+  padding: 10px;
+  border: 1px solid #d7e1de;
+  background: #ffffff;
+}
+
+.historical-pattern-grid span,
+.historical-pattern-grid p,
+.historical-pattern-grid em,
+.historical-pattern-empty,
+.historical-pattern-warning {
+  margin: 0;
+  color: #60706b;
+  font-size: 0.66rem;
+  font-style: normal;
+  line-height: 1.45;
+}
+
+.historical-pattern-grid strong {
+  color: #17342d;
+  font-size: 0.8rem;
+}
+
+.historical-pattern-empty {
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px dashed #cad6d2;
+  background: #ffffff;
+}
+
+.historical-pattern-warning {
+  margin-top: 8px;
+  color: #725a36;
+}
+
+.deep-stat-score-method {
+  margin-top: 12px;
+  border-top: 1px solid #d7e1de;
+}
+
+.deep-stat-score-method > summary {
+  padding-top: 11px;
+  color: #40544e;
+  cursor: pointer;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.deep-stat-score-method > div {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  padding-top: 10px;
+}
+
+.deep-stat-score-method section {
+  padding: 10px;
+  border: 1px solid #d7e1de;
+  background: #ffffff;
+}
+
+.deep-stat-score-method section > strong {
+  color: #1d302b;
+  font-size: 0.72rem;
+}
+
+.deep-stat-score-method p {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 8px;
+  margin: 7px 0 0;
+  color: #52645e;
+  font-size: 0.65rem;
+}
+
+.deep-stat-score-method p em {
+  grid-column: 1 / -1;
+  color: #74827e;
+  font-style: normal;
 }
 
 .deep-hypothesis-card p {
@@ -710,6 +875,13 @@
     grid-template-columns: 1fr;
   }
 
+  .deep-invalidation-strip,
+  .deep-invalidation-strip ul,
+  .historical-pattern-grid,
+  .deep-stat-score-method > div {
+    grid-template-columns: 1fr;
+  }
+
   .deep-main-thesis,
   .deep-hypothesis-card,
   .deep-impact-card {
@@ -753,6 +925,11 @@
 
   .deep-main-thesis {
     padding: 18px 16px;
+  }
+
+  .historical-pattern-panel > header {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .deep-main-thesis h4 {

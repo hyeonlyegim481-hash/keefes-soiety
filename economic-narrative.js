@@ -43,6 +43,91 @@ function hasOfficialMacro(item) {
   return item?.status === "official" && Number.isFinite(Number(item.value));
 }
 
+const STAT_MARKET_LABELS = Object.freeze({
+  kospi: "KOSPI",
+  kosdaq: "KOSDAQ",
+  usdkrw: "원/달러",
+  sp500: "S&P 500",
+  nasdaq: "NASDAQ",
+  vix: "VIX",
+  wti: "WTI",
+  gold: "금"
+});
+
+function formatHorizonValue(horizon) {
+  if (horizon?.status !== "available" || !isFiniteInput(horizon?.value)) return null;
+  return `${horizon.label} ${signed(horizon.value)}%`;
+}
+
+function buildStatisticalSummary(statisticalAnalysis) {
+  if (!statisticalAnalysis || !Object.keys(statisticalAnalysis).length) {
+    return {
+      available: false,
+      currentRegime: "판단 자료 부족",
+      markets: [],
+      limitations: ["공통 통계 분석 결과가 연결되지 않았습니다."]
+    };
+  }
+  const preferredIds = ["kospi", "kosdaq", "usdkrw", "nasdaq", "vix", "wti"];
+  const markets = preferredIds
+    .map((id) => {
+      const statistics = statisticalAnalysis?.markets?.[id];
+      if (!statistics) return null;
+      const horizons = ["1d", "5d", "20d", "3m", "1y"]
+        .map((horizonId) => formatHorizonValue(statistics.horizons?.[horizonId]))
+        .filter(Boolean);
+      return {
+        id,
+        label: STAT_MARKET_LABELS[id] || statistics.name || id,
+        trend: statistics.assessment?.label || "추세 판단 자료 부족",
+        persistenceRate: isFiniteInput(statistics.assessment?.persistenceRate)
+          ? Number(statistics.assessment.persistenceRate)
+          : null,
+        position: statistics.assessment?.position?.label || "장기 위치 판단 자료 부족",
+        horizons,
+        analogs: statistics.analogs?.status === "available"
+          ? statistics.analogs.matches || []
+          : []
+      };
+    })
+    .filter(Boolean);
+  return {
+    available: markets.some((market) => market.horizons.length),
+    methodologyVersion: statisticalAnalysis.methodologyVersion || "확인 필요",
+    currentRegime: statisticalAnalysis.currentRegime || "판단 자료 부족",
+    confidence: statisticalAnalysis.confidence || { score: null, label: "자료 부족", components: [] },
+    dataQuality: statisticalAnalysis.dataQuality || { score: null, label: "자료 부족", components: [] },
+    agreement: statisticalAnalysis.directionAgreement || { rate: null, dominant: "판단 자료 부족" },
+    drivers: statisticalAnalysis.drivers || { adverse: [], favorable: [], counter: [] },
+    markets,
+    limitations: Array.isArray(statisticalAnalysis.limitations)
+      ? statisticalAnalysis.limitations
+      : []
+  };
+}
+
+function marketHorizonFact(statisticalSummary, ids, fallback) {
+  if (!statisticalSummary?.available) return fallback;
+  const parts = ids.map((id) => {
+    const market = statisticalSummary.markets.find((item) => item.id === id);
+    if (!market) return null;
+    const short = market.horizons.find((item) => item.startsWith("1일 "));
+    const medium = market.horizons.find((item) => item.startsWith("20일 "))
+      || market.horizons.find((item) => item.startsWith("5일 "));
+    const horizons = [short, medium].filter(Boolean).join(" · ");
+    return horizons ? `${market.label} ${horizons}` : null;
+  }).filter(Boolean);
+  return parts.length ? parts.join(" / ") : fallback;
+}
+
+function marketTrendNote(statisticalSummary, ids) {
+  const parts = ids.map((id) => {
+    const market = statisticalSummary?.markets?.find((item) => item.id === id);
+    return market ? `${market.label} ${market.trend}` : null;
+  }).filter(Boolean);
+  return parts.length ? parts.join(" · ") : null;
+}
+
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 function normalizeNewsText(value) {
@@ -200,7 +285,8 @@ function buildUnavailableNarrative(snapshot, missingIds, reason = "market-value"
     inferences: [],
     tensions: [],
     scenarios: [],
-    limitations: [notice, "자료가 복구되기 전에는 가격 간 관계와 위험 점수를 계산하지 않습니다."]
+    limitations: [notice, "자료가 복구되기 전에는 가격 간 관계와 위험 점수를 계산하지 않습니다."],
+    statisticalSummary: buildStatisticalSummary(snapshot?.analysis?.statisticalAnalysis)
   };
 }
 
@@ -268,6 +354,7 @@ export function buildEconomicNarrative(snapshot) {
   const markets = snapshot?.markets || [];
   const macro = snapshot?.macro || [];
   const analysis = snapshot?.analysis || {};
+  const statisticalSummary = buildStatisticalSummary(analysis?.statisticalAnalysis);
   const byId = Object.fromEntries(markets.map((market) => [market.id, market]));
   const findMacro = (pattern) => macro.find((item) => pattern.test(item.label || ""));
 
@@ -367,8 +454,8 @@ export function buildEconomicNarrative(snapshot) {
   const coreReasons = [
     {
       label: splitKorea ? "대형주·반도체 영향 가능성" : "한국 시장 폭",
-      fact: `KOSPI ${signed(kospiChange)}% · KOSDAQ ${signed(kosdaqChange)}%`,
-      meaning: splitKorea ? "대형주 상승과 중소형주 급락이 갈라져 시장 전체 회복이 아닙니다." : `두 시장의 차이는 ${signed(koreaGap)}%p입니다.`,
+      fact: marketHorizonFact(statisticalSummary, ["kospi", "kosdaq"], `KOSPI ${signed(kospiChange)}% · KOSDAQ ${signed(kosdaqChange)}%`),
+      meaning: `${splitKorea ? "대형주 상승과 중소형주 급락이 갈라져 시장 전체 회복이 아닙니다." : `두 시장의 차이는 ${signed(koreaGap)}%p입니다.`}${marketTrendNote(statisticalSummary, ["kospi", "kosdaq"]) ? ` 기간 흐름은 ${marketTrendNote(statisticalSummary, ["kospi", "kosdaq"])}입니다.` : ""}`,
       hypothesis: splitKorea
         ? "시가총액 상위 대형주에 매수세가 집중돼 KOSPI가 방어됐을 가능성이 있습니다. 반도체 기여도는 별도 업종 자료가 필요하므로 가능성으로만 봅니다."
         : broadKoreaWeakness
@@ -393,8 +480,8 @@ export function buildEconomicNarrative(snapshot) {
     },
     {
       label: "미국 기술주와 위험선호",
-      fact: `S&P 500 ${signed(spChange)}% · NASDAQ ${signed(nasdaqChange)}% · VIX ${formatNumber(vix)}`,
-      meaning: globalRead,
+      fact: `${marketHorizonFact(statisticalSummary, ["sp500", "nasdaq"], `S&P 500 ${signed(spChange)}% · NASDAQ ${signed(nasdaqChange)}%`)} · VIX ${formatNumber(vix)}`,
+      meaning: `${globalRead}${marketTrendNote(statisticalSummary, ["sp500", "nasdaq"]) ? ` 기간 흐름은 ${marketTrendNote(statisticalSummary, ["sp500", "nasdaq"])}입니다.` : ""}`,
       hypothesis: nasdaqChange < spChange - 0.5
         ? "금리에 민감한 기술·성장주의 부담이 미국 시장 약세를 주도했을 가능성이 있습니다."
         : vix >= 20
@@ -413,10 +500,10 @@ export function buildEconomicNarrative(snapshot) {
     },
     {
       label: "원화 가치와 수입 비용",
-      fact: `원/달러 ${formatNumber(usdkrwValue)}원 · 당일 ${signed(usdkrwChange)}%`,
-      meaning: usdkrwValue > 1380
+      fact: `${formatNumber(usdkrwValue)}원 · ${marketHorizonFact(statisticalSummary, ["usdkrw"], `당일 ${signed(usdkrwChange)}%`)}`,
+      meaning: `${usdkrwValue > 1380
         ? `원/달러의 당일 방향과 별개로 ${formatNumber(usdkrwValue)}원이라는 높은 수준은 수입기업과 물가에 부담입니다.`
-        : "환율 수준만으로 급격한 수입비용 충격을 단정하기는 어렵습니다.",
+        : "환율 수준만으로 급격한 수입비용 충격을 단정하기는 어렵습니다."}${marketTrendNote(statisticalSummary, ["usdkrw"]) ? ` ${marketTrendNote(statisticalSummary, ["usdkrw"])}입니다.` : ""}`,
       hypothesis: usdkrwValue > 1380
         ? "달러 수요와 원화 약세가 이어져 수입 원가와 외국인 자금 흐름에 부담을 주고 있을 가능성이 있습니다."
         : "환율이 극단적으로 높은 구간은 아니며 당일 방향이 기업 비용에 실제로 전달되는지 확인해야 합니다.",
@@ -433,10 +520,10 @@ export function buildEconomicNarrative(snapshot) {
     },
     {
       label: "유가와 에너지 비용",
-      fact: `WTI ${formatMarket(wti)} · 당일 ${signed(wtiChange)}%`,
-      meaning: Math.abs(wtiChange) > 2
+      fact: `${formatMarket(wti)} · ${marketHorizonFact(statisticalSummary, ["wti"], `당일 ${signed(wtiChange)}%`)}`,
+      meaning: `${Math.abs(wtiChange) > 2
         ? `유가가 하루 ${signed(wtiChange)}% 움직여 운송·화학·항공 비용 경로를 확인해야 합니다.`
-        : "유가의 당일 움직임만으로 광범위한 물가 충격을 단정하기는 어렵습니다.",
+        : "유가의 당일 움직임만으로 광범위한 물가 충격을 단정하기는 어렵습니다."}${marketTrendNote(statisticalSummary, ["wti"]) ? ` ${marketTrendNote(statisticalSummary, ["wti"])}입니다.` : ""}`,
       hypothesis: wtiChange > 2
         ? "공급 우려나 지정학적 위험이 에너지 가격을 밀어 올려 비용 부담을 키웠을 가능성이 있습니다."
         : wtiChange < -2
@@ -648,6 +735,7 @@ export function buildEconomicNarrative(snapshot) {
     inferences,
     tensions,
     scenarios,
+    statisticalSummary,
     limitations: [
       "시장가격은 실시간 또는 최근 마감값이지만 한국 공표지표는 기준월과 발표 주기가 서로 다릅니다.",
       "가격의 동시 움직임은 원인과 결과를 확정하지 않습니다. 가능한 전파 경로를 보여주는 해석입니다.",

@@ -352,6 +352,66 @@ function marketNames(ids, markets) {
   return (ids || []).map((id) => byId[id]?.name || id);
 }
 
+function buildCrossMarketClues(statisticalAnalysis, selectedId) {
+  const drivers = [
+    ...(statisticalAnalysis?.drivers?.adverse || []),
+    ...(statisticalAnalysis?.drivers?.favorable || [])
+  ];
+  const unique = new Map();
+  for (const driver of drivers) {
+    if (!driver?.id || driver.id === selectedId || unique.has(driver.id)) continue;
+    unique.set(driver.id, driver);
+  }
+  return [...unique.values()]
+    .sort((left, right) => Number(right.severity || 0) - Number(left.severity || 0))
+    .slice(0, 3)
+    .map((driver) => ({
+      id: driver.id,
+      label: driver.label || driver.id,
+      state: driver.riskDirection || "neutral",
+      role: driver.riskDirection === "adverse"
+        ? "위험 확대 단서"
+        : driver.riskDirection === "favorable"
+          ? "위험 완화 단서"
+          : "방향 미확정 단서",
+      fact: `1일 ${signedPercent(driver.change1d)}${finite(driver.mediumChange) ? ` · ${driver.mediumLabel || "중기"} ${signedPercent(driver.mediumChange)}` : ""}`,
+      detail: driver.transmission || "선택 시장과 함께 움직이는지 추가 확인합니다.",
+      severity: finite(driver.severity) ? Number(driver.severity) : null,
+      aligned: driver.aligned,
+      caveat: driver.caveat || "동시 움직임만으로 원인을 확정할 수 없습니다."
+    }));
+}
+
+function buildCauseCandidates({ hypothesis, trend, clues, agreement, confidenceLabel }) {
+  const firstClue = clues[0];
+  return [
+    {
+      kind: "primary",
+      label: "01 · 주요 가설",
+      title: hypothesis[0],
+      detail: trend.detail,
+      basis: trend.value,
+      confidence: confidenceLabel
+    },
+    {
+      kind: "cross",
+      label: "02 · 교차시장 단서",
+      title: firstClue ? `${firstClue.label}의 동시 움직임을 함께 확인` : "교차 시장의 방향이 원인 가설을 충분히 확인하지 못함",
+      detail: firstClue ? `${firstClue.fact} · ${firstClue.detail}` : `${agreement.dominant || "혼조"} · 추가 교차 자료가 필요합니다.`,
+      basis: firstClue ? firstClue.role : "시장 신호 일치",
+      confidence: firstClue ? "보조 근거" : "자료 부족"
+    },
+    {
+      kind: "alternative",
+      label: "03 · 대안 가설",
+      title: hypothesis[1],
+      detail: "업종 기여도·수급·뉴스 발생 시점이 추가되면 주요 가설보다 이 설명이 더 적절할 수 있습니다.",
+      basis: "반대 설명을 의도적으로 유지",
+      confidence: "추가 확인"
+    }
+  ];
+}
+
 function formatTimestamp(value, timezone = "Asia/Seoul") {
   const timestamp = Date.parse(String(value || ""));
   if (!Number.isFinite(timestamp)) return null;
@@ -396,7 +456,12 @@ export function buildMarketDeepModel({
       impactChannels: [],
       counterSignals: [],
       invalidation: [],
-      scenarios: []
+      scenarios: [],
+      causeCandidates: [],
+      crossMarketClues: [],
+      historicalAnalogs: { status: "insufficient", reason: "선택 시장 자료 없음", matches: [] },
+      confidenceComponents: [],
+      dataQualityComponents: []
     };
   }
 
@@ -415,8 +480,16 @@ export function buildMarketDeepModel({
     read.caution || "한 시장만으로 원인을 확정하지 않습니다."
   ];
   const selectedStatistics = statisticalAnalysis?.markets?.[selected.id] || null;
-  const trend = buildTrendSignal(selected, selectedStatistics);
+  const baseTrend = buildTrendSignal(selected, selectedStatistics);
+  const assessment = selectedStatistics?.assessment || null;
+  const trend = assessment
+    ? {
+        ...baseTrend,
+        detail: `${baseTrend.detail} 다기간 종합은 ${assessment.label || "판단 자료 부족"}${assessment.position?.label ? `, 현재 위치는 ${assessment.position.label}` : ""}입니다.`
+      }
+    : baseTrend;
   const agreement = statisticalAnalysis?.directionAgreement || {};
+  const crossMarketClues = buildCrossMarketClues(statisticalAnalysis, selected.id);
   const agreeingNames = marketNames(agreement.agreeingSignals, markets);
   const counterNames = marketNames(agreement.counterSignals, markets);
   const agreementValue = finite(agreement.rate)
@@ -442,6 +515,41 @@ export function buildMarketDeepModel({
       : direction === "up"
         ? "상승"
         : "보합";
+  const confidenceLabel = statisticalAnalysis?.confidence?.label || "자료 부족";
+  const causeCandidates = changeAvailable
+    ? buildCauseCandidates({
+        hypothesis,
+        trend,
+        clues: crossMarketClues,
+        agreement,
+        confidenceLabel
+      })
+    : [
+        {
+          kind: "primary",
+          label: "01 · 원인 판단 보류",
+          title: "이전 종가가 없어 상승·하락 방향부터 확정할 수 없음",
+          detail: "방향 기준이 없는 상태에서는 가격 원인을 만들지 않습니다.",
+          basis: "등락률 계산 불가",
+          confidence: "판단 보류"
+        },
+        {
+          kind: "cross",
+          label: "02 · 확인 가능한 범위",
+          title: "현재값과 기간 시계열은 참고하되 당일 원인에는 사용하지 않음",
+          detail: trend.detail,
+          basis: trend.value,
+          confidence: "참고 자료"
+        },
+        {
+          kind: "alternative",
+          label: "03 · 분석 재개 조건",
+          title: "같은 거래일의 현재값·이전 종가·기준시각이 모두 확인돼야 함",
+          detail: "원자료가 복구되면 기간 흐름과 교차 시장을 다시 계산합니다.",
+          basis: "원자료 복구",
+          confidence: "대기"
+        }
+      ];
   const causeAssessment = changeAvailable
     ? {
         title: `${selected.name} ${movementLabel}의 가장 유력한 설명`,
@@ -450,7 +558,9 @@ export function buildMarketDeepModel({
         evidence: [
           `현재값 ${currentValue}`,
           trend.value,
-          `교차 시장 ${agreementValue}`
+          crossMarketClues[0]
+            ? `${crossMarketClues[0].label} ${crossMarketClues[0].fact}`
+            : `교차 시장 ${agreementValue}`
         ],
         statusLabel: "추정 분석 · 틀릴 수 있음",
         confidenceLabel: statisticalAnalysis?.confidence?.label || "자료 부족",
@@ -467,6 +577,23 @@ export function buildMarketDeepModel({
         confidenceScore: null,
         warning: "등락 기준이 없는 상태에서 원인을 만들면 방향 자체를 잘못 설명할 수 있으므로 판단을 보류합니다."
       };
+  const analogResult = selectedStatistics?.analogs || {
+    status: "insufficient",
+    reason: "장기 시계열 자료 부족",
+    matches: []
+  };
+  const historicalAnalogs = {
+    status: analogResult.status || "insufficient",
+    reason: analogResult.reason || null,
+    current: analogResult.current || null,
+    matches: Array.isArray(analogResult.matches) ? analogResult.matches.slice(0, 3) : [],
+    methodology: analogResult.methodology || "5일·20일 가격 변화 비교",
+    warning: "비슷한 가격 모양을 찾은 결과이며 당시 뉴스·정책·기업 실적이 같다는 뜻이 아닙니다. 이후 20일 변화도 재현 확률이나 전망치로 사용하지 않습니다."
+  };
+  const counterDriverTexts = (statisticalAnalysis?.drivers?.counter || [])
+    .filter((driver) => driver?.id !== selected.id)
+    .slice(0, 2)
+    .map((driver) => `${driver.label || driver.id}: 1일 ${signedPercent(driver.change1d)}${finite(driver.mediumChange) ? ` · ${driver.mediumLabel || "중기"} ${signedPercent(driver.mediumChange)}` : ""}`);
 
   return {
     available: true,
@@ -474,6 +601,12 @@ export function buildMarketDeepModel({
     thesis: hypothesis[0],
     alternative: hypothesis[1],
     causeAssessment,
+    causeCandidates,
+    crossMarketClues,
+    assessment,
+    historicalAnalogs,
+    confidenceComponents: statisticalAnalysis?.confidence?.components || [],
+    dataQualityComponents: statisticalAnalysis?.dataQuality?.components || [],
     trend,
     evidence: [
       {
@@ -565,6 +698,7 @@ export function buildMarketDeepModel({
       ...(counterNames.length
         ? [`현재 주된 방향과 반대로 움직이는 시장: ${counterNames.join(", ")}`]
         : ["통계상 뚜렷한 반대 시장 신호는 확인되지 않았습니다."]),
+      ...counterDriverTexts,
       hypothesis[1]
     ],
     invalidation: [

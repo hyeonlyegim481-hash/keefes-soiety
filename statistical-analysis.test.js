@@ -4,7 +4,8 @@ import test from "node:test";
 import {
   buildStatisticalRuleAnalysis,
   calculateSeriesStatistics,
-  evaluateEconomicRegimes
+  evaluateEconomicRegimes,
+  findSeriesPatternAnalogs
 } from "./statistical-analysis.js";
 
 function series(days = 5, stepHours = 1, start = 100) {
@@ -18,6 +19,18 @@ function series(days = 5, stepHours = 1, start = 100) {
     });
   }
   return points;
+}
+
+function dailySeries(days = 370, valueAt = (index) => 100 + index * 0.1) {
+  const start = Date.parse("2025-07-20T00:00:00Z");
+  return Array.from({ length: days + 1 }, (_, index) => ({
+    time: new Date(start + index * 86_400_000).toISOString(),
+    value: valueAt(index)
+  }));
+}
+
+function pointSum(components) {
+  return Math.round(components.reduce((sum, item) => sum + item.points, 0));
 }
 
 test("five-day data calculates 1d and 5d but refuses longer horizons", () => {
@@ -112,4 +125,84 @@ test("risk, confidence and data quality remain separate", () => {
   assert.equal(typeof result.dataQuality.score, "number");
   assert.notEqual(result.currentRegime, "");
   assert.ok(result.directionAgreement.rate >= 0);
+});
+
+test("missing signals never satisfy a regime through numeric coercion", () => {
+  const result = evaluateEconomicRegimes({
+    vix: null,
+    riskScore: null,
+    equityBreadth: null,
+    riskDirection: null,
+    wtiChange: -2,
+    fxChange: null,
+    nasdaqChange: 2,
+    kospiChange: null,
+    exportGrowth: null,
+    domesticGrowth: null
+  });
+  assert.equal(result.find((item) => item.id === "disinflation").status, "inactive");
+  assert.equal(result.find((item) => item.id === "rate-cut-hope").status, "inactive");
+  assert.equal(result.find((item) => item.id === "recovery").status, "inactive");
+});
+
+test("one-year data exposes all horizons and removes the stale five-day limitation", () => {
+  const ids = ["kospi", "kosdaq", "sp500", "nasdaq", "vix", "usdkrw", "wti", "gold"];
+  const markets = ids.map((id, index) => ({
+    id,
+    name: id,
+    value: 100 + index,
+    asOf: "2026-07-25T00:00:00Z",
+    marketOpen: false,
+    series: dailySeries(370, (day) => 100 + index + day * 0.1)
+  }));
+  const result = buildStatisticalRuleAnalysis({
+    markets,
+    now: Date.parse("2026-07-25T01:00:00Z")
+  });
+  assert.ok(result.horizonSummary.every((item) => item.availableCount === markets.length));
+  assert.ok(Object.values(result.markets).every((item) => item.assessment.availableHorizonCount === 5));
+  assert.doesNotMatch(result.limitations.join(" "), /현재 시장 API 시계열은 5일/);
+  assert.match(result.limitations[0], /모두 계산 가능/);
+  const oneMarket = buildStatisticalRuleAnalysis({
+    markets: [markets[0]],
+    now: Date.parse("2026-07-25T01:00:00Z")
+  });
+  assert.match(oneMarket.limitations[0], /^1개 시장/);
+  assert.doesNotMatch(oneMarket.limitations[0], /^8개 시장/);
+});
+
+test("confidence and data-quality scores disclose weighted components", () => {
+  const ids = ["kospi", "kosdaq", "sp500", "nasdaq", "vix", "usdkrw", "wti", "gold"];
+  const markets = ids.map((id, index) => ({
+    id,
+    name: id,
+    value: 100 + index,
+    asOf: "2026-07-25T00:00:00Z",
+    marketOpen: false,
+    series: dailySeries(150, (day) => 100 + index + day * 0.05)
+  }));
+  const result = buildStatisticalRuleAnalysis({
+    markets,
+    macro: [
+      { label: "수출 증가율", status: "official", value: 4.2, unit: "% YoY" },
+      { label: "소매판매 증가율", status: "official", value: -0.8, unit: "% YoY" }
+    ],
+    now: Date.parse("2026-07-25T01:00:00Z")
+  });
+  assert.equal(pointSum(result.confidence.components), result.confidence.score);
+  assert.equal(pointSum(result.dataQuality.components), result.dataQuality.score);
+  assert.equal(result.directionAgreement.totalEligibleCount, 7);
+  assert.equal(result.methodologyVersion, "2.0");
+});
+
+test("pattern analogs compare price shape without claiming the same cause", () => {
+  const repeated = dailySeries(300, (index) => {
+    const phase = index % 60;
+    return 100 + (phase <= 30 ? phase * 0.6 : (60 - phase) * 0.6);
+  });
+  const result = findSeriesPatternAnalogs(repeated);
+  assert.equal(result.status, "available");
+  assert.ok(result.matches.length >= 1);
+  assert.ok(result.matches.every((item) => typeof item.subsequent20d === "number"));
+  assert.match(result.methodology, /가격 변화/);
 });

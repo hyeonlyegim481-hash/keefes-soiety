@@ -79,8 +79,55 @@ function availableStatus(available, tone = "neutral") {
   return available ? tone : "unavailable";
 }
 
+function statisticalMarketRead(statisticalAnalysis, id) {
+  const statistics = statisticalAnalysis?.markets?.[id];
+  if (!statistics) return { available: false, text: "기간 자료 부족", trend: "판단 자료 부족" };
+  const horizonIds = ["1d", "5d", "20d", "3m", "1y"];
+  const horizons = horizonIds
+    .map((horizonId) => statistics.horizons?.[horizonId])
+    .filter((horizon) => horizon?.status === "available" && finiteNumber(horizon.value) !== null)
+    .map((horizon) => `${horizon.label} ${signed(horizon.value)}`);
+  return {
+    available: horizons.length > 0,
+    text: horizons.join(" · ") || "기간 자료 부족",
+    trend: statistics.assessment?.label || "추세 판단 자료 부족",
+    persistenceRate: finiteNumber(statistics.assessment?.persistenceRate),
+    position: statistics.assessment?.position?.label || "장기 위치 판단 자료 부족",
+    analogs: statistics.analogs?.status === "available"
+      ? statistics.analogs.matches || []
+      : []
+  };
+}
+
+function summarizeStatisticalDriver(driver) {
+  if (!driver) return null;
+  return {
+    id: driver.id,
+    label: driver.label || driver.id,
+    direction: driver.riskDirection || "neutral",
+    fact: `1일 ${signed(driver.change1d)}${finiteNumber(driver.mediumChange) !== null ? ` · ${driver.mediumLabel || "중기"} ${signed(driver.mediumChange)}` : ""}`,
+    transmission: driver.transmission || "한국 경제 전달 경로를 추가 확인합니다.",
+    severity: finiteNumber(driver.severity),
+    caveat: driver.caveat || "가격 동시 움직임은 원인을 확정하지 않습니다."
+  };
+}
+
+function buildKoreaAnalogCases(statisticalAnalysis) {
+  const ids = ["kospi", "usdkrw"];
+  return ids.flatMap((id) => {
+    const statistics = statisticalAnalysis?.markets?.[id];
+    if (statistics?.analogs?.status !== "available") return [];
+    return (statistics.analogs.matches || []).slice(0, 2).map((item) => ({
+      marketId: id,
+      marketLabel: MARKET_LABELS[id] || id,
+      ...item
+    }));
+  });
+}
+
 export function buildKoreaDetailModel({ macro = [], markets = [], analysis = {}, narrative = {} } = {}) {
   const byMarket = Object.fromEntries(markets.map((item) => [item.id, item]));
+  const statisticalAnalysis = analysis?.statisticalAnalysis || {};
   const rate = macroObservation(findMacro(macro, /금리/));
   const inflation = macroObservation(findMacro(macro, /소비자|물가/));
   const exports = macroObservation(findMacro(macro, /수출/));
@@ -93,6 +140,11 @@ export function buildKoreaDetailModel({ macro = [], markets = [], analysis = {},
   const usdkrw = marketObservation(byMarket.usdkrw);
   const vix = marketObservation(byMarket.vix);
   const wti = marketObservation(byMarket.wti);
+  const kospiStatistics = statisticalMarketRead(statisticalAnalysis, "kospi");
+  const kosdaqStatistics = statisticalMarketRead(statisticalAnalysis, "kosdaq");
+  const usdkrwStatistics = statisticalMarketRead(statisticalAnalysis, "usdkrw");
+  const vixStatistics = statisticalMarketRead(statisticalAnalysis, "vix");
+  const wtiStatistics = statisticalMarketRead(statisticalAnalysis, "wti");
 
   const marketPairAvailable = kospi.changeAvailable && kosdaq.changeAvailable;
   const marketGap = marketPairAvailable ? kospi.change - kosdaq.change : null;
@@ -103,9 +155,24 @@ export function buildKoreaDetailModel({ macro = [], markets = [], analysis = {},
       : kospi.change < 0 && kosdaq.change < 0
         ? "negative"
         : "watch";
-  const costPressure = usdkrw.available && (usdkrw.value >= 1380 || (wti.changeAvailable && wti.change >= 2));
+  const adverseDriverIds = new Set(
+    (statisticalAnalysis?.drivers?.adverse || [])
+      .filter((driver) => finiteNumber(driver?.severity) !== null && Number(driver.severity) >= 50)
+      .map((driver) => driver?.id)
+  );
+  const costPressure = usdkrw.available && (
+    usdkrw.value >= 1380
+    || (wti.changeAvailable && wti.change >= 2)
+    || adverseDriverIds.has("usdkrw")
+    || adverseDriverIds.has("wti")
+  );
   const pricePressure = inflation.available && inflation.value > 2.5;
   const householdPressure = rate.available && credit.available && rate.value >= 3;
+  const periodEvidence = {
+    finance: [kospiStatistics.available ? `KOSPI ${kospiStatistics.text}` : null, kosdaqStatistics.available ? `KOSDAQ ${kosdaqStatistics.text}` : null].filter(Boolean).join(" / "),
+    external: [usdkrwStatistics.available ? `원/달러 ${usdkrwStatistics.text}` : null, wtiStatistics.available ? `WTI ${wtiStatistics.text}` : null].filter(Boolean).join(" / "),
+    volatility: vixStatistics.available ? `VIX ${vixStatistics.text}` : ""
+  };
 
   const sectors = [
     {
@@ -150,6 +217,7 @@ export function buildKoreaDetailModel({ macro = [], markets = [], analysis = {},
       explanation: usdkrw.available && wti.available
         ? "원화 약세와 유가 상승이 겹치면 에너지·원재료의 원화 환산 비용이 커져 기업 원가와 생활물가로 전달될 수 있습니다."
         : "환율 또는 유가 자료가 없어 수입비용 압력을 판단하지 않습니다.",
+      periodEvidence: periodEvidence.external || "환율·유가 장기 흐름 자료 부족",
       watch: "달러지수, 원화 실효환율, 수입물가지수, 경상수지"
     },
     {
@@ -167,6 +235,7 @@ export function buildKoreaDetailModel({ macro = [], markets = [], analysis = {},
       explanation: marketPairAvailable
         ? "두 지수의 방향이 같아야 시장 회복의 폭이 넓다고 볼 근거가 생깁니다. 하루 등락만으로 경기 방향을 확정하지 않습니다."
         : "같은 거래일 기준의 두 지수 등락률이 없어 시장의 폭을 계산하지 않습니다.",
+      periodEvidence: periodEvidence.finance || "국내 증시 장기 흐름 자료 부족",
       watch: `외국인 순매수, 거래대금, 회사채 스프레드, VIX ${vix.available ? `${vix.text} (${vix.changeText})` : "자료 없음"}`
     },
     {
@@ -228,10 +297,41 @@ export function buildKoreaDetailModel({ macro = [], markets = [], analysis = {},
     ])
   ];
   const availableCount = qualityItems.filter(([, available]) => available).length;
+  const adverseDrivers = (statisticalAnalysis?.drivers?.adverse || [])
+    .map(summarizeStatisticalDriver)
+    .filter(Boolean)
+    .slice(0, 3);
+  const favorableDrivers = (statisticalAnalysis?.drivers?.favorable || [])
+    .map(summarizeStatisticalDriver)
+    .filter(Boolean)
+    .slice(0, 3);
+  const analogCases = buildKoreaAnalogCases(statisticalAnalysis);
+  const sharedAvailable = statisticalAnalysis?.methodologyVersion
+    && Object.keys(statisticalAnalysis?.markets || {}).length > 0;
 
   return {
     sectors,
     impacts,
+    statisticalSummary: {
+      available: Boolean(sharedAvailable),
+      methodologyVersion: statisticalAnalysis?.methodologyVersion || "확인 필요",
+      currentRegime: statisticalAnalysis?.currentRegime || "판단 자료 부족",
+      confidence: statisticalAnalysis?.confidence || { score: null, label: "자료 부족" },
+      dataQuality: statisticalAnalysis?.dataQuality || { score: null, label: "자료 부족" },
+      agreement: statisticalAnalysis?.directionAgreement || { rate: null, dominant: "판단 자료 부족" },
+      adverseDrivers,
+      favorableDrivers,
+      periodEvidence,
+      marketTrends: {
+        kospi: kospiStatistics,
+        kosdaq: kosdaqStatistics,
+        usdkrw: usdkrwStatistics,
+        vix: vixStatistics,
+        wti: wtiStatistics
+      },
+      analogCases,
+      analogWarning: "과거 가격 모양만 비교한 자료입니다. 당시 정책·뉴스·실물경제가 같다는 뜻이 아니며 이후 결과를 전망치로 사용하지 않습니다."
+    },
     scenarios: Array.isArray(narrative?.scenarios) ? narrative.scenarios.slice(0, 3) : [],
     tensions: Array.isArray(narrative?.tensions) ? narrative.tensions.slice(0, 4) : [],
     limitations: Array.isArray(narrative?.limitations) ? narrative.limitations.slice(0, 4) : [],
@@ -241,7 +341,7 @@ export function buildKoreaDetailModel({ macro = [], markets = [], analysis = {},
       label: availableCount === qualityItems.length ? "주요 자료 정상" : availableCount >= 6 ? "일부 자료 확인 필요" : "판단 자료 부족",
       items: qualityItems.map(([label, available, basis, source]) => ({ label, available, basis, source }))
     },
-    methodology: `부문별 신호는 공식 거시자료와 시장가격 ${qualityItems.length}개를 규칙으로 묶은 설명입니다. 물가 2.5% 초과, 기준금리 3% 이상, 원/달러 1,380원 이상, WTI 당일 2% 이상을 부담 점검선으로 사용하며 경제성장률이나 투자수익률을 예측하지 않습니다.`,
+    methodology: `부문별 신호는 공식 거시자료와 시장가격 ${qualityItems.length}개를 규칙으로 묶은 설명입니다. 물가 2.5% 초과, 기준금리 3% 이상, 원/달러 1,380원 이상, WTI 당일 2% 이상을 부담 점검선으로 사용합니다.${sharedAvailable ? ` 공통 통계 엔진 ${statisticalAnalysis.methodologyVersion}의 1일·5일·20일·3개월·1년 흐름을 함께 보되` : " 장기 시계열이 연결되지 않은 경우"} 경제성장률이나 투자수익률을 예측하지 않습니다.`,
     riskScore: finiteNumber(analysis?.riskScore)
   };
 }

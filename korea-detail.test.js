@@ -54,3 +54,90 @@ test("원자료 실패는 0이나 정상값으로 바꾸지 않는다", () => {
   assert.equal(model.sectors.find((item) => item.id === "exports").status, "unavailable");
   assert.equal(model.dataQuality.label, "판단 자료 부족");
 });
+
+test("한국 분석은 공통 다기간 통계와 가격 유사구간을 재사용한다", () => {
+  const statistics = Object.fromEntries(markets.map((item) => [
+    item.id,
+    {
+      horizons: {
+        "1d": { label: "1일", status: "available", value: item.changePercent },
+        "5d": { label: "5일", status: "available", value: item.changePercent * 2 },
+        "20d": { label: "20일", status: "available", value: item.changePercent * 3 },
+        "3m": { label: "3개월", status: "insufficient", value: null },
+        "1y": { label: "1년", status: "insufficient", value: null }
+      },
+      assessment: {
+        label: item.changePercent >= 0 ? "상승 우위" : "하락 우위",
+        persistenceRate: 66.7,
+        position: { label: "확보 구간 중간" }
+      },
+      analogs: ["kospi", "usdkrw"].includes(item.id)
+        ? {
+            status: "available",
+            matches: [{ date: "2026-02-01T00:00:00Z", similarity: 81, change5d: 2, change20d: 4, subsequent20d: -1 }]
+          }
+        : { status: "insufficient", matches: [] }
+    }
+  ]));
+  const model = buildKoreaDetailModel({
+    macro,
+    markets,
+    analysis: {
+      riskScore: 62,
+      statisticalAnalysis: {
+        methodologyVersion: "2.0",
+        currentRegime: "확정 전: 물가압력 (2/3)",
+        confidence: { label: "보통", score: 68 },
+        dataQuality: { label: "양호", score: 82 },
+        directionAgreement: { dominant: "위험 확대", rate: 71.4 },
+        drivers: {
+          adverse: [
+            { id: "usdkrw", label: "원/달러", change1d: 0.8, mediumChange: 2.4, mediumLabel: "20일", riskDirection: "adverse", severity: 78, transmission: "수입 원가·외국인 수급·물가" }
+          ],
+          favorable: [
+            { id: "kospi", label: "KOSPI", change1d: 1.2, mediumChange: 3.6, mediumLabel: "20일", riskDirection: "favorable", severity: 65, transmission: "국내 대형주 수급과 기업 이익 기대" }
+          ]
+        },
+        markets: statistics
+      }
+    }
+  });
+
+  const finance = model.sectors.find((item) => item.id === "finance");
+  const external = model.sectors.find((item) => item.id === "external");
+  assert.equal(model.statisticalSummary.available, true);
+  assert.equal(model.statisticalSummary.currentRegime, "확정 전: 물가압력 (2/3)");
+  assert.match(finance.periodEvidence, /20일/);
+  assert.match(external.periodEvidence, /원\/달러/);
+  assert.equal(model.statisticalSummary.adverseDrivers.length, 1);
+  assert.equal(model.statisticalSummary.favorableDrivers.length, 1);
+  assert.equal(model.statisticalSummary.analogCases.length, 2);
+  assert.match(model.statisticalSummary.analogWarning, /전망치로 사용하지 않습니다/);
+});
+
+test("작고 지속성 없는 환율 움직임은 비용 압력으로 과장하지 않는다", () => {
+  const calmMarkets = markets.map((item) =>
+    item.id === "usdkrw"
+      ? { ...item, value: 1350, previousClose: 1349, changePercent: 0.07 }
+      : item.id === "wti"
+        ? { ...item, changePercent: 0.1 }
+        : item
+  );
+  const model = buildKoreaDetailModel({
+    macro,
+    markets: calmMarkets,
+    analysis: {
+      statisticalAnalysis: {
+        methodologyVersion: "2.0",
+        markets: {},
+        drivers: {
+          adverse: [
+            { id: "usdkrw", label: "원/달러", change1d: 0.07, severity: 8, riskDirection: "adverse" },
+            { id: "wti", label: "WTI", change1d: 0.1, severity: 4, riskDirection: "adverse" }
+          ]
+        }
+      }
+    }
+  });
+  assert.equal(model.sectors.find((item) => item.id === "external").status, "neutral");
+});

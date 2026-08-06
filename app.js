@@ -1893,6 +1893,46 @@ function renderBriefBoard(snapshot, narrative = state.narrative) {
   const tone = getRiskTone(analysis);
   const reasons = narrative?.coreReasons || [];
   const breadth = narrative?.breadth || { rising: 0, falling: 0, total: snapshot.markets.length };
+  const statistical = narrative?.statisticalSummary || {};
+  const confidence = statistical?.confidence || {};
+  const dataQuality = statistical?.dataQuality || {};
+  const agreement = statistical?.agreement || {};
+  const statisticalMarkets = Array.isArray(statistical?.markets)
+    ? statistical.markets.filter((market) => market.horizons?.length).slice(0, 6)
+    : [];
+  const scoreText = (value) => Number.isFinite(Number(value)) ? `${formatter.format(Number(value))}점` : "자료 부족";
+  const statisticalMarkup = statistical?.available ? `
+    <section class="brief-statistical-context" aria-label="다기간 통계 분석">
+      <header>
+        <div>
+          <p class="section-kicker">당일 숫자를 기간 흐름과 교차 확인</p>
+          <h3>현재 분석의 근거와 강도</h3>
+        </div>
+        <span>규칙 엔진 ${escapeHtml(statistical.methodologyVersion || "확인 필요")}</span>
+      </header>
+      <div class="brief-stat-metrics">
+        <article><span>현재 경제 국면</span><strong>${escapeHtml(statistical.currentRegime || "판단 자료 부족")}</strong><em>3회 연속 관측 전에는 확정하지 않음</em></article>
+        <article><span>분석 확실도</span><strong>${escapeHtml(confidence.label || "자료 부족")} · ${escapeHtml(scoreText(confidence.score))}</strong><em>자료 범위·신호 일치·최신성을 합산</em></article>
+        <article><span>데이터 품질</span><strong>${escapeHtml(dataQuality.label || "자료 부족")} · ${escapeHtml(scoreText(dataQuality.score))}</strong><em>확실도와 별도로 계산</em></article>
+        <article><span>시장 신호</span><strong>${escapeHtml(agreement.dominant || "판단 자료 부족")}${Number.isFinite(Number(agreement.rate)) ? ` · ${escapeHtml(`${formatter.format(Number(agreement.rate))}%`)}` : ""}</strong><em>${escapeHtml(`${agreement.knownSignalCount ?? 0}/${agreement.totalEligibleCount ?? 0}개 확인`)}</em></article>
+      </div>
+      <div class="brief-horizon-list">
+        ${statisticalMarkets.map((market) => `<article>
+          <header><strong>${escapeHtml(market.label)}</strong><span>${escapeHtml(market.trend)}</span></header>
+          <p>${market.horizons.map((horizon) => `<span>${escapeHtml(horizon)}</span>`).join("")}</p>
+          <em>${escapeHtml(market.position)}${Number.isFinite(Number(market.persistenceRate)) ? ` · 방향 지속 ${escapeHtml(`${formatter.format(Number(market.persistenceRate))}%`)}` : ""}</em>
+        </article>`).join("")}
+      </div>
+      <details class="brief-stat-method">
+        <summary>점수 구성과 분석 제한 보기</summary>
+        <div>
+          <section><strong>확실도 구성</strong>${(confidence.components || []).map((item) => `<p><span>${escapeHtml(item.label)}</span><b>${escapeHtml(`${item.points}/${item.weight}점`)}</b><em>${escapeHtml(item.detail)}</em></p>`).join("") || "<p>구성 자료 없음</p>"}</section>
+          <section><strong>데이터 품질 구성</strong>${(dataQuality.components || []).map((item) => `<p><span>${escapeHtml(item.label)}</span><b>${escapeHtml(`${item.points}/${item.weight}점`)}</b><em>${escapeHtml(item.detail)}</em></p>`).join("") || "<p>구성 자료 없음</p>"}</section>
+          <section><strong>해석 제한</strong>${(statistical.limitations || []).map((item) => `<p><em>${escapeHtml(item)}</em></p>`).join("") || "<p>제한사항 확인 필요</p>"}</section>
+        </div>
+      </details>
+    </section>
+  ` : "";
 
   elements.briefBoard.innerHTML = `
     <section class="explain-hero" data-tone="${tone}">
@@ -1903,6 +1943,8 @@ function renderBriefBoard(snapshot, narrative = state.narrative) {
       <h3>${escapeHtml(narrative?.title || analysis.regime)}</h3>
       <p>${escapeHtml(narrative?.meaning || analysis.pulse)}</p>
     </section>
+
+    ${statisticalMarkup}
 
     <section class="reason-ledger" aria-label="왜 이렇게 움직였나">
       <div class="board-heading">
@@ -3079,6 +3121,10 @@ function renderAnalysis(snapshot, narrative = state.narrative) {
   const causeConfidence = Number.isFinite(Number(causeAssessment.confidenceScore))
     ? `${causeAssessment.confidenceLabel || "자료 부족"} · ${causeAssessment.confidenceScore}/100`
     : causeAssessment.confidenceLabel || "자료 부족";
+  const causeCandidates = Array.isArray(deepModel.causeCandidates) ? deepModel.causeCandidates : [];
+  const historicalAnalogs = deepModel.historicalAnalogs || { status: "insufficient", matches: [] };
+  const confidenceComponents = Array.isArray(deepModel.confidenceComponents) ? deepModel.confidenceComponents : [];
+  const dataQualityComponents = Array.isArray(deepModel.dataQualityComponents) ? deepModel.dataQualityComponents : [];
 
   elements.analysisList.innerHTML = `
     <li class="deep-command-center" data-tone="${escapeHtml(verdictTone)}">
@@ -3162,29 +3208,23 @@ function renderAnalysis(snapshot, narrative = state.narrative) {
       <header class="deep-section-heading">
         <div>
           <span>판단 구조</span>
-          <h3>한 가지 설명에 고정되지 않고 반대 가설까지 검증</h3>
+          <h3>주요 가설·교차시장 단서·대안 가설을 나눠 검증</h3>
         </div>
         <p>가격의 동시 움직임은 인과관계의 증명이 아닙니다.</p>
       </header>
       <div class="deep-hypothesis-grid">
-        <article class="deep-hypothesis-card" data-kind="primary">
-          <span>01 · 주요 가설</span>
-          <strong>${escapeHtml(deepModel.thesis)}</strong>
-          <p>${escapeHtml(deepModel.trend?.detail || "기간 흐름을 추가로 확인합니다.")}</p>
-        </article>
-        <article class="deep-hypothesis-card" data-kind="alternative">
-          <span>02 · 대안 가설</span>
-          <strong>${escapeHtml(deepModel.alternative)}</strong>
-          <p>선택 시장만 보고 원인을 확정했을 때 생길 수 있는 오류를 줄이기 위한 설명입니다.</p>
-        </article>
-        <article class="deep-hypothesis-card" data-kind="invalidate">
-          <span>03 · 이 판단을 바꿀 조건</span>
-          <ul>
-            ${(deepModel.invalidation || []).slice(0, 4)
-              .map((item) => `<li>${escapeHtml(item)}</li>`)
-              .join("")}
-          </ul>
-        </article>
+        ${causeCandidates.map((candidate) => `
+          <article class="deep-hypothesis-card" data-kind="${escapeHtml(candidate.kind || "alternative")}">
+            <span>${escapeHtml(candidate.label)}</span>
+            <strong>${escapeHtml(candidate.title)}</strong>
+            <p>${escapeHtml(candidate.detail)}</p>
+            <footer><b>${escapeHtml(candidate.basis)}</b><em>확실도 ${escapeHtml(candidate.confidence)}</em></footer>
+          </article>
+        `).join("") || `<article class="deep-hypothesis-card"><strong>원인 후보를 계산할 자료가 부족합니다.</strong></article>`}
+      </div>
+      <div class="deep-invalidation-strip">
+        <strong>이 판단을 바꿀 조건</strong>
+        <ul>${(deepModel.invalidation || []).slice(0, 4).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
       </div>
     </li>
 
@@ -3226,18 +3266,43 @@ function renderAnalysis(snapshot, narrative = state.narrative) {
       <header>
         <div>
           <span>기간별 검증</span>
-          <h3>${escapeHtml(deepModel.trend?.label || statistics.currentRegime || "판단 자료 부족")}</h3>
+          <h3>${escapeHtml(deepModel.assessment?.label || deepModel.trend?.label || statistics.currentRegime || "판단 자료 부족")}</h3>
           <p>당일 움직임을 5일·20일·3개월·1년 흐름과 비교하고, 없는 기간은 계산하지 않습니다.</p>
         </div>
         <div class="statistical-score-strip">
           <span><small>표본 수</small><strong>${Number.isFinite(Number(selectedStatistics?.sampleSize)) ? `${selectedStatistics.sampleSize}개` : "자료 부족"}</strong></span>
           <span><small>백분위</small><strong>${Number.isFinite(Number(selectedStatistics?.percentile)) ? `${selectedStatistics.percentile}%` : "자료 부족"}</strong></span>
           <span><small>변동성</small><strong>${Number.isFinite(Number(selectedStatistics?.volatility)) ? `${selectedStatistics.volatility}%` : "자료 부족"}</strong></span>
+          <span><small>기간 방향 일치</small><strong>${Number.isFinite(Number(deepModel.assessment?.persistenceRate)) ? `${deepModel.assessment.persistenceRate}%` : "자료 부족"}</strong></span>
         </div>
       </header>
       <div class="statistical-horizon-grid">
         ${horizonCards || "<p>선택 시장의 시계열을 확인하지 못했습니다.</p>"}
       </div>
+      <section class="historical-pattern-panel" data-state="${escapeHtml(historicalAnalogs.status || "insufficient")}">
+        <header>
+          <div><span>과거 가격 흐름 비교</span><strong>현재 5일·20일 모양과 비슷했던 구간</strong></div>
+          <em>경제 원인이 같다는 뜻 아님</em>
+        </header>
+        ${historicalAnalogs.status === "available" && historicalAnalogs.matches?.length
+          ? `<div class="historical-pattern-grid">${historicalAnalogs.matches.map((item) => `
+              <article>
+                <span>${escapeHtml(formatExactDate(item.date))}</span>
+                <strong>유사도 ${escapeHtml(`${item.similarity}점`)}</strong>
+                <p>당시 5일 ${escapeHtml(`${Number(item.change5d) >= 0 ? "+" : ""}${item.change5d}%`)} · 20일 ${escapeHtml(`${Number(item.change20d) >= 0 ? "+" : ""}${item.change20d}%`)}</p>
+                <em>그 뒤 20일 ${escapeHtml(`${Number(item.subsequent20d) >= 0 ? "+" : ""}${item.subsequent20d}%`)}</em>
+              </article>
+            `).join("")}</div>`
+          : `<p class="historical-pattern-empty">${escapeHtml(historicalAnalogs.reason || "비교할 장기 시계열이 부족합니다.")}</p>`}
+        <p class="historical-pattern-warning">${escapeHtml(historicalAnalogs.warning || "과거 결과가 다시 나타난다고 가정하지 않습니다.")}</p>
+      </section>
+      <details class="deep-stat-score-method">
+        <summary>확실도와 데이터 품질 계산 근거</summary>
+        <div>
+          <section><strong>분석 확실도 ${escapeHtml(confidenceScore)}</strong>${confidenceComponents.map((item) => `<p><span>${escapeHtml(item.label)}</span><b>${escapeHtml(`${item.points}/${item.weight}점`)}</b><em>${escapeHtml(item.detail)}</em></p>`).join("") || "<p>구성 자료 부족</p>"}</section>
+          <section><strong>데이터 품질 ${escapeHtml(qualityScore)}</strong>${dataQualityComponents.map((item) => `<p><span>${escapeHtml(item.label)}</span><b>${escapeHtml(`${item.points}/${item.weight}점`)}</b><em>${escapeHtml(item.detail)}</em></p>`).join("") || "<p>구성 자료 부족</p>"}</section>
+        </div>
+      </details>
       <footer>
         <p><strong>신호 일치율</strong> ${Number.isFinite(Number(statistics?.directionAgreement?.rate)) ? `${statistics.directionAgreement.rate}% · ${escapeHtml(statistics.directionAgreement.dominant)}` : "판단 자료 부족"}</p>
         <p><strong>현재 해석</strong> ${escapeHtml(deepModel.trend?.detail || "기간 비교 자료 부족")}</p>
@@ -4806,7 +4871,7 @@ function renderKoreaImpact(macro, analysis, markets, narrative = state.narrative
           <p class="section-kicker">누구에게 어떻게 영향을 주나</p>
           <h3>가계·기업·정책을 따로 보기</h3>
         </div>
-        <span>위험 온도 ${analysis.riskScore}/100</span>
+        <span>위험 온도 ${escapeHtml(formatRiskScore(analysis))}${getAvailableRiskScore(analysis) === null ? "" : "/100"}</span>
       </div>
       <div class="korea-impact-list">
         <article data-audience="household">
@@ -4833,6 +4898,31 @@ function renderKoreaImpact(macro, analysis, markets, narrative = state.narrative
         <p><strong>긍정 근거</strong> ${escapeHtml(korea.good || "수출 흐름")}</p>
         <p><strong>부담 근거</strong> ${escapeHtml(korea.burden || "환율과 물가")}</p>
       </div>
+      ${detail.statisticalSummary.available ? `
+        <section class="korea-shared-analysis" aria-label="한국 경제 공통 통계 분석">
+          <header>
+            <div><span>당일과 기간 흐름을 함께 판단</span><strong>한국 경제 공통 분석 상태</strong></div>
+            <em>규칙 엔진 ${escapeHtml(detail.statisticalSummary.methodologyVersion)}</em>
+          </header>
+          <div class="korea-shared-metrics">
+            <article><span>경제 국면</span><strong>${escapeHtml(detail.statisticalSummary.currentRegime)}</strong><em>3회 연속 전에는 확정하지 않음</em></article>
+            <article><span>분석 확실도</span><strong>${escapeHtml(detail.statisticalSummary.confidence.label || "자료 부족")}${Number.isFinite(Number(detail.statisticalSummary.confidence.score)) ? ` · ${escapeHtml(`${detail.statisticalSummary.confidence.score}점`)}` : ""}</strong><em>위험도와 다른 값</em></article>
+            <article><span>데이터 품질</span><strong>${escapeHtml(detail.statisticalSummary.dataQuality.label || "자료 부족")}${Number.isFinite(Number(detail.statisticalSummary.dataQuality.score)) ? ` · ${escapeHtml(`${detail.statisticalSummary.dataQuality.score}점`)}` : ""}</strong><em>기간·표본·최신성 반영</em></article>
+            <article><span>시장 신호</span><strong>${escapeHtml(detail.statisticalSummary.agreement.dominant || "판단 자료 부족")}${Number.isFinite(Number(detail.statisticalSummary.agreement.rate)) ? ` · ${escapeHtml(`${detail.statisticalSummary.agreement.rate}%`)}` : ""}</strong><em>교차 시장 방향 일치</em></article>
+          </div>
+          <div class="korea-shared-drivers">
+            <section data-kind="adverse">
+              <strong>한국에 부담을 줄 수 있는 시장 신호</strong>
+              ${detail.statisticalSummary.adverseDrivers.length ? detail.statisticalSummary.adverseDrivers.map((driver) => `<article><span>${escapeHtml(driver.label)}</span><b>${escapeHtml(driver.fact)}</b><p>${escapeHtml(driver.transmission)}</p></article>`).join("") : `<p>확인된 부담 신호가 부족합니다.</p>`}
+            </section>
+            <section data-kind="favorable">
+              <strong>부담을 완화할 수 있는 반대 신호</strong>
+              ${detail.statisticalSummary.favorableDrivers.length ? detail.statisticalSummary.favorableDrivers.map((driver) => `<article><span>${escapeHtml(driver.label)}</span><b>${escapeHtml(driver.fact)}</b><p>${escapeHtml(driver.transmission)}</p></article>`).join("") : `<p>확인된 완화 신호가 부족합니다.</p>`}
+            </section>
+          </div>
+          <p class="korea-shared-warning">시장 가격의 동시 움직임을 한국 경제의 확정 원인으로 보지 않습니다. 수출·물가·고용 같은 공표지표가 뒤따르는지 확인해야 합니다.</p>
+        </section>
+      ` : ""}
       <div class="korea-detail-stack">
         <details class="korea-detail-section" open>
           <summary>
@@ -4848,6 +4938,7 @@ function renderKoreaImpact(macro, analysis, markets, narrative = state.narrative
                 </header>
                 <strong>${escapeHtml(sector.verdict)}</strong>
                 <p class="korea-sector-evidence">${escapeHtml(sector.evidence)}</p>
+                ${sector.periodEvidence ? `<p class="korea-sector-period"><b>기간 흐름</b>${escapeHtml(sector.periodEvidence)}</p>` : ""}
                 <p>${escapeHtml(sector.explanation)}</p>
                 <footer><b>다음 확인</b><span>${escapeHtml(sector.watch)}</span></footer>
               </article>
@@ -4915,6 +5006,20 @@ function renderKoreaImpact(macro, analysis, markets, narrative = state.narrative
             `).join("")}
           </div>
           <p class="korea-methodology"><b>계산 기준</b>${escapeHtml(detail.methodology)}</p>
+          ${detail.statisticalSummary.analogCases.length ? `
+            <section class="korea-analog-section">
+              <header><strong>한국 관련 과거 가격 유사구간</strong><span>같은 경제 원인이나 전망값이 아님</span></header>
+              <div>${detail.statisticalSummary.analogCases.map((item) => `
+                <article>
+                  <span>${escapeHtml(item.marketLabel)} · ${escapeHtml(formatExactDate(item.date))}</span>
+                  <strong>유사도 ${escapeHtml(`${item.similarity}점`)}</strong>
+                  <p>당시 5일 ${escapeHtml(`${Number(item.change5d) >= 0 ? "+" : ""}${item.change5d}%`)} · 20일 ${escapeHtml(`${Number(item.change20d) >= 0 ? "+" : ""}${item.change20d}%`)}</p>
+                  <em>그 뒤 20일 ${escapeHtml(`${Number(item.subsequent20d) >= 0 ? "+" : ""}${item.subsequent20d}%`)}</em>
+                </article>
+              `).join("")}</div>
+              <p>${escapeHtml(detail.statisticalSummary.analogWarning)}</p>
+            </section>
+          ` : ""}
         </details>
       </div>
       <p class="data-caveat">${escapeHtml(limitations[0] || "한국 공표지표는 실시간 시세가 아니라 발표 주기별 최신값입니다.")}</p>
